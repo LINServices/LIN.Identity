@@ -465,7 +465,7 @@ public static class Users
         }
 
         // Confirmar contraseña
-        var newEncrypted = Shared.Security.EncryptClass.Encrypt(Conexión.SecreteWord + newData.NewPassword);
+        var newEncrypted = EncryptClass.Encrypt(Conexión.SecreteWord + newData.NewPassword);
 
         // Cambiar Contraseña
         usuario.Contraseña = newEncrypted;
