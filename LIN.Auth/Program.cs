@@ -18,6 +18,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddSignalR();
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
+
+
+
 string sqlConnection = builder.Configuration["ConnectionStrings:somee"] ?? string.Empty;
 
 // Servicio de BD
@@ -45,6 +62,9 @@ try
 }
 catch
 { }
+
+
+app.UseCors("AllowAnyOrigin");
 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -1,7 +1,7 @@
 namespace LIN.Auth.Controllers;
 
 
-[Route("user")]
+[Route("account")]
 public class UserController : ControllerBase
 {
 
@@ -266,8 +266,19 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="modelo">Nuevo modelo</param>
     [HttpPut("update")]
-    public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo)
+    public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo, [FromHeader] string token)
     {
+
+        var (isValid, _, userID) = Jwt.Validate(token);
+
+        if (!isValid)
+            return new ResponseBase
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token Invalido"
+            };
+
+        modelo.ID = userID;
 
         if (modelo.ID <= 0 || modelo.Nombre.Any())
             return new(Responses.InvalidParam);
@@ -314,13 +325,22 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="id">ID del usuario</param>
     [HttpDelete("delete")]
-    public async Task<HttpResponseBase> Delete([FromQuery] int id)
+    public async Task<HttpResponseBase> Delete([FromHeader] string token)
     {
 
-        if (id <= 0)
+        var (isValid, _, userID) = Jwt.Validate(token);
+
+        if (!isValid)
+            return new ResponseBase
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido"
+            };
+
+        if (userID <= 0)
             return new(Responses.InvalidParam);
 
-        var response = await Data.Users.Delete(id);
+        var response = await Data.Users.Delete(userID);
         return response;
     }
 
