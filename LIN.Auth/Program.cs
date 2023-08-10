@@ -13,6 +13,7 @@ global using LIN.Modules;
 global using Microsoft.AspNetCore.Mvc;
 using LIN.Auth.Data;
 using LIN.Auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,7 +74,7 @@ Conexión.SetStringConnection(sqlConnection);
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();
-
+Jwt.Open();
 app.UseAuthorization();
 
 app.MapControllers();
