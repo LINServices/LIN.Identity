@@ -12,7 +12,7 @@ public class Mails
     /// Crea un nuevo email
     /// </summary>
     /// <param name="data">Modelo</param>
-    public async static Task<CreateResponse> Create(EmailDataModel data)
+    public async static Task<CreateResponse> Create(EmailModel data)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
         var response = await Create(data, context);
@@ -26,7 +26,7 @@ public class Mails
     /// Obtiene la lista de emails asociados a una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    public async static Task<ReadAllResponse<EmailDataModel>> ReadAll(int id)
+    public async static Task<ReadAllResponse<EmailModel>> ReadAll(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -41,7 +41,7 @@ public class Mails
     /// Obtiene un email
     /// </summary>
     /// <param name="id">ID del email</param>
-    public async static Task<ReadOneResponse<EmailDataModel>> Read(int id)
+    public async static Task<ReadOneResponse<EmailModel>> Read(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -56,7 +56,7 @@ public class Mails
     /// Obtiene la lista de emails verificados asociados a una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    public async static Task<ReadAllResponse<EmailDataModel>> ReadVerifiedEmails(int id)
+    public async static Task<ReadAllResponse<EmailModel>> ReadVerifiedEmails(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
         var res = await ReadVerifiedEmails(id, context);
@@ -106,7 +106,7 @@ public class Mails
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(EmailDataModel data, Conexión context)
+    public async static Task<CreateResponse> Create(EmailModel data, Conexión context)
     {
 
         data.ID = 0;
@@ -122,7 +122,7 @@ public class Mails
         }
         catch (Exception ex)
         {
-            ServerLogger.LogError(ex.Message);
+            
             if ((ex.InnerException?.Message.Contains("Violation of UNIQUE KEY constraint") ?? false) || (ex.InnerException?.Message.Contains("duplicate key") ?? false))
                 return new(Responses.Undefined);
 
@@ -138,7 +138,7 @@ public class Mails
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<EmailDataModel>> ReadAll(int id, Conexión context)
+    public async static Task<ReadAllResponse<EmailModel>> ReadAll(int id, Conexión context)
     {
 
         // Ejecución
@@ -154,9 +154,8 @@ public class Mails
 
             return new(Responses.Success, emails);
         }
-        catch (Exception ex)
+        catch 
         {
-            ServerLogger.LogError(ex.Message);
         }
 
         return new();
@@ -169,7 +168,7 @@ public class Mails
     /// </summary>
     /// <param name="id">ID de el email</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<EmailDataModel>> Read(int id, Conexión context)
+    public async static Task<ReadOneResponse<EmailModel>> Read(int id, Conexión context)
     {
 
         // Ejecución
@@ -189,9 +188,8 @@ public class Mails
 
             return new(Responses.Success, email);
         }
-        catch (Exception ex)
+        catch 
         {
-            ServerLogger.LogError(ex.Message);
         }
 
         return new();
@@ -204,7 +202,7 @@ public class Mails
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<EmailDataModel>> ReadVerifiedEmails(int id, Conexión context)
+    public async static Task<ReadAllResponse<EmailModel>> ReadVerifiedEmails(int id, Conexión context)
     {
 
         // Ejecución
@@ -218,9 +216,9 @@ public class Mails
 
             return new(Responses.Success, emails);
         }
-        catch (Exception ex)
+        catch
         {
-            ServerLogger.LogError(ex.Message);
+           
         }
 
         return new();
@@ -271,7 +269,6 @@ public class Mails
             catch (Exception ex)
             {
                 transaction.Rollback();
-                ServerLogger.LogError(ex.Message);
             }
         }
 
@@ -309,9 +306,8 @@ public class Mails
 
             return new(Responses.Success);
         }
-        catch (Exception ex)
+        catch 
         {
-            ServerLogger.LogError(ex.Message);
         }
 
         return new();

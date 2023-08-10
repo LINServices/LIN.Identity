@@ -12,7 +12,7 @@ public class Logins
     /// Crea un registro de Login
     /// </summary>
     /// <param name="data">Modelo del login</param>
-    public async static Task<CreateResponse> Create(UserAccessLogDataModel data)
+    public async static Task<CreateResponse> Create(LoginLogModel data)
     {
 
         // Obtiene la conexión
@@ -28,7 +28,7 @@ public class Logins
     /// Obtiene la lista de registros login de una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    public async static Task<ReadAllResponse<UserAccessLogDataModel>> ReadAll(int id)
+    public async static Task<ReadAllResponse<LoginLogModel>> ReadAll(int id)
     {
 
         // Obtiene la conexión
@@ -50,7 +50,7 @@ public class Logins
     /// </summary>
     /// <param name="data">Modelo del login</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(UserAccessLogDataModel data, Conexión context)
+    public async static Task<CreateResponse> Create(LoginLogModel data, Conexión context)
     {
         // ID en 0
         data.ID = 0;
@@ -58,14 +58,13 @@ public class Logins
         // Ejecución
         try
         {
-            var res = context.DataBase.Logins.Add(data);
+            var res = context.DataBase.LoginLogs.Add(data);
             await context.DataBase.SaveChangesAsync();
             return new(Responses.Success, data.ID);
         }
-        catch (Exception ex)
+        catch
         {
             context.DataBase.Remove(data);
-            ServerLogger.LogError(ex.Message);
         }
 
         return new();
@@ -78,13 +77,13 @@ public class Logins
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<UserAccessLogDataModel>> ReadAll(int id, Conexión context)
+    public async static Task<ReadAllResponse<LoginLogModel>> ReadAll(int id, Conexión context)
     {
 
         // Ejecución
         try
         {
-            List<UserAccessLogDataModel> res = await context.DataBase.Logins.Where(T => T.UserID == id).OrderByDescending(T => T.Date).Take(10).ToListAsync();
+            List<LoginLogModel> res = await context.DataBase.LoginLogs.Where(T => T.AccountID == id).OrderByDescending(T => T.Date).Take(10).ToListAsync();
 
             var lista = res;
 
@@ -92,7 +91,6 @@ public class Logins
         }
         catch (Exception ex)
         {
-            ServerLogger.LogError(ex.Message);
         }
         return new();
     }
