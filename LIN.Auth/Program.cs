@@ -71,7 +71,7 @@ app.UseSwaggerUI();
 
 Conexión.SetStringConnection(sqlConnection);
 
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

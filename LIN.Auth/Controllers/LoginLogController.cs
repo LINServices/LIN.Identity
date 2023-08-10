@@ -1,8 +1,8 @@
 namespace LIN.Auth.Controllers;
 
 
-[Route("login/logs")]
-public class UserAccessLogsController : ControllerBase
+[Route("Account/logs")]
+public class LoginLogController : ControllerBase
 {
 
 

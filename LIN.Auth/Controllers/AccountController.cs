@@ -2,7 +2,7 @@ namespace LIN.Auth.Controllers;
 
 
 [Route("account")]
-public class UserController : ControllerBase
+public class AccountController : ControllerBase
 {
 
 
@@ -225,6 +225,37 @@ public class UserController : ControllerBase
 
         return response;
     }
+
+
+
+
+
+
+
+
+
+    /// <summary>
+    /// Obtiene usuarios
+    /// </summary>
+    /// <param name="ids">Lista de IDs de los usuarios</param>
+    [HttpPost("find")]
+    public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids)
+    {
+
+        // Obtiene el usuario
+        var response = await Data.Users.FindAll(ids);
+
+        return response;
+
+    }
+
+
+
+
+
+
+
+
 
 
 

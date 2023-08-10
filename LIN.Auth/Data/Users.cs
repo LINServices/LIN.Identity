@@ -80,6 +80,25 @@ public static class Users
 
 
 
+
+  /// <summary>
+  /// Obtiene la lista de usuarios correspondiente a los ids
+  /// </summary>
+  /// <param name="ids"></param>
+  /// <returns></returns>
+    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids)
+    {
+
+        // Obtiene la conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        var res = await FindAll(ids, context);
+        context.CloseActions(connectionKey);
+        return res;
+    }
+
+
+
     /// <summary>
     /// Obtiene los primeros 5 usuarios que coincidan con el patron (ADMIN)
     /// </summary>
@@ -329,6 +348,55 @@ public static class Users
                 Perfil = a.Perfil,
                 Genero = a.Genero,
                 Insignia = a.Insignia
+            }).ToListAsync();
+
+
+            // Si no existe el modelo
+            if (result == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, result);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="pattern">Patron a buscar</param>
+    /// <param name="id">ID de la cuenta (Contexto)</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Query
+            var query = (from A in context.DataBase.Accounts
+                         where A.Estado == AccountStatus.Normal
+                         where ids.Contains(A.ID)
+                         select A);
+
+            // Ejecuta
+            var result = await query.Select(a => new AccountModel
+            {
+                ID = a.ID,
+                Nombre = a.Nombre,
+                Usuario = a.Usuario,
+                Perfil = a.Perfil,
+                Genero = a.Genero,
+                Insignia = a.Insignia,
+                Creación = a.Creación,
+                Estado = a.Estado,
+                Rol = a.Rol,
+                Visibilidad = a.Visibilidad
             }).ToListAsync();
 
 
