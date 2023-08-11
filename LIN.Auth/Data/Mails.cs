@@ -151,7 +151,6 @@ public class Mails
                                 where E.Status != EmailStatus.Delete
                                 select E).ToListAsync();
 
-
             return new(Responses.Success, emails);
         }
         catch 

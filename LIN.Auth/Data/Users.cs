@@ -13,7 +13,7 @@ public static class Users
     /// Crea un nuevo usuario
     /// </summary>
     /// <param name="data">Modelo del usuario</param>
-    public async static Task<CreateResponse> Create(AccountModel data)
+    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data)
     {
 
         // Obtiene la conexión
@@ -212,7 +212,7 @@ public static class Users
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(AccountModel data, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data, Conexión context)
     {
 
         data.ID = 0;
@@ -223,7 +223,7 @@ public static class Users
             var res = await context.DataBase.Accounts.AddAsync(data);
             context.DataBase.SaveChanges();
 
-            return new(Responses.Success, data.ID);
+            return new(Responses.Success, data);
         }
         catch (Exception ex)
         {

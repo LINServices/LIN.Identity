@@ -58,10 +58,18 @@ public class AccountController : ControllerBase
 
         context.CloseActions(connectionKey);
 
-        // Genera el token
+        // Obtiene el usuario
+        string token = Jwt.Generate(response.Model);
+
 
         // Retorna el resultado
-        return response ?? new();
+        return new CreateResponse()
+        {
+            LastID = response.Model.ID,
+            Response = Responses.Success,
+            Token = token,
+            Message = "Success"
+        };
 
     }
 
@@ -167,6 +175,89 @@ public class AccountController : ControllerBase
 
 
 
+
+    /// <summary>
+    /// Actualiza la contraseña
+    /// </summary>
+    /// <param name="modelo">Nuevo modelo</param>
+    [HttpPatch("update/password")]
+    public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo)
+    {
+
+        if (modelo.Account <= 0 || modelo.OldPassword.Length < 4 || modelo.NewPassword.Length < 4)
+            return new(Responses.InvalidParam);
+
+
+        var actualData = await Data.Users.Read(modelo.Account, true);
+
+        if (actualData.Response != Responses.Success)
+            return new(Responses.NotExistAccount);
+
+        var oldEncrypted = actualData.Model.Contraseña;
+
+
+        if (oldEncrypted != actualData.Model.Contraseña)
+        {
+            return new ResponseBase(Responses.InvalidPassword);
+        }
+
+        return await Data.Users.UpdatePassword(modelo);
+
+    }
+
+
+
+    /// <summary>
+    /// Elimina una cuenta
+    /// </summary>
+    /// <param name="id">ID del usuario</param>
+    [HttpDelete("delete")]
+    public async Task<HttpResponseBase> Delete([FromHeader] string token)
+    {
+
+        var (isValid, _, userID) = Jwt.Validate(token);
+
+        if (!isValid)
+            return new ResponseBase
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido"
+            };
+
+        if (userID <= 0)
+            return new(Responses.InvalidParam);
+
+        var response = await Data.Users.Delete(userID);
+        return response;
+    }
+
+
+
+    /// <summary>
+    /// Actualiza los datos de un usuario
+    /// </summary>
+    /// <param name="modelo">Nuevo modelo</param>
+    [HttpPatch("disable/account")]
+    public async Task<HttpResponseBase> Disable([FromBody] AccountModel user)
+    {
+
+        if (user.ID <= 0)
+        {
+            return new(Responses.ExistAccount);
+        }
+
+        // Modelo de usuario de la BD
+        var userModel = await Data.Users.Read(user.ID, false);
+
+        if (userModel.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + user.Contraseña))
+        {
+            return new(Responses.InvalidPassword);
+        }
+
+
+        return await Data.Users.UpdateState(user.ID, AccountStatus.Disable);
+
+    }
 
 
 
