@@ -18,7 +18,7 @@ public class EmailWorker
     /// </summary>
     public static void StarService()
     {
-        Password = Configuration.GetConfiguration("mail:email");
+        Password = Configuration.GetConfiguration("resend:key");
     }
 
 
@@ -87,14 +87,14 @@ public class EmailWorker
             using (HttpClient client = new HttpClient())
             {
                 string url = "https://api.resend.com/emails";
-                string accessToken = "re_7y82xt45_8c7WJsSM5fB1PoRDzrp2rZqf"; // Reemplaza con tu token de acceso
+                string accessToken = Password; // Reemplaza con tu token de acceso
 
                 var requestData = new
                 {
                     from = "onboarding@resend.dev",
                     to = new[] { to },
                     subject = asunto,
-                    html = body,
+                    html = body
                 };
 
 

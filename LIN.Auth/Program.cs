@@ -75,6 +75,8 @@ Conexión.SetStringConnection(sqlConnection);
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 Jwt.Open();
+EmailWorker.StarService();
+
 app.UseAuthorization();
 
 app.MapControllers();
