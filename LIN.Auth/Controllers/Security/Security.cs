@@ -130,7 +130,7 @@ public class Security : ControllerBase
     /// Verifica un correo
     /// </summary>
     /// <param name="key">Key de acceso LINK</param>
-    [HttpPost("email/verify")]
+    [HttpPost("mails/verify")]
     public async Task<ResponseBase> VerifyEmail([FromHeader] string key)
     {
 
@@ -209,7 +209,7 @@ public class Security : ControllerBase
     /// </summary>
     /// <param name="password">Contraseña de la cuenta</param>
     /// <param name="model">Modelo del email</param>
-    [HttpPost("email/add")]
+    [HttpPost("mails/add")]
     public async Task<ResponseBase> EmailAdd([FromHeader] string password, [FromBody] EmailModel model)
     {
 
@@ -311,7 +311,7 @@ public class Security : ControllerBase
     /// </summary>
     /// <param name="password">Contraseña de la cuenta</param>
     /// <param name="model">Modelo del email</param>
-    [HttpPost("email/resend")]
+    [HttpPost("mails/resend")]
     public async Task<ResponseBase> EmailResend([FromHeader] int mailID, [FromHeader] string token)
     {
 
