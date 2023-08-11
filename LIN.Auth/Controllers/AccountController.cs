@@ -50,7 +50,7 @@ public class AccountController : ControllerBase
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await Data.Users.Create(modelo, context);
+        var response = await Data.Accounts.Create(modelo, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -87,7 +87,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Users.Read(id, true);
+        var response = await Data.Accounts.Read(id, true,false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -116,7 +116,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Users.Read(user, true);
+        var response = await Data.Accounts.Read(user, true, false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -148,7 +148,7 @@ public class AccountController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Users.SearchByPattern(pattern, id);
+        var response = await Data.Accounts.SearchByPattern(pattern, id);
 
         return response;
     }
@@ -165,14 +165,11 @@ public class AccountController : ControllerBase
     {
 
         // Obtiene el usuario
-        var response = await Data.Users.FindAll(ids);
+        var response = await Data.Accounts.FindAll(ids);
 
         return response;
 
     }
-
-
-
 
 
 
@@ -188,7 +185,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var actualData = await Data.Users.Read(modelo.Account, true);
+        var actualData = await Data.Accounts.Read(modelo.Account, true);
 
         if (actualData.Response != Responses.Success)
             return new(Responses.NotExistAccount);
@@ -201,7 +198,7 @@ public class AccountController : ControllerBase
             return new ResponseBase(Responses.InvalidPassword);
         }
 
-        return await Data.Users.UpdatePassword(modelo);
+        return await Data.Accounts.UpdatePassword(modelo);
 
     }
 
@@ -227,7 +224,7 @@ public class AccountController : ControllerBase
         if (userID <= 0)
             return new(Responses.InvalidParam);
 
-        var response = await Data.Users.Delete(userID);
+        var response = await Data.Accounts.Delete(userID);
         return response;
     }
 
@@ -247,7 +244,7 @@ public class AccountController : ControllerBase
         }
 
         // Modelo de usuario de la BD
-        var userModel = await Data.Users.Read(user.ID, false);
+        var userModel = await Data.Accounts.Read(user.ID, false);
 
         if (userModel.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + user.Contraseña))
         {
@@ -255,12 +252,9 @@ public class AccountController : ControllerBase
         }
 
 
-        return await Data.Users.UpdateState(user.ID, AccountStatus.Disable);
+        return await Data.Accounts.UpdateState(user.ID, AccountStatus.Disable);
 
     }
-
-
-
 
 
 
@@ -282,14 +276,14 @@ public class AccountController : ControllerBase
         }
 
 
-        var rol = (await Data.Users.Read(id, false)).Model.Rol;
+        var rol = (await Data.Accounts.Read(id, false)).Model.Rol;
 
 
         if (rol != AccountRoles.Admin)
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Users.GetAll(pattern);
+        var response = await Data.Accounts.GetAll(pattern);
 
         return response;
 
@@ -319,7 +313,7 @@ public class AccountController : ControllerBase
         if (modelo.ID <= 0 || modelo.Nombre.Any())
             return new(Responses.InvalidParam);
 
-        return await Data.Users.Update(modelo);
+        return await Data.Accounts.Update(modelo);
 
     }
 
@@ -343,7 +337,30 @@ public class AccountController : ControllerBase
             return new(Responses.Unauthorized);
         }
 
-        return await Data.Users.UpdateGender(id, genero);
+        return await Data.Accounts.UpdateGender(id, genero);
+
+    }
+
+
+
+    /// <summary>
+    /// Actualiza la visibilidad de una cuenta
+    /// </summary>
+    /// <param name="token">Token de acceso</param>
+    /// <param name="visibility">Nueva visibilidad</param>
+    [HttpPatch("update/visibility")]
+    public async Task<HttpResponseBase> UpdateVisibility([FromHeader] string token, [FromHeader] AccountVisibility visibility)
+    {
+
+
+        var (isValid, _, id) = Jwt.Validate(token);
+
+        if (!isValid)
+        {
+            return new(Responses.Unauthorized);
+        }
+
+        return await Data.Accounts.UpdateVisibility(id, visibility);
 
     }
 

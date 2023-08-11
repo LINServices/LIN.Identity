@@ -23,7 +23,7 @@ public class Security : ControllerBase
         var (context, contextKey) = Conexión.GetOneConnection();
 
         // Obtiene la información de usuario
-        var userResponse = await Data.Users.Read(user, true, context);
+        var userResponse = await Data.Accounts.Read(user, true, true, context);
 
         // Evalúa la respuesta
         if (userResponse.Response != Responses.Success)
@@ -116,7 +116,7 @@ public class Security : ControllerBase
         modelo.Account = link.Model.AccountID;
 
         // Respuesta
-        var updateResponse = await Data.Users.UpdatePassword(modelo);
+        var updateResponse = await Data.Accounts.UpdatePassword(modelo);
 
         if (updateResponse.Response != Responses.Success)
             return new();
@@ -214,7 +214,7 @@ public class Security : ControllerBase
     {
 
         // Obtener el usuario
-        var userData = await Data.Users.Read(model.UserID, true);
+        var userData = await Data.Accounts.Read(model.UserID, true);
 
         // Evaluación de la respuesta
         if (userData.Response != Responses.Success)
@@ -361,7 +361,7 @@ public class Security : ControllerBase
                 return new();
             }
 
-            var user = (await Data.Users.Read(userID,true)).Model;
+            var user = (await Data.Accounts.Read(userID,true)).Model;
 
             byte[] bytes = Encoding.UTF8.GetBytes(mailData.Email);
             string mail64 = Convert.ToBase64String(bytes);

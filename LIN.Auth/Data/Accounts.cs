@@ -1,12 +1,12 @@
 ﻿namespace LIN.Auth.Data;
 
 
-public static class Users
+public static class Accounts
 {
 
 
-
     #region Abstracciones
+
 
 
     /// <summary>
@@ -31,13 +31,13 @@ public static class Users
     /// Obtiene un usuario
     /// </summary>
     /// <param name="id">ID del usuario</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo = true)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id, safeFilter, context);
+        var res = await Read(id, safeFilter, privateInfo, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -49,13 +49,13 @@ public static class Users
     /// Obtiene un usuario
     /// </summary>
     /// <param name="user">Usuario de la cuenta</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo = true)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(user, safeFilter, context);
+        var res = await Read(user, safeFilter, privateInfo, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -201,9 +201,26 @@ public static class Users
 
 
 
+    /// <summary>
+    /// Actualiza la visibilidad de un usuario
+    /// </summary>
+    /// <param name="id">ID del usuario</param>
+    /// <param name="visibility">Nueva visibilidad</param>
+    public async static Task<ResponseBase> UpdateVisibility(int id, AccountVisibility visibility)
+    {
+
+        var (context, key) = Conexión.GetOneConnection();
+
+        var res = await UpdateVisibility(id, visibility, context);
+        context.CloseActions(key);
+        return res;
+
+    }
+
+
+
 
     #endregion
-
 
 
 
@@ -243,7 +260,7 @@ public static class Users
     /// <param name="id">ID de la cuenta</param>
     /// <param name="safeFilter">TRUE para solo obtener usuarios activos</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo, Conexión context)
     {
 
         // Ejecución
@@ -258,6 +275,11 @@ public static class Users
             // Filtro seguro
             if (safeFilter)
                 query = query.Where(T => T.Estado == AccountStatus.Normal);
+
+
+            // Si no necesita información privada
+            if (!privateInfo)
+                query = Filters.Account.FilterInfoIf(query);
 
 
             // Obtiene el usuario
@@ -284,7 +306,7 @@ public static class Users
     /// <param name="user">Usuario de la cuenta</param>
     /// <param name="safeFilter">TRUE para solo obtener usuarios activos</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo, Conexión context)
     {
 
         // Ejecución
@@ -300,6 +322,10 @@ public static class Users
             if (safeFilter)
                 query = query.Where(T => T.Estado == AccountStatus.Normal);
 
+            // Si no necesita información privada
+            if (!privateInfo)
+                query = Filters.Account.FilterInfoIf(query);
+            
             // Trae la cuenta
             var account = await query.FirstOrDefaultAsync();
 
@@ -385,21 +411,8 @@ public static class Users
                          select A);
 
             // Ejecuta
-            var result = await query.Select(a => new AccountModel
-            {
-                ID = a.ID,
-                Nombre = a.Nombre,
-                Usuario = a.Usuario,
-                Perfil = a.Perfil,
-                Genero = a.Genero,
-                Insignia = a.Insignia,
-                Creación = a.Creación,
-                Estado = a.Estado,
-                Rol = a.Rol,
-                Visibilidad = a.Visibilidad
-            }).ToListAsync();
-
-
+            var result = await Filters.Account.FilterInfoIf(query).ToListAsync();
+            
             // Si no existe el modelo
             if (result == null)
                 return new(Responses.NotRows);
@@ -597,6 +610,36 @@ public static class Users
 
         // Cambiar Contraseña
         usuario.Genero = genero;
+
+        context.DataBase.SaveChanges();
+        return new(Responses.Success);
+
+    }
+
+
+
+    /// <summary>
+    /// Actualiza la visibilidad
+    /// </summary>
+    /// <param name="user">ID</param>
+    /// <param name="visibility">Nueva visibilidad</param>
+    /// <param name="context">Contexto de conexión con la BD</param>
+    public async static Task<ResponseBase> UpdateVisibility(int user, AccountVisibility visibility, Conexión context)
+    {
+
+        // Encontrar el usuario
+        var usuario = await (from U in context.DataBase.Accounts
+                             where U.ID == user
+                             select U).FirstOrDefaultAsync();
+
+        // Si el usuario no existe
+        if (usuario == null)
+        {
+            return new ResponseBase(Responses.NotExistAccount);
+        }
+
+        // Cambiar visibilidad
+        usuario.Visibilidad = visibility;
 
         context.DataBase.SaveChanges();
         return new(Responses.Success);
