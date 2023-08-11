@@ -26,6 +26,21 @@ public class Context : DbContext
 
 
 
+    /// <summary>
+    /// Tabla de links únicos
+    /// </summary>
+    public DbSet<UniqueLink> UniqueLinks { get; set; }
+
+
+
+    /// <summary>
+    /// Tabla de links únicos para email
+    /// </summary>
+    public DbSet<MailMagicLink> MailMagicLinks { get; set; }
+
+
+
+
 
 
     /// <summary>
@@ -51,6 +66,16 @@ public class Context : DbContext
            .HasIndex(e => e.Email)
            .IsUnique();
 
+        // Indices y identidad
+        modelBuilder.Entity<UniqueLink>()
+           .HasIndex(e => e.Key)
+           .IsUnique();
+
+        // Indices y identidad
+        modelBuilder.Entity<MailMagicLink>()
+           .HasIndex(e => e.Key)
+           .IsUnique();
+
         // Indices
         modelBuilder.Entity<LoginLogModel>().HasIndex(e => e.ID);
 
@@ -58,6 +83,8 @@ public class Context : DbContext
         modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
         modelBuilder.Entity<EmailModel>().ToTable("EMAILS");
         modelBuilder.Entity<LoginLogModel>().ToTable("LOGIN_LOGS");
+        modelBuilder.Entity<UniqueLink>().ToTable("UNIQUE_LINKS");
+        modelBuilder.Entity<MailMagicLink>().ToTable("EMAIL_MAGIC_LINKS");
 
     }
 
