@@ -69,6 +69,8 @@ catch
 
 app.UseCors("AllowAnyOrigin");
 
+
+app.MapHub<LIN.Auth.Hubs.AccountHub>("/realTime/service");
 app.UseSwagger();
 app.UseSwaggerUI();
 
