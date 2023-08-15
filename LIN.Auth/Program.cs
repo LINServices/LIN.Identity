@@ -11,9 +11,11 @@ global using LIN.Types.Auth.Enumerations;
 global using LIN.Types.Auth.Models;
 global using LIN.Modules;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.SignalR;
 using LIN.Auth.Data;
 using LIN.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
