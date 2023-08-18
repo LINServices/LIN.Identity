@@ -71,6 +71,8 @@ app.UseCors("AllowAnyOrigin");
 
 
 app.MapHub<LIN.Auth.Hubs.AccountHub>("/realTime/service");
+app.MapHub<LIN.Auth.Hubs.PassKeyHub>("/realTime/auth/passkey");
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
