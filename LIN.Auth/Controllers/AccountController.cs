@@ -116,7 +116,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, true, false);
+        var response = await Data.Accounts.Read(user, true,  false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

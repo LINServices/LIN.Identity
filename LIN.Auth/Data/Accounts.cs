@@ -31,13 +31,13 @@ public static class Accounts
     /// Obtiene un usuario
     /// </summary>
     /// <param name="id">ID del usuario</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo = true)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo = true, bool includeOrg = false)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id, safeFilter, privateInfo, context);
+        var res = await Read(id, safeFilter, privateInfo, includeOrg, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -49,13 +49,13 @@ public static class Accounts
     /// Obtiene un usuario
     /// </summary>
     /// <param name="user">Usuario de la cuenta</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo = true)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo = true, bool includeOrg = false)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(user, safeFilter, privateInfo, context);
+        var res = await Read(user, safeFilter, privateInfo, includeOrg, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -81,11 +81,11 @@ public static class Accounts
 
 
 
-  /// <summary>
-  /// Obtiene la lista de usuarios correspondiente a los ids
-  /// </summary>
-  /// <param name="ids"></param>
-  /// <returns></returns>
+    /// <summary>
+    /// Obtiene la lista de usuarios correspondiente a los ids
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <returns></returns>
     public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids)
     {
 
@@ -260,7 +260,7 @@ public static class Accounts
     /// <param name="id">ID de la cuenta</param>
     /// <param name="safeFilter">TRUE para solo obtener usuarios activos</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo, bool includeOrg, Conexión context)
     {
 
         // Ejecución
@@ -272,9 +272,15 @@ public static class Accounts
                         where A.ID == id
                         select A;
 
+
+            if (includeOrg)
+                query = query.Include(a => a.Organization);
+
             // Filtro seguro
-            if (safeFilter)
+            {
                 query = query.Where(T => T.Estado == AccountStatus.Normal);
+                query = Filters.Account.Get(query);
+            }
 
 
             // Si no necesita información privada
@@ -306,7 +312,7 @@ public static class Accounts
     /// <param name="user">Usuario de la cuenta</param>
     /// <param name="safeFilter">TRUE para solo obtener usuarios activos</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo, bool includeOrg, Conexión context)
     {
 
         // Ejecución
@@ -318,16 +324,21 @@ public static class Accounts
                         where A.Usuario == user
                         select A;
 
-            var s = await query.ToListAsync();
+
+            if (includeOrg)
+                query = query.Include(a => a.Organization);
 
             // Filtro seguro
             if (safeFilter)
+            {
                 query = query.Where(T => T.Estado == AccountStatus.Normal);
+                query = Filters.Account.Get(query);
+            }
 
             // Si no necesita información privada
             if (!privateInfo)
                 query = Filters.Account.FilterInfoIf(query);
-            
+
             // Trae la cuenta
             var account = await query.FirstOrDefaultAsync();
 
@@ -414,7 +425,7 @@ public static class Accounts
 
             // Ejecuta
             var result = await Filters.Account.FilterInfoIf(query).ToListAsync();
-            
+
             // Si no existe el modelo
             if (result == null)
                 return new(Responses.NotRows);

@@ -20,7 +20,7 @@ public class AuthenticationController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, true);
+        var response = await Data.Accounts.Read(user, true, true, true);
 
         if (response.Response != Responses.Success)
             return new(response.Response);
@@ -49,11 +49,7 @@ public class AuthenticationController : ControllerBase
         if (org != null)
         {
 
-
-
             var have = org.AppList.Where(T => T.App.Key == application).FirstOrDefault();
-
-
 
             if (have?.Estado == false)
             {
@@ -80,6 +76,12 @@ public class AuthenticationController : ControllerBase
             AccountID = response.Model.ID,
             ApplicationID = app.Model.ID
         });
+
+        if (response.Model.Organization != null)
+        {
+            response.Model.Organization.AppList = Array.Empty<AppOrganizationModel>();
+            response.Model.Organization.Members = Array.Empty<AccountModel>();
+        }
 
         response.Token = token;
         return response;
