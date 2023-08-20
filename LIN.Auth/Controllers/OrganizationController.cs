@@ -61,17 +61,15 @@ public class OrganizationsController : ControllerBase
 
         // Organización del modelo
         modelo.ID = 0;
-        modelo.AppList = Array.Empty<AppOrganizationModel>().ToList();
-        modelo.Members = Array.Empty<AccountModel>().ToList();
+        modelo.AppList = new();
+        modelo.Members = new();
 
         // Creación de la organización
-        var response = await Data.Organizations.Create(modelo, context);
+        var response = await Data.Organizations.Create(modelo, userID, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
             return new(response.Response);
-
-        var s = await Data.Accounts.UpdateOrg(response.Model, userID, context);
 
         context.CloseActions(connectionKey);
 
