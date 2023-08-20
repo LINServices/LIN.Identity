@@ -51,6 +51,20 @@ public class Applications
     }
 
 
+    /// <summary>
+    /// Obtiene un email
+    /// </summary>
+    /// <param name="id">ID del email</param>
+    public async static Task<ReadOneResponse<ApplicationModel>> Read(string key)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await Read(key, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
+
+
     #endregion
 
 
@@ -141,6 +155,39 @@ public class Applications
             return new(Responses.Success, email);
         }
         catch 
+        {
+        }
+
+        return new();
+    }
+
+
+    /// <summary>
+    /// Obtiene 
+    /// </summary>
+    /// <param name="id">ID de el email</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ReadOneResponse<ApplicationModel>> Read(string key, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Query
+            var email = await (from E in context.DataBase.Applications
+                               where E.Key == key
+                               select E).FirstOrDefaultAsync();
+
+            // Email no existe
+            if (email == null)
+            {
+                return new(Responses.NotRows);
+            }
+
+            return new(Responses.Success, email);
+        }
+        catch
         {
         }
 
