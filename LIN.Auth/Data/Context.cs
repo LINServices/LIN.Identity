@@ -79,6 +79,11 @@ public class Context : DbContext
            .IsUnique();
 
         // Indices y identidad
+        modelBuilder.Entity<ApplicationModel>()
+           .HasIndex(e => e.Key)
+           .IsUnique();
+
+        // Indices y identidad
         modelBuilder.Entity<EmailModel>()
            .HasIndex(e => e.Email)
            .IsUnique();
@@ -99,6 +104,7 @@ public class Context : DbContext
         // Nombre de la tablas
         modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
         modelBuilder.Entity<OrganizationModel>().ToTable("ORGANIZATIONS");
+        modelBuilder.Entity<ApplicationModel>().ToTable("APPLICATIONS");
         modelBuilder.Entity<EmailModel>().ToTable("EMAILS");
         modelBuilder.Entity<LoginLogModel>().ToTable("LOGIN_LOGS");
         modelBuilder.Entity<UniqueLink>().ToTable("UNIQUE_LINKS");

@@ -12,7 +12,7 @@ public class AuthenticationController : ControllerBase
     /// <param name="user">Usuario único</param>
     /// <param name="password">Contraseña del usuario</param>
     [HttpGet("login")]
-    public async Task<HttpReadOneResponse<AccountModel>> Login([FromQuery] string user, [FromQuery] string password)
+    public async Task<HttpReadOneResponse<AccountModel>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string application)
     {
 
         // Comprobación
@@ -54,7 +54,7 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet("LoginWithToken")]
-    public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token)
+    public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token, [FromHeader] string application)
     {
 
         // Valida el token
