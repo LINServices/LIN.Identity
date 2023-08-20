@@ -11,6 +11,18 @@ public class Context : DbContext
     public DbSet<AccountModel> Accounts { get; set; }
 
 
+    /// <summary>
+    /// Tabla de organizaciones
+    /// </summary>
+    public DbSet<OrganizationModel> Organizations { get; set; }
+
+
+
+    /// <summary>
+    /// Tabla de aplicaciones
+    /// </summary>
+    public DbSet<ApplicationModel> Applications { get; set; }
+
 
     /// <summary>
     /// Tabla de registros de login
@@ -62,6 +74,11 @@ public class Context : DbContext
            .IsUnique();
 
         // Indices y identidad
+        modelBuilder.Entity<OrganizationModel>()
+           .HasIndex(e => e.Domain)
+           .IsUnique();
+
+        // Indices y identidad
         modelBuilder.Entity<EmailModel>()
            .HasIndex(e => e.Email)
            .IsUnique();
@@ -81,6 +98,7 @@ public class Context : DbContext
 
         // Nombre de la tablas
         modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
+        modelBuilder.Entity<OrganizationModel>().ToTable("ORGANIZATIONS");
         modelBuilder.Entity<EmailModel>().ToTable("EMAILS");
         modelBuilder.Entity<LoginLogModel>().ToTable("LOGIN_LOGS");
         modelBuilder.Entity<UniqueLink>().ToTable("UNIQUE_LINKS");
