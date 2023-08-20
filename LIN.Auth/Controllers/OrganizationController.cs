@@ -12,22 +12,62 @@ public class OrganizationsController : ControllerBase
     /// </summary>
     /// <param name="modelo">Modelo de la organización</param>
     [HttpPost("create")]
-    public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo)
+    public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo, [FromHeader] string token)
     {
 
         // Comprobaciones
-        if (modelo == null || modelo.Domain.Length <= 0 || modelo.Name.Length <= 0 || modelo.Members.Count <= 0)
+        if (modelo == null || modelo.Domain.Length <= 0 || modelo.Name.Length <= 0)
             return new(Responses.InvalidParam);
+
+        // Token
+        var (isValid, _, userID) = Jwt.Validate(token);
+
+        // Validación del token
+        if (!isValid)
+            return new CreateResponse()
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido"
+            };
+
+        // Obtiene la cuenta
+        var account = await Data.Accounts.Read(userID, true, true, true);
+
+        // Validación de la cuenta
+        if (account.Response != Responses.Success)
+        {
+            return new CreateResponse()
+            {
+                Response = Responses.Unauthorized,
+                Message = "No se encontró el usuario"
+            };
+        }
+        
+
+        // Si ya el usuario tiene organización
+        if (account.Model.Organization != null)
+        {
+            return new CreateResponse()
+            {
+                Response = Responses.UnauthorizedByOrg,
+                Message = "Ya perteneces a una organización."
+            };
+        }
 
 
         // Organización del modelo
         modelo.ID = 0;
         modelo.AppList = Array.Empty<AppOrganizationModel>();
-       
+        modelo.Members = Array.Empty<AccountModel>();
+
+
         // Conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        // Creación del usuario
+
+        modelo.Members.Add(account.Model);
+
+        // Creación de la organización
         var response = await Data.Organizations.Create(modelo, context);
 
         // Evaluación
