@@ -8,7 +8,7 @@ public class PassKeyHub : Hub
     /// <summary>
     /// Lista de intentos Passkey
     /// </summary>
-    public readonly static Dictionary<int, List<PassKeyModel>> Attempts = new();
+    public readonly static Dictionary<string, List<PassKeyModel>> Attempts = new();
 
 
 
@@ -48,10 +48,10 @@ public class PassKeyHub : Hub
         modelo.Expiración = expiracion;
 
         // Agrega el modelo
-        if (!Attempts.ContainsKey(modelo.AccountID))
-            Attempts.Add(modelo.AccountID, new() { modelo });
+        if (!Attempts.ContainsKey(modelo.User.ToLower()))
+            Attempts.Add(modelo.User.ToLower(), new() { modelo });
         else
-            Attempts[modelo.AccountID].Add(modelo);
+            Attempts[modelo.User.ToLower()].Add(modelo);
 
         // Yo
         await Groups.AddToGroupAsync(Context.ConnectionId, $"dbo.{Context.ConnectionId}");
@@ -102,7 +102,7 @@ public class PassKeyHub : Hub
         try
         {
             // Obtiene la cuenta
-            var cuenta = Attempts[modelo.AccountID];
+            var cuenta = Attempts[modelo.User.ToLower()];
 
             // Obtiene el dispositivo
             var intent = cuenta.Where(T => T.HubKey == modelo.HubKey).ToList().FirstOrDefault();

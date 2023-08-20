@@ -19,7 +19,7 @@ public class IntentsController : ControllerBase
         {
 
 
-            var (isValid, _, userID) = Jwt.Validate(token);
+            var (isValid, user, _) = Jwt.Validate(token);
            
             if (!isValid)
             {
@@ -32,7 +32,7 @@ public class IntentsController : ControllerBase
 
             // Cuenta
             var account = (from A in PassKeyHub.Attempts
-                           where A.Key == userID
+                           where A.Key == user.ToLower()
                            select A).FirstOrDefault().Value ?? new();
 
             // Hora actual
