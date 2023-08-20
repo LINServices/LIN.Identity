@@ -28,6 +28,7 @@ public static class Account
             Genero = (T.Visibilidad == AccountVisibility.Visible) ? T.Genero : Genders.Undefined,
             Creación = (T.Visibilidad == AccountVisibility.Visible) ? T.Creación : default,
             Perfil = (T.Visibilidad == AccountVisibility.Visible) ? T.Perfil : profile,
+            Organization = T.Organization
         }) ;
 
         return finalQuery;

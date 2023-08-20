@@ -34,34 +34,36 @@ public class AuthenticationController : ControllerBase
 
 
         var org = response.Model.Organization;
-        
+
         var app = await Data.Applications.Read(application);
+
+        if (app.Response != Responses.Success)
+        {
+            return new ReadOneResponse<AccountModel>
+            {
+                Message = "La aplicación no esta autorizada para iniciar sesión en LIN Identity",
+                Response = Responses.Unauthorized
+            };
+        }
+
         if (org != null)
         {
 
-            
 
 
-            if (app.Response != Responses.Success)
-            {
-                return new ReadOneResponse<AccountModel>
-                {
-                    Message = "La aplicación no esta autorizada para iniciar sesión en LIN Identity",
-                    Response = Responses.Unauthorized
-                };
-            }
+            var have = org.AppList.Where(T => T.App.Key == application).FirstOrDefault();
 
-            var have = org.AppList.Where(T => T.Key.Key == application).FirstOrDefault();
 
-            if (have.Value == false)
+
+            if (have?.Estado == false)
             {
                 return new ReadOneResponse<AccountModel>
                 {
                     Message = "Tu organización no permite iniciar sesión en esta aplicación.",
                     Response = Responses.UnauthorizedByOrg
                 };
-            }    
-            
+            }
+
         }
 
 

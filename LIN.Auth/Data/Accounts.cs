@@ -318,6 +318,8 @@ public static class Accounts
                         where A.Usuario == user
                         select A;
 
+            var s = await query.ToListAsync();
+
             // Filtro seguro
             if (safeFilter)
                 query = query.Where(T => T.Estado == AccountStatus.Normal);
