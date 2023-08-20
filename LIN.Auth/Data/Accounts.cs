@@ -274,7 +274,10 @@ public static class Accounts
 
 
             if (includeOrg)
-                query = query.Include(a => a.Organization);
+            {
+                query = query.Include(a => a.Organization).ThenInclude(a => a.AppList).ThenInclude(a => a.App);
+            }
+
 
             // Filtro seguro
             {
@@ -326,7 +329,10 @@ public static class Accounts
 
 
             if (includeOrg)
-                query = query.Include(a => a.Organization);
+            {
+                query = query.Include(a => a.Organization).ThenInclude(a => a.AppList).ThenInclude(a => a.App);
+            }
+
 
             // Filtro seguro
             if (safeFilter)

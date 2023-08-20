@@ -15,6 +15,8 @@ public static class Account
         // Imagen genérica
         var profile = File.ReadAllBytes("wwwroot/user.png");
 
+        
+
         // Generación de la consulta
         var finalQuery = baseQuery.Select(T => new AccountModel
         {
@@ -30,7 +32,7 @@ public static class Account
             Perfil = (T.Visibilidad == AccountVisibility.Visible) ? T.Perfil : profile,
             Organization = T.Organization != null ? new()
             {
-                AppList = T.Organization.AppList,
+                AppList =  T.Organization.AppList,
                 Domain = T.Organization.Domain,
                 ID = T.Organization.ID,
                 Name = T.Organization.Name
