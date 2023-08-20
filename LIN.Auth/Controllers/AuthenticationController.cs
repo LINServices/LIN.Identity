@@ -19,7 +19,6 @@ public class AuthenticationController : ControllerBase
         if (!user.Any() || !password.Any())
             return new(Responses.InvalidParam);
 
-
         // Obtiene el usuario
         var response = await Data.Accounts.Read(user, true);
 
@@ -32,6 +31,43 @@ public class AuthenticationController : ControllerBase
         if (response.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + password))
             return new(Responses.InvalidPassword);
 
+
+
+        var org = response.Model.Organization;
+        
+        var app = await Data.Applications.Read(application);
+        if (org != null)
+        {
+
+            
+
+
+            if (app.Response != Responses.Success)
+            {
+                return new ReadOneResponse<AccountModel>
+                {
+                    Message = "La aplicación no esta autorizada para iniciar sesión en LIN Identity",
+                    Response = Responses.Unauthorized
+                };
+            }
+
+            var have = org.AppList.Where(T => T.Key.Key == application).FirstOrDefault();
+
+            if (have.Value == false)
+            {
+                return new ReadOneResponse<AccountModel>
+                {
+                    Message = "Tu organización no permite iniciar sesión en esta aplicación.",
+                    Response = Responses.UnauthorizedByOrg
+                };
+            }    
+            
+        }
+
+
+
+
+
         // Genera el token
         var token = Jwt.Generate(response.Model);
 
@@ -39,7 +75,8 @@ public class AuthenticationController : ControllerBase
         _ = Data.Logins.Create(new()
         {
             Date = DateTime.Now,
-            AccountID = response.Model.ID
+            AccountID = response.Model.ID,
+            ApplicationID = app.Model.ID
         });
 
         response.Token = token;
