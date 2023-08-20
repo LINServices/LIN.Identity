@@ -12,7 +12,7 @@ public class Organizations
     /// Crea una organización
     /// </summary>
     /// <param name="data">Modelo</param>
-    public async static Task<CreateResponse> Create(OrganizationModel data)
+    public async static Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
         var response = await Create(data, context);
@@ -45,28 +45,28 @@ public class Organizations
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(OrganizationModel data, Conexión context)
+    public async static Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data, Conexión context)
     {
 
         data.ID = 0;
 
         // Ejecución
+
         try
         {
 
             var res = await context.DataBase.Organizations.AddAsync(data);
             context.DataBase.SaveChanges();
 
-            return new(Responses.Success, data.ID);
+            return new(Responses.Success, data);
         }
         catch (Exception ex)
         {
-            
+
             if ((ex.InnerException?.Message.Contains("Violation of UNIQUE KEY constraint") ?? false) || (ex.InnerException?.Message.Contains("duplicate key") ?? false))
                 return new(Responses.Undefined);
 
         }
-
         return new();
     }
 
@@ -97,7 +97,7 @@ public class Organizations
 
             return new(Responses.Success, email);
         }
-        catch 
+        catch
         {
         }
 

@@ -579,6 +579,43 @@ public static class Accounts
 
 
     /// <summary>
+    /// Actualiza la organización de una cuenta
+    /// </summary>
+    /// <param name="newData">organización</param>
+    /// <param name="context">Contexto de conexión con la BD</param>
+    public async static Task<ResponseBase> UpdateOrg(OrganizationModel newData, int id, Conexión context)
+    {
+
+        // Encontrar el usuario
+        var usuario = await (from U in context.DataBase.Accounts
+                             where U.ID == id
+                             select U).Include(a => a.Organization).FirstOrDefaultAsync();
+
+
+        var org = await (from U in context.DataBase.Organizations
+                         where U.ID == newData.ID
+                         select U
+                         ).FirstOrDefaultAsync();
+
+
+
+        // Si el usuario no existe
+        if (usuario == null)
+        {
+            return new ResponseBase(Responses.NotExistAccount);
+        }
+
+        // Cambiar Contraseña
+        usuario.Organization = org;
+
+        context.DataBase.SaveChanges();
+        return new(Responses.Success);
+
+    }
+
+
+
+    /// <summary>
     /// Actualiza el estado
     /// </summary>
     /// <param name="user">ID</param>

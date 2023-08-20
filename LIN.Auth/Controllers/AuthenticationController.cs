@@ -92,8 +92,8 @@ public class AuthenticationController : ControllerBase
 
         if (response.Model.Organization != null)
         {
-            response.Model.Organization.AppList = Array.Empty<AppOrganizationModel>();
-            response.Model.Organization.Members = Array.Empty<AccountModel>();
+            response.Model.Organization.AppList = Array.Empty<AppOrganizationModel>().ToList();
+            response.Model.Organization.Members = Array.Empty<AccountModel>().ToList();
         }
 
         response.Token = token;

@@ -30,8 +30,12 @@ public class OrganizationsController : ControllerBase
                 Message = "Token invalido"
             };
 
+
+        // Conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
         // Obtiene la cuenta
-        var account = await Data.Accounts.Read(userID, true, true, true);
+        var account = await Data.Accounts.Read(userID, true, true, true, context);
 
         // Validación de la cuenta
         if (account.Response != Responses.Success)
@@ -42,7 +46,7 @@ public class OrganizationsController : ControllerBase
                 Message = "No se encontró el usuario"
             };
         }
-        
+
 
         // Si ya el usuario tiene organización
         if (account.Model.Organization != null)
@@ -57,15 +61,8 @@ public class OrganizationsController : ControllerBase
 
         // Organización del modelo
         modelo.ID = 0;
-        modelo.AppList = Array.Empty<AppOrganizationModel>();
-        modelo.Members = Array.Empty<AccountModel>();
-
-
-        // Conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
-
-
-        modelo.Members.Add(account.Model);
+        modelo.AppList = Array.Empty<AppOrganizationModel>().ToList();
+        modelo.Members = Array.Empty<AccountModel>().ToList();
 
         // Creación de la organización
         var response = await Data.Organizations.Create(modelo, context);
@@ -74,13 +71,14 @@ public class OrganizationsController : ControllerBase
         if (response.Response != Responses.Success)
             return new(response.Response);
 
+        var s = await Data.Accounts.UpdateOrg(response.Model, userID, context);
 
         context.CloseActions(connectionKey);
 
         // Retorna el resultado
         return new CreateResponse()
         {
-            LastID = response.LastID,
+            LastID = response.Model.ID,
             Response = Responses.Success,
             Message = "Success"
         };
