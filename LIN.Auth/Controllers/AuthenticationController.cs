@@ -51,7 +51,7 @@ public class AuthenticationController : ControllerBase
 
             var have = org.AppList.Where(T => T.App.Key == application).FirstOrDefault();
 
-            if (have?.Estado == false)
+            if (have == null || have.Estado == false)
             {
                 return new ReadOneResponse<AccountModel>
                 {
