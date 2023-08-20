@@ -11,32 +11,19 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     /// <param name="user">Usuario único</param>
     /// <param name="password">Contraseña del usuario</param>
+    /// <param name="application">Key de aplicación</param>
     [HttpGet("login")]
     public async Task<HttpReadOneResponse<AccountModel>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string application)
     {
 
-        // Comprobación
-        if (!user.Any() || !password.Any())
+        // Validación de parámetros.
+        if (!user.Any() || !password.Any() || !application.Any())
             return new(Responses.InvalidParam);
 
-        // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, true, true, true);
-
-        if (response.Response != Responses.Success)
-            return new(response.Response);
-
-        if (response.Model.Estado != AccountStatus.Normal)
-            return new(Responses.NotExistAccount);
-
-        if (response.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + password))
-            return new(Responses.InvalidPassword);
-
-
-
-        var org = response.Model.Organization;
-
+        // Obtiene la App.
         var app = await Data.Applications.Read(application);
 
+        // Verifica si la app existe.
         if (app.Response != Responses.Success)
         {
             return new ReadOneResponse<AccountModel>
@@ -46,6 +33,35 @@ public class AuthenticationController : ControllerBase
             };
         }
 
+
+        // Obtiene el usuario.
+        var response = await Data.Accounts.Read(user, true, true, true);
+
+        // Validación al obtener el usuario
+        switch (response.Response)
+        {
+            // Correcto
+            case Responses.Success:
+                break;
+
+            // Incorrecto
+            default:
+                return new(response.Response);
+        }
+
+        // Valida el estado de la cuenta
+        if (response.Model.Estado != AccountStatus.Normal)
+            return new(Responses.NotExistAccount);
+
+        // Valida la contraseña
+        if (response.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + password))
+            return new(Responses.InvalidPassword);
+
+
+        // Obtiene la organización
+        var org = response.Model.Organization;
+
+        // Validaciones de la organización
         if (org != null)
         {
 
@@ -61,9 +77,6 @@ public class AuthenticationController : ControllerBase
             }
 
         }
-
-
-
 
 
         // Genera el token
