@@ -9,7 +9,7 @@ public class Applications
 
 
     /// <summary>
-    /// Crea un nuevo email
+    /// Crea una app
     /// </summary>
     /// <param name="data">Modelo</param>
     public async static Task<CreateResponse> Create(ApplicationModel data)
@@ -23,7 +23,7 @@ public class Applications
 
 
     /// <summary>
-    /// Obtiene la lista de emails asociados a una cuenta
+    /// Obtiene la lista de apps asociados a una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     public async static Task<ReadAllResponse<ApplicationModel>> ReadAll(int id)
@@ -38,9 +38,9 @@ public class Applications
 
 
     /// <summary>
-    /// Obtiene un email
+    /// Obtiene una app
     /// </summary>
-    /// <param name="id">ID del email</param>
+    /// <param name="id">ID de la app</param>
     public async static Task<ReadOneResponse<ApplicationModel>> Read(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -52,9 +52,9 @@ public class Applications
 
 
     /// <summary>
-    /// Obtiene un email
+    /// Obtiene una app
     /// </summary>
-    /// <param name="id">ID del email</param>
+    /// <param name="key">Key de la app</param>
     public async static Task<ReadOneResponse<ApplicationModel>> Read(string key)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -70,7 +70,7 @@ public class Applications
 
 
     /// <summary>
-    /// Crear
+    /// Crear aplicación
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
@@ -130,9 +130,9 @@ public class Applications
 
 
     /// <summary>
-    /// Obtiene 
+    /// Obtiene una app
     /// </summary>
-    /// <param name="id">ID de el email</param>
+    /// <param name="id">ID de la app</param>
     /// <param name="context">Contexto de conexión</param>
     public async static Task<ReadOneResponse<ApplicationModel>> Read(int id, Conexión context)
     {
@@ -163,9 +163,9 @@ public class Applications
 
 
     /// <summary>
-    /// Obtiene 
+    /// Obtiene una app
     /// </summary>
-    /// <param name="id">ID de el email</param>
+    /// <param name="key">Key de la app</param>
     /// <param name="context">Contexto de conexión</param>
     public async static Task<ReadOneResponse<ApplicationModel>> Read(string key, Conexión context)
     {
