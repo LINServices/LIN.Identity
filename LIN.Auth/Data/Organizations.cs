@@ -9,7 +9,7 @@ public class Organizations
 
 
     /// <summary>
-    /// Crea un nuevo email
+    /// Crea una organización
     /// </summary>
     /// <param name="data">Modelo</param>
     public async static Task<CreateResponse> Create(OrganizationModel data)
@@ -23,9 +23,9 @@ public class Organizations
 
 
     /// <summary>
-    /// Obtiene un email
+    /// Obtiene una organización
     /// </summary>
-    /// <param name="id">ID del email</param>
+    /// <param name="id">ID de la organización</param>
     public async static Task<ReadOneResponse<OrganizationModel>> Read(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -41,7 +41,7 @@ public class Organizations
 
 
     /// <summary>
-    /// Crear
+    /// Crear una organización
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
@@ -72,12 +72,10 @@ public class Organizations
 
 
 
-    
-
     /// <summary>
-    /// Obtiene 
+    /// Obtiene una organización
     /// </summary>
-    /// <param name="id">ID de el email</param>
+    /// <param name="id">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
     public async static Task<ReadOneResponse<OrganizationModel>> Read(int id, Conexión context)
     {
