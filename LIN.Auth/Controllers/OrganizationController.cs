@@ -215,4 +215,65 @@ public class OrganizationsController : ControllerBase
 
 
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="modelo">Modelo del usuario</param>
+    [HttpGet("members")]
+    public async Task<HttpReadAllResponse<AccountModel>> Create([FromHeader] string token)
+    {
+
+        var (isValid, _, userID) = Jwt.Validate(token);
+
+
+        if (!isValid)
+        {
+            return new ReadAllResponse<AccountModel>
+            {
+                Message = "",
+                Response = Responses.Unauthorized
+            };
+        }
+
+        var user = await Data.Organizations.ReadMembers(userID);
+
+        if (user.Response != Responses.Success)
+        {
+            return new ReadAllResponse<AccountModel>
+            {
+                Message = "No user found",
+                Response = Responses.Unauthorized
+            };
+        }
+
+      
+
+
+
+        var org = await Data.Organizations.ReadMembers(userID);
+
+
+        if (org.Response != Responses.Success)
+        {
+            return new ReadAllResponse<AccountModel>
+            {
+                Message = "No found Organization",
+                Response = Responses.Unauthorized
+            };
+        }
+
+
+
+        // Conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        context.CloseActions(connectionKey);
+
+        // Retorna el resultado
+        return org;
+
+    }
+
+
+
 }

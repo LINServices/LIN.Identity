@@ -36,6 +36,23 @@ public class Organizations
     }
 
 
+
+
+
+    /// <summary>
+    /// Obtiene una organización
+    /// </summary>
+    /// <param name="id">ID de la organización</param>
+    public async static Task<ReadAllResponse<AccountModel>> ReadMembers(int id)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await ReadMembers(id, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
+
+
     #endregion
 
 
@@ -121,6 +138,52 @@ public class Organizations
             }
 
             return new(Responses.Success, email);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id">ID de la organización</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ReadAllResponse<AccountModel>> ReadMembers(int id, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            var orgId = await (from U in context.DataBase.Accounts
+                               where U.ID == id
+                               select (U.OrganizationAccess == null) ? 0 : U.OrganizationAccess.Organization.ID).FirstOrDefaultAsync();
+
+            // Organización
+            var org = from O in context.DataBase.OrganizationAccess
+                      where O.Organization.ID == orgId
+                      select new AccountModel
+                      {
+                          Creación = O.Member.Creación,
+                          ID = O.Member.ID,
+                          Nombre = O.Member.Nombre,
+                          Genero = O.Member.Genero,
+                          Usuario = O.Member.Usuario
+                      };
+
+            var orgList = await org.ToListAsync();
+
+            // Email no existe
+            if (org == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, orgList);
         }
         catch
         {
