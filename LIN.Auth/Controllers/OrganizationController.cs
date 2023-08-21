@@ -123,7 +123,7 @@ public class OrganizationsController : ControllerBase
     {
 
         // Comprobaciones
-        if (modelo == null || modelo.Contraseña.Length < 4 || modelo.Nombre.Length <= 0 || modelo.Usuario.Length <= 0)
+        if (modelo == null || modelo.Nombre.Length <= 0 || modelo.Usuario.Length <= 0)
             return new(Responses.InvalidParam);
 
 
@@ -133,9 +133,11 @@ public class OrganizationsController : ControllerBase
         modelo.Estado = AccountStatus.Normal;
         modelo.Insignia = AccountBadges.None;
         modelo.Rol = AccountRoles.User;
+        modelo.OrganizationAccess = null;
         modelo.Perfil = modelo.Perfil.Length == 0
                                ? System.IO.File.ReadAllBytes("wwwroot/profile.png")
                                : modelo.Perfil;
+
 
         // Contraseña default
         modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + $"ChangePwd@{modelo.Creación:dd-MM-yyyy}");
@@ -185,7 +187,7 @@ public class OrganizationsController : ControllerBase
                 Message = "No found Organization",
                 Response = Responses.Unauthorized
             };
-        }    
+        }
 
 
 

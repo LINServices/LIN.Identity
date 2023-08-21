@@ -108,6 +108,13 @@ public class Context : DbContext
         // Indices
         modelBuilder.Entity<LoginLogModel>().HasIndex(e => e.ID);
 
+
+        modelBuilder.Entity<AccountModel>()
+           .HasOne(a => a.OrganizationAccess)
+           .WithOne(oa => oa.Member)
+           .HasForeignKey<OrganizationAccessModel>(oa => oa.ID);
+
+
         // Nombre de la tablas
         modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
         modelBuilder.Entity<OrganizationModel>().ToTable("ORGANIZATIONS");
