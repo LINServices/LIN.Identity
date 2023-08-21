@@ -59,22 +59,27 @@ public class AuthenticationController : ControllerBase
 
 
         // Obtiene la organización
-        var org = response.Model.Organization;
+        var org = response.Model.OrganizationAccess?.Organization;
 
         // Validaciones de la organización
         if (org != null)
         {
 
-            var have = org.AppList.Where(T => T.App.Key == application).FirstOrDefault();
-
-            if (have == null || have.Estado == false)
+            if (org.HaveWhiteList)
             {
-                return new ReadOneResponse<AccountModel>
+                var have = org.AppList.Where(T => T.App.Key == application).FirstOrDefault();
+
+                if (have == null)
                 {
-                    Message = "Tu organización no permite iniciar sesión en esta aplicación.",
-                    Response = Responses.UnauthorizedByOrg
-                };
+                    return new ReadOneResponse<AccountModel>
+                    {
+                        Message = "Tu organización no permite iniciar sesión en esta aplicación.",
+                        Response = Responses.UnauthorizedByOrg
+                    };
+                }
             }
+
+
 
         }
 
@@ -90,10 +95,10 @@ public class AuthenticationController : ControllerBase
             ApplicationID = app.Model.ID
         });
 
-        if (response.Model.Organization != null)
+        if (response.Model.OrganizationAccess != null)
         {
-            response.Model.Organization.AppList = Array.Empty<AppOrganizationModel>().ToList();
-            response.Model.Organization.Members = Array.Empty<AccountModel>().ToList();
+            response.Model.OrganizationAccess.Organization.AppList = new();
+            response.Model.OrganizationAccess.Organization.Members = new();
         }
 
         response.Token = token;

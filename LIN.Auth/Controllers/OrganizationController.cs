@@ -49,7 +49,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Si ya el usuario tiene organización
-        if (account.Model.Organization != null)
+        if (account.Model.OrganizationAccess != null)
         {
             return new CreateResponse()
             {
@@ -164,7 +164,7 @@ public class OrganizationsController : ControllerBase
             };
         }
 
-        if (user.Model.Organization == null)
+        if (user.Model.OrganizationAccess == null)
         {
             return new CreateResponse
             {
@@ -175,7 +175,7 @@ public class OrganizationsController : ControllerBase
 
 
 
-        var org = await Data.Organizations.Read(user.Model.Organization.ID);
+        var org = await Data.Organizations.Read(user.Model.OrganizationAccess.Organization.ID);
 
 
         if (org.Response != Responses.Success)

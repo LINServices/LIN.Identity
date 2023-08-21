@@ -275,7 +275,12 @@ public static class Accounts
                                  where U.ID == orgID
                                  select U).FirstOrDefaultAsync();
 
-                data.Organization = org;
+
+                data.OrganizationAccess = new()
+                {
+                    Member = data,
+                    Organization = org
+                };
 
                 var res = await context.DataBase.Accounts.AddAsync(data);
                 context.DataBase.SaveChanges();
@@ -319,7 +324,7 @@ public static class Accounts
 
             if (includeOrg)
             {
-                query = query.Include(a => a.Organization).ThenInclude(a => a.AppList).ThenInclude(a => a.App);
+                query = query.Include(a => a.OrganizationAccess).ThenInclude(a=>a.Organization).ThenInclude(a => a.AppList).ThenInclude(a => a.App);
             }
 
 
@@ -374,7 +379,7 @@ public static class Accounts
 
             if (includeOrg)
             {
-                query = query.Include(a => a.Organization).ThenInclude(a => a.AppList).ThenInclude(a => a.App);
+                query = query.Include(a => a.OrganizationAccess).ThenInclude(a => a.Organization).ThenInclude(a => a.AppList).ThenInclude(a => a.App);
             }
 
 
@@ -631,9 +636,9 @@ public static class Accounts
     {
 
         // Encontrar el usuario
-        var usuario = await (from U in context.DataBase.Accounts
-                             where U.ID == id
-                             select U).Include(a => a.Organization).FirstOrDefaultAsync();
+        var usuario = await (from U in context.DataBase.OrganizationAccess
+                             where U.Member.ID == id
+                             select U).FirstOrDefaultAsync();
 
 
         var org = await (from U in context.DataBase.Organizations
@@ -644,7 +649,7 @@ public static class Accounts
 
 
         // Si el usuario no existe
-        if (usuario == null)
+        if (usuario == null || org == null)
         {
             return new ResponseBase(Responses.NotExistAccount);
         }

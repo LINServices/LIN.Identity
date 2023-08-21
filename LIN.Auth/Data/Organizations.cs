@@ -56,8 +56,6 @@ public class Organizations
             try
             {
 
-
-
                 var res = await context.DataBase.Organizations.AddAsync(data);
 
 
@@ -74,9 +72,12 @@ public class Organizations
                 }
 
 
-                
+                account.OrganizationAccess = new()
+                {
+                    Member = account,
+                    Organization = data
+                };
 
-                account.Organization = data;
                 context.DataBase.SaveChanges();
 
                 transaction.Commit();

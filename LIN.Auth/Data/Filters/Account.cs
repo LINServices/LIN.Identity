@@ -15,7 +15,7 @@ public static class Account
         // Imagen genérica
         var profile = File.ReadAllBytes("wwwroot/user.png");
 
-        
+        baseQuery = baseQuery.Include(a => a.OrganizationAccess).ThenInclude(a => a.Organization);
 
         // Generación de la consulta
         var finalQuery = baseQuery.Select(T => new AccountModel
@@ -30,13 +30,13 @@ public static class Account
             Genero = (T.Visibilidad == AccountVisibility.Visible) ? T.Genero : Genders.Undefined,
             Creación = (T.Visibilidad == AccountVisibility.Visible) ? T.Creación : default,
             Perfil = (T.Visibilidad == AccountVisibility.Visible) ? T.Perfil : profile,
-            Organization = T.Organization != null ? new()
+
+            OrganizationAccess = T.OrganizationAccess != null ? new OrganizationAccessModel()
             {
-                AppList =  T.Organization.AppList,
-                Domain = T.Organization.Domain,
-                ID = T.Organization.ID,
-                Name = T.Organization.Name
+                ID = T.OrganizationAccess.ID,
+                Organization = T.OrganizationAccess.Organization,
             } : null
+
         });
 
         return finalQuery;
@@ -56,6 +56,8 @@ public static class Account
         // Imagen genérica
         var profile = File.ReadAllBytes("wwwroot/user.png");
 
+        baseQuery = baseQuery.Include(a => a.OrganizationAccess).ThenInclude(a => a.Organization);
+
         // Generación de la consulta
         var finalQuery = baseQuery.Select(T => new AccountModel
         {
@@ -70,12 +72,11 @@ public static class Account
             Genero = T.Genero,
             Creación = T.Creación,
             Perfil = T.Perfil,
-            Organization = T.Organization != null ? new()
+
+            OrganizationAccess = T.OrganizationAccess != null ? new OrganizationAccessModel()
             {
-                AppList = T.Organization.AppList,
-                Domain = T.Organization.Domain,
-                ID = T.Organization.ID,
-                Name = T.Organization.Name
+                ID = T.OrganizationAccess.ID,
+                Organization = T.OrganizationAccess.Organization,
             } : null
         });
 

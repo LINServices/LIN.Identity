@@ -19,6 +19,13 @@ public class Context : DbContext
 
 
     /// <summary>
+    /// Tabla de accesos a organizaciones
+    /// </summary>
+    public DbSet<OrganizationAccessModel> OrganizationAccess { get; set; }
+
+
+
+    /// <summary>
     /// Tabla de aplicaciones
     /// </summary>
     public DbSet<ApplicationModel> Applications { get; set; }
