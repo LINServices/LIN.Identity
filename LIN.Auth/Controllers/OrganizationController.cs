@@ -114,4 +114,103 @@ public class OrganizationsController : ControllerBase
 
 
 
+    /// <summary>
+    /// Crea una cuenta
+    /// </summary>
+    /// <param name="modelo">Modelo del usuario</param>
+    [HttpPost("create/member")]
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token)
+    {
+
+        // Comprobaciones
+        if (modelo == null || modelo.Contraseña.Length < 4 || modelo.Nombre.Length <= 0 || modelo.Usuario.Length <= 0)
+            return new(Responses.InvalidParam);
+
+
+        // Organización del modelo
+        modelo.ID = 0;
+        modelo.Creación = DateTime.Now;
+        modelo.Estado = AccountStatus.Normal;
+        modelo.Insignia = AccountBadges.None;
+        modelo.Rol = AccountRoles.User;
+        modelo.Perfil = modelo.Perfil.Length == 0
+                               ? System.IO.File.ReadAllBytes("wwwroot/profile.png")
+                               : modelo.Perfil;
+
+        // Contraseña default
+        modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + $"ChangePwd@{modelo.Creación:dd-MM-yyyy}");
+
+
+        var (isValid, _, userID) = Jwt.Validate(token);
+
+
+        if (!isValid)
+        {
+            return new CreateResponse
+            {
+                Message = "",
+                Response = Responses.Unauthorized
+            };
+        }
+
+        var user = await Data.Accounts.Read(userID, true);
+
+        if (user.Response != Responses.Success)
+        {
+            return new CreateResponse
+            {
+                Message = "No user found",
+                Response = Responses.Unauthorized
+            };
+        }
+
+        if (user.Model.Organization == null)
+        {
+            return new CreateResponse
+            {
+                Message = "No org found",
+                Response = Responses.Unauthorized
+            };
+        }
+
+
+
+        var org = await Data.Organizations.Read(user.Model.Organization.ID);
+
+
+        if (org.Response != Responses.Success)
+        {
+            return new CreateResponse
+            {
+                Message = "No found Organization",
+                Response = Responses.Unauthorized
+            };
+        }    
+
+
+
+        // Conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // Creación del usuario
+        var response = await Data.Accounts.Create(modelo, org.Model.ID, context);
+
+        // Evaluación
+        if (response.Response != Responses.Success)
+            return new(response.Response);
+
+        context.CloseActions(connectionKey);
+
+        // Retorna el resultado
+        return new CreateResponse()
+        {
+            LastID = response.Model.ID,
+            Response = Responses.Success,
+            Message = "Success"
+        };
+
+    }
+
+
+
 }
