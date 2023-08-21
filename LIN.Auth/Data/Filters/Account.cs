@@ -34,6 +34,7 @@ public static class Account
             OrganizationAccess = T.OrganizationAccess != null ? new OrganizationAccessModel()
             {
                 ID = T.OrganizationAccess.ID,
+                Rol = T.OrganizationAccess.Rol,
                 Organization = T.OrganizationAccess.Organization,
             } : null
 
@@ -76,6 +77,7 @@ public static class Account
             OrganizationAccess = T.OrganizationAccess != null ? new OrganizationAccessModel()
             {
                 ID = T.OrganizationAccess.ID,
+                Rol = T.OrganizationAccess.Rol,
                 Organization = T.OrganizationAccess.Organization,
             } : null
         });

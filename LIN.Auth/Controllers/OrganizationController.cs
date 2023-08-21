@@ -19,6 +19,8 @@ public class OrganizationsController : ControllerBase
         if (modelo == null || modelo.Domain.Length <= 0 || modelo.Name.Length <= 0)
             return new(Responses.InvalidParam);
 
+
+
         // Token
         var (isValid, _, userID) = Jwt.Validate(token);
 

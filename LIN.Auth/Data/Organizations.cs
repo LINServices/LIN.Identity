@@ -106,6 +106,7 @@ public class Organizations
                 account.OrganizationAccess = new()
                 {
                     Member = account,
+                    Rol = OrgRoles.SuperManager,
                     Organization = data
                 };
 
@@ -188,7 +189,11 @@ public class Organizations
                           ID = O.Member.ID,
                           Nombre = O.Member.Nombre,
                           Genero = O.Member.Genero,
-                          Usuario = O.Member.Usuario
+                          Usuario = O.Member.Usuario,
+                          OrganizationAccess = new()
+                          {
+                              Rol = (O.Member.OrganizationAccess == null) ? OrgRoles.Undefine : O.Member.OrganizationAccess.Rol
+                          }
                       };
 
             var orgList = await org.ToListAsync();
