@@ -31,6 +31,13 @@ public class Context : DbContext
     public DbSet<ApplicationModel> Applications { get; set; }
 
 
+
+    /// <summary>
+    /// Tabla de aplicaciones
+    /// </summary>
+    public DbSet<AppOnOrgModel> AppOnOrg { get; set; }
+
+
     /// <summary>
     /// Tabla de registros de login
     /// </summary>
