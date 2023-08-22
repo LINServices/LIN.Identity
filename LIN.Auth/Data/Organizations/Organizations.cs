@@ -38,7 +38,7 @@ public class Organizations
 
 
     /// <summary>
-    /// Obtiene una organización
+    /// Obtiene la lista de aplicaciones permitidas en una organización.
     /// </summary>
     /// <param name="id">ID de la organización</param>
     public async static Task<ReadAllResponse<ApplicationModel>> ReadApps(int id)
@@ -49,6 +49,7 @@ public class Organizations
         context.CloseActions(contextKey);
         return res;
     }
+
 
 
     #endregion
@@ -113,8 +114,9 @@ public class Organizations
 
 
 
+
     /// <summary>
-    /// Obtiene una organización
+    /// Obtiene una organización.
     /// </summary>
     /// <param name="id">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
@@ -126,17 +128,17 @@ public class Organizations
         {
 
             // Query
-            var email = await (from E in context.DataBase.Organizations
+            var org = await (from E in context.DataBase.Organizations
                                where E.ID == id
                                select E).FirstOrDefaultAsync();
 
             // Email no existe
-            if (email == null)
+            if (org == null)
             {
                 return new(Responses.NotRows);
             }
 
-            return new(Responses.Success, email);
+            return new(Responses.Success, org);
         }
         catch
         {
@@ -149,7 +151,7 @@ public class Organizations
 
 
     /// <summary>
-    /// 
+    /// Obtiene la lista de aplicaciones permitidas en una organización.
     /// </summary>
     /// <param name="id">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
@@ -160,13 +162,9 @@ public class Organizations
         try
         {
 
-            var orgId = await (from U in context.DataBase.Accounts
-                               where U.ID == id
-                               select U.OrganizationAccess == null ? 0 : U.OrganizationAccess.Organization.ID).FirstOrDefaultAsync();
-
             // Organización
             var apps = from ORG in context.DataBase.AppOnOrg
-                       where ORG.Organization.ID == orgId
+                       where ORG.Organization.ID == id
                        select new ApplicationModel
                        {
                            ID = ORG.App.ID,
