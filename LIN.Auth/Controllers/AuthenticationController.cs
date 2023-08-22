@@ -59,15 +59,27 @@ public class AuthenticationController : ControllerBase
 
 
         // Obtiene la organización
-        var org = response.Model.OrganizationAccess?.Organization;
+        var org = response.Model.OrganizationAccess;
 
         // Validaciones de la organización
         if (org != null)
         {
 
-            if (org.HaveWhiteList)
+
+            if (!org.Rol.IsAdmin() && !org.Organization.LoginAccess)
             {
-                var have = org.AppList.Where(T => T.App.Key == application).FirstOrDefault();
+                return new ReadOneResponse<AccountModel>
+                {
+                    Message = "Tu organización a deshabilitado el inicio de sesión temporalmente.",
+                    Response = Responses.LoginBlockedByOrg
+                };
+            }
+
+
+
+            if (org.Organization.HaveWhiteList)
+            {
+                var have = org.Organization.AppList.Where(T => T.App.Key == application).FirstOrDefault();
 
                 if (have == null)
                 {

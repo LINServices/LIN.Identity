@@ -115,10 +115,6 @@ public class OrganizationsController : ControllerBase
 
 
 
-    /// <summary>
-    /// Obtiene una organización por medio del ID
-    /// </summary>
-    /// <param name="id">ID de la organización</param>
     [HttpPatch("update/whitelist")]
     public async Task<HttpResponseBase> Update([FromHeader] string token, [FromQuery] bool haveWhite)
     {
@@ -128,11 +124,8 @@ public class OrganizationsController : ControllerBase
 
 
         if (!isValid)
-        {
             return new(Responses.Unauthorized);
-        }
-
-
+        
 
         var userContext = await Data.Accounts.Read(userID, true, false, true);
 

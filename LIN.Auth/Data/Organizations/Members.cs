@@ -44,51 +44,6 @@ public class Members
 
 
 
-    /// <summary>
-    /// Obtiene la lista de integrantes de una organización.
-    /// </summary>
-    /// <param name="id">ID de la organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> ReadAll(int id, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            // Organización
-            var org = from O in context.DataBase.OrganizationAccess
-                      where O.Organization.ID == id
-                      select new AccountModel
-                      {
-                          Creación = O.Member.Creación,
-                          ID = O.Member.ID,
-                          Nombre = O.Member.Nombre,
-                          Genero = O.Member.Genero,
-                          Usuario = O.Member.Usuario,
-                          OrganizationAccess = new()
-                          {
-                              Rol = O.Member.OrganizationAccess == null ? OrgRoles.Undefine : O.Member.OrganizationAccess.Rol
-                          }
-                      };
-
-            var orgList = await org.ToListAsync();
-
-            // Email no existe
-            if (org == null)
-                return new(Responses.NotRows);
-
-            return new(Responses.Success, orgList);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
-
-
-
 
     /// <summary>
     /// Crea una cuenta en una organización
@@ -147,6 +102,52 @@ public class Members
         return new();
     }
 
+
+
+
+    /// <summary>
+    /// Obtiene la lista de integrantes de una organización.
+    /// </summary>
+    /// <param name="id">ID de la organización</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ReadAllResponse<AccountModel>> ReadAll(int id, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Organización
+            var org = from O in context.DataBase.OrganizationAccess
+                      where O.Organization.ID == id
+                      select new AccountModel
+                      {
+                          Creación = O.Member.Creación,
+                          ID = O.Member.ID,
+                          Nombre = O.Member.Nombre,
+                          Genero = O.Member.Genero,
+                          Usuario = O.Member.Usuario,
+                          OrganizationAccess = new()
+                          {
+                              ID = O.Member.OrganizationAccess == null ? 0 : O.Member.OrganizationAccess.ID,
+                              Rol = O.Member.OrganizationAccess == null ? OrgRoles.Undefine : O.Member.OrganizationAccess.Rol
+                          }
+                      };
+
+            var orgList = await org.ToListAsync();
+
+            // Email no existe
+            if (org == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, orgList);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
 
 
 }
