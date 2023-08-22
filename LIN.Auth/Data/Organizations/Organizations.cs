@@ -52,6 +52,22 @@ public class Organizations
 
 
 
+    /// <summary>
+    /// Actualiza el estado de la lista blanca de una actualización
+    /// </summary>
+    /// <param name="id">ID de la organización</param>
+    /// <param name="estado">Nuevo estado</param>
+    public async static Task<ResponseBase> UpdateState(int id, bool estado)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await UpdateState(id, estado, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
+
+
+
     #endregion
 
 
@@ -129,8 +145,8 @@ public class Organizations
 
             // Query
             var org = await (from E in context.DataBase.Organizations
-                               where E.ID == id
-                               select E).FirstOrDefaultAsync();
+                             where E.ID == id
+                             select E).FirstOrDefaultAsync();
 
             // Email no existe
             if (org == null)
@@ -179,6 +195,45 @@ public class Organizations
                 return new(Responses.NotRows);
 
             return new(Responses.Success, lista);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+
+    /// <summary>
+    /// Actualiza el estado de la lista blanca de una actualización
+    /// </summary>
+    /// <param name="id">ID de la organización</param>
+    /// <param name="estado">Nuevo estado</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ResponseBase> UpdateState(int id, bool estado, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Query
+            var org = await (from E in context.DataBase.Organizations
+                             where E.ID == id
+                             select E).FirstOrDefaultAsync();
+
+            // Email no existe
+            if (org == null)
+            {
+                return new(Responses.NotRows);
+            }
+
+            org.HaveWhiteList = estado;
+            context.DataBase.SaveChanges();
+
+            return new(Responses.Success);
         }
         catch
         {

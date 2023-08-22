@@ -116,6 +116,93 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
+    /// Obtiene una organización por medio del ID
+    /// </summary>
+    /// <param name="id">ID de la organización</param>
+    [HttpPatch("update/whitelist")]
+    public async Task<HttpResponseBase> Update([FromHeader] string token, [FromQuery] bool haveWhite)
+    {
+
+
+        var (isValid, _, userID, _) = Jwt.Validate(token);
+
+
+        if (!isValid)
+        {
+            return new(Responses.Unauthorized);
+        }
+
+
+
+        var userContext = await Data.Accounts.Read(userID, true, false, true);
+
+        // Error al encontrar el usuario
+        if (userContext.Response != Responses.Success)
+        {
+            return new ResponseBase
+            {
+                Message = "No se encontró un usuario valido.",
+                Response = Responses.Unauthorized
+            };
+        }
+
+        // Si el usuario no tiene una organización
+        if (userContext.Model.OrganizationAccess == null)
+        {
+            return new ResponseBase
+            {
+                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
+                Response = Responses.Unauthorized
+            };
+        }
+
+        // Verificación del rol dentro de la organización
+        if (!userContext.Model.OrganizationAccess.Rol.IsAdmin())
+        {
+            return new ResponseBase
+            {
+                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de la lista blanca de esta organización.",
+                Response = Responses.Unauthorized
+            };
+        }
+
+
+        var response = await Data.Organizations.Organizations.UpdateState(userContext.Model.OrganizationAccess.Organization.ID, haveWhite);
+
+        // Retorna el resultado
+        return response;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /// <summary>
     /// Crea una cuenta en una organización
     /// </summary>
     /// <param name="modelo">Modelo del usuario</param>
@@ -257,7 +344,7 @@ public class OrganizationsController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> Create([FromHeader] string token)
     {
 
-        var (isValid, _, userID, orgID) = Jwt.Validate(token);
+        var (isValid, _, _, orgID) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -292,6 +379,7 @@ public class OrganizationsController : ControllerBase
         return members;
 
     }
+
 
 
     /// <summary>
