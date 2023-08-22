@@ -1,5 +1,3 @@
-using LIN.Auth.Data.Organizations;
-
 namespace LIN.Auth.Controllers;
 
 
@@ -23,7 +21,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Token
-        var (isValid, _, userID) = Jwt.Validate(token);
+        var (isValid, _, userID, _) = Jwt.Validate(token);
 
         // Validación del token
         if (!isValid)
@@ -68,7 +66,7 @@ public class OrganizationsController : ControllerBase
         modelo.Members = new();
 
         // Creación de la organización
-        var response = await Organizations.Create(modelo, userID, context);
+        var response = await Data.Organizations. Organizations.Create(modelo, userID, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -100,7 +98,7 @@ public class OrganizationsController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Organizations.Read(id);
+        var response = await Data.Organizations.Organizations.Read(id);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -154,7 +152,7 @@ public class OrganizationsController : ControllerBase
         modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + password);
 
         // Validación del token
-        var (isValid, _, userID) = Jwt.Validate(token);
+        var (isValid, _, userID, _) = Jwt.Validate(token);
 
         // Token es invalido
         if (!isValid)
@@ -222,7 +220,7 @@ public class OrganizationsController : ControllerBase
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await Data.Accounts.Create(modelo, org, rol, context);
+        var response = await Data.Organizations.Members.Create(modelo, org, rol, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -259,7 +257,7 @@ public class OrganizationsController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> Create([FromHeader] string token)
     {
 
-        var (isValid, _, userID) = Jwt.Validate(token);
+        var (isValid, _, userID, orgID) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -271,11 +269,10 @@ public class OrganizationsController : ControllerBase
             };
         }
 
+        var members = await Data.Organizations.Members.ReadAll(orgID);
 
-        var org = await Organizations.ReadMembers(userID);
 
-
-        if (org.Response != Responses.Success)
+        if (members.Response != Responses.Success)
         {
             return new ReadAllResponse<AccountModel>
             {
@@ -292,7 +289,7 @@ public class OrganizationsController : ControllerBase
         context.CloseActions(connectionKey);
 
         // Retorna el resultado
-        return org;
+        return members;
 
     }
 
@@ -305,7 +302,7 @@ public class OrganizationsController : ControllerBase
     public async Task<HttpReadAllResponse<ApplicationModel>> w([FromHeader] string token)
     {
 
-        var (isValid, _, userID) = Jwt.Validate(token);
+        var (isValid, _, _, orgID) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -318,7 +315,7 @@ public class OrganizationsController : ControllerBase
         }
 
 
-        var org = await Organizations.ReadApps(userID);
+        var org = await Data.Organizations.Organizations.ReadApps(orgID);
 
 
         if (org.Response != Responses.Success)
