@@ -65,8 +65,7 @@ public class AuthenticationController : ControllerBase
         if (org != null)
         {
 
-
-            if (!org.Rol.IsAdmin() && !org.Organization.LoginAccess)
+            if (!org.Organization.LoginAccess && !org.Rol.IsAdmin())
             {
                 return new ReadOneResponse<AccountModel>
                 {

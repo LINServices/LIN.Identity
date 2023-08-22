@@ -78,7 +78,7 @@ public class Organizations
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
-        var res = await UpdateState(id, estado, context);
+        var res = await UpdateAccess(id, estado, context);
         context.CloseActions(contextKey);
         return res;
     }
