@@ -200,7 +200,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Verificación del rol dentro de la organización
-        if (!userContext.Model.OrganizationAccess.Rol.IsGretter(rol))
+        if (userContext.Model.OrganizationAccess.Rol.IsGretter(rol))
         {
             return new CreateResponse
             {
