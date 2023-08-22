@@ -168,6 +168,59 @@ public class OrganizationsController : ControllerBase
     }
 
 
+    [HttpPatch("update/access")]
+    public async Task<HttpResponseBase> UpdateAccess([FromHeader] string token, [FromQuery] bool state)
+    {
+
+
+        var (isValid, _, userID, _) = Jwt.Validate(token);
+
+
+        if (!isValid)
+            return new(Responses.Unauthorized);
+
+
+        var userContext = await Data.Accounts.Read(userID, true, false, true);
+
+        // Error al encontrar el usuario
+        if (userContext.Response != Responses.Success)
+        {
+            return new ResponseBase
+            {
+                Message = "No se encontró un usuario valido.",
+                Response = Responses.Unauthorized
+            };
+        }
+
+        // Si el usuario no tiene una organización
+        if (userContext.Model.OrganizationAccess == null)
+        {
+            return new ResponseBase
+            {
+                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
+                Response = Responses.Unauthorized
+            };
+        }
+
+        // Verificación del rol dentro de la organización
+        if (userContext.Model.OrganizationAccess.Rol != OrgRoles.SuperManager)
+        {
+            return new ResponseBase
+            {
+                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de accesos de esta organización.",
+                Response = Responses.Unauthorized
+            };
+        }
+
+
+        var response = await Data.Organizations.Organizations.UpdateAccess(userContext.Model.OrganizationAccess.Organization.ID, state);
+
+        // Retorna el resultado
+        return response;
+
+    }
+
+
 
 
 
