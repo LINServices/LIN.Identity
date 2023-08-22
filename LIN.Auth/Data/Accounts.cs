@@ -260,7 +260,7 @@ public static class Accounts
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, OrgRoles rol,  Conexión context)
     {
 
         data.ID = 0;
@@ -279,7 +279,7 @@ public static class Accounts
                 data.OrganizationAccess = new()
                 {
                     Member = data,
-                    Rol = OrgRoles.Regular,
+                    Rol = rol,
                     Organization = org
                 };
 

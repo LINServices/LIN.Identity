@@ -120,7 +120,7 @@ public class OrganizationsController : ControllerBase
     /// </summary>
     /// <param name="modelo">Modelo del usuario</param>
     [HttpPost("create/member")]
-    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token)
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] OrgRoles rol)
     {
 
         // Validación del modelo.
@@ -199,6 +199,19 @@ public class OrganizationsController : ControllerBase
         }
 
 
+        // Verificación del rol dentro de la organización
+        if (!userContext.Model.OrganizationAccess.Rol.IsGretter(rol))
+        {
+            return new CreateResponse
+            {
+                Message = $"El '{userContext.Model.Usuario}' no puede crear nuevos usuarios con mas privilegios de los propios.",
+                Response = Responses.Unauthorized
+            };
+        }
+
+
+
+
         // ID de la organización
         var org = userContext.Model.OrganizationAccess.Organization.ID;
 
@@ -207,7 +220,7 @@ public class OrganizationsController : ControllerBase
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await Data.Accounts.Create(modelo, org, context);
+        var response = await Data.Accounts.Create(modelo, org, rol, context);
 
         // Evaluación
         if (response.Response != Responses.Success)

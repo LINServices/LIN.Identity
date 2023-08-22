@@ -5,7 +5,7 @@ public static class OrgRoleExt
 
 
 
-    public static bool IsGretter(OrgRoles me, OrgRoles other)
+    public static bool IsGretter(this OrgRoles me, OrgRoles other)
     {
 
         switch (me)
@@ -28,7 +28,7 @@ public static class OrgRoleExt
 
             case OrgRoles.Guest:
                 {
-                    return (other == OrgRoles.SuperManager || other == OrgRoles.Manager || other == OrgRoles.Regular);
+                    return (other == OrgRoles.SuperManager || other == OrgRoles.Manager);
                 }
 
             case OrgRoles.Undefine:
