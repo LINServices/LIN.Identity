@@ -6,7 +6,6 @@ public class OrganizationsController : ControllerBase
 {
 
 
-
     /// <summary>
     /// Crea una organización
     /// </summary>
@@ -190,7 +189,7 @@ public class OrganizationsController : ControllerBase
         }
 
         // Verificación del rol dentro de la organización
-        if (userContext.Model.OrganizationAccess.Rol != OrgRoles.SuperManager && userContext.Model.OrganizationAccess.Rol != OrgRoles.Manager)
+        if (!userContext.Model.OrganizationAccess.Rol.IsAdmin())
         {
             return new CreateResponse
             {
@@ -226,6 +225,14 @@ public class OrganizationsController : ControllerBase
         };
 
     }
+
+
+
+
+
+
+
+
 
 
 

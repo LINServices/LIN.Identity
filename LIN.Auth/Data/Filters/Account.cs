@@ -15,8 +15,6 @@ public static class Account
         // Imagen genérica
         var profile = File.ReadAllBytes("wwwroot/user.png");
 
-        baseQuery = baseQuery.Include(a => a.OrganizationAccess).ThenInclude(a => a.Organization);
-
         // Generación de la consulta
         var finalQuery = baseQuery.Select(T => new AccountModel
         {
@@ -56,8 +54,6 @@ public static class Account
 
         // Imagen genérica
         var profile = File.ReadAllBytes("wwwroot/user.png");
-
-        baseQuery = baseQuery.Include(a => a.OrganizationAccess).ThenInclude(a => a.Organization);
 
         // Generación de la consulta
         var finalQuery = baseQuery.Select(T => new AccountModel

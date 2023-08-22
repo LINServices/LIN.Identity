@@ -279,6 +279,7 @@ public static class Accounts
                 data.OrganizationAccess = new()
                 {
                     Member = data,
+                    Rol = OrgRoles.Regular,
                     Organization = org
                 };
 
@@ -315,6 +316,9 @@ public static class Accounts
         // Ejecución
         try
         {
+            
+            
+          
 
             // Consulta global
             var query = from A in context.DataBase.Accounts
@@ -322,9 +326,9 @@ public static class Accounts
                         select A;
 
 
-            if (includeOrg)
+             if (includeOrg)
             {
-                query = query.Include(a => a.OrganizationAccess).ThenInclude(a=>a.Organization).ThenInclude(a => a.AppList).ThenInclude(a => a.App);
+                query = query.Include(a => a.OrganizationAccess).ThenInclude(a => a.Organization);
             }
 
 
