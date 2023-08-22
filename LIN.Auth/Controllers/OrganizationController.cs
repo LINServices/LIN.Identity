@@ -117,17 +117,22 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Crea una cuenta
+    /// Crea una cuenta en una organización
     /// </summary>
     /// <param name="modelo">Modelo del usuario</param>
     [HttpPost("create/member")]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token)
     {
 
-        // Comprobaciones
-        if (modelo == null || modelo.Nombre.Length <= 0 || modelo.Usuario.Length <= 0)
-            return new(Responses.InvalidParam);
-
+        // Validación del modelo.
+        if (modelo == null || !modelo.Usuario.Trim().Any() || !modelo.Nombre.Trim().Any())
+        {
+            return new CreateResponse
+            {
+                Response = Responses.InvalidParam,
+                Message = "Uno o varios parámetros inválidos."
+            };
+        }
 
         // Organización del modelo
         modelo.ID = 0;
@@ -141,68 +146,75 @@ public class OrganizationsController : ControllerBase
                                : modelo.Perfil;
 
 
+        // Establece la contraseña default
+        string password = $"ChangePwd@{modelo.Creación:dd.MM.yyyy}";
+
         // Contraseña default
-        modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + $"ChangePwd@{modelo.Creación:dd-MM-yyyy}");
+        modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + password);
 
-
+        // Validación del token
         var (isValid, _, userID) = Jwt.Validate(token);
 
-
+        // Token es invalido
         if (!isValid)
         {
             return new CreateResponse
             {
-                Message = "",
+                Message = "Token invalido.",
                 Response = Responses.Unauthorized
             };
         }
 
-        var user = await Data.Accounts.Read(userID, true);
 
-        if (user.Response != Responses.Success)
+        // Obtiene el usuario
+        var userContext = await Data.Accounts.Read(userID, true, false, true);
+
+        // Error al encontrar el usuario
+        if (userContext.Response != Responses.Success)
         {
             return new CreateResponse
             {
-                Message = "No user found",
+                Message = "No se encontró un usuario valido.",
                 Response = Responses.Unauthorized
             };
         }
 
-        if (user.Model.OrganizationAccess == null)
+        // Si el usuario no tiene una organización
+        if (userContext.Model.OrganizationAccess == null)
         {
             return new CreateResponse
             {
-                Message = "No org found",
+                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
                 Response = Responses.Unauthorized
             };
         }
 
-
-
-        var org = await Data.Organizations.Read(user.Model.OrganizationAccess.Organization.ID);
-
-
-        if (org.Response != Responses.Success)
+        // Verificación del rol dentro de la organización
+        if (userContext.Model.OrganizationAccess.Rol != OrgRoles.SuperManager && userContext.Model.OrganizationAccess.Rol != OrgRoles.Manager)
         {
             return new CreateResponse
             {
-                Message = "No found Organization",
+                Message = $"El usuario '{userContext.Model.Usuario}' no puede crear nuevos usuarios en esta organización.",
                 Response = Responses.Unauthorized
             };
         }
 
+
+        // ID de la organización
+        var org = userContext.Model.OrganizationAccess.Organization.ID;
 
 
         // Conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await Data.Accounts.Create(modelo, org.Model.ID, context);
+        var response = await Data.Accounts.Create(modelo, org, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
             return new(response.Response);
 
+        // Cierra la conexión
         context.CloseActions(connectionKey);
 
         // Retorna el resultado
