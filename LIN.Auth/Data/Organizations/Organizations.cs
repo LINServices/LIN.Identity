@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data;
+﻿namespace LIN.Auth.Data.Organizations;
 
 
 public class Organizations
@@ -178,7 +178,7 @@ public class Organizations
 
             var orgId = await (from U in context.DataBase.Accounts
                                where U.ID == id
-                               select (U.OrganizationAccess == null) ? 0 : U.OrganizationAccess.Organization.ID).FirstOrDefaultAsync();
+                               select U.OrganizationAccess == null ? 0 : U.OrganizationAccess.Organization.ID).FirstOrDefaultAsync();
 
             // Organización
             var org = from O in context.DataBase.OrganizationAccess
@@ -192,7 +192,7 @@ public class Organizations
                           Usuario = O.Member.Usuario,
                           OrganizationAccess = new()
                           {
-                              Rol = (O.Member.OrganizationAccess == null) ? OrgRoles.Undefine : O.Member.OrganizationAccess.Rol
+                              Rol = O.Member.OrganizationAccess == null ? OrgRoles.Undefine : O.Member.OrganizationAccess.Rol
                           }
                       };
 
@@ -228,7 +228,7 @@ public class Organizations
 
             var orgId = await (from U in context.DataBase.Accounts
                                where U.ID == id
-                               select (U.OrganizationAccess == null) ? 0 : U.OrganizationAccess.Organization.ID).FirstOrDefaultAsync();
+                               select U.OrganizationAccess == null ? 0 : U.OrganizationAccess.Organization.ID).FirstOrDefaultAsync();
 
             // Organización
             var apps = from ORG in context.DataBase.AppOnOrg

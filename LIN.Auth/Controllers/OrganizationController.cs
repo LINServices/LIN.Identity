@@ -1,3 +1,5 @@
+using LIN.Auth.Data.Organizations;
+
 namespace LIN.Auth.Controllers;
 
 
@@ -66,7 +68,7 @@ public class OrganizationsController : ControllerBase
         modelo.Members = new();
 
         // Creación de la organización
-        var response = await Data.Organizations.Create(modelo, userID, context);
+        var response = await Organizations.Create(modelo, userID, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -98,7 +100,7 @@ public class OrganizationsController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Organizations.Read(id);
+        var response = await Organizations.Read(id);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -270,7 +272,7 @@ public class OrganizationsController : ControllerBase
         }
 
 
-        var org = await Data.Organizations.ReadMembers(userID);
+        var org = await Organizations.ReadMembers(userID);
 
 
         if (org.Response != Responses.Success)
@@ -316,7 +318,7 @@ public class OrganizationsController : ControllerBase
         }
 
 
-        var org = await Data.Organizations.ReadApps(userID);
+        var org = await Organizations.ReadApps(userID);
 
 
         if (org.Response != Responses.Success)
