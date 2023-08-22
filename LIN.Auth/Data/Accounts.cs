@@ -256,55 +256,6 @@ public static class Accounts
 
 
     /// <summary>
-    /// Crea una cuenta
-    /// </summary>
-    /// <param name="data">Modelo</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, OrgRoles rol,  Conexión context)
-    {
-
-        data.ID = 0;
-
-        // Ejecución
-        using (var transaction = context.DataBase.Database.BeginTransaction())
-        {
-            try
-            {
-
-                var org = await (from U in context.DataBase.Organizations
-                                 where U.ID == orgID
-                                 select U).FirstOrDefaultAsync();
-
-
-                data.OrganizationAccess = new()
-                {
-                    Member = data,
-                    Rol = rol,
-                    Organization = org
-                };
-
-                var res = await context.DataBase.Accounts.AddAsync(data);
-                context.DataBase.SaveChanges();
-
-                transaction.Commit();
-
-                return new(Responses.Success, data);
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                if ((ex.InnerException?.Message.Contains("Violation of UNIQUE KEY constraint") ?? false) || (ex.InnerException?.Message.Contains("duplicate key") ?? false))
-                    return new(Responses.ExistAccount);
-
-            }
-        }
-
-        return new();
-    }
-
-
-
-    /// <summary>
     /// Obtiene una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
