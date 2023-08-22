@@ -316,7 +316,7 @@ public class Security : ControllerBase
     {
 
 
-        var (isValid, _, userID) = Jwt.Validate(token);
+        var (isValid, _, userID, _) = Jwt.Validate(token);
 
         if (!isValid)
         {

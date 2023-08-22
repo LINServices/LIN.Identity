@@ -19,7 +19,7 @@ public class IntentsController : ControllerBase
         {
 
 
-            var (isValid, user, _) = Jwt.Validate(token);
+            var (isValid, user, _, _) = Jwt.Validate(token);
            
             if (!isValid)
             {

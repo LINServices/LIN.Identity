@@ -117,7 +117,7 @@ public class AuthenticationController : ControllerBase
     {
 
         // Valida el token
-        (var isValid, var user, var _) = Jwt.Validate(token);
+        var (isValid, user, _, _) = Jwt.Validate(token);
 
         if (!isValid)
             return new(Responses.InvalidParam);

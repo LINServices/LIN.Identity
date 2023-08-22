@@ -15,7 +15,7 @@ public class LoginLogController : ControllerBase
     {
 
         // JWT
-        var (isValid, _, userID) = Jwt.Validate(token);
+        var (isValid, _, userID, _) = Jwt.Validate(token);
 
         // Validacion
         if (!isValid)

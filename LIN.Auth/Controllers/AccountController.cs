@@ -212,7 +212,7 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Delete([FromHeader] string token)
     {
 
-        var (isValid, _, userID) = Jwt.Validate(token);
+        var (isValid, _, userID,_) = Jwt.Validate(token);
 
         if (!isValid)
             return new ResponseBase
@@ -267,7 +267,7 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> ReadAllSearch([FromHeader] string pattern, [FromHeader] string token)
     {
 
-        var (isValid, _, id) = Jwt.Validate(token);
+        var (isValid, _, id, _) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -299,7 +299,7 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo, [FromHeader] string token)
     {
 
-        var (isValid, _, userID) = Jwt.Validate(token);
+        var (isValid, _, userID, _) = Jwt.Validate(token);
 
         if (!isValid)
             return new ResponseBase
@@ -329,7 +329,7 @@ public class AccountController : ControllerBase
     {
 
 
-        var (isValid, _, id) = Jwt.Validate(token);
+        var (isValid, _, id, _) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -353,7 +353,7 @@ public class AccountController : ControllerBase
     {
 
 
-        var (isValid, _, id) = Jwt.Validate(token);
+        var (isValid, _, id, _) = Jwt.Validate(token);
 
         if (!isValid)
         {
