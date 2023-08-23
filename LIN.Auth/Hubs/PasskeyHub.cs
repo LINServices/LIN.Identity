@@ -39,6 +39,20 @@ public class PassKeyHub : Hub
     public async Task JoinIntent(PassKeyModel modelo)
     {
 
+
+        var app = await Data.Applications.Read(modelo.ApplicationKey);
+
+
+        if (app.Response != Responses.Success)
+        {
+            return;
+        }
+
+        modelo.Application.Name = app.Model.Name;
+        modelo.Application.Badge = app.Model.Badge;
+        modelo.ApplicationKey = "<Secret>";
+
+
         var expiracion = DateTime.Now.AddMinutes(2);
 
         // Modelo
@@ -83,25 +97,11 @@ public class PassKeyHub : Hub
 
 
     /// <summary>
-    /// Envia la solicitud a los admins
+    /// Envía la solicitud a los admins
     /// </summary>
     public async Task SendRequest(PassKeyModel modelo)
-    {
-
-        var app = await Data.Applications.Read(modelo.ApplicationKey);
-
-
-        if (app.Response != Responses.Success)
-        {
-            return;
-        }
-
-        modelo.Application.Name = app.Model.Name;
-        modelo.Application.Badge = app.Model.Badge;
-        modelo.ApplicationKey = "<Secret>";
-
+    {  
         await Clients.Group(modelo.User.ToLower()).SendAsync("newintent", modelo);
-
     }
 
 
