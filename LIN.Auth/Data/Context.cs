@@ -98,6 +98,12 @@ public class Context : DbContext
            .IsUnique();
 
         // Indices y identidad
+        modelBuilder.Entity<ApplicationModel>()
+           .HasIndex(e => e.ApplicationUid)
+           .IsUnique();
+
+
+        // Indices y identidad
         modelBuilder.Entity<EmailModel>()
            .HasIndex(e => e.Email)
            .IsUnique();

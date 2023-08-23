@@ -162,6 +162,7 @@ public class Applications
     }
 
 
+
     /// <summary>
     /// Obtiene una app
     /// </summary>
@@ -186,6 +187,38 @@ public class Applications
             }
 
             return new(Responses.Success, email);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+    /// <summary>
+    /// Obtiene una app
+    /// </summary>
+    /// <param name="uid">UId de la app</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ReadOneResponse<ApplicationModel>> ReadByAppUid(string uid, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Query
+            var app = await (from E in context.DataBase.Applications
+                               where E.ApplicationUid == uid
+                               select E).FirstOrDefaultAsync();
+
+            // Email no existe
+            if (app == null)
+                return new(Responses.NotRows);
+            
+            return new(Responses.Success, app);
         }
         catch
         {

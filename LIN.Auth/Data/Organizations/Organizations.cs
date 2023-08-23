@@ -105,8 +105,23 @@ public class Organizations
             try
             {
 
-                var res = await context.DataBase.Organizations.AddAsync(data);
 
+                string[] defaultApps = { "linauthenticator", "linorgsapp" };
+
+                foreach(var app in defaultApps)
+                {
+                    var appData = await Data.Applications.ReadByAppUid(app, context);
+
+                    if (appData.Response == Responses.Success)
+                        data.AppList.Add(new()
+                        {
+                            Organization = data,
+                            State = AppOnOrgStates.Activated,
+                            App = appData.Model
+                        });
+                }
+
+                var res = await context.DataBase.Organizations.AddAsync(data);
 
                 var account = (from A in context.DataBase.Accounts
                                where A.ID == user
@@ -125,7 +140,7 @@ public class Organizations
                 {
                     Member = account,
                     Rol = OrgRoles.SuperManager,
-                    Organization = data
+                    Organization = data,
                 };
 
                 context.DataBase.SaveChanges();
@@ -201,7 +216,9 @@ public class Organizations
                        select new ApplicationModel
                        {
                            ID = ORG.App.ID,
-                           Name = ORG.App.Name
+                           Name = ORG.App.Name,
+                           Badge = ORG.App.Badge,
+                           ApplicationUid = ORG.App.ApplicationUid
                        };
 
 
