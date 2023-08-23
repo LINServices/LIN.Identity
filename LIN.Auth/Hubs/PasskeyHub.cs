@@ -87,6 +87,19 @@ public class PassKeyHub : Hub
     /// </summary>
     public async Task SendRequest(PassKeyModel modelo)
     {
+
+        var app = await Data.Applications.Read(modelo.ApplicationKey);
+
+
+        if (app.Response != Responses.Success)
+        {
+            return;
+        }
+
+        modelo.Application.Name = app.Model.Name;
+        modelo.Application.Badge = app.Model.Badge;
+        modelo.ApplicationKey = "<Secret>";
+
         await Clients.Group(modelo.User.ToLower()).SendAsync("newintent", modelo);
     }
 
