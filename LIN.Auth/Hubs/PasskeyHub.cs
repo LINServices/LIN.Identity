@@ -101,6 +101,7 @@ public class PassKeyHub : Hub
         modelo.ApplicationKey = "<Secret>";
 
         await Clients.Group(modelo.User.ToLower()).SendAsync("newintent", modelo);
+
     }
 
 
