@@ -103,7 +103,10 @@ public class AuthenticationController : ControllerBase
         {
             Date = DateTime.Now,
             AccountID = response.Model.ID,
-            ApplicationID = app.Model.ID
+            Application = new()
+            {
+                Key = app.Model.Key
+            }
         });
 
         if (response.Model.OrganizationAccess != null)
@@ -147,7 +150,11 @@ public class AuthenticationController : ControllerBase
         _ = Data.Logins.Create(new()
         {
             Date = DateTime.Now,
-            AccountID = response.Model.ID
+            AccountID = response.Model.ID,
+            Application = new()
+            {
+                Key = application
+            }
         });
 
         response.Token = token;

@@ -58,6 +58,23 @@ public class Logins
         // Ejecución
         try
         {
+
+            var appResult = await Data.Applications.Read(data.Application.Key, context);
+
+
+            if (appResult.Response != Responses.Success)
+            {
+                return new(Responses.NotRows);
+            }
+
+
+            data.Application = new()
+            {
+                ID = appResult.Model.ID
+            };
+
+            context.DataBase.Attach(data.Application);
+
             var res = context.DataBase.LoginLogs.Add(data);
             await context.DataBase.SaveChangesAsync();
             return new(Responses.Success, data.ID);
@@ -83,11 +100,24 @@ public class Logins
         // Ejecución
         try
         {
-            List<LoginLogModel> res = await context.DataBase.LoginLogs.Where(T => T.AccountID == id).OrderByDescending(T => T.Date).Take(10).ToListAsync();
 
-            var lista = res;
+            var logins = from L in context.DataBase.LoginLogs
+                         where L.ID == id
+                         orderby L.Date descending
+                         select new LoginLogModel
+                         {
+                             Date = L.Date,
+                             Platform = L.Platform,
+                             Application = new()
+                             {
+                                 Name = L.Application.Name
+                             }
+                         };
 
-            return new(Responses.Success, lista);
+
+            var result = await logins.Take(50).ToListAsync();
+
+            return new(Responses.Success, result);
         }
         catch (Exception ex)
         {
