@@ -1,5 +1,3 @@
-using LIN.Auth.Data.Accounts;
-
 namespace LIN.Auth.Controllers;
 
 
@@ -8,10 +6,6 @@ public class AccountController : ControllerBase
 {
 
 
-    /// <summary>
-    /// Crea una cuenta
-    /// </summary>
-    /// <param name="modelo">Modelo del usuario</param>
     [HttpPost("create")]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo)
     {
@@ -32,27 +26,12 @@ public class AccountController : ControllerBase
                                ? System.IO.File.ReadAllBytes("wwwroot/profile.png")
                                : modelo.Perfil;
 
-        // IA Nombre (Genero)
-        try
-        {
-            if (modelo.Genero == Genders.Undefined)
-            {
-                // Consulta
-                //var sex = await Developers.IAName(modelo.Nombre.Trim().Split(" ")[0]);
-
-                // Manejo
-               // modelo.Sexo = sex.Model;
-            }
-        }
-        catch
-        {
-        }
 
         // Conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await AccountsGet.Create(modelo, context);
+        var response = await Data.Accounts.Accounts.Create(modelo, context);
 
         // Evaluación
         if (response.Response != Responses.Success)

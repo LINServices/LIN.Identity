@@ -1,6 +1,4 @@
-﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
-namespace LIN.Auth.Data.Filters;
+﻿namespace LIN.Auth.Data.Filters;
 
 
 public static class Account
