@@ -6,6 +6,10 @@ public class AccountController : ControllerBase
 {
 
 
+    /// <summary>
+    /// Crea un nuevo usuario
+    /// </summary>
+    /// <param name="modelo">Modelo</param>
     [HttpPost("create")]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo)
     {
@@ -57,8 +61,12 @@ public class AccountController : ControllerBase
 
 
 
+    /// <summary>
+    /// Obtiene un usuario por medio del ID
+    /// </summary>
+    /// <param name="id">ID del usuario</param>
     [HttpGet("read/id")]
-    public async Task<HttpReadOneResponse<AccountModel>> ReadOneByID([FromQuery] int id)
+    public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id)
     {
 
         if (id <= 0)
@@ -82,8 +90,13 @@ public class AccountController : ControllerBase
 
 
 
+
+    /// <summary>
+    /// Obtiene un usuario por medio del usuario único
+    /// </summary>
+    /// <param name="user">Usuario único</param>
     [HttpGet("read/user")]
-    public async Task<HttpReadOneResponse<AccountModel>> ReadOneByUser([FromQuery] string user)
+    public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user)
     {
 
         if (!user.Any())
@@ -107,8 +120,14 @@ public class AccountController : ControllerBase
 
 
 
+
+    /// <summary>
+    /// Obtiene una lista de diez (10) usuarios que coincidan con un patron
+    /// </summary>
+    /// <param name="pattern">Patron</param>
+    /// <param name="token">Token de acceso</param>
     [HttpGet("searchByPattern")]
-    public async Task<HttpReadAllResponse<AccountModel>> ReadAllSearch([FromHeader] string pattern, [FromHeader] string token)
+    public async Task<HttpReadAllResponse<AccountModel>> Search([FromHeader] string pattern, [FromHeader] string token)
     {
 
         // Comprobación
@@ -135,7 +154,13 @@ public class AccountController : ControllerBase
     }
 
 
-    [HttpPost("find")]
+
+
+    /// <summary>
+    /// Obtiene una lista cuentas
+    /// </summary>
+    /// <param name="ids">IDs de las cuentas</param>
+    [HttpPost("findAll")]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids)
     {
 
@@ -149,6 +174,10 @@ public class AccountController : ControllerBase
 
 
     
+    /// <summary>
+    /// Actualiza la contraseña de una cuenta
+    /// </summary>
+    /// <param name="modelo">Modelo de actualización</param>
     [HttpPatch("update/password")]
     public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo)
     {
@@ -176,6 +205,11 @@ public class AccountController : ControllerBase
 
 
 
+
+    /// <summary>
+    /// Elimina una cuenta
+    /// </summary>
+    /// <param name="token">Token de acceso</param>
     [HttpDelete("delete")]
     public async Task<HttpResponseBase> Delete([FromHeader] string token)
     {
@@ -198,7 +232,12 @@ public class AccountController : ControllerBase
 
 
 
-    [HttpPatch("disable/account")]
+
+    /// <summary>
+    /// Desactiva una cuenta
+    /// </summary>
+    /// <param name="user">Modelo</param>
+    [HttpPatch("disable")]
     public async Task<HttpResponseBase> Disable([FromBody] AccountModel user)
     {
 
@@ -222,9 +261,14 @@ public class AccountController : ControllerBase
 
 
 
-    
-    [HttpGet("findAllUsers")]
-    public async Task<HttpReadAllResponse<AccountModel>> Finde([FromHeader] string pattern, [FromHeader] string token)
+
+    /// <summary>
+    /// (ADMIN) encuentra diez (10) usuarios que coincidan con el patron
+    /// </summary>
+    /// <param name="pattern"></param>
+    /// <param name="token"></param>
+    [HttpGet("admin/findAll")]
+    public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
         var (isValid, _, id, _) = Jwt.Validate(token);
@@ -251,6 +295,12 @@ public class AccountController : ControllerBase
 
 
 
+
+    /// <summary>
+    /// Actualiza la información de una cuenta
+    /// </summary>
+    /// <param name="modelo">Modelo</param>
+    /// <param name="token">Token de acceso</param>
     [HttpPut("update")]
     public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo, [FromHeader] string token)
     {
@@ -275,8 +325,14 @@ public class AccountController : ControllerBase
 
 
 
+
+    /// <summary>
+    /// Actualiza el genero de un usuario
+    /// </summary>
+    /// <param name="token">Token de acceso</param>
+    /// <param name="genero">Nuevo genero</param>
     [HttpPatch("update/gender")]
-    public async Task<HttpResponseBase> UpdateGender([FromHeader] string token, [FromHeader] Genders genero)
+    public async Task<HttpResponseBase> Update([FromHeader] string token, [FromHeader] Genders genero)
     {
 
 
@@ -294,8 +350,14 @@ public class AccountController : ControllerBase
 
 
 
+
+    /// <summary>
+    /// Actualiza la visibilidad de una cuenta
+    /// </summary>
+    /// <param name="token">Token de acceso</param>
+    /// <param name="visibility">Nueva visibilidad</param>
     [HttpPatch("update/visibility")]
-    public async Task<HttpResponseBase> UpdateVisibility([FromHeader] string token, [FromHeader] AccountVisibility visibility)
+    public async Task<HttpResponseBase> Update([FromHeader] string token, [FromHeader] AccountVisibility visibility)
     {
 
 
