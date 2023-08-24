@@ -174,24 +174,52 @@ public class PassKeyHub : Hub
             if (isValid && modelo.Status == PassKeyStatus.Success)
             {
 
-                // Validacion de la app
-                var application = await Data.Applications.AppOnOrg(intent.Application.Key, orgID);
-
-
+                var userInfo = await Data.Accounts.Read(userID, true, true, true);
 
                 var badPass = new PassKeyModel()
                 {
-                    Status = PassKeyStatus.BlockedByOrg,
+                    Status = PassKeyStatus.Failed,
                     User = modelo.User,
                 };
 
-
-                // Si la app no existe o no esta activa
-                if (application.Response != Responses.Success)
-                {
+                if (userInfo.Response != Responses.Success)
                     await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
-                    return;
+
+                ApplicationModel application;
+
+                if (userInfo.Model.OrganizationAccess == null || userInfo.Model.OrganizationAccess.Organization.ID != 0)
+                {
+
                 }
+                else
+                {
+                    // Validacion de la app
+                    var applicationOnOrg = await Data.Applications.AppOnOrg(intent.Application.Key, userInfo.Model.OrganizationAccess.Organization.ID);
+
+
+                    // Si la app no existe o no esta activa
+                    if (applicationOnOrg.Response != Responses.Success)
+                    {
+                        badPass.Status = PassKeyStatus.BlockedByOrg;
+                        await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
+                        return;
+                    }
+                }
+
+                // Agregar
+
+                _ = Data.Logins.Create(new()
+                {
+                    AccountID = userInfo.Model.ID,
+                    Date = DateTime.Now,
+                    Application = new()
+                    {
+                        Key = intent.Application.Key
+                    }
+                });
+
+
+
 
             }
 
