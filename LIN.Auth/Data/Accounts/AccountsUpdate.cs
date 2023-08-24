@@ -46,7 +46,7 @@ public  static partial class Accounts
     /// Actualiza las credenciales (Contraseña de un usuario)
     /// </summary>
     /// <param name="newData">Nuevas credenciales</param>
-    public async static Task<ResponseBase> UpdatePassword(UpdatePasswordModel newData)
+    public async static Task<ResponseBase> Update(UpdatePasswordModel newData)
     {
 
         var (context, key) = Conexión.GetOneConnection();

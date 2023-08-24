@@ -31,7 +31,7 @@ public class AccountController : ControllerBase
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await Data.Accounts.Accounts.Create(modelo, context);
+        var response = await Data.Accounts.Create(modelo, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -56,10 +56,7 @@ public class AccountController : ControllerBase
 
 
 
-    /// <summary>
-    /// Obtiene un usuario por medio del ID
-    /// </summary>
-    /// <param name="id">ID del usuario</param>
+
     [HttpGet("read/id")]
     public async Task<HttpReadOneResponse<AccountModel>> ReadOneByID([FromQuery] int id)
     {
@@ -68,7 +65,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await AccountsGet.Read(id, true,false);
+        var response = await Data.Accounts.Read(id, true, false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -85,10 +82,6 @@ public class AccountController : ControllerBase
 
 
 
-    /// <summary>
-    /// Obtiene un usuario por medio de el usuario Unico
-    /// </summary>
-    /// <param name="user">Usuario</param>
     [HttpGet("read/user")]
     public async Task<HttpReadOneResponse<AccountModel>> ReadOneByUser([FromQuery] string user)
     {
@@ -97,7 +90,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await AccountsGet.Read(user, true,  false);
+        var response = await Data.Accounts.Read(user, true, false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -114,39 +107,40 @@ public class AccountController : ControllerBase
 
 
 
-    /// <summary>
-    /// Obtiene una lista de 10 usuarios cullo usuario cumpla con un patron
-    /// </summary>
-    /// <param name="pattern">Patron de búsqueda</param>
-    /// <param name="id">ID del usuario que esta buscando</param>
     [HttpGet("searchByPattern")]
-    public async Task<HttpReadAllResponse<AccountModel>> ReadAllSearch([FromHeader] string pattern, [FromHeader] int id)
+    public async Task<HttpReadAllResponse<AccountModel>> ReadAllSearch([FromHeader] string pattern, [FromHeader] string token)
     {
 
         // Comprobación
-        if (id <= 0 || pattern.Trim().Length <= 0)
+        if (pattern.Trim().Length <= 0)
             return new(Responses.InvalidParam);
 
+        // Info del token
+        var (isValid, _, userID, _) = Jwt.Validate(token);
+
+        // Token es invalido
+        if (!isValid)
+        {
+            return new ReadAllResponse<AccountModel>
+            {
+                Message = "Token es invalido",
+                Response = Responses.Unauthorized
+            };
+        }
 
         // Obtiene el usuario
-        var response = await AccountsGet.SearchByPattern(pattern, id);
+        var response = await Data.Accounts.Search(pattern, userID, false);
 
         return response;
     }
 
 
-
-
-    /// <summary>
-    /// Obtiene usuarios
-    /// </summary>
-    /// <param name="ids">Lista de IDs de los usuarios</param>
     [HttpPost("find")]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids)
     {
 
         // Obtiene el usuario
-        var response = await AccountsGet.FindAll(ids);
+        var response = await Data.Accounts.FindAll(ids);
 
         return response;
 
@@ -154,10 +148,7 @@ public class AccountController : ControllerBase
 
 
 
-    /// <summary>
-    /// Actualiza la contraseña
-    /// </summary>
-    /// <param name="modelo">Nuevo modelo</param>
+    
     [HttpPatch("update/password")]
     public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo)
     {
@@ -166,7 +157,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var actualData = await AccountsGet.Read(modelo.Account, true);
+        var actualData = await Data.Accounts.Read(modelo.Account, true);
 
         if (actualData.Response != Responses.Success)
             return new(Responses.NotExistAccount);
@@ -179,21 +170,17 @@ public class AccountController : ControllerBase
             return new ResponseBase(Responses.InvalidPassword);
         }
 
-        return await AccountsGet.UpdatePassword(modelo);
+        return await Data.Accounts.Update(modelo);
 
     }
 
 
 
-    /// <summary>
-    /// Elimina una cuenta
-    /// </summary>
-    /// <param name="id">ID del usuario</param>
     [HttpDelete("delete")]
     public async Task<HttpResponseBase> Delete([FromHeader] string token)
     {
 
-        var (isValid, _, userID,_) = Jwt.Validate(token);
+        var (isValid, _, userID, _) = Jwt.Validate(token);
 
         if (!isValid)
             return new ResponseBase
@@ -205,16 +192,12 @@ public class AccountController : ControllerBase
         if (userID <= 0)
             return new(Responses.InvalidParam);
 
-        var response = await AccountsGet.Delete(userID);
+        var response = await Data.Accounts.Delete(userID);
         return response;
     }
 
 
 
-    /// <summary>
-    /// Actualiza los datos de un usuario
-    /// </summary>
-    /// <param name="modelo">Nuevo modelo</param>
     [HttpPatch("disable/account")]
     public async Task<HttpResponseBase> Disable([FromBody] AccountModel user)
     {
@@ -225,7 +208,7 @@ public class AccountController : ControllerBase
         }
 
         // Modelo de usuario de la BD
-        var userModel = await AccountsGet.Read(user.ID, false);
+        var userModel = await Data.Accounts.Read(user.ID,true);
 
         if (userModel.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + user.Contraseña))
         {
@@ -233,19 +216,15 @@ public class AccountController : ControllerBase
         }
 
 
-        return await AccountsGet.UpdateState(user.ID, AccountStatus.Disable);
+        return await Data.Accounts.Update(user.ID, AccountStatus.Disable);
 
     }
 
 
 
-    /// <summary>
-    /// Obtiene una lista de 5 usuarios cullo usuario cumpla con un patron (Solo admins)
-    /// </summary>
-    /// <param name="pattern">Patron de búsqueda</param>
-    /// <param name="id">ID del usuario que esta buscando</param>
+    
     [HttpGet("findAllUsers")]
-    public async Task<HttpReadAllResponse<AccountModel>> ReadAllSearch([FromHeader] string pattern, [FromHeader] string token)
+    public async Task<HttpReadAllResponse<AccountModel>> Finde([FromHeader] string pattern, [FromHeader] string token)
     {
 
         var (isValid, _, id, _) = Jwt.Validate(token);
@@ -257,14 +236,14 @@ public class AccountController : ControllerBase
         }
 
 
-        var rol = (await AccountsGet.Read(id, false)).Model.Rol;
+        var rol = (await Data.Accounts.Read(id, true)).Model.Rol;
 
 
         if (rol != AccountRoles.Admin)
-            return new(Responses.InvalidParam);
+            return new(Responses.Unauthorized);
 
         // Obtiene el usuario
-        var response = await AccountsGet.GetAll(pattern);
+        var response = await Data.Accounts.Search(pattern, 0, true);
 
         return response;
 
@@ -272,10 +251,6 @@ public class AccountController : ControllerBase
 
 
 
-    /// <summary>
-    /// Actualiza los datos de un usuario
-    /// </summary>
-    /// <param name="modelo">Nuevo modelo</param>
     [HttpPut("update")]
     public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo, [FromHeader] string token)
     {
@@ -294,17 +269,12 @@ public class AccountController : ControllerBase
         if (modelo.ID <= 0 || modelo.Nombre.Any())
             return new(Responses.InvalidParam);
 
-        return await AccountsGet.Update(modelo);
+        return await Data.Accounts.Update(modelo);
 
     }
 
 
 
-    /// <summary>
-    /// Actualiza el genero de un usuario
-    /// </summary>
-    /// <param name="token">Token de acceso</param>
-    /// <param name="genero">Nuevo genero</param>
     [HttpPatch("update/gender")]
     public async Task<HttpResponseBase> UpdateGender([FromHeader] string token, [FromHeader] Genders genero)
     {
@@ -318,17 +288,12 @@ public class AccountController : ControllerBase
             return new(Responses.Unauthorized);
         }
 
-        return await AccountsGet.UpdateGender(id, genero);
+        return await Data.Accounts.Update(id, genero);
 
     }
 
 
 
-    /// <summary>
-    /// Actualiza la visibilidad de una cuenta
-    /// </summary>
-    /// <param name="token">Token de acceso</param>
-    /// <param name="visibility">Nueva visibilidad</param>
     [HttpPatch("update/visibility")]
     public async Task<HttpResponseBase> UpdateVisibility([FromHeader] string token, [FromHeader] AccountVisibility visibility)
     {
@@ -341,7 +306,7 @@ public class AccountController : ControllerBase
             return new(Responses.Unauthorized);
         }
 
-        return await AccountsGet.UpdateVisibility(id, visibility);
+        return await Data.Accounts.Update(id, visibility);
 
     }
 
