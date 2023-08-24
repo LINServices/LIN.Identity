@@ -151,6 +151,7 @@ public class PassKeyHub : Hub
 
         try
         {
+
             // Obtiene la cuenta
             var cuenta = Attempts[modelo.User.ToLower()];
 
@@ -196,24 +197,29 @@ public class PassKeyHub : Hub
                 }
                 else
                 {
-                    // Validacion de la app
-                    var applicationOnOrg = await Data.Applications.AppOnOrg(intent.Application.Key, userInfo.Model.OrganizationAccess.Organization.ID);
 
-                    // Si la app no existe o no esta activa
-                    if (applicationOnOrg.Response != Responses.Success)
+                    var organization = userInfo.Model.OrganizationAccess.Organization;
+
+                    if (organization.HaveWhiteList)
                     {
-                        badPass.Status = PassKeyStatus.BlockedByOrg;
-                        await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
-                        return;
-                    }
+                        // Validación de la app
+                        var applicationOnOrg = await Data.Applications.AppOnOrg(intent.Application.Key, userInfo.Model.OrganizationAccess.Organization.ID);
 
+                        // Si la app no existe o no esta activa
+                        if (applicationOnOrg.Response != Responses.Success)
+                        {
+                            badPass.Status = PassKeyStatus.BlockedByOrg;
+                            await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
+                            return;
+                        }
+                    }
                 }
 
                 // Agregar
 
-                _= Data.Logins.Create(new()
+                _ = Data.Logins.Create(new()
                 {
-                    ID =0,
+                    ID = 0,
                     Platform = Platforms.Undefined,
                     AccountID = userInfo.Model.ID,
                     Date = DateTime.Now,
