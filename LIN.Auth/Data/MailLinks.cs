@@ -64,7 +64,7 @@ public class MailLinks
 
             return new(Responses.Success, data.ID);
         }
-        catch (Exception ex)
+        catch
         {
             context.DataBase.Remove(data);
         }

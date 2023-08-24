@@ -120,7 +120,7 @@ public class EmailWorker
             }
             return true;
         }
-        catch (Exception ex) 
+        catch
         {
         }
         return false;

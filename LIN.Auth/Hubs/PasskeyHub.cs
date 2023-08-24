@@ -137,7 +137,7 @@ public class PassKeyHub : Hub
             await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", modelo);
 
         }
-        catch (Exception ex)
+        catch
         {
         }
 

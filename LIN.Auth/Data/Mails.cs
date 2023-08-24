@@ -265,7 +265,7 @@ public class Mails
 
                 return new(Responses.Success);
             }
-            catch (Exception ex)
+            catch
             {
                 transaction.Rollback();
             }

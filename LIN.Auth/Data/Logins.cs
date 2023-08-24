@@ -120,7 +120,7 @@ public class Logins
 
             return new(Responses.Success, result);
         }
-        catch (Exception ex)
+        catch
         {
         }
         return new();

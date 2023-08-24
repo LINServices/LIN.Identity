@@ -47,7 +47,7 @@ public class IntentsController : ControllerBase
             // Retorna
             return new(Responses.Success, intentos);
         }
-        catch (Exception ex)
+        catch
         {
             return new(Responses.Undefined);
         }
