@@ -57,7 +57,7 @@ public static partial class Accounts
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await SearchByPattern(pattern, id, context);
+        var res = await Search(pattern, id, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -111,10 +111,10 @@ public static partial class Accounts
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="safeFilter">Filtro seguro</param>
-    /// <param name="privateInfo">Filtro de información privada</param>
+    /// <param name="includePrivateInfo">Filtro de información privada</param>
     /// <param name="includeOrg">Incluir organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo, bool includeOrg, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool includePrivateInfo, bool includeOrg, Conexión context)
     {
 
         // Ejecución
@@ -127,7 +127,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, safeFilter, includeOrg, privateInfo);
+            query = Filters.Account.Filter(query, safeFilter, includeOrg, includePrivateInfo);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -153,10 +153,10 @@ public static partial class Accounts
     /// </summary>
     /// <param name="user">Usuario de la cuenta</param>
     /// <param name="safeFilter">Filtro seguro</param>
-    /// <param name="privateInfo">Filtro de información privada</param>
+    /// <param name="includePrivateInfo">Filtro de información privada</param>
     /// <param name="includeOrg">Incluir organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo, bool includeOrg, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool includePrivateInfo, bool includeOrg, Conexión context)
     {
 
         // Ejecución
@@ -169,7 +169,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, safeFilter, includeOrg, privateInfo);
+            query = Filters.Account.Filter(query, safeFilter, includeOrg, includePrivateInfo);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -191,26 +191,14 @@ public static partial class Accounts
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     /// <summary>
-    /// Obtiene los primeros 10 usuarios que coincidan con el patron
+    /// Obtiene una lista de diez (10) usuarios que coincidan con un patron
     /// </summary>
-    /// <param name="pattern">Patron a buscar</param>
-    /// <param name="id">ID de la cuenta (Contexto)</param>
+    /// <param name="pattern">Patron de búsqueda</param>
+    /// <param name="me">Mi ID</param>
+    /// <param name="isAdmin">Si es un admin del sistema el que esta consultando</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> SearchByPattern(string pattern, int id, Conexión context)
+    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, bool isAdmin, Conexión context)
     {
 
         // Ejecución
@@ -220,21 +208,21 @@ public static partial class Accounts
             // Query
             var query = (from A in context.DataBase.Accounts
                          where A.Usuario.ToLower().Contains(pattern.ToLower())
-                         && A.ID != id
-                         && A.Visibilidad == AccountVisibility.Visible
+                         && A.ID != me
                          select A).Take(10);
 
-            // Ejecuta
-            var result = await query.Select(a => new AccountModel
-            {
-                ID = a.ID,
-                Nombre = a.Nombre,
-                Usuario = a.Usuario,
-                Perfil = a.Perfil,
-                Genero = a.Genero,
-                Insignia = a.Insignia
-            }).ToListAsync();
+            // Armar la consulta
+            if (isAdmin)
+                query = Filters.Account.Filter(baseQuery: query,
+                                               safe: false, includeOrg: true, privateInfo: false);
+            
+            else
+                query = Filters.Account.Filter(baseQuery: query,
+                                                   safe: false, includeOrg: true,
+                                                   privateInfo: false);
 
+
+            var result = await query.ToListAsync();
 
             // Si no existe el modelo
             if (result == null)
@@ -251,13 +239,14 @@ public static partial class Accounts
 
 
 
+
     /// <summary>
-    /// 
+    /// Obtiene una lista de usuarios por medio del ID
     /// </summary>
-    /// <param name="pattern">Patron a buscar</param>
-    /// <param name="id">ID de la cuenta (Contexto)</param>
+    /// <param name="ids">Lista de IDs</param>
+    /// <param name="org">ID de organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, Conexión context)
+    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int org, Conexión context)
     {
 
         // Ejecución
@@ -266,50 +255,30 @@ public static partial class Accounts
 
             // Query
             var query = from A in context.DataBase.Accounts
-                        where A.Estado == AccountStatus.Normal
                         where ids.Contains(A.ID)
                         select A;
 
+            // Si hay que incluir la query de organización
+            var privateInformation = org > 0;
+
+            // Solo participantes de una organización
+            if (privateInformation)
+                query = from A in query
+                        where A.OrganizationAccess.Organization.ID == org
+                        select A;
+
+            // Armar la consulta final
+            query = Filters.Account.Filter(query, true, false, privateInformation);
+
+
             // Ejecuta
-            var result = await Filters.Account.FilterInfoIf(query).ToListAsync();
+            var result = await query.Take(10).ToListAsync();
 
             // Si no existe el modelo
             if (result == null)
                 return new(Responses.NotRows);
 
             return new(Responses.Success, result);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
-
-
-
-
-    /// <summary>
-    /// Obtiene las primeros 5 cuentas que coincidan con el patron (Admin)
-    /// </summary>
-    /// <param name="pattern">Patron a buscar</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> GetAll(string pattern, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-            var res = await context.DataBase.Accounts
-                .Where(T => T.Usuario.ToLower().Contains(pattern.ToLower()))
-                .Take(5)
-                .ToListAsync();
-
-            // Si no existe el modelo
-            if (res == null)
-                return new(Responses.NotRows);
-
-            return new(Responses.Success, res);
         }
         catch
         {
