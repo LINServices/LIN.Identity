@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 namespace LIN.Auth.Controllers;
 
 
@@ -126,7 +128,7 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <param name="pattern">Patron</param>
     /// <param name="token">Token de acceso</param>
-    [HttpGet("searchByPattern")]
+    [HttpGet("search")]
     public async Task<HttpReadAllResponse<AccountModel>> Search([FromHeader] string pattern, [FromHeader] string token)
     {
 
@@ -179,12 +181,22 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <param name="modelo">Modelo de actualización</param>
     [HttpPatch("update/password")]
-    public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo)
+    public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo, [FromHeader] string token)
     {
 
-        if (modelo.Account <= 0 || modelo.OldPassword.Length < 4 || modelo.NewPassword.Length < 4)
+        if ( modelo.OldPassword.Length < 4 || modelo.NewPassword.Length < 4)
             return new(Responses.InvalidParam);
 
+
+        var (isValid, _, userID, _) = Jwt.Validate(token);
+
+
+        if (!isValid)
+        {
+            return new(Responses.Unauthorized);
+        }
+
+        modelo.Account = userID;
 
         var actualData = await Data.Accounts.Read(modelo.Account, true);
 
@@ -267,7 +279,7 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <param name="pattern"></param>
     /// <param name="token"></param>
-    [HttpGet("admin/findAll")]
+    [HttpGet("admin/search")]
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
