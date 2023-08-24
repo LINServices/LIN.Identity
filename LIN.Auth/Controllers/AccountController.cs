@@ -127,7 +127,7 @@ public class AccountController : ControllerBase
     /// <param name="pattern">Patron</param>
     /// <param name="token">Token de acceso</param>
     [HttpGet("search")]
-    public async Task<HttpReadAllResponse<AccountModel>> Search([FromHeader] string pattern, [FromHeader] string token)
+    public async Task<HttpReadAllResponse<AccountModel>> Search([FromQuery] string pattern, [FromHeader] string token)
     {
 
         // Comprobación
