@@ -81,7 +81,6 @@ public class Logins
         }
         catch
         {
-            context.DataBase.Remove(data);
         }
 
         return new();

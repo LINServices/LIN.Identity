@@ -20,13 +20,14 @@ public class PassKeyHub : Hub
     {
 
         // Aplicación
-        var application = await Data.Applications.Read(attempt.ApplicationKey);
+        var application = await Data.Applications.Read(attempt.Application.Key);
 
         // Si la app no existe o no esta activa
         if (application.Response != Responses.Success)
             return;
 
         // Preparar el modelo
+        attempt.Application ??= new();
         attempt.Application.Name = application.Model.Name;
         attempt.Application.Badge = application.Model.Badge;
         attempt.Application.Key = application.Model.Key;
@@ -145,7 +146,7 @@ public class PassKeyHub : Hub
     /// <summary>
     /// 
     /// </summary>
-    public async void ReceiveRequest(PassKeyModel modelo)
+    public async Task ReceiveRequest(PassKeyModel modelo)
     {
 
         try
@@ -174,6 +175,7 @@ public class PassKeyHub : Hub
             if (isValid && modelo.Status == PassKeyStatus.Success)
             {
 
+
                 var userInfo = await Data.Accounts.Read(userID, true, true, true);
 
                 var badPass = new PassKeyModel()
@@ -183,11 +185,12 @@ public class PassKeyHub : Hub
                 };
 
                 if (userInfo.Response != Responses.Success)
+                {
                     await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
+                    return;
+                }
 
-                ApplicationModel application;
-
-                if (userInfo.Model.OrganizationAccess == null || userInfo.Model.OrganizationAccess.Organization.ID != 0)
+                if (userInfo.Model.OrganizationAccess == null || userInfo.Model.OrganizationAccess.Organization.ID == 0)
                 {
 
                 }
@@ -196,7 +199,6 @@ public class PassKeyHub : Hub
                     // Validacion de la app
                     var applicationOnOrg = await Data.Applications.AppOnOrg(intent.Application.Key, userInfo.Model.OrganizationAccess.Organization.ID);
 
-
                     // Si la app no existe o no esta activa
                     if (applicationOnOrg.Response != Responses.Success)
                     {
@@ -204,12 +206,15 @@ public class PassKeyHub : Hub
                         await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
                         return;
                     }
+
                 }
 
                 // Agregar
 
-                _ = Data.Logins.Create(new()
+                _= Data.Logins.Create(new()
                 {
+                    ID =0,
+                    Platform = Platforms.Undefined,
                     AccountID = userInfo.Model.ID,
                     Date = DateTime.Now,
                     Application = new()
@@ -219,26 +224,26 @@ public class PassKeyHub : Hub
                 });
 
 
-
-
             }
-
 
             var pass = new PassKeyModel()
             {
                 Expiración = modelo.Expiración,
                 Status = modelo.Status,
                 User = modelo.User,
-                Token = modelo.Token
+                Token = modelo.Token,
+                Hora = modelo.Hora,
+                Application = new(),
+                HubKey = "",
+                Key = ""
             };
-
-
 
             await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", pass);
 
         }
-        catch
+        catch (Exception ex)
         {
+            await Services.EmailWorker.SendMail("giraldojhong4@gmail.com", "error", $"{ex.Message}\n\n{ex.StackTrace}\n\n{ex.InnerException}");
         }
 
 
