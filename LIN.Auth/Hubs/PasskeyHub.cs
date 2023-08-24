@@ -12,6 +12,70 @@ public class PassKeyHub : Hub
 
 
 
+    /// <summary>
+    /// Nuevo intento passkey
+    /// </summary>
+    /// <param name="attempt">Intento passkey</param>
+    public async Task JoinIntent(PassKeyModel attempt)
+    {
+
+        // Aplicación
+        var application = await Data.Applications.Read(attempt.ApplicationKey);
+
+        // Si la app no existe o no esta activa
+        if (application.Response != Responses.Success)
+            return;
+
+        // Preparar el modelo
+        attempt.Application.Name = application.Model.Name;
+        attempt.Application.Badge = application.Model.Badge;
+        attempt.Application.Key = application.Model.Key;
+        attempt.Application.ID = application.Model.ID;
+
+        // Vencimiento
+        var expiración = DateTime.Now.AddMinutes(2);
+
+        // Caducidad el modelo
+        attempt.HubKey = Context.ConnectionId;
+        attempt.Status = PassKeyStatus.Undefined;
+        attempt.Hora = DateTime.Now;
+        attempt.Expiración = expiración;
+
+        // Agrega el modelo
+        if (!Attempts.ContainsKey(attempt.User.ToLower()))
+            Attempts.Add(attempt.User.ToLower(), new() { attempt });
+        else
+            Attempts[attempt.User.ToLower()].Add(attempt);
+
+        // Yo
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"dbo.{Context.ConnectionId}");
+
+        await SendRequest(attempt);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
@@ -30,50 +94,6 @@ public class PassKeyHub : Hub
 
         return base.OnDisconnectedAsync(exception);
     }
-
-
-
-    /// <summary>
-    /// Un dispositivo envia el PassKey intent
-    /// </summary>
-    public async Task JoinIntent(PassKeyModel modelo)
-    {
-
-
-        var app = await Data.Applications.Read(modelo.ApplicationKey);
-
-
-        if (app.Response != Responses.Success)
-        {
-            return;
-        }
-
-        modelo.Application.Name = app.Model.Name;
-        modelo.Application.Badge = app.Model.Badge;
-        modelo.ApplicationKey = "<Secret>";
-
-
-        var expiracion = DateTime.Now.AddMinutes(2);
-
-        // Modelo
-        modelo.HubKey = Context.ConnectionId;
-        modelo.Status = PassKeyStatus.Undefined;
-        modelo.Hora = DateTime.Now;
-        modelo.Expiración = expiracion;
-
-        // Agrega el modelo
-        if (!Attempts.ContainsKey(modelo.User.ToLower()))
-            Attempts.Add(modelo.User.ToLower(), new() { modelo });
-        else
-            Attempts[modelo.User.ToLower()].Add(modelo);
-
-        // Yo
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"dbo.{Context.ConnectionId}");
-
-        await SendRequest(modelo);
-
-    }
-
 
 
     /// <summary>
@@ -100,8 +120,23 @@ public class PassKeyHub : Hub
     /// Envía la solicitud a los admins
     /// </summary>
     public async Task SendRequest(PassKeyModel modelo)
-    {  
-        await Clients.Group(modelo.User.ToLower()).SendAsync("newintent", modelo);
+    {
+
+        var pass = new PassKeyModel()
+        {
+            Expiración = modelo.Expiración,
+            Hora = modelo.Hora,
+            Status = modelo.Status,
+            User = modelo.User,
+            HubKey = modelo.HubKey,
+            Application = new()
+            {
+                Name = modelo.Application.Name,
+                Badge = modelo.Application.Badge
+            }
+        };
+
+        await Clients.Group(modelo.User.ToLower()).SendAsync("newintent", pass);
     }
 
 
@@ -134,7 +169,44 @@ public class PassKeyHub : Hub
                 intent.Token = string.Empty;
             }
 
-            await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", modelo);
+
+            var (isValid, _, userID, orgID) = Jwt.Validate(modelo.Token);
+            if (isValid && modelo.Status == PassKeyStatus.Success)
+            {
+
+                // Validacion de la app
+                var application = await Data.Applications.AppOnOrg(intent.Application.Key, orgID);
+
+
+
+                var badPass = new PassKeyModel()
+                {
+                    Status = PassKeyStatus.BlockedByOrg,
+                    User = modelo.User,
+                };
+
+
+                // Si la app no existe o no esta activa
+                if (application.Response != Responses.Success)
+                {
+                    await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
+                    return;
+                }
+
+            }
+
+
+            var pass = new PassKeyModel()
+            {
+                Expiración = modelo.Expiración,
+                Status = modelo.Status,
+                User = modelo.User,
+                Token = modelo.Token
+            };
+
+
+
+            await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", pass);
 
         }
         catch
