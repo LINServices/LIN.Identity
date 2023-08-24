@@ -1,4 +1,6 @@
-﻿namespace LIN.Auth.Controllers.Security;
+﻿using LIN.Auth.Data.Accounts;
+
+namespace LIN.Auth.Controllers.Security;
 
 
 [Route("security")]
@@ -23,7 +25,7 @@ public class Security : ControllerBase
         var (context, contextKey) = Conexión.GetOneConnection();
 
         // Obtiene la información de usuario
-        var userResponse = await Data.Accounts.Read(user, true, true, true, context);
+        var userResponse = await AccountsGet.Read(user, true, true, true, context);
 
         // Evalúa la respuesta
         if (userResponse.Response != Responses.Success)
@@ -116,7 +118,7 @@ public class Security : ControllerBase
         modelo.Account = link.Model.AccountID;
 
         // Respuesta
-        var updateResponse = await Data.Accounts.UpdatePassword(modelo);
+        var updateResponse = await AccountsGet.UpdatePassword(modelo);
 
         if (updateResponse.Response != Responses.Success)
             return new();
@@ -214,7 +216,7 @@ public class Security : ControllerBase
     {
 
         // Obtener el usuario
-        var userData = await Data.Accounts.Read(model.UserID, true);
+        var userData = await AccountsGet.Read(model.UserID, true);
 
         // Evaluación de la respuesta
         if (userData.Response != Responses.Success)
@@ -361,7 +363,7 @@ public class Security : ControllerBase
                 return new();
             }
 
-            var user = (await Data.Accounts.Read(userID,true)).Model;
+            var user = (await AccountsGet.Read(userID,true)).Model;
 
             byte[] bytes = Encoding.UTF8.GetBytes(mailData.Email);
             string mail64 = Convert.ToBase64String(bytes);

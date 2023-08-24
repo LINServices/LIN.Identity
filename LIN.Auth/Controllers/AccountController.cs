@@ -1,3 +1,5 @@
+using LIN.Auth.Data.Accounts;
+
 namespace LIN.Auth.Controllers;
 
 
@@ -50,7 +52,7 @@ public class AccountController : ControllerBase
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await Data.Accounts.Create(modelo, context);
+        var response = await AccountsGet.Create(modelo, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -87,7 +89,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(id, true,false);
+        var response = await AccountsGet.Read(id, true,false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -116,7 +118,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, true,  false);
+        var response = await AccountsGet.Read(user, true,  false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -148,7 +150,7 @@ public class AccountController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.SearchByPattern(pattern, id);
+        var response = await AccountsGet.SearchByPattern(pattern, id);
 
         return response;
     }
@@ -165,7 +167,7 @@ public class AccountController : ControllerBase
     {
 
         // Obtiene el usuario
-        var response = await Data.Accounts.FindAll(ids);
+        var response = await AccountsGet.FindAll(ids);
 
         return response;
 
@@ -185,7 +187,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var actualData = await Data.Accounts.Read(modelo.Account, true);
+        var actualData = await AccountsGet.Read(modelo.Account, true);
 
         if (actualData.Response != Responses.Success)
             return new(Responses.NotExistAccount);
@@ -198,7 +200,7 @@ public class AccountController : ControllerBase
             return new ResponseBase(Responses.InvalidPassword);
         }
 
-        return await Data.Accounts.UpdatePassword(modelo);
+        return await AccountsGet.UpdatePassword(modelo);
 
     }
 
@@ -224,7 +226,7 @@ public class AccountController : ControllerBase
         if (userID <= 0)
             return new(Responses.InvalidParam);
 
-        var response = await Data.Accounts.Delete(userID);
+        var response = await AccountsGet.Delete(userID);
         return response;
     }
 
@@ -244,7 +246,7 @@ public class AccountController : ControllerBase
         }
 
         // Modelo de usuario de la BD
-        var userModel = await Data.Accounts.Read(user.ID, false);
+        var userModel = await AccountsGet.Read(user.ID, false);
 
         if (userModel.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + user.Contraseña))
         {
@@ -252,7 +254,7 @@ public class AccountController : ControllerBase
         }
 
 
-        return await Data.Accounts.UpdateState(user.ID, AccountStatus.Disable);
+        return await AccountsGet.UpdateState(user.ID, AccountStatus.Disable);
 
     }
 
@@ -276,14 +278,14 @@ public class AccountController : ControllerBase
         }
 
 
-        var rol = (await Data.Accounts.Read(id, false)).Model.Rol;
+        var rol = (await AccountsGet.Read(id, false)).Model.Rol;
 
 
         if (rol != AccountRoles.Admin)
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario
-        var response = await Data.Accounts.GetAll(pattern);
+        var response = await AccountsGet.GetAll(pattern);
 
         return response;
 
@@ -313,7 +315,7 @@ public class AccountController : ControllerBase
         if (modelo.ID <= 0 || modelo.Nombre.Any())
             return new(Responses.InvalidParam);
 
-        return await Data.Accounts.Update(modelo);
+        return await AccountsGet.Update(modelo);
 
     }
 
@@ -337,7 +339,7 @@ public class AccountController : ControllerBase
             return new(Responses.Unauthorized);
         }
 
-        return await Data.Accounts.UpdateGender(id, genero);
+        return await AccountsGet.UpdateGender(id, genero);
 
     }
 
@@ -360,7 +362,7 @@ public class AccountController : ControllerBase
             return new(Responses.Unauthorized);
         }
 
-        return await Data.Accounts.UpdateVisibility(id, visibility);
+        return await AccountsGet.UpdateVisibility(id, visibility);
 
     }
 

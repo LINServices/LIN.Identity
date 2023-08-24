@@ -1,3 +1,5 @@
+using LIN.Auth.Data.Accounts;
+
 namespace LIN.Auth.Controllers;
 
 
@@ -35,7 +37,7 @@ public class AuthenticationController : ControllerBase
 
 
         // Obtiene el usuario.
-        var response = await Data.Accounts.Read(user, true, true, true);
+        var response = await AccountsGet.Read(user, true, true, true);
 
         // Validación al obtener el usuario
         switch (response.Response)
@@ -135,7 +137,7 @@ public class AuthenticationController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, true);
+        var response = await AccountsGet.Read(user, true);
 
         if (response.Response != Responses.Success)
             return new(response.Response);
