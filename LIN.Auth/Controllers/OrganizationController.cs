@@ -1,5 +1,3 @@
-using LIN.Auth.Data.Accounts;
-
 namespace LIN.Auth.Controllers;
 
 
@@ -38,7 +36,7 @@ public class OrganizationsController : ControllerBase
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // Obtiene la cuenta
-        var account = await AccountsGet.Read(userID, true, true, true, context);
+        var account = await Data.Accounts.Read(userID, true, true, true, context);
 
         // Validación de la cuenta
         if (account.Response != Responses.Success)
@@ -129,7 +127,7 @@ public class OrganizationsController : ControllerBase
             return new(Responses.Unauthorized);
         
 
-        var userContext = await AccountsGet.Read(userID, true, false, true);
+        var userContext = await Data.Accounts.Read(userID, true, true, true);
 
         // Error al encontrar el usuario
         if (userContext.Response != Responses.Success)
@@ -182,7 +180,7 @@ public class OrganizationsController : ControllerBase
             return new(Responses.Unauthorized);
 
 
-        var userContext = await AccountsGet.Read(userID, true, false, true);
+        var userContext = await Data.Accounts.Read(userID, true, false, true);
 
         // Error al encontrar el usuario
         if (userContext.Response != Responses.Success)
@@ -301,7 +299,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Obtiene el usuario
-        var userContext = await AccountsGet.Read(userID, true, false, true);
+        var userContext = await Data.Accounts.Read(userID, true, false, true);
 
         // Error al encontrar el usuario
         if (userContext.Response != Responses.Success)
