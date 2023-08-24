@@ -78,9 +78,10 @@ public class AuthenticationController : ControllerBase
 
             if (org.Organization.HaveWhiteList)
             {
-                var have = org.Organization.AppList.Where(T => T.App.Key == application).FirstOrDefault();
 
-                if (have == null)
+                var appOnOrg = await Data.Applications.AppOnOrg(app.Model.Key, org.Organization.ID);
+
+                if (appOnOrg.Response != Responses.Success)
                 {
                     return new ReadOneResponse<AccountModel>
                     {
@@ -88,6 +89,7 @@ public class AuthenticationController : ControllerBase
                         Response = Responses.UnauthorizedByOrg
                     };
                 }
+
             }
 
 

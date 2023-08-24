@@ -37,6 +37,17 @@ public class Applications
 
 
 
+    public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await AppOnOrg(key, org, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
+
+
+
     /// <summary>
     /// Obtiene una app
     /// </summary>
@@ -90,7 +101,7 @@ public class Applications
         }
         catch (Exception ex)
         {
-            
+
             if ((ex.InnerException?.Message.Contains("Violation of UNIQUE KEY constraint") ?? false) || (ex.InnerException?.Message.Contains("duplicate key") ?? false))
                 return new(Responses.Undefined);
 
@@ -120,7 +131,41 @@ public class Applications
 
             return new(Responses.Success, emails);
         }
-        catch 
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+
+    /// <summary>
+    /// Encuentra una app en una organización
+    /// </summary>
+    /// <param name="key">Key de la app</param>
+    /// <param name="org">ID de la organización</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Query
+            var app = await (from E in context.DataBase.AppOnOrg
+                             where E.Organization.ID == org
+                             where E.App.Key == key
+                             select E).FirstOrDefaultAsync();
+
+            if (app == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, app);
+        }
+        catch
         {
         }
 
@@ -154,7 +199,7 @@ public class Applications
 
             return new(Responses.Success, email);
         }
-        catch 
+        catch
         {
         }
 
@@ -211,13 +256,13 @@ public class Applications
 
             // Query
             var app = await (from E in context.DataBase.Applications
-                               where E.ApplicationUid == uid
-                               select E).FirstOrDefaultAsync();
+                             where E.ApplicationUid == uid
+                             select E).FirstOrDefaultAsync();
 
             // Email no existe
             if (app == null)
                 return new(Responses.NotRows);
-            
+
             return new(Responses.Success, app);
         }
         catch

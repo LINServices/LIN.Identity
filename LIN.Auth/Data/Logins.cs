@@ -102,7 +102,7 @@ public class Logins
         {
 
             var logins = from L in context.DataBase.LoginLogs
-                         where L.ID == id
+                         where L.AccountID == id
                          orderby L.Date descending
                          select new LoginLogModel
                          {
