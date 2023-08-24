@@ -5,6 +5,7 @@ public  static partial class Accounts
 {
 
 
+
     #region Abstracciones
 
 
@@ -50,7 +51,7 @@ public  static partial class Accounts
 
         var (context, key) = Conexión.GetOneConnection();
 
-        var res = await UpdatePassword(newData, context);
+        var res = await Update(newData, context);
         context.CloseActions(key);
         return res;
 
@@ -63,12 +64,12 @@ public  static partial class Accounts
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="status">Nuevo estado</param>
-    public async static Task<ResponseBase> UpdateState(int id, AccountStatus status)
+    public async static Task<ResponseBase> Update(int id, AccountStatus status)
     {
 
         var (context, key) = Conexión.GetOneConnection();
 
-        var res = await UpdateState(id, status, context);
+        var res = await Update(id, status, context);
         context.CloseActions(key);
         return res;
 
@@ -81,12 +82,12 @@ public  static partial class Accounts
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="gender">Nuevo genero</param>
-    public async static Task<ResponseBase> UpdateGender(int id, Genders gender)
+    public async static Task<ResponseBase> Update(int id, Genders gender)
     {
 
         var (context, key) = Conexión.GetOneConnection();
 
-        var res = await UpdateGender(id, gender, context);
+        var res = await Update(id, gender, context);
         context.CloseActions(key);
         return res;
 
@@ -99,12 +100,12 @@ public  static partial class Accounts
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="visibility">Nueva visibilidad</param>
-    public async static Task<ResponseBase> UpdateVisibility(int id, AccountVisibility visibility)
+    public async static Task<ResponseBase> Update(int id, AccountVisibility visibility)
     {
 
         var (context, key) = Conexión.GetOneConnection();
 
-        var res = await UpdateVisibility(id, visibility, context);
+        var res = await Update(id, visibility, context);
         context.CloseActions(key);
         return res;
 
@@ -190,7 +191,7 @@ public  static partial class Accounts
     /// </summary>
     /// <param name="newData">Nuevas credenciales</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> UpdatePassword(UpdatePasswordModel newData, Conexión context)
+    public async static Task<ResponseBase> Update(UpdatePasswordModel newData, Conexión context)
     {
 
         // Encontrar el usuario
@@ -222,7 +223,7 @@ public  static partial class Accounts
     /// </summary>
     /// <param name="newData">organización</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> UpdateOrg(OrganizationModel newData, int id, Conexión context)
+    public async static Task<ResponseBase> Update(OrganizationModel newData, int id, Conexión context)
     {
 
         // Encontrar el usuario
@@ -260,7 +261,7 @@ public  static partial class Accounts
     /// <param name="user">ID</param>
     /// <param name="status">Nuevo estado</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> UpdateState(int user, AccountStatus status, Conexión context)
+    public async static Task<ResponseBase> Update(int user, AccountStatus status, Conexión context)
     {
 
         // Encontrar el usuario
@@ -290,7 +291,7 @@ public  static partial class Accounts
     /// <param name="user">ID</param>
     /// <param name="genero">Nuevo genero</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> UpdateGender(int user, Genders genero, Conexión context)
+    public async static Task<ResponseBase> Update(int user, Genders genero, Conexión context)
     {
 
         // Encontrar el usuario
@@ -320,7 +321,7 @@ public  static partial class Accounts
     /// <param name="user">ID</param>
     /// <param name="visibility">Nueva visibilidad</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> UpdateVisibility(int user, AccountVisibility visibility, Conexión context)
+    public async static Task<ResponseBase> Update(int user, AccountVisibility visibility, Conexión context)
     {
 
         // Encontrar el usuario
