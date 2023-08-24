@@ -105,11 +105,14 @@ public static partial class Accounts
 
 
 
+
     /// <summary>
     /// Obtiene una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    /// <param name="safeFilter">TRUE para solo obtener usuarios activos</param>
+    /// <param name="safeFilter">Filtro seguro</param>
+    /// <param name="privateInfo">Filtro de información privada</param>
+    /// <param name="includeOrg">Incluir organización</param>
     /// <param name="context">Contexto de conexión</param>
     public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo, bool includeOrg, Conexión context)
     {
@@ -118,32 +121,13 @@ public static partial class Accounts
         try
         {
 
-
-
-
             // Consulta global
             var query = from A in context.DataBase.Accounts
                         where A.ID == id
                         select A;
 
-
-            if (includeOrg)
-            {
-                query = query.Include(a => a.OrganizationAccess).ThenInclude(a => a.Organization);
-            }
-
-
-            // Filtro seguro
-            {
-                query = query.Where(T => T.Estado == AccountStatus.Normal);
-                query = Filters.Account.Get(query);
-            }
-
-
-            // Si no necesita información privada
-            if (!privateInfo)
-                query = Filters.Account.FilterInfoIf(query);
-
+            // Armar la consulta final
+            query = Filters.Account.Filter(query, safeFilter, includeOrg, privateInfo);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -163,11 +147,14 @@ public static partial class Accounts
 
 
 
+
     /// <summary>
     /// Obtiene una cuenta
     /// </summary>
     /// <param name="user">Usuario de la cuenta</param>
-    /// <param name="safeFilter">TRUE para solo obtener usuarios activos</param>
+    /// <param name="safeFilter">Filtro seguro</param>
+    /// <param name="privateInfo">Filtro de información privada</param>
+    /// <param name="includeOrg">Incluir organización</param>
     /// <param name="context">Contexto de conexión</param>
     public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo, bool includeOrg, Conexión context)
     {
@@ -181,32 +168,17 @@ public static partial class Accounts
                         where A.Usuario == user
                         select A;
 
+            // Armar la consulta final
+            query = Filters.Account.Filter(query, safeFilter, includeOrg, privateInfo);
 
-            if (includeOrg)
-            {
-                query = query.Include(a => a.OrganizationAccess).ThenInclude(a => a.Organization).ThenInclude(a => a.AppList).ThenInclude(a => a.App);
-            }
-
-
-            // Filtro seguro
-            if (safeFilter)
-            {
-                query = query.Where(T => T.Estado == AccountStatus.Normal);
-                query = Filters.Account.Get(query);
-            }
-
-            // Si no necesita información privada
-            if (!privateInfo)
-                query = Filters.Account.FilterInfoIf(query);
-
-            // Trae la cuenta
-            var account = await query.FirstOrDefaultAsync();
+            // Obtiene el usuario
+            var result = await query.FirstOrDefaultAsync();
 
             // Si no existe el modelo
-            if (account == null)
+            if (result == null)
                 return new(Responses.NotExistAccount);
 
-            return new(Responses.Success, account);
+            return new(Responses.Success, result);
 
         }
         catch
@@ -215,6 +187,20 @@ public static partial class Accounts
 
         return new();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -280,9 +266,9 @@ public static partial class Accounts
 
             // Query
             var query = from A in context.DataBase.Accounts
-                         where A.Estado == AccountStatus.Normal
-                         where ids.Contains(A.ID)
-                         select A;
+                        where A.Estado == AccountStatus.Normal
+                        where ids.Contains(A.ID)
+                        select A;
 
             // Ejecuta
             var result = await Filters.Account.FilterInfoIf(query).ToListAsync();
@@ -299,6 +285,7 @@ public static partial class Accounts
 
         return new();
     }
+
 
 
 

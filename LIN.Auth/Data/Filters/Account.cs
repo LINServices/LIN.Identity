@@ -1,4 +1,6 @@
-﻿namespace LIN.Auth.Data.Filters;
+﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
+namespace LIN.Auth.Data.Filters;
 
 
 public static class Account
@@ -9,11 +11,15 @@ public static class Account
     /// Si el usuario es oculto/privado devuelve datos genéricos
     /// </summary>
     /// <param name="baseQuery">Query base</param>
-    public static IQueryable<AccountModel> FilterInfoIf(IQueryable<AccountModel> baseQuery)
+    public static IQueryable<AccountModel> Filter(IQueryable<AccountModel> baseQuery, bool safe, bool includeOrg, bool privateInfo)
     {
 
         // Imagen genérica
         var profile = File.ReadAllBytes("wwwroot/user.png");
+
+        // Filtro seguro
+        if (safe)
+            baseQuery = baseQuery.Where(T => T.Estado == AccountStatus.Normal);
 
         // Generación de la consulta
         var finalQuery = baseQuery.Select(T => new AccountModel
@@ -25,11 +31,11 @@ public static class Account
             Estado = T.Estado,
             Usuario = T.Usuario,
             Visibilidad = T.Visibilidad,
-            Genero = (T.Visibilidad == AccountVisibility.Visible) ? T.Genero : Genders.Undefined,
-            Creación = (T.Visibilidad == AccountVisibility.Visible) ? T.Creación : default,
-            Perfil = (T.Visibilidad == AccountVisibility.Visible) ? T.Perfil : profile,
+            Genero = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Genero : Genders.Undefined,
+            Creación = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Creación : default,
+            Perfil = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Perfil : profile,
 
-            OrganizationAccess = T.OrganizationAccess != null ? new OrganizationAccessModel()
+            OrganizationAccess = (T.OrganizationAccess != null && includeOrg) ? new OrganizationAccessModel()
             {
                 ID = T.OrganizationAccess.ID,
                 Rol = T.OrganizationAccess.Rol,
@@ -41,6 +47,18 @@ public static class Account
         return finalQuery;
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -81,7 +99,6 @@ public static class Account
         return finalQuery;
 
     }
-
 
 
 }
