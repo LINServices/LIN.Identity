@@ -9,19 +9,20 @@ public static partial class Accounts
 
 
 
-
-
     /// <summary>
-    /// Obtiene un usuario
+    /// Obtiene una cuenta
     /// </summary>
-    /// <param name="id">ID del usuario</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool privateInfo = true, bool includeOrg = false)
+    /// <param name="id">ID de la cuenta</param>
+    /// <param name="safeFilter">Filtro seguro</param>
+    /// <param name="includePrivateInfo">Filtro de información privada</param>
+    /// <param name="includeOrg">Incluir organización</param>
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool includePrivateInfo = true, bool includeOrg = false)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id, safeFilter, privateInfo, includeOrg, context);
+        var res = await Read(id, safeFilter, includePrivateInfo, includeOrg, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -30,16 +31,19 @@ public static partial class Accounts
 
 
     /// <summary>
-    /// Obtiene un usuario
+    /// Obtiene una cuenta
     /// </summary>
     /// <param name="user">Usuario de la cuenta</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool privateInfo = true, bool includeOrg = false)
+    /// <param name="safeFilter">Filtro seguro</param>
+    /// <param name="includePrivateInfo">Filtro de información privada</param>
+    /// <param name="includeOrg">Incluir organización</param>
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool includePrivateInfo = true, bool includeOrg = false)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(user, safeFilter, privateInfo, includeOrg, context);
+        var res = await Read(user, safeFilter, includePrivateInfo, includeOrg, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -47,36 +51,18 @@ public static partial class Accounts
 
 
     /// <summary>
-    /// Obtiene los primeros 10 usuarios que coincidan con el patron
+    /// Obtiene una lista de diez (10) usuarios que coincidan con un patron
     /// </summary>
-    /// <param name="pattern">Patron a buscar</param>
-    /// <param name="id">ID de la cuenta</param>
-    public async static Task<ReadAllResponse<AccountModel>> SearchByPattern(string pattern, int id)
+    /// <param name="pattern">Patron de búsqueda</param>
+    /// <param name="me">Mi ID</param>
+    /// <param name="isAdmin">Si es un admin del sistema el que esta consultando</param>
+    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, bool isAdmin = false)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Search(pattern, id, context);
-        context.CloseActions(connectionKey);
-        return res;
-    }
-
-
-
-
-    /// <summary>
-    /// Obtiene la lista de usuarios correspondiente a los ids
-    /// </summary>
-    /// <param name="ids"></param>
-    /// <returns></returns>
-    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids)
-    {
-
-        // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
-
-        var res = await FindAll(ids, context);
+        var res = await Search(pattern, me, isAdmin, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -84,20 +70,20 @@ public static partial class Accounts
 
 
     /// <summary>
-    /// Obtiene los primeros 5 usuarios que coincidan con el patron (ADMIN)
+    /// Obtiene una lista de usuarios por medio del ID
     /// </summary>
-    /// <param name="pattern">Patron a buscar</param>
-    public async static Task<ReadAllResponse<AccountModel>> GetAll(string pattern)
+    /// <param name="ids">Lista de IDs</param>
+    /// <param name="org">ID de organización</param>
+    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int org = 0)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await GetAll(pattern, context);
+        var res = await FindAll(ids, org, context);
         context.CloseActions(connectionKey);
         return res;
     }
-
 
 
 
@@ -215,7 +201,7 @@ public static partial class Accounts
             if (isAdmin)
                 query = Filters.Account.Filter(baseQuery: query,
                                                safe: false, includeOrg: true, privateInfo: false);
-            
+
             else
                 query = Filters.Account.Filter(baseQuery: query,
                                                    safe: false, includeOrg: true,
