@@ -110,7 +110,8 @@ public class Logins
                              Platform = L.Platform,
                              Application = new()
                              {
-                                 Name = L.Application.Name
+                                 Name = L.Application.Name,
+                                 Badge = L.Application.Badge
                              }
                          };
 
