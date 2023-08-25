@@ -526,10 +526,19 @@ public class OrganizationsController : ControllerBase
 	/// </summary>
 	/// <param name="modelo">Modelo del usuario</param>
 	[HttpGet("search/apps")]
-	public async Task<HttpReadAllResponse<ApplicationModel>> Search([FromQuery] string param)
+	public async Task<HttpReadAllResponse<ApplicationModel>> Search([FromQuery] string param, [FromHeader] string token)
 	{
 
-		var finds = await Data.Applications.Search(param);
+
+		var (isValid, _, _, orgID) = Jwt.Validate(token);
+
+		if (!isValid)
+		{
+			return new(Responses.Undefined);
+		}
+
+
+		var finds = await Data.Applications.Search(param, orgID);
 
 		return finds;
 	}

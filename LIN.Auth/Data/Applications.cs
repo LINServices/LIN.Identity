@@ -38,11 +38,11 @@ public class Applications
 
 
 
-    public async static Task<ReadAllResponse<ApplicationModel>> Search(string param)
+    public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, int org)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
-        var res = await Search(param, 1, context);
+        var res = await Search(param, org, context);
         context.CloseActions(contextKey);
         return res;
     }
