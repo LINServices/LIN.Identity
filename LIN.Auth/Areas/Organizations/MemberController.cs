@@ -6,38 +6,12 @@ public class MemberController : ControllerBase
 {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /// <summary>
-    /// Crea una cuenta en una organización
+    /// Crea un nuevo miembro en una organización
     /// </summary>
-    /// <param name="modelo">Modelo del usuario</param>
+    /// <param name="modelo">Modelo de la cuenta</param>
+    /// <param name="token">Token de acceso de un administrador</param>
+    /// <param name="rol">Rol asignado</param>
     [HttpPost("create")]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] OrgRoles rol)
     {
@@ -161,19 +135,12 @@ public class MemberController : ControllerBase
 
 
 
-
-
-
-
-
-
-
     /// <summary>
-    /// 
+    /// Obtiene la lista de miembros asociados a una organización
     /// </summary>
-    /// <param name="modelo">Modelo del usuario</param>
+    /// <param name="token">Token de acceso</param>
     [HttpGet]
-    public async Task<HttpReadAllResponse<AccountModel>> Create([FromHeader] string token)
+    public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromHeader] string token)
     {
 
         var (isValid, _, _, orgID) = Jwt.Validate(token);
@@ -211,9 +178,6 @@ public class MemberController : ControllerBase
         return members;
 
     }
-
-
-
 
 
 
