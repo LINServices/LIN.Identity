@@ -494,7 +494,7 @@ public class OrganizationsController : ControllerBase
 			};
 
 		// Crea la aplicación en la organización
-		var res = await Data.Organizations.Applications.CreateOn(appUid, userData.Model.OrganizationAccess.Organization.ID);
+		var res = await Data.Organizations.Applications.Create(appUid, userData.Model.OrganizationAccess.Organization.ID);
 
 		// Si hubo une error
 		if (res.Response != Responses.Success)

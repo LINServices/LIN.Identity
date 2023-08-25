@@ -9,6 +9,12 @@ public class Applications
     #region Abstractions
 
 
+
+    /// <summary>
+    /// Obtiene la lista de apps que coincidan con un patron y que no estén agregadas a una organización
+    /// </summary>
+    /// <param name="param">Parámetro de búsqueda</param>
+    /// <param name="org">ID de la organización</param>
     public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, int org)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -18,18 +24,30 @@ public class Applications
         return res;
     }
 
-    public async static Task<CreateResponse> CreateOn(string appUid, int org)
+
+
+    /// <summary>
+    /// Crea una pp en la lista blanca de una organización
+    /// </summary>
+    /// <param name="appUid">UID de la aplicación</param>
+    /// <param name="org">ID de la organización</param>
+    public async static Task<CreateResponse> Create(string appUid, int org)
 	{
 		var (context, contextKey) = Conexión.GetOneConnection();
 
-		var res = await CreateOn(appUid, org, context);
+		var res = await Create(appUid, org, context);
 		context.CloseActions(contextKey);
 		return res;
 	}
 
 
 
-	public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org)
+    /// <summary>
+    /// Encuentra una app en una organización
+    /// </summary>
+    /// <param name="key">Key de la app</param>
+    /// <param name="org">ID de la organización</param>
+    public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org)
 	{
 		var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -84,7 +102,7 @@ public class Applications
 	/// <param name="key">Key de la app</param>
 	/// <param name="org">ID de la organización</param>
 	/// <param name="context">Contexto de conexión</param>
-	public async static Task<CreateResponse> CreateOn(string appUid, int org, Conexión context)
+	public async static Task<CreateResponse> Create(string appUid, int org, Conexión context)
 	{
 
 		// Ejecución
@@ -128,9 +146,10 @@ public class Applications
 
 
     /// <summary>
-    /// Obtiene la lista de apps que coincidan con un patron
+    /// Obtiene la lista de apps que coincidan con un patron y que no estén agregadas a una organización
     /// </summary>
     /// <param name="param">Parámetro de búsqueda</param>
+	/// <param name="org">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
     public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, int org, Conexión context)
     {
@@ -139,6 +158,7 @@ public class Applications
         try
         {
 
+			// Query
             var apps = await (from A in context.DataBase.Applications
                               where !context.DataBase.AppOnOrg.Any(aog => aog.AppID == A.ID && aog.OrgID == org)
                               where A.Name.ToLower().Contains(param.ToLower())
@@ -160,6 +180,7 @@ public class Applications
 
         return new();
     }
+
 
 
 }
