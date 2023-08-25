@@ -529,10 +529,11 @@ public class OrganizationsController : ControllerBase
 
 		var (isValid, _, _, orgID) = Jwt.Validate(token);
 
-		if (!isValid)
+		if (!isValid || orgID <= 0)
 		{
-			return new(Responses.Undefined);
+			return new(Responses.Unauthorized);
 		}
+
 
 
 		var finds = await Data.Organizations.Applications.Search(param, orgID);
