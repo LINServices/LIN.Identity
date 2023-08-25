@@ -58,15 +58,12 @@ public class ApplicationsController : ControllerBase
 
 
 
-
-
-
-
-
-
-
-
-	[HttpPost("insert/app")]
+    /// <summary>
+    /// Insertar una aplicación en una organización
+    /// </summary>
+    /// <param name="appUid">UId de la aplicación</param>
+    /// <param name="token">Token de acceso</param>
+    [HttpPost("insert")]
 	public async Task<HttpCreateResponse> InsertApp([FromQuery] string appUid, [FromHeader] string token)
 	{
 
@@ -139,28 +136,29 @@ public class ApplicationsController : ControllerBase
 
 
 
-	[HttpGet("search/apps")]
+    /// <summary>
+    /// Buscar aplicaciones que no están vinculadas a una organización por medio del un parámetro
+    /// </summary>
+    /// <param name="param">Parámetro de búsqueda</param>
+    /// <param name="token">Token de acceso</param>
+    [HttpGet("search")]
 	public async Task<HttpReadAllResponse<ApplicationModel>> Search([FromQuery] string param, [FromHeader] string token)
 	{
 
-
+		// Token
 		var (isValid, _, _, orgID) = Jwt.Validate(token);
 
+		// Valida el token
 		if (!isValid || orgID <= 0)
 		{
 			return new(Responses.Unauthorized);
 		}
 
-
-
+		// Encuentra las apps
 		var finds = await Data.Organizations.Applications.Search(param, orgID);
 
 		return finds;
 	}
-
-
-
-
 
 
 
