@@ -449,11 +449,6 @@ public class OrganizationsController : ControllerBase
 
 
 
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="modelo">Modelo del usuario</param>
 	[HttpPost("insert/app")]
 	public async Task<HttpCreateResponse> InsertApp([FromQuery] string appUid, [FromHeader] string token)
 	{
@@ -523,6 +518,14 @@ public class OrganizationsController : ControllerBase
 		}; ;
 
 	}
+
+
+
+
+
+
+
+
 
 
 }

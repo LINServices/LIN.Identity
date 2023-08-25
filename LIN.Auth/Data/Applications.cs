@@ -5,228 +5,278 @@ public class Applications
 {
 
 
-    #region Abstracciones
+	#region Abstracciones
 
 
-    /// <summary>
-    /// Crea una app
-    /// </summary>
-    /// <param name="data">Modelo</param>
-    public async static Task<CreateResponse> Create(ApplicationModel data)
-    {
-        var (context, contextKey) = Conexión.GetOneConnection();
-        var response = await Create(data, context);
-        context.CloseActions(contextKey);
-        return response;
-    }
-
-
-
-    /// <summary>
-    /// Obtiene la lista de apps asociados a una cuenta
-    /// </summary>
-    /// <param name="id">ID de la cuenta</param>
-    public async static Task<ReadAllResponse<ApplicationModel>> ReadAll(int id)
-    {
-        var (context, contextKey) = Conexión.GetOneConnection();
-
-        var res = await ReadAll(id, context);
-        context.CloseActions(contextKey);
-        return res;
-    }
+	/// <summary>
+	/// Crea una app
+	/// </summary>
+	/// <param name="data">Modelo</param>
+	public async static Task<CreateResponse> Create(ApplicationModel data)
+	{
+		var (context, contextKey) = Conexión.GetOneConnection();
+		var response = await Create(data, context);
+		context.CloseActions(contextKey);
+		return response;
+	}
 
 
 
-    /// <summary>
-    /// Obtiene una app
-    /// </summary>
-    /// <param name="id">ID de la app</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> Read(int id)
-    {
-        var (context, contextKey) = Conexión.GetOneConnection();
+	/// <summary>
+	/// Obtiene la lista de apps asociados a una cuenta
+	/// </summary>
+	/// <param name="id">ID de la cuenta</param>
+	public async static Task<ReadAllResponse<ApplicationModel>> ReadAll(int id)
+	{
+		var (context, contextKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id, context);
-        context.CloseActions(contextKey);
-        return res;
-    }
-
-
-    /// <summary>
-    /// Obtiene una app
-    /// </summary>
-    /// <param name="key">Key de la app</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> Read(string key)
-    {
-        var (context, contextKey) = Conexión.GetOneConnection();
-
-        var res = await Read(key, context);
-        context.CloseActions(contextKey);
-        return res;
-    }
-
-
-    #endregion
-
-
-
-    /// <summary>
-    /// Crear aplicación
-    /// </summary>
-    /// <param name="data">Modelo</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(ApplicationModel data, Conexión context)
-    {
-
-        data.ID = 0;
-
-        // Ejecución
-        try
-        {
-
-            var res = await context.DataBase.Applications.AddAsync(data);
-            context.DataBase.SaveChanges();
-
-            return new(Responses.Success, data.ID);
-        }
-        catch (Exception ex)
-        {
-
-            if ((ex.InnerException?.Message.Contains("Violation of UNIQUE KEY constraint") ?? false) || (ex.InnerException?.Message.Contains("duplicate key") ?? false))
-                return new(Responses.Undefined);
-
-        }
-
-        return new();
-    }
-
-
-
-    /// <summary>
-    /// Obtiene la lista de apps asociados a una cuenta
-    /// </summary>
-    /// <param name="id">ID de la cuenta</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<ApplicationModel>> ReadAll(int id, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            // Query
-            var emails = await (from E in context.DataBase.Applications
-                                where E.AccountID == id
-                                select E).ToListAsync();
-
-            return new(Responses.Success, emails);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
+		var res = await ReadAll(id, context);
+		context.CloseActions(contextKey);
+		return res;
+	}
 
 
 
 
-    /// <summary>
-    /// Obtiene una app
-    /// </summary>
-    /// <param name="id">ID de la app</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> Read(int id, Conexión context)
-    {
+	public async static Task<ReadAllResponse<ApplicationModel>> Search(string param)
+	{
+		var (context, contextKey) = Conexión.GetOneConnection();
 
-        // Ejecución
-        try
-        {
-
-            // Query
-            var email = await (from E in context.DataBase.Applications
-                               where E.ID == id
-                               select E).FirstOrDefaultAsync();
-
-            // Email no existe
-            if (email == null)
-            {
-                return new(Responses.NotRows);
-            }
-
-            return new(Responses.Success, email);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
+		var res = await Search(param, context);
+		context.CloseActions(contextKey);
+		return res;
+	}
 
 
 
-    /// <summary>
-    /// Obtiene una app
-    /// </summary>
-    /// <param name="key">Key de la app</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> Read(string key, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            // Query
-            var email = await (from E in context.DataBase.Applications
-                               where E.Key == key
-                               select E).FirstOrDefaultAsync();
-
-            // Email no existe
-            if (email == null)
-            {
-                return new(Responses.NotRows);
-            }
-
-            return new(Responses.Success, email);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
 
 
+	/// <summary>
+	/// Obtiene una app
+	/// </summary>
+	/// <param name="id">ID de la app</param>
+	public async static Task<ReadOneResponse<ApplicationModel>> Read(int id)
+	{
+		var (context, contextKey) = Conexión.GetOneConnection();
 
-    /// <summary>
-    /// Obtiene una app
-    /// </summary>
-    /// <param name="uid">UId de la app</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> ReadByAppUid(string uid, Conexión context)
-    {
+		var res = await Read(id, context);
+		context.CloseActions(contextKey);
+		return res;
+	}
 
-        // Ejecución
-        try
-        {
 
-            // Query
-            var app = await (from E in context.DataBase.Applications
-                             where E.ApplicationUid == uid
-                             select E).FirstOrDefaultAsync();
+	/// <summary>
+	/// Obtiene una app
+	/// </summary>
+	/// <param name="key">Key de la app</param>
+	public async static Task<ReadOneResponse<ApplicationModel>> Read(string key)
+	{
+		var (context, contextKey) = Conexión.GetOneConnection();
 
-            // Email no existe
-            if (app == null)
-                return new(Responses.NotRows);
+		var res = await Read(key, context);
+		context.CloseActions(contextKey);
+		return res;
+	}
 
-            return new(Responses.Success, app);
-        }
-        catch
-        {
-        }
 
-        return new();
-    }
+	#endregion
+
+
+
+	/// <summary>
+	/// Crear aplicación
+	/// </summary>
+	/// <param name="data">Modelo</param>
+	/// <param name="context">Contexto de conexión</param>
+	public async static Task<CreateResponse> Create(ApplicationModel data, Conexión context)
+	{
+
+		data.ID = 0;
+
+		// Ejecución
+		try
+		{
+
+			var res = await context.DataBase.Applications.AddAsync(data);
+			context.DataBase.SaveChanges();
+
+			return new(Responses.Success, data.ID);
+		}
+		catch (Exception ex)
+		{
+
+			if ((ex.InnerException?.Message.Contains("Violation of UNIQUE KEY constraint") ?? false) || (ex.InnerException?.Message.Contains("duplicate key") ?? false))
+				return new(Responses.Undefined);
+
+		}
+
+		return new();
+	}
+
+
+
+	/// <summary>
+	/// Obtiene la lista de apps asociados a una cuenta
+	/// </summary>
+	/// <param name="id">ID de la cuenta</param>
+	/// <param name="context">Contexto de conexión</param>
+	public async static Task<ReadAllResponse<ApplicationModel>> ReadAll(int id, Conexión context)
+	{
+
+		// Ejecución
+		try
+		{
+
+			// Query
+			var emails = await (from E in context.DataBase.Applications
+								where E.AccountID == id
+								select E).ToListAsync();
+
+			return new(Responses.Success, emails);
+		}
+		catch
+		{
+		}
+
+		return new();
+	}
+
+
+
+
+	/// <summary>
+	/// Obtiene la lista de apps que coincidan con un patron
+	/// </summary>
+	/// <param name="param">Parámetro de búsqueda</param>
+	/// <param name="context">Contexto de conexión</param>
+	public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, Conexión context)
+	{
+
+		// Ejecución
+		try
+		{
+
+			var apps = await (from A in context.DataBase.Applications
+							  where A.Name.Contains(param) ||
+							  A.ApplicationUid.Contains(param)
+							  select new ApplicationModel
+							  {
+								  ID = A.ID,
+								  ApplicationUid = A.ApplicationUid,
+								  Badge = A.Badge,
+								  Name = A.Name
+							  }).Take(10).ToListAsync();
+
+
+			return new(Responses.Success, apps);
+		}
+		catch
+		{
+		}
+
+		return new();
+	}
+
+
+
+
+	/// <summary>
+	/// Obtiene una app
+	/// </summary>
+	/// <param name="id">ID de la app</param>
+	/// <param name="context">Contexto de conexión</param>
+	public async static Task<ReadOneResponse<ApplicationModel>> Read(int id, Conexión context)
+	{
+
+		// Ejecución
+		try
+		{
+
+			// Query
+			var email = await (from E in context.DataBase.Applications
+							   where E.ID == id
+							   select E).FirstOrDefaultAsync();
+
+			// Email no existe
+			if (email == null)
+			{
+				return new(Responses.NotRows);
+			}
+
+			return new(Responses.Success, email);
+		}
+		catch
+		{
+		}
+
+		return new();
+	}
+
+
+
+	/// <summary>
+	/// Obtiene una app
+	/// </summary>
+	/// <param name="key">Key de la app</param>
+	/// <param name="context">Contexto de conexión</param>
+	public async static Task<ReadOneResponse<ApplicationModel>> Read(string key, Conexión context)
+	{
+
+		// Ejecución
+		try
+		{
+
+			// Query
+			var email = await (from E in context.DataBase.Applications
+							   where E.Key == key
+							   select E).FirstOrDefaultAsync();
+
+			// Email no existe
+			if (email == null)
+			{
+				return new(Responses.NotRows);
+			}
+
+			return new(Responses.Success, email);
+		}
+		catch
+		{
+		}
+
+		return new();
+	}
+
+
+
+	/// <summary>
+	/// Obtiene una app
+	/// </summary>
+	/// <param name="uid">UId de la app</param>
+	/// <param name="context">Contexto de conexión</param>
+	public async static Task<ReadOneResponse<ApplicationModel>> ReadByAppUid(string uid, Conexión context)
+	{
+
+		// Ejecución
+		try
+		{
+
+			// Query
+			var app = await (from E in context.DataBase.Applications
+							 where E.ApplicationUid == uid
+							 select E).FirstOrDefaultAsync();
+
+			// Email no existe
+			if (app == null)
+				return new(Responses.NotRows);
+
+			return new(Responses.Success, app);
+		}
+		catch
+		{
+		}
+
+		return new();
+	}
 
 
 }
