@@ -140,7 +140,7 @@ public class AuthenticationController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, true);
+        var response = await Data.Accounts.Read(user, true, true, true);
 
         if (response.Response != Responses.Success)
             return new(response.Response);
