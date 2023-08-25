@@ -129,7 +129,7 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet("LoginWithToken")]
-    public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token, [FromHeader] string application)
+    public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token)
     {
 
         // Valida el token
@@ -147,17 +147,6 @@ public class AuthenticationController : ControllerBase
 
         if (response.Model.Estado != AccountStatus.Normal)
             return new(Responses.NotExistAccount);
-
-        // Crea registro del login
-        _ = Data.Logins.Create(new()
-        {
-            Date = DateTime.Now,
-            AccountID = response.Model.ID,
-            Application = new()
-            {
-                Key = application
-            }
-        });
 
         response.Token = token;
         return response;
