@@ -1,9 +1,15 @@
-﻿namespace LIN.Auth.Controllers.Preparer;
+﻿namespace LIN.Auth.Controllers.Processors;
 
 
-public class Account
+public class AccountProcessor
 {
-	public static AccountModel Preparar(AccountModel modelo)
+
+
+	/// <summary>
+	/// Procesa la información de un Account
+	/// </summary>
+	/// <param name="modelo">Modelo</param>
+	public static AccountModel Process(AccountModel modelo)
 	{
 
 		var model = new AccountModel
@@ -27,4 +33,6 @@ public class Account
 		return model;
 		
 	}
+
+
 }
