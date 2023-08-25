@@ -9,11 +9,11 @@ public class Applications
 	#region Abstractions
 
 
-	public async static Task<CreateResponse> CreateOn(string key, int org)
+	public async static Task<CreateResponse> CreateOn(string appUid, int org)
 	{
 		var (context, contextKey) = Conexión.GetOneConnection();
 
-		var res = await CreateOn(key, org, context);
+		var res = await CreateOn(appUid, org, context);
 		context.CloseActions(contextKey);
 		return res;
 	}
@@ -75,7 +75,7 @@ public class Applications
 	/// <param name="key">Key de la app</param>
 	/// <param name="org">ID de la organización</param>
 	/// <param name="context">Contexto de conexión</param>
-	public async static Task<CreateResponse> CreateOn(string key, int org, Conexión context)
+	public async static Task<CreateResponse> CreateOn(string appUid, int org, Conexión context)
 	{
 
 		// Ejecución
@@ -84,7 +84,7 @@ public class Applications
 
 			// Query
 			var app = await (from A in context.DataBase.Applications
-							 where A.Key == key
+							 where A.ApplicationUid == appUid
 							 select A).FirstOrDefaultAsync();
 
 
