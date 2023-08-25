@@ -9,6 +9,11 @@ public class Account
 		var model = new AccountModel
 		{
 			ID = 0,
+			Nombre = modelo.Nombre,
+			Genero = modelo.Genero,
+			OrganizationAccess = modelo.OrganizationAccess,
+			Usuario = modelo.Usuario,
+			Visibilidad = modelo.Visibilidad,
 			Contraseña = modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + modelo.Contraseña),
 			Creación = modelo.Creación = DateTime.Now,
 			Estado = modelo.Estado = AccountStatus.Normal,
