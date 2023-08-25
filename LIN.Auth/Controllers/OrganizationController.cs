@@ -520,7 +520,18 @@ public class OrganizationsController : ControllerBase
 	}
 
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="modelo">Modelo del usuario</param>
+	[HttpGet("search/apps")]
+	public async Task<HttpReadAllResponse<ApplicationModel>> Search([FromQuery] string param)
+	{
 
+		var finds = await Data.Applications.Search(param);
+
+		return finds;
+	}
 
 
 
