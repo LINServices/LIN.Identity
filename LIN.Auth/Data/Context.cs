@@ -128,6 +128,11 @@ public class Context : DbContext
            .HasForeignKey<OrganizationAccessModel>(oa => oa.ID);
 
 
+        modelBuilder.Entity<AppOnOrgModel>()
+            .HasKey(a => new { a.App, a.Organization });
+
+
+
         // Nombre de la tablas
         modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
         modelBuilder.Entity<OrganizationModel>().ToTable("ORGANIZATIONS");

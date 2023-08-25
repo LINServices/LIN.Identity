@@ -513,6 +513,7 @@ public class OrganizationsController : ControllerBase
 		// Retorna el resultado
 		return new CreateResponse
 		{
+			LastID = res.LastID,
 			Message = "",
 			Response = Responses.Success
 		}; ;
