@@ -24,22 +24,28 @@ public class ApplicationsController : ControllerBase
 				Message = "Token invalido.",
 				Response = Responses.Unauthorized
 			};
-		
-		// Obtiene las aplicaciones
-		var org = await Data.Organizations.Organizations.ReadApps(orgID);
 
 
+		// Si no tiene ninguna organización
+        if (orgID <= 0)
+            return new ReadAllResponse<ApplicationModel>
+            {
+                Message = "No estas vinculado con ninguna organización.",
+                Response = Responses.Unauthorized
+            };
+
+
+        // Obtiene las aplicaciones
+        var org = await Data.Organizations.Organizations.ReadApps(orgID);
+
+		// Su no se encontraron aplicaciones
 		if (org.Response != Responses.Success)
-		{
 			return new ReadAllResponse<ApplicationModel>
 			{
 				Message = "No found Organization",
 				Response = Responses.Unauthorized
 			};
-		}
-
-
-
+		
 		// Conexión
 		(Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
