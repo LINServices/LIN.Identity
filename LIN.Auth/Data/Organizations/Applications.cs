@@ -6,10 +6,19 @@ public class Applications
 
 
 
-	#region Abstractions
+    #region Abstractions
 
 
-	public async static Task<CreateResponse> CreateOn(string appUid, int org)
+    public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, int org)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await Search(param, org, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
+
+    public async static Task<CreateResponse> CreateOn(string appUid, int org)
 	{
 		var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -116,6 +125,41 @@ public class Applications
 		return new();
 	}
 
+
+
+    /// <summary>
+    /// Obtiene la lista de apps que coincidan con un patron
+    /// </summary>
+    /// <param name="param">Parámetro de búsqueda</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, int org, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            var apps = await (from A in context.DataBase.Applications
+                              where !context.DataBase.AppOnOrg.Any(aog => aog.AppID == A.ID && aog.OrgID == org)
+                              where A.Name.ToLower().Contains(param.ToLower())
+                              || A.ApplicationUid.ToLower().Contains(param.ToLower())
+                              select new ApplicationModel
+                              {
+                                  ID = A.ID,
+                                  ApplicationUid = A.ApplicationUid,
+                                  Badge = A.Badge,
+                                  Name = A.Name
+                              }).Take(10).ToListAsync();
+
+
+            return new(Responses.Success, apps);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
 
 
 }
