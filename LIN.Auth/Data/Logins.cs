@@ -73,7 +73,14 @@ public class Logins
                 ID = appResult.Model.ID
             };
 
-            context.DataBase.Attach(data.Application);
+            try
+            {
+                context.DataBase.Attach(data.Application);
+            }
+            catch
+            {
+            }
+
 
             var res = context.DataBase.LoginLogs.Add(data);
             await context.DataBase.SaveChangesAsync();
@@ -105,6 +112,7 @@ public class Logins
                          orderby L.Date descending
                          select new LoginLogModel
                          {
+                             ID = L.ID,
                              Date = L.Date,
                              Platform = L.Platform,
                              Application = new()
