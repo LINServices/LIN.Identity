@@ -20,7 +20,7 @@ public class AccountController : ControllerBase
 
 
         // Organización del modelo
-        modelo = Preparer.Account.Preparar(modelo);
+        modelo = Processors.AccountProcessor.Process(modelo);
        
         // Conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
