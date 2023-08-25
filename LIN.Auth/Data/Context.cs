@@ -129,7 +129,19 @@ public class Context : DbContext
 
 
         modelBuilder.Entity<AppOnOrgModel>()
-            .HasKey(a => new { a.App, a.Organization });
+            .HasKey(a => new { a.AppID, a.OrgID });
+
+
+
+        modelBuilder.Entity<AppOnOrgModel>()
+          .HasOne(p => p.App)
+          .WithMany()
+          .HasForeignKey(p => p.AppID);
+
+        modelBuilder.Entity<AppOnOrgModel>()
+          .HasOne(p => p.Organization)
+          .WithMany()
+          .HasForeignKey(p => p.OrgID);
 
 
 
