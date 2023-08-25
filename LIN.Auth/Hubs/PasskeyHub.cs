@@ -223,6 +223,7 @@ public class PassKeyHub : Hub
                     Platform = Platforms.Undefined,
                     AccountID = userInfo.Model.ID,
                     Date = DateTime.Now,
+                    Type = LoginTypes.Passkey,
                     Application = new()
                     {
                         Key = intent.Application.Key

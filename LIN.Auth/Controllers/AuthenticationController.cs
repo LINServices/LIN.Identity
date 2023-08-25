@@ -105,6 +105,7 @@ public class AuthenticationController : ControllerBase
         {
             Date = DateTime.Now,
             AccountID = response.Model.ID,
+            Type = LoginTypes.Credentials,
             Application = new()
             {
                 Key = app.Model.Key

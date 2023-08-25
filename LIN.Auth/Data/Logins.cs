@@ -113,6 +113,7 @@ public class Logins
                          select new LoginLogModel
                          {
                              ID = L.ID,
+                             Type = L.Type,
                              Date = L.Date,
                              Platform = L.Platform,
                              Application = new()
