@@ -7,9 +7,9 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Crea una organización
+    /// Crea una nueva organización
     /// </summary>
-    /// <param name="modelo">Modelo de la organización</param>
+    /// <param name="modelo">Modelo de la organización y el usuario administrador</param>
     [HttpPost("create")]
     public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo)
     {
@@ -28,7 +28,7 @@ public class OrganizationsController : ControllerBase
         modelo.ID = 0;
         modelo.AppList = new();
 
-        modelo.Members[0].Member = Processors.AccountProcessor.Process(modelo.Members[0].Member);
+        modelo.Members[0].Member = LIN.Auth.Controllers.Processors.AccountProcessor.Process(modelo.Members[0].Member);
         foreach (var member in modelo.Members)
         {
             member.Rol = OrgRoles.SuperManager;
@@ -85,6 +85,11 @@ public class OrganizationsController : ControllerBase
 
 
 
+    /// <summary>
+    /// Actualiza si una organización tiene lista blanca
+    /// </summary>
+    /// <param name="token">Toke de acceso administrador</param>
+    /// <param name="haveWhite">Nuevo estado</param>
     [HttpPatch("update/whitelist")]
     public async Task<HttpResponseBase> Update([FromHeader] string token, [FromQuery] bool haveWhite)
     {
@@ -138,6 +143,12 @@ public class OrganizationsController : ControllerBase
     }
 
 
+
+    /// <summary>
+    /// Actualiza si los usuarios no admins de una organización tienen acceso a su cuenta
+    /// </summary>
+    /// <param name="token">Token de acceso administrador</param>
+    /// <param name="state">Nuevo estado</param>
     [HttpPatch("update/access")]
     public async Task<HttpResponseBase> UpdateAccess([FromHeader] string token, [FromQuery] bool state)
     {
@@ -189,35 +200,6 @@ public class OrganizationsController : ControllerBase
         return response;
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
