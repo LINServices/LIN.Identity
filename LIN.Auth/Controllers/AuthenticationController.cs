@@ -79,7 +79,7 @@ public class AuthenticationController : ControllerBase
             if (org.Organization.HaveWhiteList)
             {
 
-                var appOnOrg = await Data.Applications.AppOnOrg(app.Model.Key, org.Organization.ID);
+                var appOnOrg = await Data.Organizations.Applications.AppOnOrg(app.Model.Key, org.Organization.ID);
 
                 if (appOnOrg.Response != Responses.Success)
                 {

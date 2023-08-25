@@ -203,7 +203,7 @@ public class PassKeyHub : Hub
                     if (organization.HaveWhiteList)
                     {
                         // Validación de la app
-                        var applicationOnOrg = await Data.Applications.AppOnOrg(intent.Application.Key, userInfo.Model.OrganizationAccess.Organization.ID);
+                        var applicationOnOrg = await Data.Organizations.Applications.AppOnOrg(intent.Application.Key, userInfo.Model.OrganizationAccess.Organization.ID);
 
                         // Si la app no existe o no esta activa
                         if (applicationOnOrg.Response != Responses.Success)
