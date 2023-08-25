@@ -12,10 +12,10 @@ public class Organizations
     /// Crea una organización
     /// </summary>
     /// <param name="data">Modelo</param>
-    public async static Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data, int account)
+    public async static Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
-        var response = await Create(data, account, context);
+        var response = await Create(data, context);
         context.CloseActions(contextKey);
         return response;
     }
@@ -94,7 +94,7 @@ public class Organizations
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data, int user, Conexión context)
+    public async static Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data, Conexión context)
     {
 
         data.ID = 0;
@@ -122,26 +122,6 @@ public class Organizations
                 }
 
                 var res = await context.DataBase.Organizations.AddAsync(data);
-
-                var account = (from A in context.DataBase.Accounts
-                               where A.ID == user
-                               select A).FirstOrDefault();
-
-                if (account == null)
-                {
-                    return new ReadOneResponse<OrganizationModel>
-                    {
-                        Response = Responses.NotExistAccount
-                    };
-                }
-
-
-                account.OrganizationAccess = new()
-                {
-                    Member = account,
-                    Rol = OrgRoles.SuperManager,
-                    Organization = data,
-                };
 
                 context.DataBase.SaveChanges();
 

@@ -11,62 +11,32 @@ public class OrganizationsController : ControllerBase
     /// </summary>
     /// <param name="modelo">Modelo de la organización</param>
     [HttpPost("create")]
-    public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo, [FromHeader] string token)
+    public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo)
     {
 
         // Comprobaciones
-        if (modelo == null || modelo.Domain.Length <= 0 || modelo.Name.Length <= 0)
+        if (modelo == null || modelo.Domain.Length <= 0 || modelo.Name.Length <= 0 || modelo.Members.Count <= 0)
             return new(Responses.InvalidParam);
 
-
-
-        // Token
-        var (isValid, _, userID, _) = Jwt.Validate(token);
-
-        // Validación del token
-        if (!isValid)
-            return new CreateResponse()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido"
-            };
 
 
         // Conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        // Obtiene la cuenta
-        var account = await Data.Accounts.Read(userID, true, true, true, context);
-
-        // Validación de la cuenta
-        if (account.Response != Responses.Success)
-        {
-            return new CreateResponse()
-            {
-                Response = Responses.Unauthorized,
-                Message = "No se encontró el usuario"
-            };
-        }
-
-
-        // Si ya el usuario tiene organización
-        if (account.Model.OrganizationAccess != null)
-        {
-            return new CreateResponse()
-            {
-                Response = Responses.UnauthorizedByOrg,
-                Message = "Ya perteneces a una organización."
-            };
-        }
-
 
         // Organización del modelo
         modelo.ID = 0;
         modelo.AppList = new();
-        modelo.Members = new();
+
+        modelo.Members[0].Member = Preparer.Account.Preparar(modelo.Members[0].Member);
+        foreach (var member in modelo.Members)
+        {
+            member.Rol = OrgRoles.SuperManager;
+            member.Organization = modelo;
+		}
 
         // Creación de la organización
-        var response = await Data.Organizations. Organizations.Create(modelo, userID, context);
+        var response = await Data.Organizations.Organizations.Create(modelo, context);
 
         // Evaluación
         if (response.Response != Responses.Success)

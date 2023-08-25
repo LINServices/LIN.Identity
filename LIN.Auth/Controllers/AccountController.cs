@@ -20,17 +20,8 @@ public class AccountController : ControllerBase
 
 
         // Organización del modelo
-        modelo.ID = 0;
-        modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + modelo.Contraseña);
-        modelo.Creación = DateTime.Now;
-        modelo.Estado = AccountStatus.Normal;
-        modelo.Insignia = AccountBadges.None;
-        modelo.Rol = AccountRoles.User;
-        modelo.Perfil = modelo.Perfil.Length == 0
-                               ? System.IO.File.ReadAllBytes("wwwroot/profile.png")
-                               : modelo.Perfil;
-
-
+        modelo = Preparer.Account.Preparar(modelo);
+       
         // Conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
