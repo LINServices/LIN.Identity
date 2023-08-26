@@ -40,7 +40,7 @@ public class AuthenticationController : ControllerBase
         Areas.Auth.Login.LoginBase strategy;
 
         // Definir la estrategia
-        strategy = (response.Model.OrganizationAccess != null) ?  new Areas.Auth.Login.LoginNormal(response.Model, application, password)
+        strategy = (response.Model.OrganizationAccess == null) ?  new Areas.Auth.Login.LoginNormal(response.Model, application, password)
                                                                : new Areas.Auth.Login.LoginOnOrg(response.Model, application, password);
 
         // Respuesta del login
