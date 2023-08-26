@@ -20,20 +20,6 @@ public class AuthenticationController : ControllerBase
         if (!user.Any() || !password.Any() || !application.Any())
             return new(Responses.InvalidParam);
 
-        // Obtiene la App.
-        var app = await Data.Applications.Read(application);
-
-        // Verifica si la app existe.
-        if (app.Response != Responses.Success)
-        {
-            return new ReadOneResponse<AccountModel>
-            {
-                Message = "La aplicación no esta autorizada para iniciar sesión en LIN Identity",
-                Response = Responses.Unauthorized
-            };
-        }
-
-
         // Obtiene el usuario.
         var response = await Data.Accounts.Read(user, true, true, true);
 
@@ -50,70 +36,24 @@ public class AuthenticationController : ControllerBase
         }
 
 
+        // Estrategia de login
+        Areas.Auth.Login.LoginBase strategy;
+
+        // Definir la estrategia
+        strategy = (response.Model.OrganizationAccess != null) ?  new Areas.Auth.Login.LoginNormal(response.Model, application, password)
+                                                               : new Areas.Auth.Login.LoginOnOrg(response.Model, application, password);
+
+        // Respuesta del login
+        var loginResponse = await strategy.Login();
 
 
-
-
-
-
-
-
-        // Valida el estado de la cuenta
-        if (response.Model.Estado != AccountStatus.Normal)
-            return new(Responses.NotExistAccount);
-
-        // Valida la contraseña
-        if (response.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + password))
-            return new(Responses.InvalidPassword);
-
-
-
-
-
-
-
-
-
-
-
-        // Obtiene la organización
-        var org = response.Model.OrganizationAccess;
-
-        // Validaciones de la organización
-        if (org != null)
-        {
-
-
-            if (!org.Organization.LoginAccess && !org.Rol.IsAdmin())
+        // Respuesta
+        if (loginResponse.Response != Responses.Success)
+            return new ReadOneResponse<AccountModel>()
             {
-                return new ReadOneResponse<AccountModel>
-                {
-                    Message = "Tu organización a deshabilitado el inicio de sesión temporalmente.",
-                    Response = Responses.LoginBlockedByOrg
-                };
-            }
-
-
-
-            if (org.Organization.HaveWhiteList)
-            {
-
-                var appOnOrg = await Data.Organizations.Applications.AppOnOrg(app.Model.Key, org.Organization.ID);
-
-                if (appOnOrg.Response != Responses.Success)
-                {
-                    return new ReadOneResponse<AccountModel>
-                    {
-                        Message = "Tu organización no permite iniciar sesión en esta aplicación.",
-                        Response = Responses.UnauthorizedByOrg
-                    };
-                }
-
-            }
-
-
-
-        }
+                Message = loginResponse.Message,
+                Response = loginResponse.Response
+            };
 
 
         // Genera el token

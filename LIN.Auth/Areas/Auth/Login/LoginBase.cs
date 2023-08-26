@@ -1,4 +1,6 @@
-﻿namespace LIN.Auth.Areas.Auth.Login;
+﻿using Azure;
+
+namespace LIN.Auth.Areas.Auth.Login;
 
 
 public abstract class LoginBase
@@ -9,6 +11,13 @@ public abstract class LoginBase
     /// Llave de la aplicación
     /// </summary>
     private protected string ApplicationKey { get; set; }
+
+
+
+    /// <summary>
+    /// Tipo del login
+    /// </summary>
+    private protected LoginTypes LoginType { get; set; }
 
 
 
@@ -38,12 +47,13 @@ public abstract class LoginBase
     /// </summary>
     /// <param name="account">Datos de la cuenta</param>
     /// <param name="application">Llave</param>
-    public LoginBase(AccountModel? account, string? application, string password)
+    public LoginBase(AccountModel? account, string? application, string password, LoginTypes loginType)
     {
         this.ApplicationKey = application ?? string.Empty;
         this.Account = account ?? new();
         this.Application = new();
         this.Password = password ?? string.Empty;
+        this.LoginType = loginType;
     }
 
 
@@ -102,6 +112,26 @@ public abstract class LoginBase
         // Correcto
         return new(Responses.Success);
 
+    }
+
+
+
+    /// <summary>
+    /// Genera el login
+    /// </summary>
+    public void GenerateLogin()
+    {
+        // Crea registro del login
+        _ = Data.Logins.Create(new()
+        {
+            Date = DateTime.Now,
+            AccountID = Account.ID,
+            Type = LoginType,
+            Application = new()
+            {
+                Key = ApplicationKey
+            }
+        });
     }
 
 

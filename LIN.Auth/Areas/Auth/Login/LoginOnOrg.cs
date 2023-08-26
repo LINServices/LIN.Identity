@@ -1,7 +1,7 @@
 ﻿namespace LIN.Auth.Areas.Auth.Login;
 
 
-public abstract class LoginOnOrg : LoginBase
+public class LoginOnOrg : LoginBase
 {
 
 
@@ -18,7 +18,7 @@ public abstract class LoginOnOrg : LoginBase
     /// </summary>
     /// <param name="account">Datos de la cuenta</param>
     /// <param name="application">Llave</param>
-    public LoginOnOrg(AccountModel? account, string? application, string password) : base(account, application, password)
+    public LoginOnOrg(AccountModel? account, string? application, string password, LoginTypes loginType) : base(account, application, password, loginType)
     {
     }
 
@@ -111,6 +111,8 @@ public abstract class LoginOnOrg : LoginBase
         if (validatePolicies.Response != Responses.Success)
             return validateApp;
 
+        // Genera el login
+        base.GenerateLogin();
 
         return new(Responses.Success);
 

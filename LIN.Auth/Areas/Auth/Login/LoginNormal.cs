@@ -1,7 +1,7 @@
 ﻿namespace LIN.Auth.Areas.Auth.Login;
 
 
-public abstract class LoginNormal : LoginBase
+public class LoginNormal : LoginBase
 {
 
 
@@ -10,7 +10,7 @@ public abstract class LoginNormal : LoginBase
     /// </summary>
     /// <param name="account">Datos de la cuenta</param>
     /// <param name="application">Llave</param>
-    public LoginNormal(AccountModel? account, string? application, string password) : base(account, application, password)
+    public LoginNormal(AccountModel? account, string? application, string password, LoginTypes loginType) : base(account, application, password, loginType)
     {
     }
 
@@ -36,6 +36,8 @@ public abstract class LoginNormal : LoginBase
         if (validateAccount.Response != Responses.Success)
             return validateApp;
 
+        // Genera el login
+        base.GenerateLogin();
 
         return new(Responses.Success);
 
