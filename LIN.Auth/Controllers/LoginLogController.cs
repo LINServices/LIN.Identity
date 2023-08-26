@@ -7,7 +7,7 @@ public class LoginLogController : ControllerBase
 
 
     /// <summary>
-    /// Obtienes toda la lista de accesos asociados a una cuenta
+    /// Obtienes la lista de accesos asociados a una cuenta
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet("read/all")]
@@ -17,7 +17,7 @@ public class LoginLogController : ControllerBase
         // JWT
         var (isValid, _, userID, _) = Jwt.Validate(token);
 
-        // Validacion
+        // Validación
         if (!isValid)
             return new(Responses.Unauthorized);
 
