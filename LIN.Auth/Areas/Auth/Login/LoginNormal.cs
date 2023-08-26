@@ -10,7 +10,7 @@ public class LoginNormal : LoginBase
     /// </summary>
     /// <param name="account">Datos de la cuenta</param>
     /// <param name="application">Llave</param>
-    public LoginNormal(AccountModel? account, string? application, string password, LoginTypes loginType) : base(account, application, password, loginType)
+    public LoginNormal(AccountModel? account, string? application, string password, LoginTypes loginType = LoginTypes.Credentials) : base(account, application, password, loginType)
     {
     }
 

@@ -1,6 +1,4 @@
-﻿using Azure;
-
-namespace LIN.Auth.Areas.Auth.Login;
+﻿namespace LIN.Auth.Areas.Auth.Login;
 
 
 public abstract class LoginBase
@@ -47,7 +45,7 @@ public abstract class LoginBase
     /// </summary>
     /// <param name="account">Datos de la cuenta</param>
     /// <param name="application">Llave</param>
-    public LoginBase(AccountModel? account, string? application, string password, LoginTypes loginType)
+    public LoginBase(AccountModel? account, string? application, string password, LoginTypes loginType = LoginTypes.Credentials)
     {
         this.ApplicationKey = application ?? string.Empty;
         this.Account = account ?? new();

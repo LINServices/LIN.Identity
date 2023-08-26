@@ -59,23 +59,6 @@ public class AuthenticationController : ControllerBase
         // Genera el token
         var token = Jwt.Generate(response.Model);
 
-        // Crea registro del login
-        _ = Data.Logins.Create(new()
-        {
-            Date = DateTime.Now,
-            AccountID = response.Model.ID,
-            Type = LoginTypes.Credentials,
-            Application = new()
-            {
-                Key = app.Model.Key
-            }
-        });
-
-        if (response.Model.OrganizationAccess != null)
-        {
-            response.Model.OrganizationAccess.Organization.AppList = new();
-            response.Model.OrganizationAccess.Organization.Members = new();
-        }
 
         response.Token = token;
         return response;
