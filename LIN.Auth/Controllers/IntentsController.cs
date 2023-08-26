@@ -10,8 +10,7 @@ public class IntentsController : ControllerBase
     /// <summary>
     /// Obtiene la lista de intentos Passkey activos
     /// </summary>
-    /// <param name="contextDevice">Dispositivo de contexto</param>
-    /// <param name="user">Usuario</param>
+    /// <param name="token">Token de acceso</param>
     [HttpGet]
     public HttpReadAllResponse<PassKeyModel> GetAll([FromHeader] string token)
     {
