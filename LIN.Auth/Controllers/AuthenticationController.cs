@@ -49,6 +49,15 @@ public class AuthenticationController : ControllerBase
                 return new(response.Response);
         }
 
+
+
+
+
+
+
+
+
+
         // Valida el estado de la cuenta
         if (response.Model.Estado != AccountStatus.Normal)
             return new(Responses.NotExistAccount);
@@ -56,6 +65,15 @@ public class AuthenticationController : ControllerBase
         // Valida la contraseña
         if (response.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + password))
             return new(Responses.InvalidPassword);
+
+
+
+
+
+
+
+
+
 
 
         // Obtiene la organización
