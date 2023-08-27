@@ -19,7 +19,6 @@ public class OrganizationsController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-
         // Conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 

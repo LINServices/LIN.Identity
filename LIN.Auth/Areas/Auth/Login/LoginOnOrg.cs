@@ -27,12 +27,10 @@ public class LoginOnOrg : LoginBase
     /// <summary>
     /// Valida parámetros necesarios para iniciar sesión en una organización
     /// </summary>
-    /// <returns></returns>
     private bool ValidateParams()
     {
         return (OrganizationAccess != null);
     }
-
 
 
 
@@ -89,6 +87,19 @@ public class LoginOnOrg : LoginBase
     /// </summary>
     public override async Task<ResponseBase> Login()
     {
+
+
+        // Valida la aplicación
+        var validateParams = ValidateParams();
+
+        // Retorna el error
+        if (!validateParams)
+            return new()
+            {
+                Message = "Este usuario no pertenece a una organización.",
+                Response = Responses.Undefined
+            };
+
 
         // Valida la aplicación
         var validateApp = await base.ValidateApp();
