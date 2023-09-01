@@ -34,7 +34,7 @@ public class LoginNormal : LoginBase
 
         // Retorna el error
         if (validateAccount.Response != Responses.Success)
-            return validateApp;
+            return validateAccount;
 
         // Genera el login
         base.GenerateLogin();
