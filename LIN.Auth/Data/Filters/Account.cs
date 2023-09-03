@@ -11,9 +11,13 @@ public static class Account
     /// <param name="baseQuery">Query base</param>
     public static IQueryable<AccountModel> Filter(IQueryable<AccountModel> baseQuery, bool safe, bool includeOrg, bool privateInfo)
     {
-
-        // Imagen genérica
-        var profile = File.ReadAllBytes("wwwroot/user.png");
+        byte[] profile = { };
+        try
+        {
+            // Imagen genérica
+            profile = File.ReadAllBytes("wwwroot/user.png");
+        }
+        catch { }
 
         // Filtro seguro
         if (safe)
