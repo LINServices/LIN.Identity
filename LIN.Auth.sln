@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Http", "..\..\Tipos\Http\Ht
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Types.Auth", "..\..\Tipos\LIN.Types.Auth\LIN.Types.Auth.csproj", "{CDED4C37-3998-4F64-8C87-85A9D0AB6CBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIN.Auth.Test", "LIN.Auth.Test\LIN.Auth.Test.csproj", "{34838311-DCE5-4DF0-8668-182CD70DF6AD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,14 +61,6 @@ Global
 		{CDED4C37-3998-4F64-8C87-85A9D0AB6CBD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CDED4C37-3998-4F64-8C87-85A9D0AB6CBD}.Release|x86.ActiveCfg = Release|Any CPU
 		{CDED4C37-3998-4F64-8C87-85A9D0AB6CBD}.Release|x86.Build.0 = Release|Any CPU
-		{34838311-DCE5-4DF0-8668-182CD70DF6AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34838311-DCE5-4DF0-8668-182CD70DF6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34838311-DCE5-4DF0-8668-182CD70DF6AD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{34838311-DCE5-4DF0-8668-182CD70DF6AD}.Debug|x86.Build.0 = Debug|Any CPU
-		{34838311-DCE5-4DF0-8668-182CD70DF6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34838311-DCE5-4DF0-8668-182CD70DF6AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34838311-DCE5-4DF0-8668-182CD70DF6AD}.Release|x86.ActiveCfg = Release|Any CPU
-		{34838311-DCE5-4DF0-8668-182CD70DF6AD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
