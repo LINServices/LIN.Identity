@@ -9,7 +9,7 @@ public static class Account
     /// Si el usuario es oculto/privado devuelve datos genéricos
     /// </summary>
     /// <param name="baseQuery">Query base</param>
-    public static IQueryable<AccountModel> Filter(IQueryable<AccountModel> baseQuery, bool safe, bool includeOrg, bool privateInfo)
+    public static IQueryable<AccountModel> Filter(IQueryable<AccountModel> baseQuery, bool safe, bool includeOrg, bool privateInfo, bool sensible)
     {
         byte[] profile = { };
         try
@@ -27,12 +27,12 @@ public static class Account
         var finalQuery = baseQuery.Select(T => new AccountModel
         {
             ID = T.ID,
-            Nombre = T.Nombre,
+            Nombre = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Nombre : "Usuario privado",
             Rol = T.Rol,
             Insignia = T.Insignia,
             Estado = T.Estado,
             Usuario = T.Usuario,
-            Contraseña = T.Contraseña,
+            Contraseña = sensible ? T.Contraseña : "",
             Visibilidad = T.Visibilidad,
             Genero = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Genero : Genders.Undefined,
             Creación = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Creación : default,

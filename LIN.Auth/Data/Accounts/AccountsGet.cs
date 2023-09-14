@@ -16,13 +16,13 @@ public static partial class Accounts
     /// <param name="safeFilter">Filtro seguro</param>
     /// <param name="includePrivateInfo">Filtro de información privada</param>
     /// <param name="includeOrg">Incluir organización</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool includePrivateInfo = true, bool includeOrg = false)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool includePrivateInfo = true, bool includeOrg = false, bool sensible = false)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id, safeFilter, includePrivateInfo, includeOrg, context);
+        var res = await Read(id, safeFilter, includePrivateInfo, includeOrg, sensible, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -37,13 +37,13 @@ public static partial class Accounts
     /// <param name="safeFilter">Filtro seguro</param>
     /// <param name="includePrivateInfo">Filtro de información privada</param>
     /// <param name="includeOrg">Incluir organización</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool includePrivateInfo = true, bool includeOrg = false)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool includePrivateInfo = true, bool includeOrg = false, bool sensible = false)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(user, safeFilter, includePrivateInfo, includeOrg, context);
+        var res = await Read(user, safeFilter, includePrivateInfo, includeOrg, sensible, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -99,7 +99,7 @@ public static partial class Accounts
     /// <param name="includePrivateInfo">Filtro de información privada</param>
     /// <param name="includeOrg">Incluir organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool includePrivateInfo, bool includeOrg, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool includePrivateInfo, bool includeOrg, bool sensible, Conexión context)
     {
 
         // Ejecución
@@ -112,7 +112,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, safeFilter, includeOrg, includePrivateInfo);
+            query = Filters.Account.Filter(query, safeFilter, includeOrg, includePrivateInfo, sensible);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -141,7 +141,7 @@ public static partial class Accounts
     /// <param name="includePrivateInfo">Filtro de información privada</param>
     /// <param name="includeOrg">Incluir organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool includePrivateInfo, bool includeOrg, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool includePrivateInfo, bool includeOrg, bool sensible, Conexión context)
     {
 
         // Ejecución
@@ -154,7 +154,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, safeFilter, includeOrg, includePrivateInfo);
+            query = Filters.Account.Filter(query, safeFilter, includeOrg, includePrivateInfo, sensible);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -199,12 +199,12 @@ public static partial class Accounts
             // Armar la consulta
             if (isAdmin)
                 query = Filters.Account.Filter(baseQuery: query,
-                                               safe: false, includeOrg: true, privateInfo: false);
+                                               safe: false, includeOrg: true, privateInfo: false, sensible: true);
 
             else
                 query = Filters.Account.Filter(baseQuery: query,
                                                    safe: false, includeOrg: true,
-                                                   privateInfo: false);
+                                                   privateInfo: false, sensible: false) ;
 
 
             var result = await query.ToListAsync();
@@ -253,7 +253,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, true, false, privateInformation);
+            query = Filters.Account.Filter(query, true, false, privateInformation, false);
 
 
             // Ejecuta
