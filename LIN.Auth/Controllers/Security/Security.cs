@@ -23,7 +23,7 @@ public class Security : ControllerBase
         var (context, contextKey) = Conexión.GetOneConnection();
 
         // Obtiene la información de usuario
-        var userResponse = await Data.Accounts.Read(user, true, true, true, context);
+        var userResponse = await Data.Accounts.Read(user, true, true, true,false, context);
 
         // Evalúa la respuesta
         if (userResponse.Response != Responses.Success)
