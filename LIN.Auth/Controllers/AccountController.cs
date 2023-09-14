@@ -21,7 +21,7 @@ public class AccountController : ControllerBase
 
         // Organización del modelo
         modelo = Processors.AccountProcessor.Process(modelo);
-       
+
         // Conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
@@ -164,7 +164,7 @@ public class AccountController : ControllerBase
 
 
 
-    
+
     /// <summary>
     /// Actualiza la contraseña de una cuenta
     /// </summary>
@@ -173,7 +173,7 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo, [FromHeader] string token)
     {
 
-        if ( modelo.OldPassword.Length < 4 || modelo.NewPassword.Length < 4)
+        if (modelo.OldPassword.Length < 4 || modelo.NewPassword.Length < 4)
             return new(Responses.InvalidParam);
 
 
@@ -248,7 +248,7 @@ public class AccountController : ControllerBase
         }
 
         // Modelo de usuario de la BD
-        var userModel = await Data.Accounts.Read(user.ID,true);
+        var userModel = await Data.Accounts.Read(user.ID, true);
 
         if (userModel.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + user.Contraseña))
         {
@@ -316,6 +316,7 @@ public class AccountController : ControllerBase
             };
 
         modelo.ID = userID;
+        modelo.Perfil = Image.Zip(modelo.Perfil);
 
         if (modelo.ID <= 0 || modelo.Nombre.Any())
             return new(Responses.InvalidParam);
@@ -323,7 +324,6 @@ public class AccountController : ControllerBase
         return await Data.Accounts.Update(modelo);
 
     }
-
 
 
 

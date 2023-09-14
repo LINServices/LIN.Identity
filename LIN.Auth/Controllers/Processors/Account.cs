@@ -30,6 +30,7 @@ public class AccountProcessor
 							   : modelo.Perfil,
 		};
 
+		model.Perfil = Image.Zip(model.Perfil);
 		return model;
 		
 	}
