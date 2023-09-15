@@ -26,16 +26,11 @@ public class MemberController : ControllerBase
             };
         }
 
+        // Visibilidad oculta
+        modelo.Visibilidad = AccountVisibility.Hidden;
+
         // Organización del modelo
-        modelo.ID = 0;
-        modelo.Creación = DateTime.Now;
-        modelo.Estado = AccountStatus.Normal;
-        modelo.Insignia = AccountBadges.None;
-        modelo.Rol = AccountRoles.User;
-        modelo.OrganizationAccess = null;
-        modelo.Perfil = modelo.Perfil.Length == 0
-                               ? System.IO.File.ReadAllBytes("wwwroot/profile.png")
-                               : modelo.Perfil;
+        Controllers.Processors.AccountProcessor.Process(modelo);
 
 
         // Establece la contraseña default
@@ -101,8 +96,6 @@ public class MemberController : ControllerBase
                 Response = Responses.Unauthorized
             };
         }
-
-
 
 
         // ID de la organización

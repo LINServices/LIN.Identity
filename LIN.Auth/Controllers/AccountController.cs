@@ -56,15 +56,28 @@ public class AccountController : ControllerBase
     /// Obtiene un usuario por medio del ID
     /// </summary>
     /// <param name="id">ID del usuario</param>
+    /// <param name="token">Token de acceso</param>
     [HttpGet("read/id")]
-    public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id)
+    public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id, [FromHeader] string token)
     {
 
         if (id <= 0)
             return new(Responses.InvalidParam);
 
+
+        var (isValid, _, _, orgID) = Jwt.Validate(token);
+
+        if (!isValid)
+        {
+            return new ReadOneResponse<AccountModel>()
+            {
+                Response = Responses.Unauthorized
+            };
+        }
+
+
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(id, true, false);
+        var response = await Data.Accounts.Read(id, true, false, orgID, false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
