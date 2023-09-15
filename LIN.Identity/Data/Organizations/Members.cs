@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data.Organizations;
+﻿namespace LIN.Identity.Data.Organizations;
 
 
 public class Members

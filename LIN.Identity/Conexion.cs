@@ -1,6 +1,4 @@
-﻿using LIN.Auth.Data;
-
-namespace LIN.Auth;
+﻿namespace LIN.Identity;
 
 
 /// <summary>
@@ -87,7 +85,7 @@ public sealed class Conexión
 
 
 
-    
+
 
 
     /// <summary>
@@ -106,12 +104,12 @@ public sealed class Conexión
         DbContextOptionsBuilder<Context> optionsBuilder = new();
         optionsBuilder.UseSqlServer(_connection);
 
-        DataBase = new Data.Context(optionsBuilder.Options);
+        DataBase = new Context(optionsBuilder.Options);
 
         _counter++;
-        this.ConnectionNumber = _counter;
+        ConnectionNumber = _counter;
 
-      
+
         if (CacheConnections.Count <= _cantidad)
             CacheConnections.Add(this);
 

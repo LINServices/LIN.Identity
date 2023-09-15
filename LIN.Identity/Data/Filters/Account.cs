@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data.Filters;
+﻿namespace LIN.Identity.Data.Filters;
 
 
 public static class Account
@@ -27,18 +27,18 @@ public static class Account
         var finalQuery = baseQuery.Select(T => new AccountModel
         {
             ID = T.ID,
-            Nombre = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Nombre : "Usuario privado",
+            Nombre = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Nombre : "Usuario privado",
             Rol = T.Rol,
             Insignia = T.Insignia,
             Estado = T.Estado,
             Usuario = T.Usuario,
             Contraseña = sensible ? T.Contraseña : "",
             Visibilidad = T.Visibilidad,
-            Genero = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Genero : Genders.Undefined,
-            Creación = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Creación : default,
-            Perfil = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Perfil : profile,
+            Genero = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Genero : Genders.Undefined,
+            Creación = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Creación : default,
+            Perfil = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Perfil : profile,
 
-            OrganizationAccess = (T.OrganizationAccess != null && includeOrg) ? new OrganizationAccessModel()
+            OrganizationAccess = T.OrganizationAccess != null && includeOrg ? new OrganizationAccessModel()
             {
                 ID = T.OrganizationAccess.ID,
                 Rol = T.OrganizationAccess.Rol,
@@ -75,18 +75,18 @@ public static class Account
         var finalQuery = baseQuery.Select(T => new AccountModel
         {
             ID = T.ID,
-            Nombre = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Nombre : "Usuario privado",
+            Nombre = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Nombre : "Usuario privado",
             Rol = T.Rol,
             Insignia = T.Insignia,
             Estado = T.Estado,
             Usuario = T.Usuario,
             Contraseña = sensible ? T.Contraseña : "",
             Visibilidad = T.Visibilidad,
-            Genero = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Genero : Genders.Undefined,
-            Creación = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Creación : default,
-            Perfil = (T.Visibilidad == AccountVisibility.Visible || privateInfo) ? T.Perfil : profile,
+            Genero = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Genero : Genders.Undefined,
+            Creación = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Creación : default,
+            Perfil = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Perfil : profile,
 
-            OrganizationAccess = (T.OrganizationAccess != null && T.OrganizationAccess.Organization.ID == includeOrg) ? new OrganizationAccessModel()
+            OrganizationAccess = T.OrganizationAccess != null && T.OrganizationAccess.Organization.ID == includeOrg ? new OrganizationAccessModel()
             {
                 ID = T.OrganizationAccess.ID,
                 Rol = T.OrganizationAccess.Rol,

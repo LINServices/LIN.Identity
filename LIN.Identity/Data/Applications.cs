@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data;
+﻿namespace LIN.Identity.Data;
 
 
 public class Applications
@@ -38,7 +38,7 @@ public class Applications
 
 
 
-   
+
 
 
 

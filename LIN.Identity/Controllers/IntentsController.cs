@@ -1,6 +1,4 @@
-using LIN.Auth.Hubs;
-
-namespace LIN.Auth.Controllers;
+namespace LIN.Identity.Controllers;
 
 
 [Route("Intents")]
@@ -19,7 +17,7 @@ public class IntentsController : ControllerBase
 
 
             var (isValid, user, _, _) = Jwt.Validate(token);
-           
+
             if (!isValid)
             {
                 return new ReadAllResponse<PassKeyModel>
@@ -39,9 +37,9 @@ public class IntentsController : ControllerBase
 
             // Intentos
             var intentos = (from I in account
-                           where I.Status == PassKeyStatus.Undefined
-                           where I.Expiración > timeNow
-                           select I).ToList();
+                            where I.Status == PassKeyStatus.Undefined
+                            where I.Expiración > timeNow
+                            select I).ToList();
 
             // Retorna
             return new(Responses.Success, intentos);

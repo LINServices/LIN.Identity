@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data;
+﻿namespace LIN.Identity.Data;
 
 public class Logins
 {
@@ -59,7 +59,7 @@ public class Logins
         try
         {
 
-            var appResult = await Data.Applications.Read(data.Application.Key, context);
+            var appResult = await Applications.Read(data.Application.Key, context);
 
 
             if (appResult.Response != Responses.Success)

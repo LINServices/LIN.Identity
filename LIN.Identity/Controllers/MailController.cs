@@ -1,4 +1,4 @@
-namespace LIN.Auth.Controllers;
+namespace LIN.Identity.Controllers;
 
 
 [Route("mails")]
@@ -19,8 +19,8 @@ public class MailController : ControllerBase
 
         if (!isValid)
             return new(Responses.Unauthorized);
-        
-        return await Data.Mails.ReadAll(id);
+
+        return await Mails.ReadAll(id);
 
     }
 

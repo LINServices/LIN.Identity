@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data.Organizations;
+﻿namespace LIN.Identity.Data.Organizations;
 
 
 public class Organizations
@@ -107,7 +107,7 @@ public class Organizations
 
                 string[] defaultApps = { "linauthenticator", "linorgsapp" };
 
-                foreach(var app in defaultApps)
+                foreach (var app in defaultApps)
                 {
                     var appData = await Data.Applications.ReadByAppUid(app, context);
 

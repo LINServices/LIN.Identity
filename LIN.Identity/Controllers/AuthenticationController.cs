@@ -1,4 +1,6 @@
-namespace LIN.Auth.Controllers;
+using LIN.Identity.Areas.Auth.Login;
+
+namespace LIN.Identity.Controllers;
 
 
 [Route("authentication")]
@@ -21,7 +23,7 @@ public class AuthenticationController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario.
-        var response = await Data.Accounts.Read(user, true, true, true,true);
+        var response = await Data.Accounts.Read(user, true, true, true, true);
 
         // Validación al obtener el usuario
         switch (response.Response)
@@ -37,11 +39,11 @@ public class AuthenticationController : ControllerBase
 
 
         // Estrategia de login
-        Areas.Auth.Login.LoginBase strategy;
+        LoginBase strategy;
 
         // Definir la estrategia
-        strategy = (response.Model.OrganizationAccess == null) ?  new Areas.Auth.Login.LoginNormal(response.Model, application, password)
-                                                               : new Areas.Auth.Login.LoginOnOrg(response.Model, application, password);
+        strategy = response.Model.OrganizationAccess == null ? new LoginNormal(response.Model, application, password)
+                                                               : new LoginOnOrg(response.Model, application, password);
 
         // Respuesta del login
         var loginResponse = await strategy.Login();

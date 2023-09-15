@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Areas.Auth.Login;
+﻿namespace LIN.Identity.Areas.Auth.Login;
 
 
 public class LoginOnOrg : LoginBase
@@ -8,7 +8,7 @@ public class LoginOnOrg : LoginBase
     /// <summary>
     /// Acceso a la organización
     /// </summary>
-    private OrganizationAccessModel? OrganizationAccess => base.Account.OrganizationAccess;
+    private OrganizationAccessModel? OrganizationAccess => Account.OrganizationAccess;
 
 
 
@@ -29,7 +29,7 @@ public class LoginOnOrg : LoginBase
     /// </summary>
     private bool ValidateParams()
     {
-        return (OrganizationAccess != null);
+        return OrganizationAccess != null;
     }
 
 
@@ -54,7 +54,7 @@ public class LoginOnOrg : LoginBase
         {
             var whiteList = await ValidateWhiteList();
             if (!whiteList)
-                return new ()
+                return new()
                 {
                     Message = "Tu organización no permite iniciar sesión en esta aplicación.",
                     Response = Responses.UnauthorizedByOrg
@@ -76,7 +76,7 @@ public class LoginOnOrg : LoginBase
         // Busca la app en la organización
         var appOnOrg = await Data.Organizations.Applications.AppOnOrg(ApplicationKey, OrganizationAccess!.Organization.ID);
 
-        return (appOnOrg.Response == Responses.Success);
+        return appOnOrg.Response == Responses.Success;
 
     }
 
@@ -102,7 +102,7 @@ public class LoginOnOrg : LoginBase
 
 
         // Valida la aplicación
-        var validateApp = await base.ValidateApp();
+        var validateApp = await ValidateApp();
 
         // Retorna el error
         if (validateApp.Response != Responses.Success)
@@ -123,7 +123,7 @@ public class LoginOnOrg : LoginBase
             return validatePolicies;
 
         // Genera el login
-        base.GenerateLogin();
+        GenerateLogin();
 
         return new(Responses.Success);
 

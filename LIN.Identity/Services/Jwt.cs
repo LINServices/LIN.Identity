@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace LIN.Auth.Services;
+namespace LIN.Identity.Services;
 
 
 public class Jwt
@@ -33,9 +33,9 @@ public class Jwt
     /// <param name="user">Modelo de usuario</param>
     internal static string Generate(AccountModel user)
     {
-        
+
         // Configuración
-       
+
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey));
 
         // Credenciales

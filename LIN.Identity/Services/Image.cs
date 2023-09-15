@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace LIN.Auth.Services;
+namespace LIN.Identity.Services;
 
 
 public class Image

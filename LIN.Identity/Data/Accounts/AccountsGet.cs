@@ -1,4 +1,6 @@
-﻿namespace LIN.Auth.Data;
+﻿using LIN.Identity.Data.Filters;
+
+namespace LIN.Identity.Data;
 
 
 public static partial class Accounts
@@ -133,7 +135,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, safeFilter, includeOrg, includePrivateInfo, sensible);
+            query = Account.Filter(query, safeFilter, includeOrg, includePrivateInfo, sensible);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -175,7 +177,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, safeFilter, orgID, includePrivateInfo, sensible);
+            query = Account.Filter(query, safeFilter, orgID, includePrivateInfo, sensible);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -217,7 +219,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, safeFilter, includeOrg, includePrivateInfo, sensible);
+            query = Account.Filter(query, safeFilter, includeOrg, includePrivateInfo, sensible);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -261,11 +263,11 @@ public static partial class Accounts
 
             // Armar la consulta
             if (isAdmin)
-                query = Filters.Account.Filter(baseQuery: query,
+                query = Account.Filter(baseQuery: query,
                                                safe: false, includeOrg: true, privateInfo: false, sensible: true);
 
             else
-                query = Filters.Account.Filter(baseQuery: query,
+                query = Account.Filter(baseQuery: query,
                                                    safe: false, includeOrg: true,
                                                    privateInfo: false, sensible: false) ;
 
@@ -316,7 +318,7 @@ public static partial class Accounts
                         select A;
 
             // Armar la consulta final
-            query = Filters.Account.Filter(query, true, false, privateInformation, false);
+            query = Account.Filter(query, true, false, privateInformation, false);
 
 
             // Ejecuta

@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data;
+﻿namespace LIN.Identity.Data;
 
 
 public class MailLinks
@@ -104,7 +104,7 @@ public class MailLinks
 
             return new(Responses.Success, verification);
         }
-        catch 
+        catch
         {
         }
 

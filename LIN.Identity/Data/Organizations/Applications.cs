@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data.Organizations;
+﻿namespace LIN.Identity.Data.Organizations;
 
 
 public class Applications
@@ -32,13 +32,13 @@ public class Applications
     /// <param name="appUid">UID de la aplicación</param>
     /// <param name="org">ID de la organización</param>
     public async static Task<CreateResponse> Create(string appUid, int org)
-	{
-		var (context, contextKey) = Conexión.GetOneConnection();
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
 
-		var res = await Create(appUid, org, context);
-		context.CloseActions(contextKey);
-		return res;
-	}
+        var res = await Create(appUid, org, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
 
 
 
@@ -48,100 +48,100 @@ public class Applications
     /// <param name="key">Key de la app</param>
     /// <param name="org">ID de la organización</param>
     public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org)
-	{
-		var (context, contextKey) = Conexión.GetOneConnection();
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
 
-		var res = await AppOnOrg(key, org, context);
-		context.CloseActions(contextKey);
-		return res;
-	}
-
-
-
-
-	#endregion
+        var res = await AppOnOrg(key, org, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
 
 
 
-	/// <summary>
-	/// Encuentra una app en una organización
-	/// </summary>
-	/// <param name="key">Key de la app</param>
-	/// <param name="org">ID de la organización</param>
-	/// <param name="context">Contexto de conexión</param>
-	public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org, Conexión context)
-	{
 
-		// Ejecución
-		try
-		{
-
-			// Query
-			var app = await (from E in context.DataBase.AppOnOrg
-							 where E.Organization.ID == org
-							 where E.App.Key == key
-							 select E).FirstOrDefaultAsync();
-
-			if (app == null)
-				return new(Responses.NotRows);
-
-			return new(Responses.Success, app);
-		}
-		catch
-		{
-		}
-
-		return new();
-	}
+    #endregion
 
 
 
-	/// <summary>
-	/// Crea una app en una organización
-	/// </summary>
-	/// <param name="key">Key de la app</param>
-	/// <param name="org">ID de la organización</param>
-	/// <param name="context">Contexto de conexión</param>
-	public async static Task<CreateResponse> Create(string appUid, int org, Conexión context)
-	{
+    /// <summary>
+    /// Encuentra una app en una organización
+    /// </summary>
+    /// <param name="key">Key de la app</param>
+    /// <param name="org">ID de la organización</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org, Conexión context)
+    {
 
-		// Ejecución
-		try
-		{
+        // Ejecución
+        try
+        {
 
-			// Query
-			var app = await (from A in context.DataBase.Applications
-							 where A.ApplicationUid == appUid
-							 select A).FirstOrDefaultAsync();
+            // Query
+            var app = await (from E in context.DataBase.AppOnOrg
+                             where E.Organization.ID == org
+                             where E.App.Key == key
+                             select E).FirstOrDefaultAsync();
+
+            if (app == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, app);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
 
 
-			if (app == null)
-				return new(Responses.NotRows);
+
+    /// <summary>
+    /// Crea una app en una organización
+    /// </summary>
+    /// <param name="key">Key de la app</param>
+    /// <param name="org">ID de la organización</param>
+    /// <param name="context">Contexto de conexión</param>
+    public async static Task<CreateResponse> Create(string appUid, int org, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Query
+            var app = await (from A in context.DataBase.Applications
+                             where A.ApplicationUid == appUid
+                             select A).FirstOrDefaultAsync();
 
 
-			var onOrg = new AppOnOrgModel()
-			{
-				State = AppOnOrgStates.Activated,
-				App = app,
-				Organization = new()
-				{
-					ID = org
-				}
-			};
-			context.DataBase.Attach(onOrg.Organization);
+            if (app == null)
+                return new(Responses.NotRows);
 
-			await context.DataBase.AddAsync(onOrg);
 
-			context.DataBase.SaveChanges();
+            var onOrg = new AppOnOrgModel()
+            {
+                State = AppOnOrgStates.Activated,
+                App = app,
+                Organization = new()
+                {
+                    ID = org
+                }
+            };
+            context.DataBase.Attach(onOrg.Organization);
 
-			return new(Responses.Success, onOrg.ID);
-		}
-		catch
-		{
-		}
+            await context.DataBase.AddAsync(onOrg);
 
-		return new();
-	}
+            context.DataBase.SaveChanges();
+
+            return new(Responses.Success, onOrg.ID);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
 
 
 
@@ -158,7 +158,7 @@ public class Applications
         try
         {
 
-			// Query
+            // Query
             var apps = await (from A in context.DataBase.Applications
                               where !context.DataBase.AppOnOrg.Any(aog => aog.AppID == A.ID && aog.OrgID == org)
                               where A.Name.ToLower().Contains(param.ToLower())

@@ -1,7 +1,5 @@
-﻿using System.Net;
-using System.Net.Mail;
+﻿namespace LIN.Identity.Services;
 
-namespace LIN.Auth.Services;
 
 public class EmailWorker
 {

@@ -1,4 +1,5 @@
-namespace LIN.Auth.Areas.Organizations;
+using LIN.Identity.Controllers.Processors;
+namespace LIN.Identity.Areas.Organizations;
 
 
 [Route("orgs")]
@@ -27,7 +28,7 @@ public class OrganizationsController : ControllerBase
         modelo.ID = 0;
         modelo.AppList = new();
 
-        modelo.Members[0].Member = LIN.Auth.Controllers.Processors.AccountProcessor.Process(modelo.Members[0].Member);
+        modelo.Members[0].Member = AccountProcessor.Process(modelo.Members[0].Member);
         foreach (var member in modelo.Members)
         {
             member.Rol = OrgRoles.SuperManager;

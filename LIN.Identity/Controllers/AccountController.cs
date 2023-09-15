@@ -1,4 +1,4 @@
-namespace LIN.Auth.Controllers;
+namespace LIN.Identity.Controllers;
 
 
 [Route("account")]

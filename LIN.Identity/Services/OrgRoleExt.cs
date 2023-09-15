@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Services;
+﻿namespace LIN.Identity.Services;
 
 public static class OrgRoleExt
 {
@@ -18,17 +18,17 @@ public static class OrgRoleExt
 
             case OrgRoles.Manager:
                 {
-                    return (other == OrgRoles.SuperManager);
+                    return other == OrgRoles.SuperManager;
                 }
 
             case OrgRoles.Regular:
                 {
-                    return (other == OrgRoles.SuperManager || other == OrgRoles.Manager);
+                    return other == OrgRoles.SuperManager || other == OrgRoles.Manager;
                 }
 
             case OrgRoles.Guest:
                 {
-                    return (other == OrgRoles.SuperManager || other == OrgRoles.Manager);
+                    return other == OrgRoles.SuperManager || other == OrgRoles.Manager;
                 }
 
             case OrgRoles.Undefine:
@@ -46,7 +46,7 @@ public static class OrgRoleExt
 
 
 
-    public static bool IsAdmin(this OrgRoles rol) => (rol == OrgRoles.SuperManager || rol == OrgRoles.Manager);
+    public static bool IsAdmin(this OrgRoles rol) => rol == OrgRoles.SuperManager || rol == OrgRoles.Manager;
 
 
 }

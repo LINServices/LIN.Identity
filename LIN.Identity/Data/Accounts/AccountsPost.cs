@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data;
+﻿namespace LIN.Identity.Data;
 
 
 public static partial class Accounts

@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Services;
+﻿namespace LIN.Identity.Services;
 
 
 public class Configuration

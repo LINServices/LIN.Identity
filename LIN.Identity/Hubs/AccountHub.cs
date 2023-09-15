@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Hubs;
+﻿namespace LIN.Identity.Hubs;
 
 
 public class AccountHub : Hub
@@ -156,7 +156,7 @@ public class AccountHub : Hub
     }
 
 
-  
+
 
 
 

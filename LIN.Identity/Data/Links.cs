@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data;
+﻿namespace LIN.Identity.Data;
 
 
 public class Links
@@ -149,14 +149,14 @@ public class Links
             // SI es null
             if (elemento == null)
                 return new(Responses.NotRows);
-            
+
             // Cambia el estado
             elemento.Status = MagicLinkStatus.None;
             context.DataBase.SaveChanges();
 
             return new(Responses.Success, elemento);
         }
-        catch 
+        catch
         {
         }
         return new();

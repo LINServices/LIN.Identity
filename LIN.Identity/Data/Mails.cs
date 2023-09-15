@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Data;
+﻿namespace LIN.Identity.Data;
 
 
 public class Mails
@@ -122,7 +122,7 @@ public class Mails
         }
         catch (Exception ex)
         {
-            
+
             if ((ex.InnerException?.Message.Contains("Violation of UNIQUE KEY constraint") ?? false) || (ex.InnerException?.Message.Contains("duplicate key") ?? false))
                 return new(Responses.Undefined);
 
@@ -153,7 +153,7 @@ public class Mails
 
             return new(Responses.Success, emails);
         }
-        catch 
+        catch
         {
         }
 
@@ -187,7 +187,7 @@ public class Mails
 
             return new(Responses.Success, email);
         }
-        catch 
+        catch
         {
         }
 
@@ -217,7 +217,7 @@ public class Mails
         }
         catch
         {
-           
+
         }
 
         return new();
@@ -305,7 +305,7 @@ public class Mails
 
             return new(Responses.Success);
         }
-        catch 
+        catch
         {
         }
 

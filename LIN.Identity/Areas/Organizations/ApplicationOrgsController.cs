@@ -1,4 +1,4 @@
-namespace LIN.Auth.Areas.Organizations;
+namespace LIN.Identity.Areas.Organizations;
 
 
 [Route("orgs/applications")]

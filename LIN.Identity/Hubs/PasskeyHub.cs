@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Hubs;
+﻿namespace LIN.Identity.Hubs;
 
 
 public class PassKeyHub : Hub
@@ -217,7 +217,7 @@ public class PassKeyHub : Hub
 
                 // Agregar
 
-                _ = Data.Logins.Create(new()
+                _ = Logins.Create(new()
                 {
                     ID = 0,
                     Platform = Platforms.Undefined,
@@ -250,7 +250,7 @@ public class PassKeyHub : Hub
         }
         catch (Exception ex)
         {
-            await Services.EmailWorker.SendMail("giraldojhong4@gmail.com", "error", $"{ex.Message}\n\n{ex.StackTrace}\n\n{ex.InnerException}");
+            await EmailWorker.SendMail("giraldojhong4@gmail.com", "error", $"{ex.Message}\n\n{ex.StackTrace}\n\n{ex.InnerException}");
         }
 
 

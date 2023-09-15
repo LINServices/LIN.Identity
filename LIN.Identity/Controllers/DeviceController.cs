@@ -1,4 +1,4 @@
-namespace LIN.Auth.Controllers;
+namespace LIN.Identity.Controllers;
 
 
 [Route("devices")]
@@ -28,7 +28,7 @@ public class DeviceController : ControllerBase
             }
 
 
-            var devices = (from A in Hubs.AccountHub.Cuentas
+            var devices = (from A in AccountHub.Cuentas
                            where A.Key == userID
                            select A).FirstOrDefault().Value ?? new();
 

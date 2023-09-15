@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Areas.Auth.Login;
+﻿namespace LIN.Identity.Areas.Auth.Login;
 
 
 public class LoginNormal : LoginBase
@@ -23,7 +23,7 @@ public class LoginNormal : LoginBase
     {
 
         // Valida la aplicación
-        var validateApp = await base.ValidateApp();
+        var validateApp = await ValidateApp();
 
         // Retorna el error
         if (validateApp.Response != Responses.Success)
@@ -37,7 +37,7 @@ public class LoginNormal : LoginBase
             return validateAccount;
 
         // Genera el login
-        base.GenerateLogin();
+        GenerateLogin();
 
         return new(Responses.Success);
 

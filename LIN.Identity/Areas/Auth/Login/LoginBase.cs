@@ -1,4 +1,4 @@
-﻿namespace LIN.Auth.Areas.Auth.Login;
+﻿namespace LIN.Identity.Areas.Auth.Login;
 
 
 public abstract class LoginBase
@@ -29,7 +29,7 @@ public abstract class LoginBase
     /// <summary>
     /// Modelo de la aplicación obtenida
     /// </summary>
-    private protected ApplicationModel Application{ get; set; }
+    private protected ApplicationModel Application { get; set; }
 
 
 
@@ -47,11 +47,11 @@ public abstract class LoginBase
     /// <param name="application">Llave</param>
     public LoginBase(AccountModel? account, string? application, string password, LoginTypes loginType = LoginTypes.Credentials)
     {
-        this.ApplicationKey = application ?? string.Empty;
-        this.Account = account ?? new();
-        this.Application = new();
-        this.Password = password ?? string.Empty;
-        this.LoginType = loginType;
+        ApplicationKey = application ?? string.Empty;
+        Account = account ?? new();
+        Application = new();
+        Password = password ?? string.Empty;
+        LoginType = loginType;
     }
 
 
@@ -94,7 +94,7 @@ public abstract class LoginBase
     public async Task<ResponseBase> ValidateApp()
     {
         // Obtiene la App.
-        var app = await Data.Applications.Read(this.ApplicationKey);
+        var app = await Data.Applications.Read(ApplicationKey);
 
         // Verifica si la app existe.
         if (app.Response != Responses.Success)
@@ -105,7 +105,7 @@ public abstract class LoginBase
             };
 
         // Establece la aplicación
-        this.Application = app.Model;
+        Application = app.Model;
 
         // Correcto
         return new(Responses.Success);
@@ -120,7 +120,7 @@ public abstract class LoginBase
     public void GenerateLogin()
     {
         // Crea registro del login
-        _ = Data.Logins.Create(new()
+        _ = Logins.Create(new()
         {
             Date = DateTime.Now,
             AccountID = Account.ID,

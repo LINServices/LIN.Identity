@@ -5,17 +5,16 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.SqlServer;
 global using Microsoft.IdentityModel.Tokens;
 global using LIN.Types.Enumerations;
-global using LIN.Auth.Services;
+global using LIN.Identity.Services;
 global using LIN.Types.Responses;
 global using LIN.Types.Auth.Enumerations;
 global using LIN.Types.Auth.Models;
 global using LIN.Modules;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.SignalR;
-using LIN.Auth.Data;
-using LIN.Auth;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
+global using LIN.Identity.Data;
+global using LIN.Identity.Hubs;
+global using LIN.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,8 +69,8 @@ catch
 app.UseCors("AllowAnyOrigin");
 
 
-app.MapHub<LIN.Auth.Hubs.AccountHub>("/realTime/service");
-app.MapHub<LIN.Auth.Hubs.PassKeyHub>("/realTime/auth/passkey");
+app.MapHub<AccountHub>("/realTime/service");
+app.MapHub<PassKeyHub>("/realTime/auth/passkey");
 
 app.UseSwagger();
 app.UseSwaggerUI();
