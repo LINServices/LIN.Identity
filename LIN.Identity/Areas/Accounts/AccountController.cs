@@ -109,14 +109,28 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <param name="user">Usuario único</param>
     [HttpGet("read/user")]
-    public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user)
+    public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
     {
 
-        if (!user.Any())
+        if (id <= 0)
             return new(Responses.InvalidParam);
 
+
+        var (isValid, _, _, orgID) = Jwt.Validate(token);
+
+        if (!isValid)
+        {
+            return new ReadOneResponse<AccountModel>()
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
+            };
+        }
+
+
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, true, false);
+        var response = await Data.Accounts.Read(user: user,
+                                                orgID: orgID);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

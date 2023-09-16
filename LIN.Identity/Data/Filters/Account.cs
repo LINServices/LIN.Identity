@@ -83,16 +83,17 @@ public static class Account
             Genero = T.Visibilidad == AccountVisibility.Visible || (T.OrganizationAccess.Organization.ID == orgID) ? T.Genero : Genders.Undefined,
             Creación = T.Visibilidad == AccountVisibility.Visible || (T.OrganizationAccess.Organization.ID == orgID) ? T.Creación : default,
             Perfil = T.Visibilidad == AccountVisibility.Visible || (T.OrganizationAccess.Organization.ID == orgID) ? T.Perfil : profile,
-           
+            
             OrganizationAccess = (T.OrganizationAccess != null && T.OrganizationAccess.Organization.ID == orgID) ? new OrganizationAccessModel()
             {
                 ID = T.OrganizationAccess.ID,
                 Rol = T.OrganizationAccess.Rol
-            } : new(),
+            } : new()
         });
 
         return finalQuery;
 
     }
+
 
 }
