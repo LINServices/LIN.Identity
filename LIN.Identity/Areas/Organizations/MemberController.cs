@@ -30,7 +30,7 @@ public class MemberController : ControllerBase
         modelo.Visibilidad = AccountVisibility.Hidden;
 
         // Organización del modelo
-        Controllers.Processors.AccountProcessor.Process(modelo);
+        modelo = Controllers.Processors.AccountProcessor.Process(modelo);
 
 
         // Establece la contraseña default
@@ -124,7 +124,6 @@ public class MemberController : ControllerBase
         };
 
     }
-
 
 
 

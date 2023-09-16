@@ -22,7 +22,7 @@ public class LoginLogController : ControllerBase
             return new(Responses.Unauthorized);
 
         // Obtiene el usuario
-        var result = await Logins.ReadAll(userID);
+        var result = await Data.Logins.ReadAll(userID);
 
         // Retorna el resultado
         return result ?? new();

@@ -12,9 +12,9 @@ global using LIN.Types.Auth.Models;
 global using LIN.Modules;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.SignalR;
-global using LIN.Identity.Data;
 global using LIN.Identity.Hubs;
 global using LIN.Identity;
+using LIN.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

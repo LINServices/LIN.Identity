@@ -20,7 +20,7 @@ public class MailController : ControllerBase
         if (!isValid)
             return new(Responses.Unauthorized);
 
-        return await Mails.ReadAll(id);
+        return await Data.Mails.ReadAll(id);
 
     }
 

@@ -71,13 +71,18 @@ public class AccountController : ControllerBase
         {
             return new ReadOneResponse<AccountModel>()
             {
-                Response = Responses.Unauthorized
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
             };
         }
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(id, true, false, orgID, false);
+        var response = await Data.Accounts.Read(id: id,
+                                                safeFilter: true, 
+                                                includePrivateInfo: false, 
+                                                orgID: orgID, 
+                                                sensible: false);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
