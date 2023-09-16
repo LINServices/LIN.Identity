@@ -1,4 +1,7 @@
-﻿namespace LIN.Identity.Controllers.Security;
+﻿using System.Drawing;
+using System;
+
+namespace LIN.Identity.Controllers.Security;
 
 
 [Route("security")]
@@ -84,9 +87,31 @@ public class Security : ControllerBase
 
         return new(Responses.Success, new()
         {
-            Email = "***Aquí va un email Censurado***",
+            Email = CensorEmail(verifiedMail?.Email ?? ""),
         });
     }
+
+
+
+    static string CensorEmail(string email)
+    {
+        int atIndex = email.IndexOf('@');
+        if (atIndex >= 0)
+        {
+            int dotIndex = email.IndexOf('.');
+            if (dotIndex > atIndex + 3)
+            {
+                string username = email.Substring(0, atIndex - 3); // Censura los últimos 3 caracteres antes del "@"
+                string domain = email.Substring(atIndex); // Censura el dominio antes del primer punto
+                return $"{username}***{domain}";
+            }
+        }
+        return email;
+    }
+
+
+
+
 
 
 

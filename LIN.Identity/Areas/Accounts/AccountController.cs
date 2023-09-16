@@ -112,7 +112,7 @@ public class AccountController : ControllerBase
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
     {
 
-        if (id <= 0)
+        if (string.IsNullOrWhiteSpace(user))
             return new(Responses.InvalidParam);
 
 

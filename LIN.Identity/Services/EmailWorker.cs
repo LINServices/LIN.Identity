@@ -92,28 +92,25 @@ public class EmailWorker
                     from = "onboarding@resend.dev",
                     to = new[] { to },
                     subject = asunto,
-                    html = body
                 };
 
 
 
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestData);
 
-                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+
+                HttpResponseMessage response = await client.PostAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-
-                    HttpResponseMessage response = await client.PostAsync(url, content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Response: " + responseBody);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Request failed with status code: " + response.StatusCode);
-                    }
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Response: " + responseBody);
+                }
+                else
+                {
+                    Console.WriteLine("Request failed with status code: " + response.StatusCode);
                 }
             }
             return true;
