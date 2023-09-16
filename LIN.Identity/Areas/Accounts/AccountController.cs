@@ -1,4 +1,4 @@
-namespace LIN.Identity.Controllers;
+namespace LIN.Identity.Areas.Accounts;
 
 
 [Route("account")]
@@ -7,11 +7,12 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Crea un nuevo usuario
+    /// Crear nueva cuenta (Perfil en LIN Identity)
     /// </summary>
-    /// <param name="modelo">Modelo</param>
+    /// <param name="modelo">Modelo de la cuenta</param>
+    /// <param name="appKey">App key de la app</param>
     [HttpPost("create")]
-    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo)
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string appKey)
     {
 
         // Comprobaciones
@@ -19,24 +20,30 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        // Organización del modelo
-        modelo = Processors.AccountProcessor.Process(modelo);
+        // Validación de la app
+        var app = await Data.Applications.Read(appKey);
 
-        // Conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        // Si la app es invalida
+        if (app.Response != Responses.Success)
+            return new CreateResponse()
+            {
+                Response = Responses.InvalidParam,
+                Message = "La aplicación es invalida."
+            };
+        
+
+        // Organización del modelo
+        modelo = Controllers.Processors.AccountProcessor.Process(modelo);
 
         // Creación del usuario
-        var response = await Data.Accounts.Create(modelo, context);
+        var response = await Data.Accounts.Create(modelo);
 
         // Evaluación
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-        context.CloseActions(connectionKey);
-
         // Obtiene el usuario
         string token = Jwt.Generate(response.Model);
-
 
         // Retorna el resultado
         return new CreateResponse()
@@ -79,9 +86,9 @@ public class AccountController : ControllerBase
 
         // Obtiene el usuario
         var response = await Data.Accounts.Read(id: id,
-                                                safeFilter: true, 
-                                                includePrivateInfo: false, 
-                                                orgID: orgID, 
+                                                safeFilter: true,
+                                                includePrivateInfo: false,
+                                                orgID: orgID,
                                                 sensible: false);
 
         // Si es erróneo
