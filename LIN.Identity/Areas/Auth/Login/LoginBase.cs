@@ -120,7 +120,7 @@ public abstract class LoginBase
     public void GenerateLogin()
     {
         // Crea registro del login
-        _ = Logins.Create(new()
+        _ = Data.Logins.Create(new()
         {
             Date = DateTime.Now,
             AccountID = Account.ID,

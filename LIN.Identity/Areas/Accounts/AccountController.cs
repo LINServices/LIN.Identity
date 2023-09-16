@@ -86,10 +86,7 @@ public class AccountController : ControllerBase
 
         // Obtiene el usuario
         var response = await Data.Accounts.Read(id: id,
-                                                safeFilter: true,
-                                                includePrivateInfo: false,
-                                                orgID: orgID,
-                                                sensible: false);
+                                                orgID: orgID);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

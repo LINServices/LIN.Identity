@@ -57,7 +57,7 @@ public static class Account
     /// Si el usuario es oculto/privado devuelve datos genéricos
     /// </summary>
     /// <param name="baseQuery">Query base</param>
-    public static IQueryable<AccountModel> Filter(IQueryable<AccountModel> baseQuery, bool safe, int includeOrg, bool privateInfo, bool sensible)
+    public static IQueryable<AccountModel> Filter(IQueryable<AccountModel> baseQuery, int orgID)
     {
         byte[] profile = { };
         try
@@ -68,31 +68,27 @@ public static class Account
         catch { }
 
         // Filtro seguro
-        if (safe)
-            baseQuery = baseQuery.Where(T => T.Estado == AccountStatus.Normal);
+        baseQuery = baseQuery.Where(T => T.Estado == AccountStatus.Normal);
 
         // Generación de la consulta
         var finalQuery = baseQuery.Select(T => new AccountModel
         {
             ID = T.ID,
-            Nombre = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Nombre : "Usuario privado",
+            Nombre = T.Visibilidad == AccountVisibility.Visible || (T.OrganizationAccess.Organization.ID == orgID) ? T.Nombre : "Usuario privado",
             Rol = T.Rol,
             Insignia = T.Insignia,
             Estado = T.Estado,
             Usuario = T.Usuario,
-            Contraseña = sensible ? T.Contraseña : "",
             Visibilidad = T.Visibilidad,
-            Genero = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Genero : Genders.Undefined,
-            Creación = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Creación : default,
-            Perfil = T.Visibilidad == AccountVisibility.Visible || privateInfo ? T.Perfil : profile,
-
-            OrganizationAccess = T.OrganizationAccess != null && T.OrganizationAccess.Organization.ID == includeOrg ? new OrganizationAccessModel()
+            Genero = T.Visibilidad == AccountVisibility.Visible || (T.OrganizationAccess.Organization.ID == orgID) ? T.Genero : Genders.Undefined,
+            Creación = T.Visibilidad == AccountVisibility.Visible || (T.OrganizationAccess.Organization.ID == orgID) ? T.Creación : default,
+            Perfil = T.Visibilidad == AccountVisibility.Visible || (T.OrganizationAccess.Organization.ID == orgID) ? T.Perfil : profile,
+           
+            OrganizationAccess = (T.OrganizationAccess != null && T.OrganizationAccess.Organization.ID == orgID) ? new OrganizationAccessModel()
             {
                 ID = T.OrganizationAccess.ID,
-                Rol = T.OrganizationAccess.Rol,
-                Organization = T.OrganizationAccess.Organization,
-            } : null
-
+                Rol = T.OrganizationAccess.Rol
+            } : new(),
         });
 
         return finalQuery;
