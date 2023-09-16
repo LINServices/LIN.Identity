@@ -30,7 +30,7 @@ public class AccountController : ControllerBase
                 Response = Responses.InvalidParam,
                 Message = "La aplicación es invalida."
             };
-        
+
 
         // Organización del modelo
         modelo = Controllers.Processors.AccountProcessor.Process(modelo);
@@ -188,11 +188,18 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <param name="ids">IDs de las cuentas</param>
     [HttpPost("findAll")]
-    public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids)
+    public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids, [FromHeader] string token)
     {
 
+        var (isValid, _, userID, orgID) = Jwt.Validate(token);
+
+        if (!isValid)
+        {
+            return new(Responses.Unauthorized);
+        }
+
         // Obtiene el usuario
-        var response = await Data.Accounts.FindAll(ids);
+        var response = await Data.Accounts.FindAll(ids, userID, orgID);
 
         return response;
 

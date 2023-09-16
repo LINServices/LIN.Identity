@@ -114,13 +114,13 @@ public static partial class Accounts
     /// </summary>
     /// <param name="ids">Lista de IDs</param>
     /// <param name="org">ID de organización</param>
-    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int org = 0)
+    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int me = 0, int org = 0)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await FindAll(ids, org, context);
+        var res = await FindAll(ids,me, org, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -169,7 +169,6 @@ public static partial class Accounts
 
         return new();
     }
-
 
 
 
@@ -350,33 +349,22 @@ public static partial class Accounts
     /// <param name="ids">Lista de IDs</param>
     /// <param name="org">ID de organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int org, Conexión context)
+    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int me, int org, Conexión context)
     {
 
         // Ejecución
         try
         {
 
-            // Query
+            // Consulta base
             var query = from A in context.DataBase.Accounts
                         where ids.Contains(A.ID)
                         select A;
 
-            // Si hay que incluir la query de organización
-            var privateInformation = org > 0;
-
-            // Solo participantes de una organización
-            if (privateInformation)
-                query = from A in query
-                        where A.OrganizationAccess.Organization.ID == org
-                        select A;
-
-            // Armar la consulta final
-            query = Account.Filter(query, true, false, privateInformation, false);
-
+            query = Account.Filter(query, org, me);
 
             // Ejecuta
-            var result = await query.Take(10).ToListAsync();
+            var result = await query.ToListAsync();
 
             // Si no existe el modelo
             if (result == null)
@@ -384,8 +372,9 @@ public static partial class Accounts
 
             return new(Responses.Success, result);
         }
-        catch
+        catch(Exception ex)
         {
+            var s = "";
         }
 
         return new();
