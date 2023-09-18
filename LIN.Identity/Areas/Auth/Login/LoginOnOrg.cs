@@ -41,7 +41,7 @@ public class LoginOnOrg : LoginBase
     {
 
         // Si el inicio de sesión fue desactivado por la organización
-        if (!OrganizationAccess!.Organization.LoginAccess && OrganizationAccess.Rol.IsAdmin())
+        if (!OrganizationAccess!.Organization.LoginAccess && !OrganizationAccess.Rol.IsAdmin())
             return new()
             {
                 Message = "Tu organización a deshabilitado el inicio de sesión temporalmente.",
