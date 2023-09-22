@@ -1,6 +1,4 @@
-﻿using LIN.Identity.Data.Filters;
-
-namespace LIN.Identity.Data;
+﻿namespace LIN.Identity.Data;
 
 
 public static partial class Accounts
@@ -11,24 +9,7 @@ public static partial class Accounts
 
 
 
-    /// <summary>
-    /// Obtiene una cuenta
-    /// </summary>
-    /// <param name="id">ID de la cuenta</param>
-    /// <param name="safeFilter">Filtro seguro</param>
-    /// <param name="includePrivateInfo">Filtro de información privada</param>
-    /// <param name="includeOrg">Incluir organización</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool includePrivateInfo = true, bool includeOrg = false, bool sensible = false)
-    {
 
-        // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
-
-        var res = await Read(id, safeFilter, includePrivateInfo, includeOrg, sensible, context);
-        context.CloseActions(connectionKey);
-        return res;
-
-    }
 
 
     /// <summary>
@@ -42,7 +23,35 @@ public static partial class Accounts
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id, contextUser,orgID, context);
+        var res = await Read(id, contextUser, orgID, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
+
+    public async static Task<ReadOneResponse<AccountModel>> ReadBasic(int id)
+    {
+
+        // Obtiene la conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        var res = await ReadBasic(id, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
+
+    public async static Task<ReadOneResponse<AccountModel>> ReadBasic(string user)
+    {
+
+        // Obtiene la conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        var res = await ReadBasic(user, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -61,30 +70,13 @@ public static partial class Accounts
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(user,contextUser, orgID, context);
+        var res = await Read(user, contextUser, orgID, context);
         context.CloseActions(connectionKey);
         return res;
 
     }
 
 
-    /// <summary>
-    /// Obtiene una cuenta
-    /// </summary>
-    /// <param name="user">Usuario de la cuenta</param>
-    /// <param name="safeFilter">Filtro seguro</param>
-    /// <param name="includePrivateInfo">Filtro de información privada</param>
-    /// <param name="includeOrg">Incluir organización</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool includePrivateInfo = true, bool includeOrg = false, bool sensible = false)
-    {
-
-        // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
-
-        var res = await Read(user, safeFilter, includePrivateInfo, includeOrg, sensible, context);
-        context.CloseActions(connectionKey);
-        return res;
-    }
 
 
 
@@ -120,7 +112,7 @@ public static partial class Accounts
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await FindAll(ids,me, org, context);
+        var res = await FindAll(ids, me, org, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -129,46 +121,6 @@ public static partial class Accounts
 
     #endregion
 
-
-
-    /// <summary>
-    /// Obtiene una cuenta
-    /// </summary>
-    /// <param name="id">ID de la cuenta</param>
-    /// <param name="safeFilter">Filtro seguro</param>
-    /// <param name="includePrivateInfo">Filtro de información privada</param>
-    /// <param name="includeOrg">Incluir organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool safeFilter, bool includePrivateInfo, bool includeOrg, bool sensible, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            // Consulta global
-            var query = from A in context.DataBase.Accounts
-                        where A.ID == id
-                        select A;
-
-            // Armar la consulta final
-            query = Account.Filter(query, safeFilter, includeOrg, includePrivateInfo, sensible);
-
-            // Obtiene el usuario
-            var result = await query.FirstOrDefaultAsync();
-
-            // Si no existe el modelo
-            if (result == null)
-                return new(Responses.NotExistAccount);
-
-            return new(Responses.Success, result);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
 
 
 
@@ -256,45 +208,6 @@ public static partial class Accounts
 
 
 
-    /// <summary>
-    /// Obtiene una cuenta
-    /// </summary>
-    /// <param name="user">Usuario de la cuenta</param>
-    /// <param name="safeFilter">Filtro seguro</param>
-    /// <param name="includePrivateInfo">Filtro de información privada</param>
-    /// <param name="includeOrg">Incluir organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool safeFilter, bool includePrivateInfo, bool includeOrg, bool sensible, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            // Consulta global
-            var query = from A in context.DataBase.Accounts
-                        where A.Usuario == user
-                        select A;
-
-            // Armar la consulta final
-            query = Account.Filter(query, safeFilter, includeOrg, includePrivateInfo, sensible);
-
-            // Obtiene el usuario
-            var result = await query.FirstOrDefaultAsync();
-
-            // Si no existe el modelo
-            if (result == null)
-                return new(Responses.NotExistAccount);
-
-            return new(Responses.Success, result);
-
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
 
 
 
@@ -315,7 +228,7 @@ public static partial class Accounts
 
             // Query
             var query = await Queries.Accounts.Search(pattern, me, orgID, context).Take(10).ToListAsync();
-               
+
 
             // Si no existe el modelo
             if (query == null)
@@ -352,12 +265,7 @@ public static partial class Accounts
         try
         {
 
-            // Consulta base
-            var query = from A in context.DataBase.Accounts
-                        where ids.Contains(A.ID)
-                        select A;
-
-            query = Account.Filter(query, org, me);
+            var query = Queries.Accounts.GetStableAccounts(ids, me, org, context);
 
             // Ejecuta
             var result = await query.ToListAsync();
@@ -368,7 +276,7 @@ public static partial class Accounts
 
             return new(Responses.Success, result);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             var s = "";
         }
@@ -377,5 +285,79 @@ public static partial class Accounts
     }
 
 
+
+
+
+    
+    public async static Task<ReadOneResponse<AccountModel>> ReadBasic(int id, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            var query = from account in Queries.Accounts.GetValidAccounts(context)
+                        where account.ID == id
+                        select new AccountModel
+                        {
+                            ID = account.ID,
+                            Usuario = account.Usuario,
+                            Contraseña = account.Contraseña,
+                            Estado = account.Estado,
+                            Nombre = account.Nombre,
+                            OrganizationAccess = account.OrganizationAccess
+                        };
+
+            // Obtiene el usuario
+            var result = await query.FirstOrDefaultAsync();
+
+            // Si no existe el modelo
+            if (result == null)
+                return new(Responses.NotExistAccount);
+
+            return new(Responses.Success, result);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+    public async static Task<ReadOneResponse<AccountModel>> ReadBasic(string user, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            var query = from account in Queries.Accounts.GetValidAccounts(context)
+                        where account.Usuario == user
+                        select new AccountModel
+                        {
+                            ID = account.ID,
+                            Usuario = account.Usuario,
+                            Contraseña = account.Contraseña,
+                            Estado = account.Estado,
+                            Nombre = account.Nombre,
+                            OrganizationAccess = account.OrganizationAccess
+                        };
+
+            // Obtiene el usuario
+            var result = await query.FirstOrDefaultAsync();
+
+            // Si no existe el modelo
+            if (result == null)
+                return new(Responses.NotExistAccount);
+
+            return new(Responses.Success, result);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
 
 }

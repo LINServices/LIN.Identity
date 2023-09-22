@@ -221,7 +221,7 @@ public class AccountController : ControllerBase
 
         modelo.Account = userID;
 
-        var actualData = await Data.Accounts.Read(modelo.Account, true);
+        var actualData = await Data.Accounts.ReadBasic(modelo.Account);
 
         if (actualData.Response != Responses.Success)
             return new(Responses.NotExistAccount);
@@ -282,7 +282,7 @@ public class AccountController : ControllerBase
         }
 
         // Modelo de usuario de la BD
-        var userModel = await Data.Accounts.Read(user.ID, true);
+        var userModel = await Data.Accounts.ReadBasic(user.ID);
 
         if (userModel.Model.Contraseña != EncryptClass.Encrypt(user.Contraseña))
         {
@@ -306,25 +306,26 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        var (isValid, _, id, ordID, _) = Jwt.Validate(token);
+        //var (isValid, _, id, ordID, _) = Jwt.Validate(token);
 
 
-        if (!isValid)
-        {
-            return new(Responses.Unauthorized);
-        }
+        //if (!isValid)
+        //{
+        //    return new(Responses.Unauthorized);
+        //}
 
 
-        var rol = (await Data.Accounts.Read(id, true)).Model.Rol;
+        //var rol = (await Data.Accounts.Read(id, true)).Model.Rol;
 
 
-        if (rol != AccountRoles.Admin)
-            return new(Responses.Unauthorized);
+        //if (rol != AccountRoles.Admin)
+        //    return new(Responses.Unauthorized);
 
-        // Obtiene el usuario
-        var response = await Data.Accounts.Search(pattern, 0, ordID);
+        //// Obtiene el usuario
+        //var response = await Data.Accounts.Search(pattern, 0, ordID);
 
-        return response;
+        //return response;
+        return new();
 
     }
 
