@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace LIN.Identity.Areas.Accounts;
 
 
@@ -104,7 +106,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, userID, orgID, _) = Jwt.Validate(token);
 
         if (!isValid)
         {
@@ -116,9 +118,10 @@ public class AccountController : ControllerBase
         }
 
 
-        // Obtiene el usuario
-        var response = await Data.Accounts.Read(user: user,
-                                                orgID: orgID);
+
+        var response = await Data.Accounts.Read(user, userID, orgID);
+
+
 
         // Si es erróneo
         if (response.Response != Responses.Success)

@@ -55,13 +55,13 @@ public static partial class Accounts
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="orgID">Info privada si la org es igual a OrgID</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, int orgID)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, int contextUser, int orgID)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(user, orgID, context);
+        var res = await Read(user,contextUser, orgID, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -192,7 +192,7 @@ public static partial class Accounts
         try
         {
 
-            var query = Queries.Accounts.GetStablishAccounts(id, contextUser, orgID, context);
+            var query = Queries.Accounts.GetStableAccount(id, contextUser, orgID, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -227,20 +227,14 @@ public static partial class Accounts
     /// <param name="id">ID del usuario</param>
     /// <param name="orgID">ID de la org</param>
     /// <param name="context">Contexto</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, int orgID, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, int contextUser, int orgID, Conexión context)
     {
 
         // Ejecución
         try
         {
 
-            // Consulta global
-            var query = from A in context.DataBase.Accounts
-                        where A.Usuario == user
-                        select A;
-
-            // Armar la consulta final
-            query = Account.Filter(query, orgID);
+            var query = Queries.Accounts.GetStableAccount(user, contextUser, orgID, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -250,6 +244,7 @@ public static partial class Accounts
                 return new(Responses.NotExistAccount);
 
             return new(Responses.Success, result);
+
         }
         catch
         {
