@@ -150,7 +150,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Info del token
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userID, orgID, _) = Jwt.Validate(token);
 
         // Token es invalido
         if (!isValid)
@@ -163,7 +163,7 @@ public class AccountController : ControllerBase
         }
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Search(pattern, userID, false);
+        var response = await Data.Accounts.Search(pattern, userID, orgID);
 
         return response;
     }
@@ -303,7 +303,7 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        var (isValid, _, id, _, _) = Jwt.Validate(token);
+        var (isValid, _, id, ordID, _) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -319,7 +319,7 @@ public class AccountController : ControllerBase
             return new(Responses.Unauthorized);
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Search(pattern, 0, true);
+        var response = await Data.Accounts.Search(pattern, 0, ordID);
 
         return response;
 

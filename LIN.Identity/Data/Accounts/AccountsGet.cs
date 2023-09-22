@@ -96,13 +96,13 @@ public static partial class Accounts
     /// <param name="pattern">Patron de búsqueda</param>
     /// <param name="me">Mi ID</param>
     /// <param name="isAdmin">Si es un admin del sistema el que esta consultando</param>
-    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, bool isAdmin = false)
+    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, int orgID)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Search(pattern, me, isAdmin, context);
+        var res = await Search(pattern, me, orgID, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -191,8 +191,6 @@ public static partial class Accounts
         // Ejecución
         try
         {
-
-
 
             var query = Queries.Accounts.GetStablishAccounts(id, contextUser, orgID, context);
 
@@ -313,7 +311,7 @@ public static partial class Accounts
     /// <param name="me">Mi ID</param>
     /// <param name="isAdmin">Si es un admin del sistema el que esta consultando</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, bool isAdmin, Conexión context)
+    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, int orgID, Conexión context)
     {
 
         // Ejecución
@@ -321,29 +319,14 @@ public static partial class Accounts
         {
 
             // Query
-            var query = (from A in context.DataBase.Accounts
-                         where A.Usuario.ToLower().Contains(pattern.ToLower())
-                         && A.ID != me
-                         select A).Take(10);
-
-            // Armar la consulta
-            if (isAdmin)
-                query = Account.Filter(baseQuery: query,
-                                               safe: false, includeOrg: true, privateInfo: false, sensible: true);
-
-            else
-                query = Account.Filter(baseQuery: query,
-                                                   safe: false, includeOrg: true,
-                                                   privateInfo: false, sensible: false);
-
-
-            var result = await query.ToListAsync();
+            var query = await Queries.Accounts.Search(pattern, me, orgID, context).Take(10).ToListAsync();
+               
 
             // Si no existe el modelo
-            if (result == null)
+            if (query == null)
                 return new(Responses.NotRows);
 
-            return new(Responses.Success, result);
+            return new(Responses.Success, query);
         }
         catch
         {
