@@ -31,7 +31,7 @@ public class Jwt
     /// Genera un JSON Web Token
     /// </summary>
     /// <param name="user">Modelo de usuario</param>
-    internal static string Generate(AccountModel user)
+    internal static string Generate(AccountModel user, int appID)
     {
 
         // Configuración
@@ -47,7 +47,8 @@ public class Jwt
             new Claim(ClaimTypes.PrimarySid, user.ID.ToString()),
             new Claim(ClaimTypes.NameIdentifier, user.Usuario),
             new Claim(ClaimTypes.Role, ((int)user.Rol).ToString()),
-            new Claim(ClaimTypes.UserData, (user.OrganizationAccess?.Organization.ID).ToString() ?? "")
+            new Claim(ClaimTypes.UserData, (user.OrganizationAccess?.Organization.ID).ToString() ?? ""),
+            new Claim(ClaimTypes.Authentication, appID.ToString())
         };
 
         // Expiración del token
@@ -66,7 +67,7 @@ public class Jwt
     /// Valida un JSON Web token
     /// </summary>
     /// <param name="token">Token a validar</param>
-    internal static (bool isValid, string user, int userID, int orgID) Validate(string token)
+    internal static (bool isValid, string user, int userID, int orgID, int appID) Validate(string token)
     {
         try
         {
@@ -101,9 +102,12 @@ public class Jwt
 
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.UserData)?.Value, out int orgID);
 
+                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Authentication)?.Value, out int appID);
+
 
                 // Devuelve una respuesta exitosa
-                return (true, user ?? string.Empty, id, orgID);
+                return (true, user ?? string.Empty, id, orgID, appID);
+
             }
             catch (SecurityTokenException)
             {
@@ -114,7 +118,7 @@ public class Jwt
         }
         catch { }
 
-        return (false, string.Empty, 0, 0);
+        return (false, string.Empty, 0, 0, 0);
 
     }
 

@@ -7,30 +7,16 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Crear nueva cuenta (Perfil en LIN Identity)
+    /// Crear nueva cuenta (Cuenta de LIN)
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta</param>
-    /// <param name="appKey">App key de la app</param>
     [HttpPost("create")]
-    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string appKey)
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo)
     {
 
         // Comprobaciones
         if (modelo == null || modelo.Contraseña.Length < 4 || modelo.Nombre.Length <= 0 || modelo.Usuario.Length <= 0)
             return new(Responses.InvalidParam);
-
-
-        // Validación de la app
-        var app = await Data.Applications.Read(appKey);
-
-        // Si la app es invalida
-        if (app.Response != Responses.Success)
-            return new CreateResponse()
-            {
-                Response = Responses.InvalidParam,
-                Message = "La aplicación es invalida."
-            };
-
 
         // Organización del modelo
         modelo = Controllers.Processors.AccountProcessor.Process(modelo);
@@ -60,7 +46,7 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene un usuario por medio del ID
+    /// Obtiene la información de usuario.
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="token">Token de acceso</param>
@@ -105,9 +91,10 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene un usuario por medio del usuario único
+    /// Obtiene la información de usuario.
     /// </summary>
     /// <param name="user">Usuario único</param>
+    /// <param name="token">Token de acceso</param>
     [HttpGet("read/user")]
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
     {

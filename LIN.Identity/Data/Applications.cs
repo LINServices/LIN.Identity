@@ -136,9 +136,6 @@ public class Applications
 
 
 
-
-
-
     /// <summary>
     /// Obtiene una app
     /// </summary>
@@ -236,6 +233,7 @@ public class Applications
 
         return new();
     }
+
 
 
 }
