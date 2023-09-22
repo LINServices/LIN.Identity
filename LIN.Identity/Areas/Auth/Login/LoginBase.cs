@@ -72,7 +72,7 @@ public abstract class LoginBase
             };
 
         // Valida la contraseña
-        if (Account.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + Password))
+        if (Account.Contraseña != EncryptClass.Encrypt(Password))
             return new()
             {
                 Response = Responses.InvalidPassword,

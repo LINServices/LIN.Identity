@@ -15,7 +15,7 @@ public class MailController : ControllerBase
     {
 
         // Validación de JWT
-        var (isValid, _, id, _) = Jwt.Validate(token);
+        var (isValid, _, id, _, _) = Jwt.Validate(token);
 
         if (!isValid)
             return new(Responses.Unauthorized);

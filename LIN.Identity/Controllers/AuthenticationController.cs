@@ -59,7 +59,7 @@ public class AuthenticationController : ControllerBase
 
 
         // Genera el token
-        var token = Jwt.Generate(response.Model);
+        var token = Jwt.Generate(response.Model, 0);
 
 
         response.Token = token;
@@ -78,7 +78,7 @@ public class AuthenticationController : ControllerBase
     {
 
         // Valida el token
-        var (isValid, _, user, _) = Jwt.Validate(token);
+        var (isValid, _, user, _, _) = Jwt.Validate(token);
 
         if (!isValid)
             return new(Responses.InvalidParam);

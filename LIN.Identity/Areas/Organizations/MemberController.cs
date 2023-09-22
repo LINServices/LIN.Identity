@@ -37,10 +37,10 @@ public class MemberController : ControllerBase
         string password = $"ChangePwd@{modelo.Creación:dd.MM.yyyy}";
 
         // Contraseña default
-        modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + password);
+        modelo.Contraseña = EncryptClass.Encrypt(password);
 
         // Validación del token
-        var (isValid, _, userID, _) = Jwt.Validate(token);
+        var (isValid, _, userID, _, _) = Jwt.Validate(token);
 
         // Token es invalido
         if (!isValid)
@@ -135,7 +135,7 @@ public class MemberController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromHeader] string token)
     {
 
-        var (isValid, _, _, orgID) = Jwt.Validate(token);
+        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
 
 
         if (!isValid)

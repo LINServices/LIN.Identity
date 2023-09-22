@@ -20,7 +20,7 @@ public class AccountHub : Hub
     {
 
         // Validación del token
-        var (isValid, _, id, _) = Jwt.Validate(modelo.Token);
+        var (isValid, _, id, _, _) = Jwt.Validate(modelo.Token);
 
         if (!isValid)
             return;

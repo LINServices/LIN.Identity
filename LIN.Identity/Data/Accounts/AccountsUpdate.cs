@@ -206,7 +206,7 @@ public  static partial class Accounts
         }
 
         // Confirmar contraseña
-        var newEncrypted = EncryptClass.Encrypt(Conexión.SecreteWord + newData.NewPassword);
+        var newEncrypted = EncryptClass.Encrypt(newData.NewPassword);
 
         // Cambiar Contraseña
         usuario.Contraseña = newEncrypted;

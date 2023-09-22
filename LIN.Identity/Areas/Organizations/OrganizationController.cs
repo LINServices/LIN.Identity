@@ -95,7 +95,7 @@ public class OrganizationsController : ControllerBase
     {
 
 
-        var (isValid, _, userID, _) = Jwt.Validate(token);
+        var (isValid, _, userID, _, _) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -154,7 +154,7 @@ public class OrganizationsController : ControllerBase
     {
 
 
-        var (isValid, _, userID, _) = Jwt.Validate(token);
+        var (isValid, _, userID, _, _) = Jwt.Validate(token);
 
 
         if (!isValid)

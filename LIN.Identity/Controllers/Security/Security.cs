@@ -248,7 +248,7 @@ public class Security : ControllerBase
         }
 
         // Evaluación de la contraseña
-        if (userData.Model.Contraseña != EncryptClass.Encrypt(Conexión.SecreteWord + password))
+        if (userData.Model.Contraseña != EncryptClass.Encrypt(password))
             return new(Responses.Unauthorized);
 
         // Conexión
@@ -341,7 +341,7 @@ public class Security : ControllerBase
     {
 
 
-        var (isValid, _, userID, _) = Jwt.Validate(token);
+        var (isValid, _, userID, _, _) = Jwt.Validate(token);
 
         if (!isValid)
         {

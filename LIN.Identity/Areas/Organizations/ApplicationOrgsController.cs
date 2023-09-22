@@ -15,7 +15,7 @@ public class ApplicationOrgsController : ControllerBase
     {
 
         // Token
-        var (isValid, _, _, orgID) = Jwt.Validate(token);
+        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
 
         // Token es invalido
         if (!isValid)
@@ -68,7 +68,7 @@ public class ApplicationOrgsController : ControllerBase
     {
 
         // Token
-        var (isValid, _, userID, _) = Jwt.Validate(token);
+        var (isValid, _, userID, _, _) = Jwt.Validate(token);
 
 
         // Si el token es invalido
@@ -146,7 +146,7 @@ public class ApplicationOrgsController : ControllerBase
     {
 
         // Token
-        var (isValid, _, _, orgID) = Jwt.Validate(token);
+        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
 
         // Valida el token
         if (!isValid || orgID <= 0)

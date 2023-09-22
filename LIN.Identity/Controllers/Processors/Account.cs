@@ -20,7 +20,7 @@ public class AccountProcessor
             OrganizationAccess = modelo.OrganizationAccess,
             Usuario = modelo.Usuario,
             Visibilidad = modelo.Visibilidad,
-            Contraseña = modelo.Contraseña = EncryptClass.Encrypt(Conexión.SecreteWord + modelo.Contraseña),
+            Contraseña = modelo.Contraseña = EncryptClass.Encrypt(modelo.Contraseña),
             Creación = modelo.Creación = DateTime.Now,
             Estado = modelo.Estado = AccountStatus.Normal,
             Insignia = modelo.Insignia = AccountBadges.None,

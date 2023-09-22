@@ -36,13 +36,13 @@ public static partial class Accounts
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="orgID">Info privada si la org es igual a OrgID</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, int orgID)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, int contextUser, int orgID)
     {
 
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id,orgID, context);
+        var res = await Read(id, contextUser,orgID, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -172,26 +172,29 @@ public static partial class Accounts
 
 
 
+
+
+
+
+
+
+
     /// <summary>
     /// Obtiene una cuenta y trae info extra si es de la org
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="orgID">ID de la org</param>
     /// <param name="context">Contexto</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, int orgID, Conexión context)
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, int contextUser, int orgID, Conexión context)
     {
 
         // Ejecución
         try
         {
 
-            // Consulta global
-            var query = from A in context.DataBase.Accounts
-                        where A.ID == id
-                        select A;
 
-            // Armar la consulta final
-            query = Account.Filter(query, orgID);
+
+            var query = Queries.Accounts.GetStablishAccounts(id, contextUser, orgID, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -208,6 +211,15 @@ public static partial class Accounts
 
         return new();
     }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -339,6 +351,12 @@ public static partial class Accounts
 
         return new();
     }
+
+
+
+
+
+
 
 
 
