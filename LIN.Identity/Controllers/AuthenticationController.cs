@@ -23,7 +23,7 @@ public class AuthenticationController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario.
-        var response = await Data.Accounts.ReadBasic(user);
+        var response = await Data.Accounts.Read(user, true);
 
         // Validación al obtener el usuario
         switch (response.Response)
@@ -85,7 +85,7 @@ public class AuthenticationController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.ReadBasic(user);
+        var response = await Data.Accounts.Read(user, true);
 
         if (response.Response != Responses.Success)
             return new(response.Response);

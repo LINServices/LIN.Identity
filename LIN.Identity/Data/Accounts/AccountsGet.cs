@@ -31,6 +31,44 @@ public static partial class Accounts
 
 
 
+
+    /// <summary>
+    /// Obtiene una cuenta
+    /// </summary>
+    /// <param name="id">ID de la cuenta</param>
+    /// <param name="orgID">Info privada si la org es igual a OrgID</param>
+    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool includeOrg)
+    {
+
+        // Obtiene la conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        var res = await Read(id, includeOrg, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
+    /// <summary>
+    /// Obtiene una cuenta
+    /// </summary>
+    /// <param name="id">ID de la cuenta</param>
+    /// <param name="orgID">Info privada si la org es igual a OrgID</param>
+    public async static Task<ReadOneResponse<AccountModel>> Read(string id, bool includeOrg)
+    {
+
+        // Obtiene la conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        var res = await Read(id, includeOrg, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
+
     public async static Task<ReadOneResponse<AccountModel>> ReadBasic(int id)
     {
 
@@ -187,6 +225,79 @@ public static partial class Accounts
         {
 
             var query = Queries.Accounts.GetStableAccount(user, contextUser, orgID, true, context);
+
+            // Obtiene el usuario
+            var result = await query.FirstOrDefaultAsync();
+
+            // Si no existe el modelo
+            if (result == null)
+                return new(Responses.NotExistAccount);
+
+            return new(Responses.Success, result);
+
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+
+
+
+
+
+    /// <summary>
+    /// Obtiene una cuenta y trae info extra si es de la org
+    /// </summary>
+    /// <param name="id">ID del usuario</param>
+    /// <param name="orgID">ID de la org</param>
+    /// <param name="context">Contexto</param>
+    public async static Task<ReadOneResponse<AccountModel>> Read(int user, bool includeOrg, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            var query = Queries.Accounts.GetStableAccount(user, includeOrg, context);
+
+            // Obtiene el usuario
+            var result = await query.FirstOrDefaultAsync();
+
+            // Si no existe el modelo
+            if (result == null)
+                return new(Responses.NotExistAccount);
+
+            return new(Responses.Success, result);
+
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+    /// <summary>
+    /// Obtiene una cuenta y trae info extra si es de la org
+    /// </summary>
+    /// <param name="id">ID del usuario</param>
+    /// <param name="orgID">ID de la org</param>
+    /// <param name="context">Contexto</param>
+    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool includeOrg, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            var query = Queries.Accounts.GetStableAccount(user, includeOrg, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
