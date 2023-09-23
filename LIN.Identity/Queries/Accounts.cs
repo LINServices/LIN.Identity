@@ -230,7 +230,7 @@ public class Accounts
                    {
                        ID = account.OrganizationAccess.ID,
                        Rol = account.OrganizationAccess.Rol,
-                   } : new()
+                   } : null
                };
     }
 
@@ -278,7 +278,7 @@ public class Accounts
                            Name = account.OrganizationAccess.Organization.Name,
                            Domain = account.OrganizationAccess.Organization.Domain
                        }
-                   } : new()
+                   } : null
                };
     }
 
