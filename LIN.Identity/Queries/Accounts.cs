@@ -50,7 +50,7 @@ public class Accounts
     /// <param name="contextUserID">ID del usuario que busca la información</param>
     /// <param name="contextOrgID">Contexto de organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(int userID, int contextUserID, int contextOrgID, Conexión context)
+    public static IQueryable<AccountModel> GetStableAccount(int userID, int contextUserID, int contextOrgID, bool includeOrg, Conexión context)
     {
 
         // Query general
@@ -59,7 +59,7 @@ public class Accounts
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserID, contextOrgID);
+        accounts = BuildModel(accounts, contextUserID, contextOrgID, includeOrg);
 
         // Retorno
         return accounts;
@@ -75,7 +75,7 @@ public class Accounts
     /// <param name="contextUserID">ID del usuario que busca la información</param>
     /// <param name="contextOrgID">Contexto de organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(string user, int contextUserID, int contextOrgID, Conexión context)
+    public static IQueryable<AccountModel> GetStableAccount(string user, int contextUserID, int contextOrgID, bool includeOrg, Conexión context)
     {
 
         // Query general
@@ -84,7 +84,7 @@ public class Accounts
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserID, contextOrgID);
+        accounts = BuildModel(accounts, contextUserID, contextOrgID, includeOrg);
 
         // Retorno
         return accounts;
@@ -100,7 +100,7 @@ public class Accounts
     /// <param name="contextUserID">ID del usuario que busca la información</param>
     /// <param name="contextOrgID">Contexto de organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccounts(IEnumerable<int> ids, int contextUserID, int contextOrgID, Conexión context)
+    public static IQueryable<AccountModel> GetStableAccounts(IEnumerable<int> ids, int contextUserID, int contextOrgID, bool includeOrg, Conexión context)
     {
 
         // Query general
@@ -109,7 +109,7 @@ public class Accounts
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserID, contextOrgID);
+        accounts = BuildModel(accounts, contextUserID, contextOrgID, includeOrg);
 
         // Retorno
         return accounts;
@@ -125,7 +125,7 @@ public class Accounts
     /// <param name="contextUserID">ID del usuario que busca la información</param>
     /// <param name="contextOrgID">Contexto de organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> Search(string pattern, int contextUserID, int contextOrgID, Conexión context)
+    public static IQueryable<AccountModel> Search(string pattern, int contextUserID, int contextOrgID, bool includeOrg, Conexión context)
     {
 
         // Query general
@@ -135,7 +135,7 @@ public class Accounts
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserID, contextOrgID);
+        accounts = BuildModel(accounts, contextUserID, contextOrgID, includeOrg);
 
         // Retorno
         return accounts;
@@ -150,7 +150,7 @@ public class Accounts
     /// <param name="query">Query base</param>
     /// <param name="contextUserID">Usuario de contexto</param>
     /// <param name="contextOrgID">Organización de contexto</param>
-    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, int contextUserID, int contextOrgID)
+    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, int contextUserID, int contextOrgID, bool includeOrg)
     {
 
         byte[] profile = { };
@@ -175,7 +175,7 @@ public class Accounts
                    Genero = (account.Visibilidad == AccountVisibility.Visible || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID) || account.ID == contextUserID) ? account.Genero : Genders.Undefined,
                    Creación = (account.Visibilidad == AccountVisibility.Visible || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID) || account.ID == contextUserID) ? account.Creación : default,
                    Perfil = (account.Visibilidad == AccountVisibility.Visible || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID) || account.ID == contextUserID) ? account.Perfil : profile,
-                   OrganizationAccess = (account.OrganizationAccess != null && (account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID)) ? new OrganizationAccessModel()
+                   OrganizationAccess = (includeOrg && account.OrganizationAccess != null && (account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID)) ? new OrganizationAccessModel()
                    {
                        ID = account.OrganizationAccess.ID,
                        Rol = account.OrganizationAccess.Rol,

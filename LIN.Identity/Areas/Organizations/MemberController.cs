@@ -54,7 +54,7 @@ public class MemberController : ControllerBase
 
 
         // Obtiene el usuario
-        var userContext = await Data.Accounts.Read(userID, true, false, true);
+        var userContext = await Data.Accounts.ReadBasic(userID);
 
         // Error al encontrar el usuario
         if (userContext.Response != Responses.Success)

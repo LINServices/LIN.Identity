@@ -80,7 +80,7 @@ public class ApplicationOrgsController : ControllerBase
             };
 
         // Información del usuario
-        var userData = await Data.Accounts.Read(userID, true, true, true);
+        var userData = await Data.Accounts.ReadBasic(userID);
 
         // Si no existe el usuario
         if (userData.Response != Responses.Success)

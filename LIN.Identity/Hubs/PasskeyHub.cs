@@ -177,7 +177,7 @@ public class PassKeyHub : Hub
             {
 
 
-                var userInfo = await Data.Accounts.Read(userID, true, true, true);
+                var userInfo = await Data.Accounts.ReadBasic(userID);
 
                 var badPass = new PassKeyModel()
                 {

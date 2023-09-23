@@ -144,7 +144,7 @@ public static partial class Accounts
         try
         {
 
-            var query = Queries.Accounts.GetStableAccount(id, contextUser, orgID, context);
+            var query = Queries.Accounts.GetStableAccount(id, contextUser, orgID, true, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -186,7 +186,7 @@ public static partial class Accounts
         try
         {
 
-            var query = Queries.Accounts.GetStableAccount(user, contextUser, orgID, context);
+            var query = Queries.Accounts.GetStableAccount(user, contextUser, orgID, true, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -227,7 +227,7 @@ public static partial class Accounts
         {
 
             // Query
-            var query = await Queries.Accounts.Search(pattern, me, orgID, context).Take(10).ToListAsync();
+            var query = await Queries.Accounts.Search(pattern, me, orgID, false, context).Take(10).ToListAsync();
 
 
             // Si no existe el modelo
@@ -265,7 +265,7 @@ public static partial class Accounts
         try
         {
 
-            var query = Queries.Accounts.GetStableAccounts(ids, me, org, context);
+            var query = Queries.Accounts.GetStableAccounts(ids, me, org, true, context);
 
             // Ejecuta
             var result = await query.ToListAsync();
@@ -288,7 +288,7 @@ public static partial class Accounts
 
 
 
-    
+
     public async static Task<ReadOneResponse<AccountModel>> ReadBasic(int id, Conexión context)
     {
 

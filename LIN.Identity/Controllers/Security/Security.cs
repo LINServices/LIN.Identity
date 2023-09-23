@@ -375,6 +375,7 @@ public class Security : ControllerBase
             Key = KeyGen.Generate(20, "ml")
         };
 
+
         try
         {
 
@@ -386,7 +387,7 @@ public class Security : ControllerBase
                 return new();
             }
 
-            var user = (await Data.Accounts.Read(userID, true)).Model;
+            var user = (await Data.Accounts.ReadBasic(userID)).Model;
 
             byte[] bytes = Encoding.UTF8.GetBytes(mailData.Email);
             string mail64 = Convert.ToBase64String(bytes);
