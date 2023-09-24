@@ -148,112 +148,134 @@ public class PassKeyHub : Hub
     /// </summary>
     public async Task ReceiveRequest(PassKeyModel modelo)
     {
-
         try
         {
 
-            // Obtiene la cuenta
-            var cuenta = Attempts[modelo.User.ToLower()];
+            // Validación del token recibido
+            var (isValid, userUnique, userID, orgID, _) = Jwt.Validate(modelo.Token);
 
-            // Obtiene el dispositivo
-            var intent = cuenta.Where(T => T.HubKey == modelo.HubKey).ToList().FirstOrDefault();
-
-            if (intent == null)
-                return;
-
-            intent.Status = modelo.Status;
-
-            if (DateTime.Now > modelo.Expiración)
+            // No es valido el token
+            if (!isValid || modelo.Status != PassKeyStatus.Success)
             {
-                intent.Status = PassKeyStatus.Expired;
-                modelo.Status = PassKeyStatus.Expired;
-                modelo.Token = string.Empty;
-                intent.Token = string.Empty;
+                // Modelo de falla
+                PassKeyModel badPass = new()
+                {
+                    Status = modelo.Status,
+                    User = modelo.User,
+                };
+
+                // comunica la respuesta
+                await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#responses", badPass);
+                return;
             }
 
+            // Obtiene el attempt
+            List<PassKeyModel> attempts = Attempts[modelo.User.ToLower()].Where(A => A.HubKey == modelo.HubKey).ToList();
 
-            var (isValid, _, userID, orgID, _) = Jwt.Validate(modelo.Token);
-            if (isValid && modelo.Status == PassKeyStatus.Success)
+            // Elemento
+            PassKeyModel? attempt = attempts.Where(A => A.HubKey == modelo.HubKey).FirstOrDefault();
+
+            // Validación del intento
+            if (attempt == null)
+                return;
+
+            // Eliminar el attempt de la lista
+            attempts.Remove(attempt);
+
+            // Cambiar el estado del intento
+            attempt.Status = modelo.Status;
+
+            // Si el tiempo de expiración ya paso
+            if (DateTime.Now > modelo.Expiración)
             {
+                attempt.Status = PassKeyStatus.Expired;
+                attempt.Token = string.Empty;
+            }
+
+            // Validación de la organización
+            if (orgID > 0)
+            {
+                // Obtiene la organización
+                var organization = await Data.Organizations.Organizations.Read(orgID);
+
+                // Si tiene lista blanca
+                if (organization.Model.HaveWhiteList)
+                {
+                    // Validación de la app
+                    var applicationOnOrg = await Data.Organizations.Applications.AppOnOrg(attempt.Application.Key, orgID);
+
+                    // Si la app no existe o no esta activa
+                    if (applicationOnOrg.Response != Responses.Success)
+                    {
+                        // Modelo de falla
+                        PassKeyModel badPass = new()
+                        {
+                            Status = PassKeyStatus.BlockedByOrg,
+                            User = modelo.User,
+                        };
+
+                        // comunica la respuesta
+                        await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#responses", badPass);
+                        return;
+
+                    }
+                }
 
 
-                var userInfo = await Data.Accounts.ReadBasic(userID);
+            }
 
-                var badPass = new PassKeyModel()
+            // Aplicación
+            var app = await Data.Applications.Read(attempt.Application.Key);
+
+            // Si la app no existe
+            if (app.Response != Responses.Success)
+            {
+                // Modelo de falla
+                PassKeyModel badPass = new()
                 {
                     Status = PassKeyStatus.Failed,
                     User = modelo.User,
                 };
 
-                if (userInfo.Response != Responses.Success)
-                {
-                    await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
-                    return;
-                }
-
-                if (userInfo.Model.OrganizationAccess == null || userInfo.Model.OrganizationAccess.Organization.ID == 0)
-                {
-
-                }
-                else
-                {
-
-                    var organization = userInfo.Model.OrganizationAccess.Organization;
-
-                    if (organization.HaveWhiteList)
-                    {
-                        // Validación de la app
-                        var applicationOnOrg = await Data.Organizations.Applications.AppOnOrg(intent.Application.Key, userInfo.Model.OrganizationAccess.Organization.ID);
-
-                        // Si la app no existe o no esta activa
-                        if (applicationOnOrg.Response != Responses.Success)
-                        {
-                            badPass.Status = PassKeyStatus.BlockedByOrg;
-                            await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", badPass);
-                            return;
-                        }
-                    }
-                }
-
-                // Agregar
-
-                _ = Data.Logins.Create(new()
-                {
-                    ID = 0,
-                    Platform = Platforms.Undefined,
-                    AccountID = userInfo.Model.ID,
-                    Date = DateTime.Now,
-                    Type = LoginTypes.Passkey,
-                    Application = new()
-                    {
-                        Key = intent.Application.Key
-                    }
-                });
-
-
+                // comunica la respuesta
+                await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#responses", badPass);
+                return;
             }
 
+            // Nuevo token 
+            string newToken = Jwt.Generate(new()
+            {
+                ID = userID,
+                Usuario = userUnique,
+                OrganizationAccess = new()
+                {
+                    Organization = new()
+                    {
+                        ID = orgID
+                    }
+                }
+            }, app.Model.ID);
+
+            // nuevo pass
             var pass = new PassKeyModel()
             {
                 Expiración = modelo.Expiración,
                 Status = modelo.Status,
                 User = modelo.User,
-                Token = modelo.Token,
+                Token = newToken,
                 Hora = modelo.Hora,
                 Application = new(),
                 HubKey = "",
                 Key = ""
             };
 
-            await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("recieveresponse", pass);
+            // Respuesta al cliente
+            await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", pass);
 
         }
-        catch (Exception ex)
+        catch 
         {
-            await EmailWorker.SendMail("giraldojhong4@gmail.com", "error", $"{ex.Message}\n\n{ex.StackTrace}\n\n{ex.InnerException}");
         }
-
-
 
     }
 
