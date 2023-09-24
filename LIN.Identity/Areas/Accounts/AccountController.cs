@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-
 namespace LIN.Identity.Areas.Accounts;
 
 
@@ -306,26 +304,27 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        //var (isValid, _, id, ordID, _) = Jwt.Validate(token);
+        var (isValid, _, id, ordID, _) = Jwt.Validate(token);
 
 
-        //if (!isValid)
-        //{
-        //    return new(Responses.Unauthorized);
-        //}
+        if (!isValid)
+        {
+            return new(Responses.Unauthorized);
+        }
 
 
-        //var rol = (await Data.Accounts.Read(id, true)).Model.Rol;
 
 
-        //if (rol != AccountRoles.Admin)
-        //    return new(Responses.Unauthorized);
+        var rol = (await Data.Accounts.Read(id, true)).Model.Rol;
 
-        //// Obtiene el usuario
-        //var response = await Data.Accounts.Search(pattern, 0, ordID);
 
-        //return response;
-        return new();
+        if (rol != AccountRoles.Admin)
+            return new(Responses.Unauthorized);
+
+        // Obtiene el usuario
+        var response = await Data.Accounts.Search(pattern);
+
+        return response;
 
     }
 

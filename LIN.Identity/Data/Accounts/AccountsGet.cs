@@ -132,7 +132,25 @@ public static partial class Accounts
         // Obtiene la conexión
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Search(pattern, me, orgID, context);
+        var res = await Search(pattern, me, orgID, false, context);
+        context.CloseActions(connectionKey);
+        return res;
+    }
+
+
+
+
+    /// <summary>
+    /// Obtiene una lista de diez (10) usuarios que coincidan con un patron
+    /// </summary>
+    /// <param name="pattern">Patron de búsqueda</param>
+    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern)
+    {
+
+        // Obtiene la conexión
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        var res = await Search(pattern, 0, 0, false, context);
         context.CloseActions(connectionKey);
         return res;
     }
@@ -330,22 +348,27 @@ public static partial class Accounts
     /// <param name="me">Mi ID</param>
     /// <param name="isAdmin">Si es un admin del sistema el que esta consultando</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, int orgID, Conexión context)
+    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, int orgID, bool isAdmin, Conexión context)
     {
 
         // Ejecución
         try
         {
 
-            // Query
-            var query = await Queries.Accounts.Search(pattern, me, orgID, false, context).Take(10).ToListAsync();
+            List<AccountModel> accountModels = new List<AccountModel>();
 
+            if (isAdmin)
+                accountModels = await Queries.Accounts.Search(pattern, me, orgID, false, context).Take(10).ToListAsync();
+            else
+            {
+                accountModels = await Queries.Accounts.SearchOnAll(pattern, true,context).Take(10).ToListAsync();
+            }
 
             // Si no existe el modelo
-            if (query == null)
+            if (accountModels == null)
                 return new(Responses.NotRows);
 
-            return new(Responses.Success, query);
+            return new(Responses.Success, accountModels);
         }
         catch
         {

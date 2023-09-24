@@ -118,6 +118,30 @@ public class Accounts
 
 
 
+    /// <summary>
+    /// Obtiene una cuenta valida
+    /// </summary>
+    /// <param name="user">Usuario único</param>
+    /// <param name="includeOrg">Incluir la organización</param>
+    /// <param name="context">Contexto de conexión</param>
+    public static IQueryable<AccountModel> SearchOnAll(string user, bool includeOrg, Conexión context)
+    {
+
+        // Query general
+        IQueryable<AccountModel> accounts = from account in GetAccounts(context)
+                                            where account.Usuario.ToLower().Contains(user)
+                                            select account;
+
+        // Armar el modelo
+        accounts = BuildModel(accounts, includeOrg);
+
+        // Retorno
+        return accounts;
+
+    }
+
+
+
 
     /// <summary>
     /// Obtiene una cuenta valida
