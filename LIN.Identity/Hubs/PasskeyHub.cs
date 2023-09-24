@@ -144,7 +144,7 @@ public class PassKeyHub : Hub
 
 
     /// <summary>
-    /// 
+    /// Recibe una respuesta de passkey
     /// </summary>
     public async Task ReceiveRequest(PassKeyModel modelo)
     {
@@ -165,7 +165,7 @@ public class PassKeyHub : Hub
                 };
 
                 // comunica la respuesta
-                await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#responses", badPass);
+                await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", badPass);
                 return;
             }
 
@@ -215,7 +215,7 @@ public class PassKeyHub : Hub
                         };
 
                         // comunica la respuesta
-                        await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#responses", badPass);
+                        await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", badPass);
                         return;
 
                     }
@@ -238,7 +238,7 @@ public class PassKeyHub : Hub
                 };
 
                 // comunica la respuesta
-                await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#responses", badPass);
+                await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", badPass);
                 return;
             }
 
