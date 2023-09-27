@@ -15,17 +15,17 @@ public class IntentsController : ControllerBase
         try
         {
 
-
+            // Info del token
             var (isValid, user, _, _, _) = Jwt.Validate(token);
 
+            // Si el token es invalido
             if (!isValid)
-            {
                 return new ReadAllResponse<PassKeyModel>
                 {
                     Message = "Invalid Token",
                     Response = Responses.Unauthorized
                 };
-            }
+           
 
             // Cuenta
             var account = (from A in PassKeyHub.Attempts
