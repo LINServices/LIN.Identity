@@ -12,7 +12,7 @@ public class Links
     /// Crea un nuevo LINK
     /// </summary>
     /// <param name="data">Modelo del link</param>
-    public async static Task<CreateResponse> Create(UniqueLink data)
+    public static async Task<CreateResponse> Create(UniqueLink data)
     {
 
         // Obtiene la conexión
@@ -29,7 +29,7 @@ public class Links
     /// Obtiene la lista de links asociados a una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    public async static Task<ReadAllResponse<UniqueLink>> ReadAll(int id)
+    public static async Task<ReadAllResponse<UniqueLink>> ReadAll(int id)
     {
 
         // Obtiene la conexión
@@ -47,7 +47,7 @@ public class Links
     /// Obtiene un link y cambia su estado
     /// </summary>
     /// <param name="value"></param>
-    public async static Task<ReadOneResponse<UniqueLink>> ReadOneAnChange(string value)
+    public static async Task<ReadOneResponse<UniqueLink>> ReadOneAnChange(string value)
     {
 
         // Obtiene la conexión
@@ -69,7 +69,7 @@ public class Links
     /// </summary>
     /// <param name="data">Modelo del enlace</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(UniqueLink data, Conexión context)
+    public static async Task<CreateResponse> Create(UniqueLink data, Conexión context)
     {
         // ID en 0
         data.ID = 0;
@@ -95,7 +95,7 @@ public class Links
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<UniqueLink>> ReadAll(int id, Conexión context)
+    public static async Task<ReadAllResponse<UniqueLink>> ReadAll(int id, Conexión context)
     {
 
         // Ejecución
@@ -128,7 +128,7 @@ public class Links
     /// </summary>
     /// <param name="value"></param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<UniqueLink>> ReadOneAnChange(string value, Conexión context)
+    public static async Task<ReadOneResponse<UniqueLink>> ReadOneAnChange(string value, Conexión context)
     {
 
         // Ejecución

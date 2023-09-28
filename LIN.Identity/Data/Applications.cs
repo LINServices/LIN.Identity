@@ -12,7 +12,7 @@ public class Applications
     /// Crea una app
     /// </summary>
     /// <param name="data">Modelo</param>
-    public async static Task<CreateResponse> Create(ApplicationModel data)
+    public static async Task<CreateResponse> Create(ApplicationModel data)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
         var response = await Create(data, context);
@@ -26,7 +26,7 @@ public class Applications
     /// Obtiene la lista de apps asociados a una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    public async static Task<ReadAllResponse<ApplicationModel>> ReadAll(int id)
+    public static async Task<ReadAllResponse<ApplicationModel>> ReadAll(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -48,7 +48,7 @@ public class Applications
     /// Obtiene una app
     /// </summary>
     /// <param name="id">ID de la app</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> Read(int id)
+    public static async Task<ReadOneResponse<ApplicationModel>> Read(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -62,7 +62,7 @@ public class Applications
     /// Obtiene una app
     /// </summary>
     /// <param name="key">Key de la app</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> Read(string key)
+    public static async Task<ReadOneResponse<ApplicationModel>> Read(string key)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -81,7 +81,7 @@ public class Applications
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(ApplicationModel data, Conexión context)
+    public static async Task<CreateResponse> Create(ApplicationModel data, Conexión context)
     {
 
         data.ID = 0;
@@ -113,7 +113,7 @@ public class Applications
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<ApplicationModel>> ReadAll(int id, Conexión context)
+    public static async Task<ReadAllResponse<ApplicationModel>> ReadAll(int id, Conexión context)
     {
 
         // Ejecución
@@ -141,7 +141,7 @@ public class Applications
     /// </summary>
     /// <param name="id">ID de la app</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> Read(int id, Conexión context)
+    public static async Task<ReadOneResponse<ApplicationModel>> Read(int id, Conexión context)
     {
 
         // Ejecución
@@ -175,7 +175,7 @@ public class Applications
     /// </summary>
     /// <param name="key">Key de la app</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> Read(string key, Conexión context)
+    public static async Task<ReadOneResponse<ApplicationModel>> Read(string key, Conexión context)
     {
 
         // Ejecución
@@ -209,7 +209,7 @@ public class Applications
     /// </summary>
     /// <param name="uid">UId de la app</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<ApplicationModel>> ReadByAppUid(string uid, Conexión context)
+    public static async Task<ReadOneResponse<ApplicationModel>> ReadByAppUid(string uid, Conexión context)
     {
 
         // Ejecución

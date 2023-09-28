@@ -12,7 +12,7 @@ public class MailLinks
     /// Crea un nuevo LINK
     /// </summary>
     /// <param name="data">Modelo del link</param>
-    public async static Task<CreateResponse> Create(MailMagicLink data)
+    public static async Task<CreateResponse> Create(MailMagicLink data)
     {
 
         // Obtiene la conexión
@@ -28,7 +28,7 @@ public class MailLinks
     /// Obtiene un link activo según su key
     /// </summary>
     /// <param name="value"></param>
-    public async static Task<ReadOneResponse<MailMagicLink>> ReadAndDisable(string value)
+    public static async Task<ReadOneResponse<MailMagicLink>> ReadAndDisable(string value)
     {
 
         // Obtiene la conexión
@@ -50,7 +50,7 @@ public class MailLinks
     /// </summary>
     /// <param name="data">Modelo del link</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(MailMagicLink data, Conexión context)
+    public static async Task<CreateResponse> Create(MailMagicLink data, Conexión context)
     {
         // ID en 0
         data.ID = 0;
@@ -78,7 +78,7 @@ public class MailLinks
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
     /// <param name="connectionKey">Llave para cerrar la conexión</param>
-    public async static Task<ReadOneResponse<MailMagicLink>> ReadAndDisable(string key, Conexión context)
+    public static async Task<ReadOneResponse<MailMagicLink>> ReadAndDisable(string key, Conexión context)
     {
 
         // Ejecución

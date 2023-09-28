@@ -13,7 +13,7 @@ internal static partial class Accounts
     /// Elimina una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    public async static Task<ResponseBase> Delete(int id)
+    public static async Task<ResponseBase> Delete(int id)
     {
 
         // Obtiene la conexión
@@ -29,7 +29,7 @@ internal static partial class Accounts
     /// Actualiza la información de una cuenta
     /// </summary>
     /// <param name="modelo">Modelo nuevo de la cuenta</param>
-    public async static Task<ResponseBase> Update(AccountModel modelo)
+    public static async Task<ResponseBase> Update(AccountModel modelo)
     {
 
         // Obtiene la conexión
@@ -45,7 +45,7 @@ internal static partial class Accounts
     /// Actualiza las credenciales (Contraseña de un usuario)
     /// </summary>
     /// <param name="newData">Nuevas credenciales</param>
-    public async static Task<ResponseBase> Update(UpdatePasswordModel newData)
+    public static async Task<ResponseBase> Update(UpdatePasswordModel newData)
     {
 
         var (context, key) = Conexión.GetOneConnection();
@@ -63,7 +63,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="status">Nuevo estado</param>
-    public async static Task<ResponseBase> Update(int id, AccountStatus status)
+    public static async Task<ResponseBase> Update(int id, AccountStatus status)
     {
 
         var (context, key) = Conexión.GetOneConnection();
@@ -81,7 +81,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="gender">Nuevo genero</param>
-    public async static Task<ResponseBase> Update(int id, Genders gender)
+    public static async Task<ResponseBase> Update(int id, Genders gender)
     {
 
         var (context, key) = Conexión.GetOneConnection();
@@ -99,7 +99,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="visibility">Nueva visibilidad</param>
-    public async static Task<ResponseBase> Update(int id, AccountVisibility visibility)
+    public static async Task<ResponseBase> Update(int id, AccountVisibility visibility)
     {
 
         var (context, key) = Conexión.GetOneConnection();
@@ -121,7 +121,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ResponseBase> Delete(int id, Conexión context)
+    public static async Task<ResponseBase> Delete(int id, Conexión context)
     {
 
         // Ejecución
@@ -152,7 +152,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="modelo">Modelo nuevo de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ResponseBase> Update(AccountModel modelo, Conexión context)
+    public static async Task<ResponseBase> Update(AccountModel modelo, Conexión context)
     {
 
         // Ejecución
@@ -188,7 +188,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="newData">Nuevas credenciales</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> Update(UpdatePasswordModel newData, Conexión context)
+    public static async Task<ResponseBase> Update(UpdatePasswordModel newData, Conexión context)
     {
 
         // Encontrar el usuario
@@ -220,7 +220,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="newData">organización</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> Update(OrganizationModel newData, int id, Conexión context)
+    public static async Task<ResponseBase> Update(OrganizationModel newData, int id, Conexión context)
     {
 
         // Encontrar el usuario
@@ -258,7 +258,7 @@ internal static partial class Accounts
     /// <param name="user">ID</param>
     /// <param name="status">Nuevo estado</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> Update(int user, AccountStatus status, Conexión context)
+    public static async Task<ResponseBase> Update(int user, AccountStatus status, Conexión context)
     {
 
         // Encontrar el usuario
@@ -288,7 +288,7 @@ internal static partial class Accounts
     /// <param name="user">ID</param>
     /// <param name="genero">Nuevo genero</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> Update(int user, Genders genero, Conexión context)
+    public static async Task<ResponseBase> Update(int user, Genders genero, Conexión context)
     {
 
         // Encontrar el usuario
@@ -318,7 +318,7 @@ internal static partial class Accounts
     /// <param name="user">ID</param>
     /// <param name="visibility">Nueva visibilidad</param>
     /// <param name="context">Contexto de conexión con la BD</param>
-    public async static Task<ResponseBase> Update(int user, AccountVisibility visibility, Conexión context)
+    public static async Task<ResponseBase> Update(int user, AccountVisibility visibility, Conexión context)
     {
 
         // Encontrar el usuario

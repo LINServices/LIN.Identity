@@ -13,7 +13,7 @@ public class Logins
     /// Crea un registro de Login
     /// </summary>
     /// <param name="data">Modelo del login</param>
-    public async static Task<CreateResponse> Create(LoginLogModel data)
+    public static async Task<CreateResponse> Create(LoginLogModel data)
     {
 
         // Obtiene la conexión
@@ -29,7 +29,7 @@ public class Logins
     /// Obtiene la lista de registros login de una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    public async static Task<ReadAllResponse<LoginLogModel>> ReadAll(int id)
+    public static async Task<ReadAllResponse<LoginLogModel>> ReadAll(int id)
     {
 
         // Obtiene la conexión
@@ -51,7 +51,7 @@ public class Logins
     /// </summary>
     /// <param name="data">Modelo del login</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(LoginLogModel data, Conexión context)
+    public static async Task<CreateResponse> Create(LoginLogModel data, Conexión context)
     {
         // ID en 0
         data.ID = 0;
@@ -101,7 +101,7 @@ public class Logins
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<LoginLogModel>> ReadAll(int id, Conexión context)
+    public static async Task<ReadAllResponse<LoginLogModel>> ReadAll(int id, Conexión context)
     {
 
         // Ejecución

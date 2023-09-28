@@ -12,7 +12,7 @@ internal static partial class Accounts
     /// Crea un nuevo usuario
     /// </summary>
     /// <param name="data">Modelo del usuario</param>
-    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data)
+    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data)
     {
 
         // Obtiene la conexión
@@ -34,7 +34,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, Conexión context)
     {
 
         data.ID = 0;

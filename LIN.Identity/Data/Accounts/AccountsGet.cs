@@ -227,7 +227,7 @@ internal static partial class Accounts
     /// <param name="id">ID del usuario</param>
     /// <param name="orgID">ID de la org</param>
     /// <param name="context">Contexto</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, int contextUser, int orgID, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Read(string user, int contextUser, int orgID, Conexión context)
     {
 
         // Ejecución
@@ -266,7 +266,7 @@ internal static partial class Accounts
     /// <param name="id">ID del usuario</param>
     /// <param name="orgID">ID de la org</param>
     /// <param name="context">Contexto</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int user, bool includeOrg, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Read(int user, bool includeOrg, Conexión context)
     {
 
         // Ejecución
@@ -300,7 +300,7 @@ internal static partial class Accounts
     /// <param name="id">ID del usuario</param>
     /// <param name="orgID">ID de la org</param>
     /// <param name="context">Contexto</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, bool includeOrg, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Read(string user, bool includeOrg, Conexión context)
     {
 
         // Ejecución
@@ -340,7 +340,7 @@ internal static partial class Accounts
     /// <param name="me">Mi ID</param>
     /// <param name="isAdmin">Si es un admin del sistema el que esta consultando</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, int orgID, bool isAdmin, Conexión context)
+    public static async Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, int orgID, bool isAdmin, Conexión context)
     {
 
         // Ejecución
@@ -384,7 +384,7 @@ internal static partial class Accounts
     /// <param name="ids">Lista de IDs</param>
     /// <param name="org">ID de organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int me, int org, Conexión context)
+    public static async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int me, int org, Conexión context)
     {
 
         // Ejecución
@@ -415,7 +415,7 @@ internal static partial class Accounts
 
 
 
-    public async static Task<ReadOneResponse<AccountModel>> ReadBasic(int id, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> ReadBasic(int id, Conexión context)
     {
 
         // Ejecución

@@ -12,7 +12,7 @@ public class Organizations
     /// Crea una organización
     /// </summary>
     /// <param name="data">Modelo</param>
-    public async static Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data)
+    public static async Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
         var response = await Create(data, context);
@@ -26,7 +26,7 @@ public class Organizations
     /// Obtiene una organización
     /// </summary>
     /// <param name="id">ID de la organización</param>
-    public async static Task<ReadOneResponse<OrganizationModel>> Read(int id)
+    public static async Task<ReadOneResponse<OrganizationModel>> Read(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -41,7 +41,7 @@ public class Organizations
     /// Obtiene la lista de aplicaciones permitidas en una organización.
     /// </summary>
     /// <param name="id">ID de la organización</param>
-    public async static Task<ReadAllResponse<ApplicationModel>> ReadApps(int id)
+    public static async Task<ReadAllResponse<ApplicationModel>> ReadApps(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -57,7 +57,7 @@ public class Organizations
     /// </summary>
     /// <param name="id">ID de la organización</param>
     /// <param name="estado">Nuevo estado</param>
-    public async static Task<ResponseBase> UpdateState(int id, bool estado)
+    public static async Task<ResponseBase> UpdateState(int id, bool estado)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -74,7 +74,7 @@ public class Organizations
     /// </summary>
     /// <param name="id">ID de la organización</param>
     /// <param name="estado">Nuevo estado</param>
-    public async static Task<ResponseBase> UpdateAccess(int id, bool estado)
+    public static async Task<ResponseBase> UpdateAccess(int id, bool estado)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -93,7 +93,7 @@ public class Organizations
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data, Conexión context)
+    public static async Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data, Conexión context)
     {
 
         data.ID = 0;
@@ -146,7 +146,7 @@ public class Organizations
     /// </summary>
     /// <param name="id">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<OrganizationModel>> Read(int id, Conexión context)
+    public static async Task<ReadOneResponse<OrganizationModel>> Read(int id, Conexión context)
     {
 
         // Ejecución
@@ -181,7 +181,7 @@ public class Organizations
     /// </summary>
     /// <param name="id">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<ApplicationModel>> ReadApps(int id, Conexión context)
+    public static async Task<ReadAllResponse<ApplicationModel>> ReadApps(int id, Conexión context)
     {
 
         // Ejecución
@@ -224,7 +224,7 @@ public class Organizations
     /// <param name="id">ID de la organización</param>
     /// <param name="estado">Nuevo estado</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ResponseBase> UpdateState(int id, bool estado, Conexión context)
+    public static async Task<ResponseBase> UpdateState(int id, bool estado, Conexión context)
     {
 
         // Ejecución
@@ -264,7 +264,7 @@ public class Organizations
     /// <param name="id">ID de la organización</param>
     /// <param name="estado">Nuevo estado</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ResponseBase> UpdateAccess(int id, bool estado, Conexión context)
+    public static async Task<ResponseBase> UpdateAccess(int id, bool estado, Conexión context)
     {
 
         // Ejecución

@@ -12,7 +12,7 @@ public class Members
     /// Obtiene la lista de integrantes de una organización
     /// </summary>
     /// <param name="id">ID de la organización</param>
-    public async static Task<ReadAllResponse<AccountModel>> ReadAll(int id)
+    public static async Task<ReadAllResponse<AccountModel>> ReadAll(int id)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -30,7 +30,7 @@ public class Members
     /// <param name="data">Modelo</param>
     /// <param name="orgID">ID de la organización</param>
     /// <param name="rol">Rol dentro de la organización</param>
-    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, OrgRoles rol)
+    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, OrgRoles rol)
     {
 
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -52,7 +52,7 @@ public class Members
     /// <param name="orgID">ID de la organización</param>
     /// <param name="rol">Rol dentro de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, OrgRoles rol, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, OrgRoles rol, Conexión context)
     {
 
         data.ID = 0;
@@ -109,7 +109,7 @@ public class Members
     /// </summary>
     /// <param name="id">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<AccountModel>> ReadAll(int id, Conexión context)
+    public static async Task<ReadAllResponse<AccountModel>> ReadAll(int id, Conexión context)
     {
 
         // Ejecución

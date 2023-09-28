@@ -14,7 +14,7 @@ public class Applications
     /// </summary>
     /// <param name="param">Parámetro de búsqueda</param>
     /// <param name="org">ID de la organización</param>
-    public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, int org)
+    public static async Task<ReadAllResponse<ApplicationModel>> Search(string param, int org)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -30,7 +30,7 @@ public class Applications
     /// </summary>
     /// <param name="appUid">UID de la aplicación</param>
     /// <param name="org">ID de la organización</param>
-    public async static Task<CreateResponse> Create(string appUid, int org)
+    public static async Task<CreateResponse> Create(string appUid, int org)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -46,7 +46,7 @@ public class Applications
     /// </summary>
     /// <param name="key">Key de la app</param>
     /// <param name="org">ID de la organización</param>
-    public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org)
+    public static async Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -66,7 +66,7 @@ public class Applications
     /// <param name="key">Key de la app</param>
     /// <param name="org">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org, Conexión context)
+    public static async Task<ReadOneResponse<AppOnOrgModel>> AppOnOrg(string key, int org, Conexión context)
     {
 
         // Ejecución
@@ -99,7 +99,7 @@ public class Applications
     /// <param name="key">Key de la app</param>
     /// <param name="org">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(string appUid, int org, Conexión context)
+    public static async Task<CreateResponse> Create(string appUid, int org, Conexión context)
     {
 
         // Ejecución
@@ -148,7 +148,7 @@ public class Applications
     /// <param name="param">Parámetro de búsqueda</param>
     /// <param name="org">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, int org, Conexión context)
+    public static async Task<ReadAllResponse<ApplicationModel>> Search(string param, int org, Conexión context)
     {
 
         // Ejecución
