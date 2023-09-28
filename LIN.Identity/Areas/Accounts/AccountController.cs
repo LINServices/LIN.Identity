@@ -15,16 +15,16 @@ public class AccountController : ControllerBase
     {
 
         // Comprobaciones
-        if (modelo == null || modelo.Contrase馻.Length < 4 || modelo.Nombre.Length <= 0 || modelo.Usuario.Length <= 0)
+        if (modelo == null || modelo.Contrase帽a.Length < 4 || modelo.Nombre.Length <= 0 || modelo.Usuario.Length <= 0)
             return new(Responses.InvalidParam);
 
-        // Organizaci髇 del modelo
+        // Organizaci贸n del modelo
         modelo = Controllers.Processors.AccountProcessor.Process(modelo);
 
-        // Creaci髇 del usuario
+        // Creaci贸n del usuario
         var response = await Data.Accounts.Create(modelo);
 
-        // Evaluaci髇
+        // Evaluaci贸n
         if (response.Response != Responses.Success)
             return new(response.Response);
 
@@ -46,7 +46,7 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene la informaci髇 de usuario.
+    /// Obtiene la informaci贸n de usuario.
     /// </summary>
     /// <param name="id">ID del usuario</param>
     /// <param name="token">Token de acceso</param>
@@ -72,10 +72,10 @@ public class AccountController : ControllerBase
 
         // Obtiene el usuario
         var response = await Data.Accounts.Read(id: id,
-                                                contextUser: user,
-                                                orgID: orgID);
+            contextUser: user,
+            orgID: orgID);
 
-        // Si es err髇eo
+        // Si es err贸neo
         if (response.Response != Responses.Success)
             return new ReadOneResponse<AccountModel>()
             {
@@ -92,9 +92,9 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene la informaci髇 de usuario.
+    /// Obtiene la informaci贸n de usuario.
     /// </summary>
-    /// <param name="user">Usuario 鷑ico</param>
+    /// <param name="user">Usuario 煤nico</param>
     /// <param name="token">Token de acceso</param>
     [HttpGet("read/user")]
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
@@ -121,7 +121,7 @@ public class AccountController : ControllerBase
 
 
 
-        // Si es err髇eo
+        // Si es err贸neo
         if (response.Response != Responses.Success)
             return new ReadOneResponse<AccountModel>()
             {
@@ -146,7 +146,7 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> Search([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        // Comprobaci髇
+        // Comprobaci贸n
         if (pattern.Trim().Length <= 0)
             return new(Responses.InvalidParam);
 
@@ -198,9 +198,9 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Actualiza la contrase馻 de una cuenta
+    /// Actualiza la contrase帽a de una cuenta
     /// </summary>
-    /// <param name="modelo">Modelo de actualizaci髇</param>
+    /// <param name="modelo">Modelo de actualizaci贸n</param>
     [HttpPatch("update/password")]
     public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo, [FromHeader] string token)
     {
@@ -224,10 +224,10 @@ public class AccountController : ControllerBase
         if (actualData.Response != Responses.Success)
             return new(Responses.NotExistAccount);
 
-        var oldEncrypted = actualData.Model.Contrase馻;
+        var oldEncrypted = actualData.Model.Contrase帽a;
 
 
-        if (oldEncrypted != actualData.Model.Contrase馻)
+        if (oldEncrypted != actualData.Model.Contrase帽a)
         {
             return new ResponseBase(Responses.InvalidPassword);
         }
@@ -282,7 +282,7 @@ public class AccountController : ControllerBase
         // Modelo de usuario de la BD
         var userModel = await Data.Accounts.ReadBasic(user.ID);
 
-        if (userModel.Model.Contrase馻 != EncryptClass.Encrypt(user.Contrase馻))
+        if (userModel.Model.Contrase帽a != EncryptClass.Encrypt(user.Contrase帽a))
         {
             return new(Responses.InvalidPassword);
         }
@@ -332,7 +332,7 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Actualiza la informaci髇 de una cuenta
+    /// Actualiza la informaci贸n de una cuenta
     /// </summary>
     /// <param name="modelo">Modelo</param>
     /// <param name="token">Token de acceso</param>

@@ -25,7 +25,7 @@ public class IntentsController : ControllerBase
                     Message = "Invalid Token",
                     Response = Responses.Unauthorized
                 };
-           
+
 
             // Cuenta
             var account = (from A in PassKeyHub.Attempts
@@ -38,7 +38,7 @@ public class IntentsController : ControllerBase
             // Intentos
             var intentos = (from I in account
                             where I.Status == PassKeyStatus.Undefined
-                            where I.Expiración > timeNow
+                            where I.ExpiraciÃ³n > timeNow
                             select I).ToList();
 
             // Retorna

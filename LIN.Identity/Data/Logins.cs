@@ -1,5 +1,6 @@
 ﻿namespace LIN.Identity.Data;
 
+
 public class Logins
 {
 

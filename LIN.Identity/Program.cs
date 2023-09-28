@@ -29,8 +29,8 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder.AllowAnyOrigin()
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
+               .AllowAnyHeader()
+               .AllowAnyMethod();
         });
 });
 
@@ -63,7 +63,8 @@ try
     var res = dataContext.Database.EnsureCreated();
 }
 catch
-{ }
+{
+}
 
 
 app.UseCors("AllowAnyOrigin");

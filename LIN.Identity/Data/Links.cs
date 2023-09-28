@@ -8,7 +8,6 @@ public class Links
     #region Abstracciones
 
 
-
     /// <summary>
     /// Crea un nuevo LINK
     /// </summary>
@@ -59,7 +58,6 @@ public class Links
         return res;
 
     }
-
 
 
     #endregion

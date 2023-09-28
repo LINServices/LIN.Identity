@@ -1,12 +1,11 @@
 ﻿namespace LIN.Identity.Data;
 
 
-public static partial class Accounts
+internal static partial class Accounts
 {
 
 
     #region Abstracciones
-
 
 
     /// <summary>
@@ -24,8 +23,6 @@ public static partial class Accounts
         return res;
 
     }
-
-
 
 
     #endregion

@@ -7,7 +7,7 @@ public class ApplicationOrgsController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene la lista de aplicaciones asociadas a una organizaciÛn
+    /// Obtiene la lista de aplicaciones asociadas a una organizaci√≥n
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet]
@@ -26,11 +26,11 @@ public class ApplicationOrgsController : ControllerBase
             };
 
 
-        // Si no tiene ninguna organizaciÛn
+        // Si no tiene ninguna organizaci√≥n
         if (orgID <= 0)
             return new ReadAllResponse<ApplicationModel>
             {
-                Message = "No estas vinculado con ninguna organizaciÛn.",
+                Message = "No estas vinculado con ninguna organizaci√≥n.",
                 Response = Responses.Unauthorized
             };
 
@@ -46,8 +46,8 @@ public class ApplicationOrgsController : ControllerBase
                 Response = Responses.Unauthorized
             };
 
-        // ConexiÛn
-        (ConexiÛn context, string connectionKey) = ConexiÛn.GetOneConnection();
+        // Conexi√≥n
+        (Conexi√≥n context, string connectionKey) = Conexi√≥n.GetOneConnection();
 
         context.CloseActions(connectionKey);
 
@@ -59,9 +59,9 @@ public class ApplicationOrgsController : ControllerBase
 
 
     /// <summary>
-    /// Insertar una aplicaciÛn en una organizaciÛn
+    /// Insertar una aplicaci√≥n en una organizaci√≥n
     /// </summary>
-    /// <param name="appUid">UId de la aplicaciÛn</param>
+    /// <param name="appUid">UId de la aplicaci√≥n</param>
     /// <param name="token">Token de acceso</param>
     [HttpPost("insert")]
     public async Task<HttpCreateResponse> InsertApp([FromQuery] string appUid, [FromHeader] string token)
@@ -79,48 +79,48 @@ public class ApplicationOrgsController : ControllerBase
                 Response = Responses.Unauthorized
             };
 
-        // InformaciÛn del usuario
+        // Informaci√≥n del usuario
         var userData = await Data.Accounts.ReadBasic(userID);
 
         // Si no existe el usuario
         if (userData.Response != Responses.Success)
             return new CreateResponse
             {
-                Message = "No se encontrÛ el usuario, talvez fue eliminado o desactivado.",
+                Message = "No se encontr√≥ el usuario, talvez fue eliminado o desactivado.",
                 Response = Responses.NotExistAccount
             };
 
 
-        // Si no tiene organizaciÛn
+        // Si no tiene organizaci√≥n
         if (userData.Model.OrganizationAccess == null || userData.Model.OrganizationAccess.Organization == null)
             return new CreateResponse
             {
-                Message = $"El usuario '{userData.Model.Usuario}' no pertenece a una organizaciÛn.",
+                Message = $"El usuario '{userData.Model.Usuario}' no pertenece a una organizaci√≥n.",
                 Response = Responses.Unauthorized
             };
 
-        // Si el usuario no es admin en la organizaciÛn
+        // Si el usuario no es admin en la organizaci√≥n
         if (!userData.Model.OrganizationAccess.Rol.IsAdmin())
             return new CreateResponse
             {
-                Message = $"El usuario '{userData.Model.Usuario}' no tiene un rol administrador en la organizaciÛn '{userData.Model.OrganizationAccess.Organization.Name}'",
+                Message = $"El usuario '{userData.Model.Usuario}' no tiene un rol administrador en la organizaci√≥n '{userData.Model.OrganizationAccess.Organization.Name}'",
                 Response = Responses.Unauthorized
             };
 
-        // Crea la aplicaciÛn en la organizaciÛn
+        // Crea la aplicaci√≥n en la organizaci√≥n
         var res = await Data.Organizations.Applications.Create(appUid, userData.Model.OrganizationAccess.Organization.ID);
 
         // Si hubo une error
         if (res.Response != Responses.Success)
             return new CreateResponse
             {
-                Message = $"Hubo un error al insertar esta aplicaciÛn en la lista blanca permitidas de {userData.Model.OrganizationAccess.Organization.Name}",
+                Message = $"Hubo un error al insertar esta aplicaci√≥n en la lista blanca permitidas de {userData.Model.OrganizationAccess.Organization.Name}",
                 Response = Responses.Unauthorized
             };
 
 
-        // ConexiÛn
-        (ConexiÛn context, string connectionKey) = ConexiÛn.GetOneConnection();
+        // Conexi√≥n
+        (Conexi√≥n context, string connectionKey) = Conexi√≥n.GetOneConnection();
 
         context.CloseActions(connectionKey);
 
@@ -130,16 +130,17 @@ public class ApplicationOrgsController : ControllerBase
             LastID = res.LastID,
             Message = "",
             Response = Responses.Success
-        }; ;
+        };
+        ;
 
     }
 
 
 
     /// <summary>
-    /// Buscar aplicaciones que no est·n vinculadas a una organizaciÛn por medio del un par·metro
+    /// Buscar aplicaciones que no est√°n vinculadas a una organizaci√≥n por medio del un par√°metro
     /// </summary>
-    /// <param name="param">Par·metro de b˙squeda</param>
+    /// <param name="param">Par√°metro de b√∫squeda</param>
     /// <param name="token">Token de acceso</param>
     [HttpGet("search")]
     public async Task<HttpReadAllResponse<ApplicationModel>> Search([FromQuery] string param, [FromHeader] string token)

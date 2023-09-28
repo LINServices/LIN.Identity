@@ -9,23 +9,23 @@ public class AuthenticationController : ControllerBase
 
 
     /// <summary>
-    /// Inicia una sesi髇 de usuario
+    /// Inicia una sesi贸n de usuario
     /// </summary>
-    /// <param name="user">Usuario 鷑ico</param>
-    /// <param name="password">Contrase馻 del usuario</param>
-    /// <param name="application">Key de aplicaci髇</param>
+    /// <param name="user">Usuario 煤nico</param>
+    /// <param name="password">Contrase帽a del usuario</param>
+    /// <param name="application">Key de aplicaci贸n</param>
     [HttpGet("login")]
     public async Task<HttpReadOneResponse<AccountModel>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string application)
     {
 
-        // Validaci髇 de par醡etros.
+        // Validaci贸n de par谩metros.
         if (!user.Any() || !password.Any() || !application.Any())
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario.
         var response = await Data.Accounts.Read(user, true);
 
-        // Validaci髇 al obtener el usuario
+        // Validaci贸n al obtener el usuario
         switch (response.Response)
         {
             // Correcto
@@ -43,7 +43,7 @@ public class AuthenticationController : ControllerBase
 
         // Definir la estrategia
         strategy = response.Model.OrganizationAccess == null ? new LoginNormal(response.Model, application, password)
-                                                               : new LoginOnOrg(response.Model, application, password);
+            : new LoginOnOrg(response.Model, application, password);
 
         // Respuesta del login
         var loginResponse = await strategy.Login();
@@ -70,7 +70,7 @@ public class AuthenticationController : ControllerBase
 
 
     /// <summary>
-    /// Inicia una sesi髇 de usuario por medio del token
+    /// Inicia una sesi贸n de usuario por medio del token
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet("LoginWithToken")]

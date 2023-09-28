@@ -206,7 +206,7 @@ public class Accounts
         // Query general
         IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
                                             where account.Usuario.ToLower().Contains(pattern.ToLower())
-                                            && account.ID != contextUserID
+                                                  && account.ID != contextUserID
                                             select account;
 
         // Armar el modelo

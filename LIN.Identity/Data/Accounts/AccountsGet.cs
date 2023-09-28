@@ -1,29 +1,26 @@
 ﻿namespace LIN.Identity.Data;
 
 
-public static partial class Accounts
+internal static partial class Accounts
 {
 
 
     #region Abstracciones
 
 
-
-
-
-
     /// <summary>
     /// Obtiene una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    /// <param name="orgID">Info privada si la org es igual a OrgID</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, int contextUser, int orgID)
+    /// <param name="contextUser">ID del usuario contexto</param>
+    /// <param name="orgId">Info privada si la org es igual a OrgID</param>
+    public static async Task<ReadOneResponse<AccountModel>> Read(int id, int contextUser, int orgId)
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id, contextUser, orgID, context);
+        var res = await Read(id, contextUser, orgId, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -31,35 +28,16 @@ public static partial class Accounts
 
 
 
-
     /// <summary>
     /// Obtiene una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    /// <param name="orgID">Info privada si la org es igual a OrgID</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, bool includeOrg)
+    /// <param name="includeOrg">Incluir la organización</param>
+    public static async Task<ReadOneResponse<AccountModel>> Read(int id, bool includeOrg)
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
-
-        var res = await Read(id, includeOrg, context);
-        context.CloseActions(connectionKey);
-        return res;
-
-    }
-
-
-    /// <summary>
-    /// Obtiene una cuenta
-    /// </summary>
-    /// <param name="id">ID de la cuenta</param>
-    /// <param name="orgID">Info privada si la org es igual a OrgID</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string id, bool includeOrg)
-    {
-
-        // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await Read(id, includeOrg, context);
         context.CloseActions(connectionKey);
@@ -69,11 +47,34 @@ public static partial class Accounts
 
 
 
-    public async static Task<ReadOneResponse<AccountModel>> ReadBasic(int id)
+    /// <summary>
+    /// Obtiene una cuenta
+    /// </summary>
+    /// <param name="id">ID de la cuenta</param>
+    /// <param name="includeOrg">Incluir la organización</param>
+    public static async Task<ReadOneResponse<AccountModel>> Read(string id, bool includeOrg)
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
+
+        var res = await Read(id, includeOrg, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
+
+    /// <summary>
+    /// Obtiene la informacion basica de un usuario
+    /// </summary>
+    /// <param name="id">ID del usuario</param>
+    public static async Task<ReadOneResponse<AccountModel>> ReadBasic(int id)
+    {
+
+        // Obtiene la conexión
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await ReadBasic(id, context);
         context.CloseActions(connectionKey);
@@ -83,11 +84,15 @@ public static partial class Accounts
 
 
 
-    public async static Task<ReadOneResponse<AccountModel>> ReadBasic(string user)
+    /// <summary>
+    /// Obtiene la informacion basica de un usuario
+    /// </summary>
+    /// <param name="user">Usuario unico</param>
+    public static async Task<ReadOneResponse<AccountModel>> ReadBasic(string user)
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await ReadBasic(user, context);
         context.CloseActions(connectionKey);
@@ -100,23 +105,20 @@ public static partial class Accounts
     /// <summary>
     /// Obtiene una cuenta
     /// </summary>
-    /// <param name="id">ID de la cuenta</param>
-    /// <param name="orgID">Info privada si la org es igual a OrgID</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(string user, int contextUser, int orgID)
+    /// <param name="user">Usuario único</param>
+    /// <param name="contextUser">Usuario de contexto</param>
+    /// <param name="orgId">Info privada si la org es igual a OrgID</param>
+    public static async Task<ReadOneResponse<AccountModel>> Read(string user, int contextUser, int orgId)
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(user, contextUser, orgID, context);
+        var res = await Read(user, contextUser, orgId, context);
         context.CloseActions(connectionKey);
         return res;
 
     }
-
-
-
-
 
 
 
@@ -125,18 +127,17 @@ public static partial class Accounts
     /// </summary>
     /// <param name="pattern">Patron de búsqueda</param>
     /// <param name="me">Mi ID</param>
-    /// <param name="isAdmin">Si es un admin del sistema el que esta consultando</param>
-    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, int orgID)
+    /// <param name="orgId">ID de la org de contexto</param>
+    public static async Task<ReadAllResponse<AccountModel>> Search(string pattern, int me, int orgId)
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Search(pattern, me, orgID, false, context);
+        var res = await Search(pattern, me, orgId, false, context);
         context.CloseActions(connectionKey);
         return res;
     }
-
 
 
 
@@ -144,7 +145,7 @@ public static partial class Accounts
     /// Obtiene una lista de diez (10) usuarios que coincidan con un patron
     /// </summary>
     /// <param name="pattern">Patron de búsqueda</param>
-    public async static Task<ReadAllResponse<AccountModel>> Search(string pattern)
+    public static async Task<ReadAllResponse<AccountModel>> Search(string pattern)
     {
 
         // Obtiene la conexión
@@ -161,12 +162,13 @@ public static partial class Accounts
     /// Obtiene una lista de usuarios por medio del ID
     /// </summary>
     /// <param name="ids">Lista de IDs</param>
+    /// <param name="me">ID del usuario contexto</param>
     /// <param name="org">ID de organización</param>
-    public async static Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int me = 0, int org = 0)
+    public static async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, int me = 0, int org = 0)
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await FindAll(ids, me, org, context);
         context.CloseActions(connectionKey);
@@ -174,17 +176,7 @@ public static partial class Accounts
     }
 
 
-
     #endregion
-
-
-
-
-
-
-
-
-
 
 
     /// <summary>
@@ -193,7 +185,7 @@ public static partial class Accounts
     /// <param name="id">ID del usuario</param>
     /// <param name="orgID">ID de la org</param>
     /// <param name="context">Contexto</param>
-    public async static Task<ReadOneResponse<AccountModel>> Read(int id, int contextUser, int orgID, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Read(int id, int contextUser, int orgID, Conexión context)
     {
 
         // Ejecución
@@ -361,7 +353,7 @@ public static partial class Accounts
                 accountModels = await Queries.Accounts.Search(pattern, me, orgID, false, context).Take(10).ToListAsync();
             else
             {
-                accountModels = await Queries.Accounts.SearchOnAll(pattern, true,context).Take(10).ToListAsync();
+                accountModels = await Queries.Accounts.SearchOnAll(pattern, true, context).Take(10).ToListAsync();
             }
 
             // Si no existe el modelo
@@ -459,7 +451,7 @@ public static partial class Accounts
     }
 
 
-    public async static Task<ReadOneResponse<AccountModel>> ReadBasic(string user, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> ReadBasic(string user, Conexión context)
     {
 
         // Ejecución

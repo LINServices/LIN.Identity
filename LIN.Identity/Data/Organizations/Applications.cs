@@ -9,7 +9,6 @@ public class Applications
     #region Abstractions
 
 
-
     /// <summary>
     /// Obtiene la lista de apps que coincidan con un patron y que no estén agregadas a una organización
     /// </summary>
@@ -55,8 +54,6 @@ public class Applications
         context.CloseActions(contextKey);
         return res;
     }
-
-
 
 
     #endregion
@@ -149,7 +146,7 @@ public class Applications
     /// Obtiene la lista de apps que coincidan con un patron y que no estén agregadas a una organización
     /// </summary>
     /// <param name="param">Parámetro de búsqueda</param>
-	/// <param name="org">ID de la organización</param>
+    /// <param name="org">ID de la organización</param>
     /// <param name="context">Contexto de conexión</param>
     public async static Task<ReadAllResponse<ApplicationModel>> Search(string param, int org, Conexión context)
     {
@@ -162,7 +159,7 @@ public class Applications
             var apps = await (from A in context.DataBase.Applications
                               where !context.DataBase.AppOnOrg.Any(aog => aog.AppID == A.ID && aog.OrgID == org)
                               where A.Name.ToLower().Contains(param.ToLower())
-                              || A.ApplicationUid.ToLower().Contains(param.ToLower())
+                                    || A.ApplicationUid.ToLower().Contains(param.ToLower())
                               select new ApplicationModel
                               {
                                   ID = A.ID,

@@ -169,12 +169,12 @@ public sealed class Conexión
 #endif
 
         await Task.Run(() =>
-          {
-              for (var i = 0; i < _cantidad; i++)
-              {
-                  _ = new Conexión();
-              }
-          });
+        {
+            for (var i = 0; i < _cantidad; i++)
+            {
+                _ = new Conexión();
+            }
+        });
 
     }
 

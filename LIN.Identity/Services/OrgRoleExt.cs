@@ -1,5 +1,6 @@
 ﻿namespace LIN.Identity.Services;
 
+
 public static class OrgRoleExt
 {
 

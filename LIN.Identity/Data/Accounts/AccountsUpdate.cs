@@ -1,13 +1,12 @@
 ﻿namespace LIN.Identity.Data;
 
 
-public  static partial class Accounts
+internal static partial class Accounts
 {
 
 
 
     #region Abstracciones
-
 
 
     /// <summary>
@@ -112,13 +111,11 @@ public  static partial class Accounts
     }
 
 
-
-
     #endregion
 
 
 
-    
+
     /// <summary>
     /// Elimina una cuenta
     /// </summary>
@@ -235,7 +232,7 @@ public  static partial class Accounts
         var org = await (from U in context.DataBase.Organizations
                          where U.ID == newData.ID
                          select U
-                         ).FirstOrDefaultAsync();
+            ).FirstOrDefaultAsync();
 
 
 

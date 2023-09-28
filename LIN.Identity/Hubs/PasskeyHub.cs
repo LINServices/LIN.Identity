@@ -85,12 +85,12 @@ public class PassKeyHub : Hub
 
 
         _ = e.Where(T =>
-          {
-              if (T.HubKey == Context.ConnectionId && T.Status == PassKeyStatus.Undefined)
-                  T.Status = PassKeyStatus.Failed;
+        {
+            if (T.HubKey == Context.ConnectionId && T.Status == PassKeyStatus.Undefined)
+                T.Status = PassKeyStatus.Failed;
 
-              return false;
-          });
+            return false;
+        });
 
 
         return base.OnDisconnectedAsync(exception);
@@ -273,7 +273,7 @@ public class PassKeyHub : Hub
             await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", pass);
 
         }
-        catch 
+        catch
         {
         }
 
