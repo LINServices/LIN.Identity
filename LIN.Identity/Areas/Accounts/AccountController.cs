@@ -29,7 +29,7 @@ public class AccountController : ControllerBase
             return new(response.Response);
 
         // Obtiene el usuario
-        string token = Jwt.Generate(response.Model, 0);
+        var token = Jwt.Generate(response.Model, 0);
 
         // Retorna el resultado
         return new CreateResponse()
@@ -71,9 +71,9 @@ public class AccountController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(id: id,
-            contextUser: user,
-            orgId: orgID);
+        var response = await Data.Accounts.Read(id,
+            user,
+            orgID);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

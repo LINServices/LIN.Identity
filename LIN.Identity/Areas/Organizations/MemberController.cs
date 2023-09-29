@@ -7,7 +7,7 @@ public class MemberController : ControllerBase
 
 
     /// <summary>
-    /// Crea un nuevo miembro en una organización
+    /// Crea un nuevo miembro en una organizaciÃ³n
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta</param>
     /// <param name="token">Token de acceso de un administrador</param>
@@ -16,30 +16,30 @@ public class MemberController : ControllerBase
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] OrgRoles rol)
     {
 
-        // Validación del modelo.
+        // ValidaciÃ³n del modelo.
         if (modelo == null || !modelo.Usuario.Trim().Any() || !modelo.Nombre.Trim().Any())
         {
             return new CreateResponse
             {
                 Response = Responses.InvalidParam,
-                Message = "Uno o varios parámetros inválidos."
+                Message = "Uno o varios parÃ¡metros invÃ¡lidos."
             };
         }
 
         // Visibilidad oculta
         modelo.Visibilidad = AccountVisibility.Hidden;
 
-        // Organización del modelo
+        // OrganizaciÃ³n del modelo
         modelo = Controllers.Processors.AccountProcessor.Process(modelo);
 
 
-        // Establece la contraseña default
-        string password = $"ChangePwd@{modelo.Creación:dd.MM.yyyy}";
+        // Establece la contraseÃ±a default
+        var password = $"ChangePwd@{modelo.CreaciÃ³n:dd.MM.yyyy}";
 
-        // Contraseña default
-        modelo.Contraseña = EncryptClass.Encrypt(password);
+        // ContraseÃ±a default
+        modelo.ContraseÃ±a = EncryptClass.Encrypt(password);
 
-        // Validación del token
+        // ValidaciÃ³n del token
         var (isValid, _, userID, _, _) = Jwt.Validate(token);
 
         // Token es invalido
@@ -61,33 +61,33 @@ public class MemberController : ControllerBase
         {
             return new CreateResponse
             {
-                Message = "No se encontró un usuario valido.",
+                Message = "No se encontrÃ³ un usuario valido.",
                 Response = Responses.Unauthorized
             };
         }
 
-        // Si el usuario no tiene una organización
+        // Si el usuario no tiene una organizaciÃ³n
         if (userContext.Model.OrganizationAccess == null)
         {
             return new CreateResponse
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organizaciÃ³n.",
                 Response = Responses.Unauthorized
             };
         }
 
-        // Verificación del rol dentro de la organización
+        // VerificaciÃ³n del rol dentro de la organizaciÃ³n
         if (!userContext.Model.OrganizationAccess.Rol.IsAdmin())
         {
             return new CreateResponse
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no puede crear nuevos usuarios en esta organización.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no puede crear nuevos usuarios en esta organizaciÃ³n.",
                 Response = Responses.Unauthorized
             };
         }
 
 
-        // Verificación del rol dentro de la organización
+        // VerificaciÃ³n del rol dentro de la organizaciÃ³n
         if (userContext.Model.OrganizationAccess.Rol.IsGretter(rol))
         {
             return new CreateResponse
@@ -98,21 +98,21 @@ public class MemberController : ControllerBase
         }
 
 
-        // ID de la organización
+        // ID de la organizaciÃ³n
         var org = userContext.Model.OrganizationAccess.Organization.ID;
 
 
-        // Conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        // ConexiÃ³n
+        (var context, var connectionKey) = ConexiÃ³n.GetOneConnection();
 
-        // Creación del usuario
+        // CreaciÃ³n del usuario
         var response = await Data.Organizations.Members.Create(modelo, org, rol, context);
 
-        // Evaluación
+        // EvaluaciÃ³n
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-        // Cierra la conexión
+        // Cierra la conexiÃ³n
         context.CloseActions(connectionKey);
 
         // Retorna el resultado
@@ -128,7 +128,7 @@ public class MemberController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene la lista de miembros asociados a una organización
+    /// Obtiene la lista de miembros asociados a una organizaciÃ³n
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet]
@@ -161,8 +161,8 @@ public class MemberController : ControllerBase
 
 
 
-        // Conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        // ConexiÃ³n
+        (var context, var connectionKey) = ConexiÃ³n.GetOneConnection();
 
         context.CloseActions(connectionKey);
 

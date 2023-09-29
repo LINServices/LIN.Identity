@@ -242,20 +242,20 @@ public class Accounts
                select new AccountModel
                {
                    ID = account.ID,
-                   Nombre = (account.Visibilidad == AccountVisibility.Visible || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID) || account.ID == contextUserID) ? account.Nombre : "Usuario privado",
+                   Nombre = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Nombre : "Usuario privado",
                    Rol = account.Rol,
                    Insignia = account.Insignia,
                    Estado = account.Estado,
                    Usuario = account.Usuario,
                    Visibilidad = account.Visibilidad,
-                   Birthday = (account.Visibilidad == AccountVisibility.Visible || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID) || account.ID == contextUserID) ? account.Birthday : new(),
-                   Genero = (account.Visibilidad == AccountVisibility.Visible || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID) || account.ID == contextUserID) ? account.Genero : Genders.Undefined,
-                   Creación = (account.Visibilidad == AccountVisibility.Visible || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID) || account.ID == contextUserID) ? account.Creación : default,
-                   Perfil = (account.Visibilidad == AccountVisibility.Visible || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID) || account.ID == contextUserID) ? account.Perfil : profile,
-                   OrganizationAccess = (includeOrg && account.OrganizationAccess != null && (account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID)) ? new OrganizationAccessModel()
+                   Birthday = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Birthday : new(),
+                   Genero = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Genero : Genders.Undefined,
+                   Creación = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Creación : default,
+                   Perfil = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Perfil : profile,
+                   OrganizationAccess = includeOrg && account.OrganizationAccess != null && (account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID) ? new OrganizationAccessModel()
                    {
                        ID = account.OrganizationAccess.ID,
-                       Rol = account.OrganizationAccess.Rol,
+                       Rol = account.OrganizationAccess.Rol
                    } : null
                };
     }
@@ -296,7 +296,7 @@ public class Accounts
                    Contraseña = account.Contraseña,
                    Creación = account.Creación,
                    Perfil = account.Perfil,
-                   OrganizationAccess = (includeOrg && account.OrganizationAccess != null) ? new OrganizationAccessModel()
+                   OrganizationAccess = includeOrg && account.OrganizationAccess != null ? new OrganizationAccessModel()
                    {
                        ID = account.OrganizationAccess.ID,
                        Rol = account.OrganizationAccess.Rol,

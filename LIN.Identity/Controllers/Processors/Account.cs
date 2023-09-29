@@ -27,7 +27,7 @@ public class AccountProcessor
             Rol = modelo.Rol = AccountRoles.User,
             Perfil = modelo.Perfil = modelo.Perfil.Length == 0
                 ? File.ReadAllBytes("wwwroot/profile.png")
-                : modelo.Perfil,
+                : modelo.Perfil
         };
 
         model.Perfil = Image.Zip(model.Perfil);

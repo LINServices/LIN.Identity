@@ -98,7 +98,7 @@ public sealed class Conexión
         DbContextOptionsBuilder<Data.Context> optionsBuilder = new();
         optionsBuilder.UseSqlServer(_connection);
 
-        DataBase = new Data.Context(optionsBuilder.Options);
+        DataBase = new(optionsBuilder.Options);
 
         _counter++;
         ConnectionNumber = _counter;
@@ -205,7 +205,7 @@ public sealed class Conexión
             lock (con)
             {
                 con.SetOnUse();
-                string key = KeyGen.Generate(10, "con.");
+                var key = KeyGen.Generate(10, "con.");
                 con.mykey = key;
                 return (con, key);
             }

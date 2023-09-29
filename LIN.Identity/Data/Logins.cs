@@ -17,7 +17,7 @@ public class Logins
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        (var context, var connectionKey) = Conexión.GetOneConnection();
         var res = await Create(data, context);
         context.CloseActions(connectionKey);
         return res;
@@ -33,7 +33,7 @@ public class Logins
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        (var context, var connectionKey) = Conexión.GetOneConnection();
 
         var res = await ReadAll(id, context);
         context.CloseActions(connectionKey);

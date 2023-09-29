@@ -21,7 +21,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Conexi�n
-       var ( context,  connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
 
         // Organizaci�n del modelo

@@ -87,22 +87,22 @@ public class Security : ControllerBase
 
         return new(Responses.Success, new()
         {
-            Email = CensorEmail(verifiedMail?.Email ?? ""),
+            Email = CensorEmail(verifiedMail?.Email ?? "")
         });
     }
 
 
 
-    static string CensorEmail(string email)
+    private static string CensorEmail(string email)
     {
-        int atIndex = email.IndexOf('@');
+        var atIndex = email.IndexOf('@');
         if (atIndex >= 0)
         {
-            int dotIndex = email.IndexOf('.');
+            var dotIndex = email.IndexOf('.');
             if (dotIndex > atIndex + 3)
             {
-                string username = email.Substring(0, atIndex - 3); // Censura los últimos 3 caracteres antes del "@"
-                string domain = email.Substring(atIndex); // Censura el dominio antes del primer punto
+                var username = email.Substring(0, atIndex - 3); // Censura los últimos 3 caracteres antes del "@"
+                var domain = email.Substring(atIndex); // Censura el dominio antes del primer punto
                 return $"{username}***{domain}";
             }
         }
@@ -210,7 +210,7 @@ public class Security : ControllerBase
             if (emails.Response == Responses.Success)
             {
                 // Existe el mail default
-                bool haveDefault = emails.Models.Where(E => E.IsDefault).Any();
+                var haveDefault = emails.Models.Where(E => E.IsDefault).Any();
 
                 // Si no existe
                 if (!haveDefault)
@@ -306,11 +306,11 @@ public class Security : ControllerBase
             context.DataBase.MailMagicLinks.Add(emailLink);
 
 
-            byte[] bytes = Encoding.UTF8.GetBytes(model.Email);
-            string mail64 = Convert.ToBase64String(bytes);
+            var bytes = Encoding.UTF8.GetBytes(model.Email);
+            var mail64 = Convert.ToBase64String(bytes);
 
             bytes = Encoding.UTF8.GetBytes(userData.Model.Usuario);
-            string user64 = Convert.ToBase64String(bytes);
+            var user64 = Convert.ToBase64String(bytes);
 
             await EmailWorker.SendVerification(model.Email, $"http://linaccount.somee.com/verificate/{user64}/{mail64}/{emailLink.Key}", model.Email);
             return new(Responses.Success);
@@ -389,11 +389,11 @@ public class Security : ControllerBase
 
             var user = (await Data.Accounts.ReadBasic(userID)).Model;
 
-            byte[] bytes = Encoding.UTF8.GetBytes(mailData.Email);
-            string mail64 = Convert.ToBase64String(bytes);
+            var bytes = Encoding.UTF8.GetBytes(mailData.Email);
+            var mail64 = Convert.ToBase64String(bytes);
 
             bytes = Encoding.UTF8.GetBytes(user.Usuario);
-            string user64 = Convert.ToBase64String(bytes);
+            var user64 = Convert.ToBase64String(bytes);
 
             await EmailWorker.SendVerification(mailData.Email, $"http://linaccount.somee.com/verificate/{user64}/{mail64}/{emailLink.Key}", mailData.Email);
             return new(Responses.Success);

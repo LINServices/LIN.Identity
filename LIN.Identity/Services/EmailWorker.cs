@@ -82,10 +82,10 @@ public class EmailWorker
         {
 
 
-            using (HttpClient client = new HttpClient())
+            using (var client = new HttpClient())
             {
-                string url = "https://api.resend.com/emails";
-                string accessToken = Password; // Reemplaza con tu token de acceso
+                var url = "https://api.resend.com/emails";
+                var accessToken = Password; // Reemplaza con tu token de acceso
 
                 var requestData = new
                 {
@@ -94,21 +94,21 @@ public class EmailWorker
                     {
                         to
                     },
-                    subject = asunto,
+                    subject = asunto
                 };
 
 
 
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(requestData);
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestData);
 
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
 
-                HttpResponseMessage response = await client.PostAsync(url, content);
+                var response = await client.PostAsync(url, content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string responseBody = await response.Content.ReadAsStringAsync();
+                    var responseBody = await response.Content.ReadAsStringAsync();
                     Console.WriteLine("Response: " + responseBody);
                 }
                 else

@@ -164,7 +164,7 @@ public class PassKeyHub : Hub
                 PassKeyModel badPass = new()
                 {
                     Status = modelo.Status,
-                    User = modelo.User,
+                    User = modelo.User
                 };
 
                 // comunica la respuesta
@@ -176,7 +176,7 @@ public class PassKeyHub : Hub
             List<PassKeyModel> attempts = Attempts[modelo.User.ToLower()].Where(A => A.HubKey == modelo.HubKey).ToList();
 
             // Elemento
-            PassKeyModel? attempt = attempts.Where(A => A.HubKey == modelo.HubKey).FirstOrDefault();
+            var attempt = attempts.Where(A => A.HubKey == modelo.HubKey).FirstOrDefault();
 
             // Validación del intento
             if (attempt == null)
@@ -214,7 +214,7 @@ public class PassKeyHub : Hub
                         PassKeyModel badPass = new()
                         {
                             Status = PassKeyStatus.BlockedByOrg,
-                            User = modelo.User,
+                            User = modelo.User
                         };
 
                         // comunica la respuesta
@@ -237,7 +237,7 @@ public class PassKeyHub : Hub
                 PassKeyModel badPass = new()
                 {
                     Status = PassKeyStatus.Failed,
-                    User = modelo.User,
+                    User = modelo.User
                 };
 
                 // comunica la respuesta
@@ -246,7 +246,7 @@ public class PassKeyHub : Hub
             }
 
             // Nuevo token 
-            string newToken = Jwt.Generate(new()
+            var newToken = Jwt.Generate(new()
             {
                 ID = userID,
                 Usuario = userUnique,

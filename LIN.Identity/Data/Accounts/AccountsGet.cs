@@ -331,7 +331,7 @@ internal static partial class Accounts
         try
         {
 
-            List<AccountModel> accountModels = new List<AccountModel>();
+            List<AccountModel> accountModels = new();
 
             if (isAdmin)
                 accountModels = await Queries.Accounts.Search(pattern, me, orgId, false, context).Take(10).ToListAsync();

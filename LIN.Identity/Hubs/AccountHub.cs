@@ -123,7 +123,7 @@ public class AccountHub : Hub
             var cuenta = Cuentas[account];
 
             // Obtiene el dispositivo
-            DeviceModel? device = cuenta.Where(T => T.ID == Context.ConnectionId).ToList().FirstOrDefault();
+            var device = cuenta.Where(T => T.ID == Context.ConnectionId).ToList().FirstOrDefault();
 
             if (device == null)
                 return;

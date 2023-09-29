@@ -34,7 +34,7 @@ public class Image
             Bitmap nuevaImagen = new(width, height);
 
             // Crea un objeto Graphics para dibujar la imagen original en el Bitmap redimensionado
-            using (Graphics graphics = Graphics.FromImage(nuevaImagen))
+            using (var graphics = Graphics.FromImage(nuevaImagen))
             {
                 // Dibuja la imagen original en el nuevo Bitmap con las dimensiones deseadas
                 graphics.DrawImage(image, 0, 0, 50, 50);

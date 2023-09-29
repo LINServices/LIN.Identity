@@ -16,7 +16,7 @@ internal static partial class Accounts
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        (var context, var connectionKey) = Conexión.GetOneConnection();
         var res = await Delete(id, context);
         context.CloseActions(connectionKey);
         return res;
@@ -32,7 +32,7 @@ internal static partial class Accounts
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        (var context, var connectionKey) = Conexión.GetOneConnection();
         var res = await Update(modelo, context);
         context.CloseActions(connectionKey);
         return res;
@@ -201,7 +201,7 @@ internal static partial class Accounts
         // Si el usuario no existe
         if (usuario == null)
         {
-            return new ResponseBase(Responses.NotExistAccount);
+            return new(Responses.NotExistAccount);
         }
 
         // Confirmar contraseña
@@ -241,7 +241,7 @@ internal static partial class Accounts
         // Si el usuario no existe
         if (usuario == null || org == null)
         {
-            return new ResponseBase(Responses.NotExistAccount);
+            return new(Responses.NotExistAccount);
         }
 
         // Cambiar Contraseña
@@ -271,7 +271,7 @@ internal static partial class Accounts
         // Si el usuario no existe
         if (usuario == null)
         {
-            return new ResponseBase(Responses.NotExistAccount);
+            return new(Responses.NotExistAccount);
         }
 
         // Cambiar Contraseña
@@ -301,7 +301,7 @@ internal static partial class Accounts
         // Si el usuario no existe
         if (usuario == null)
         {
-            return new ResponseBase(Responses.NotExistAccount);
+            return new(Responses.NotExistAccount);
         }
 
         // Cambiar Contraseña
@@ -331,7 +331,7 @@ internal static partial class Accounts
         // Si el usuario no existe
         if (usuario == null)
         {
-            return new ResponseBase(Responses.NotExistAccount);
+            return new(Responses.NotExistAccount);
         }
 
         // Cambiar visibilidad

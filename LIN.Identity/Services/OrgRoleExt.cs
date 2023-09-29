@@ -47,7 +47,10 @@ public static class OrgRoleExt
 
 
 
-    public static bool IsAdmin(this OrgRoles rol) => rol == OrgRoles.SuperManager || rol == OrgRoles.Manager;
+    public static bool IsAdmin(this OrgRoles rol)
+    {
+        return rol == OrgRoles.SuperManager || rol == OrgRoles.Manager;
+    }
 
 
 }

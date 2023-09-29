@@ -47,7 +47,7 @@ public class ApplicationOrgsController : ControllerBase
             };
 
         // Conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        (var context, var connectionKey) = Conexión.GetOneConnection();
 
         context.CloseActions(connectionKey);
 
@@ -120,7 +120,7 @@ public class ApplicationOrgsController : ControllerBase
 
 
         // Conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        (var context, var connectionKey) = Conexión.GetOneConnection();
 
         context.CloseActions(connectionKey);
 
