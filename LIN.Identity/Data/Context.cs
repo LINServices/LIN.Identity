@@ -129,7 +129,11 @@ public class Context : DbContext
 
 
         modelBuilder.Entity<AppOnOrgModel>()
-           .HasKey(a => new { a.AppID, a.OrgID });
+           .HasKey(a => new
+            {
+                a.AppID,
+                a.OrgID
+            });
 
 
 

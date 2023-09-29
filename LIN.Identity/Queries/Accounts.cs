@@ -228,7 +228,9 @@ public class Accounts
     private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, int contextUserID, int contextOrgID, bool includeOrg)
     {
 
-        byte[] profile = { };
+        byte[] profile =
+        {
+        };
         try
         {
             // Imagen genérica
@@ -269,7 +271,9 @@ public class Accounts
     private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, bool includeOrg)
     {
 
-        byte[] profile = { };
+        byte[] profile =
+        {
+        };
         try
         {
             // Imagen genérica

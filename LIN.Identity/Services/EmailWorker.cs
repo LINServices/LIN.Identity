@@ -90,7 +90,10 @@ public class EmailWorker
                 var requestData = new
                 {
                     from = "onboarding@resend.dev",
-                    to = new[] { to },
+                    to = new[]
+                    {
+                        to
+                    },
                     subject = asunto,
                 };
 

@@ -5,7 +5,6 @@ internal static partial class Accounts
 {
 
 
-
     #region Abstracciones
 
 
@@ -114,10 +113,8 @@ internal static partial class Accounts
     #endregion
 
 
-
-
     /// <summary>
-    /// Elimina una cuenta
+    /// Elimina una cuenta.
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
@@ -127,14 +124,19 @@ internal static partial class Accounts
         // Ejecución
         try
         {
+
+            // Obtiene el usuario
             var user = await context.DataBase.Accounts.FindAsync(id);
 
-            if (user != null)
-            {
-                user.Estado = AccountStatus.Deleted;
-                context.DataBase.SaveChanges();
-            }
+            // Si no existe
+            if (user == null)
+                return new(Responses.Success);
 
+            // Cambia el estado
+            user.Estado = AccountStatus.Deleted;
+            context.DataBase.SaveChanges();
+
+            // Retorna
             return new(Responses.Success);
         }
         catch
@@ -339,7 +341,6 @@ internal static partial class Accounts
         return new(Responses.Success);
 
     }
-
 
 
 }

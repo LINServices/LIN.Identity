@@ -7,19 +7,20 @@ public class Configuration
 
     private static IConfiguration? Config;
 
-    private static readonly bool IsStart = false;
+    private static bool _isStart = false;
 
 
     public static string GetConfiguration(string route)
     {
 
-        if (!IsStart || Config == null)
+        if (!_isStart || Config == null)
         {
             var configBuilder = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             Config = configBuilder.Build();
+            _isStart = true;
         }
 
         return Config[route] ?? string.Empty;

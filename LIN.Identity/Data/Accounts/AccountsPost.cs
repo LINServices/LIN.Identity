@@ -9,14 +9,14 @@ internal static partial class Accounts
 
 
     /// <summary>
-    /// Crea un nuevo usuario
+    /// Crea una nueva cuenta
     /// </summary>
-    /// <param name="data">Modelo del usuario</param>
+    /// <param name="data">Modelo de la nueva cuenta</param>
     public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data)
     {
 
         // Obtiene la conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await Create(data, context);
         context.CloseActions(connectionKey);
@@ -28,12 +28,11 @@ internal static partial class Accounts
     #endregion
 
 
-
     /// <summary>
-    /// Crea una cuenta
+    /// Crea una nueva cuenta
     /// </summary>
-    /// <param name="data">Modelo</param>
-    /// <param name="context">Contexto de conexión</param>
+    /// <param name="data">Modelo de la cuenta</param>
+    /// <param name="context">Contexto de base de datos</param>
     public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, Conexión context)
     {
 
@@ -56,7 +55,6 @@ internal static partial class Accounts
 
         return new();
     }
-
 
 
 }

@@ -104,7 +104,10 @@ public class Organizations
             try
             {
 
-                string[] defaultApps = { "linauthenticator", "linorgsapp" };
+                string[] defaultApps =
+                {
+                    "linauthenticator", "linorgsapp"
+                };
 
                 foreach (var app in defaultApps)
                 {

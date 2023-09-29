@@ -90,7 +90,6 @@ public abstract class LoginBase
     /// <summary>
     /// Valida los datos de la aplicación
     /// </summary>
-    /// <param name="password">Contraseña</param>
     public async Task<ResponseBase> ValidateApp()
     {
         // Obtiene la App.

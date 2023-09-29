@@ -8,9 +8,9 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Crea una nueva organización
+    /// Crea una nueva organizaciï¿½n
     /// </summary>
-    /// <param name="modelo">Modelo de la organización y el usuario administrador</param>
+    /// <param name="modelo">Modelo de la organizaciï¿½n y el usuario administrador</param>
     [HttpPost("create")]
     public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo)
     {
@@ -20,11 +20,11 @@ public class OrganizationsController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        // Conexión
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+        // Conexiï¿½n
+       var ( context,  connectionKey) = ConexiÃ³n.GetOneConnection();
 
 
-        // Organización del modelo
+        // Organizaciï¿½n del modelo
         modelo.ID = 0;
         modelo.AppList = new();
 
@@ -35,10 +35,10 @@ public class OrganizationsController : ControllerBase
             member.Organization = modelo;
         }
 
-        // Creación de la organización
+        // Creaciï¿½n de la organizaciï¿½n
         var response = await Data.Organizations.Organizations.Create(modelo, context);
 
-        // Evaluación
+        // Evaluaciï¿½n
         if (response.Response != Responses.Success)
             return new(response.Response);
 
@@ -57,9 +57,9 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene una organización por medio del ID
+    /// Obtiene una organizaciï¿½n por medio del ID
     /// </summary>
-    /// <param name="id">ID de la organización</param>
+    /// <param name="id">ID de la organizaciï¿½n</param>
     [HttpGet("read/id")]
     public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id)
     {
@@ -70,7 +70,7 @@ public class OrganizationsController : ControllerBase
         // Obtiene el usuario
         var response = await Data.Organizations.Organizations.Read(id);
 
-        // Si es erróneo
+        // Si es errï¿½neo
         if (response.Response != Responses.Success)
             return new ReadOneResponse<OrganizationModel>()
             {
@@ -86,7 +86,7 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Actualiza si una organización tiene lista blanca
+    /// Actualiza si una organizaciï¿½n tiene lista blanca
     /// </summary>
     /// <param name="token">Toke de acceso administrador</param>
     /// <param name="haveWhite">Nuevo estado</param>
@@ -109,27 +109,27 @@ public class OrganizationsController : ControllerBase
         {
             return new ResponseBase
             {
-                Message = "No se encontró un usuario valido.",
+                Message = "No se encontrï¿½ un usuario valido.",
                 Response = Responses.Unauthorized
             };
         }
 
-        // Si el usuario no tiene una organización
+        // Si el usuario no tiene una organizaciï¿½n
         if (userContext.Model.OrganizationAccess == null)
         {
             return new ResponseBase
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organizaciï¿½n.",
                 Response = Responses.Unauthorized
             };
         }
 
-        // Verificación del rol dentro de la organización
+        // Verificaciï¿½n del rol dentro de la organizaciï¿½n
         if (!userContext.Model.OrganizationAccess.Rol.IsAdmin())
         {
             return new ResponseBase
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de la lista blanca de esta organización.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de la lista blanca de esta organizaciï¿½n.",
                 Response = Responses.Unauthorized
             };
         }
@@ -145,7 +145,7 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Actualiza si los usuarios no admins de una organización tienen acceso a su cuenta
+    /// Actualiza si los usuarios no admins de una organizaciï¿½n tienen acceso a su cuenta
     /// </summary>
     /// <param name="token">Token de acceso administrador</param>
     /// <param name="state">Nuevo estado</param>
@@ -168,27 +168,27 @@ public class OrganizationsController : ControllerBase
         {
             return new ResponseBase
             {
-                Message = "No se encontró un usuario valido.",
+                Message = "No se encontrï¿½ un usuario valido.",
                 Response = Responses.Unauthorized
             };
         }
 
-        // Si el usuario no tiene una organización
+        // Si el usuario no tiene una organizaciï¿½n
         if (userContext.Model.OrganizationAccess == null)
         {
             return new ResponseBase
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organizaciï¿½n.",
                 Response = Responses.Unauthorized
             };
         }
 
-        // Verificación del rol dentro de la organización
+        // Verificaciï¿½n del rol dentro de la organizaciï¿½n
         if (userContext.Model.OrganizationAccess.Rol != OrgRoles.SuperManager)
         {
             return new ResponseBase
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de accesos de esta organización.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de accesos de esta organizaciï¿½n.",
                 Response = Responses.Unauthorized
             };
         }

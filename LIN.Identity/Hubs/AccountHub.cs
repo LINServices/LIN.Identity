@@ -32,7 +32,10 @@ public class AccountHub : Hub
 
         // Agrega el modelo
         if (!Cuentas.ContainsKey(modelo.Cuenta))
-            Cuentas.Add(modelo.Cuenta, new() { modelo });
+            Cuentas.Add(modelo.Cuenta, new()
+            {
+                modelo
+            });
 
         else
         {
@@ -152,7 +155,10 @@ public class AccountHub : Hub
 
     public async Task SendAccountCommand(int receiver, string command)
     {
-        await Clients.GroupExcept(receiver.ToString(), new[] { Context.ConnectionId }).SendAsync("accountcommand", command);
+        await Clients.GroupExcept(receiver.ToString(), new[]
+        {
+            Context.ConnectionId
+        }).SendAsync("accountcommand", command);
     }
 
 

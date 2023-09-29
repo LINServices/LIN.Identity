@@ -11,7 +11,7 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta</param>
     [HttpPost("create")]
-    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo)
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel? modelo)
     {
 
         // Comprobaciones
@@ -73,7 +73,7 @@ public class AccountController : ControllerBase
         // Obtiene el usuario
         var response = await Data.Accounts.Read(id: id,
             contextUser: user,
-            orgID: orgID);
+            orgId: orgID);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

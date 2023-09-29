@@ -44,7 +44,10 @@ public class PassKeyHub : Hub
 
         // Agrega el modelo
         if (!Attempts.ContainsKey(attempt.User.ToLower()))
-            Attempts.Add(attempt.User.ToLower(), new() { attempt });
+            Attempts.Add(attempt.User.ToLower(), new()
+            {
+                attempt
+            });
         else
             Attempts[attempt.User.ToLower()].Add(attempt);
 
