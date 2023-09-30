@@ -16,7 +16,7 @@ public class DeviceController : ControllerBase
         try
         {
 
-            var (isValid, _, userID, _, _) = Jwt.Validate(token);
+            var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
             if (!isValid)
             {
@@ -29,7 +29,7 @@ public class DeviceController : ControllerBase
 
 
             var devices = (from A in AccountHub.Cuentas
-                           where A.Key == userID
+                           where A.Key == userId
                            select A).FirstOrDefault().Value ?? new();
 
 
