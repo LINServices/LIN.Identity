@@ -16,7 +16,7 @@ public class Links
     {
 
         // Obtiene la conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await Create(data, context);
         context.CloseActions(connectionKey);
@@ -33,7 +33,7 @@ public class Links
     {
 
         // Obtiene la conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await ReadAll(id, context);
         context.CloseActions(connectionKey);
@@ -51,7 +51,7 @@ public class Links
     {
 
         // Obtiene la conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await ReadOneAnChange(value, context);
         context.CloseActions(connectionKey);

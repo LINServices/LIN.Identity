@@ -16,7 +16,7 @@ internal static partial class Accounts
     {
 
         // Obtiene la conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
         var res = await Delete(id, context);
         context.CloseActions(connectionKey);
         return res;
@@ -32,7 +32,7 @@ internal static partial class Accounts
     {
 
         // Obtiene la conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
         var res = await Update(modelo, context);
         context.CloseActions(connectionKey);
         return res;

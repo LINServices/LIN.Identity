@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System;
-
-namespace LIN.Identity.Controllers.Security;
+﻿namespace LIN.Identity.Controllers.Security;
 
 
 [Route("security")]
@@ -52,7 +49,7 @@ public class Security : ControllerBase
         var emailsData = emailResponse.Models;
 
         // Emails verificados
-        var verifiedMail = emailsData.Where(E => E.IsDefault).FirstOrDefault();
+        var verifiedMail = emailsData.FirstOrDefault(mail => mail.IsDefault);
 
         // Valida
         if (verifiedMail == null || !Mail.Validar(verifiedMail.Email ?? string.Empty))

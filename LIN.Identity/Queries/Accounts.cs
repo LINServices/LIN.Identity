@@ -12,8 +12,8 @@ public class Accounts
     public static IQueryable<AccountModel> GetAccounts(Conexión context)
     {
         // Query general
-        IQueryable<AccountModel> accounts = from Account in context.DataBase.Accounts
-                                            select Account;
+        IQueryable<AccountModel> accounts = from account in context.DataBase.Accounts
+                                            select account;
 
         // Retorno
         return accounts;
@@ -29,9 +29,9 @@ public class Accounts
     public static IQueryable<AccountModel> GetValidAccounts(Conexión context)
     {
         // Query general
-        IQueryable<AccountModel> accounts = from Account in GetAccounts(context)
-                                            where Account.Estado == AccountStatus.Normal
-                                            select Account;
+        IQueryable<AccountModel> accounts = from account in GetAccounts(context)
+                                            where account.Estado == AccountStatus.Normal
+                                            select account;
 
         // Retorno
         return accounts;
@@ -46,20 +46,21 @@ public class Accounts
     /// <summary>
     /// Obtiene una cuenta valida
     /// </summary>
-    /// <param name="userID">ID del usuario a obtener</param>
-    /// <param name="contextUserID">ID del usuario que busca la información</param>
-    /// <param name="contextOrgID">Contexto de organización</param>
+    /// <param name="userId">ID del usuario a obtener</param>
+    /// <param name="contextUserId">ID del usuario que busca la información</param>
+    /// <param name="contextOrgId">Contexto de organización</param>
+    /// <param name="includeOrg">Incluir la organizacion</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(int userID, int contextUserID, int contextOrgID, bool includeOrg, Conexión context)
+    public static IQueryable<AccountModel> GetStableAccount(int userId, int contextUserId, int contextOrgId, bool includeOrg, Conexión context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
-                                            where account.ID == userID
+                                            where account.ID == userId
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserID, contextOrgID, includeOrg);
+        accounts = BuildModel(accounts, contextUserId, contextOrgId, includeOrg);
 
         // Retorno
         return accounts;
@@ -67,20 +68,19 @@ public class Accounts
     }
 
 
-
-
+    
     /// <summary>
     /// Obtiene una cuenta valida
     /// </summary>
-    /// <param name="userID">ID del usuario a obtener</param>
+    /// <param name="userId">ID del usuario a obtener</param>
     /// <param name="includeOrg">Incluir la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(int userID, bool includeOrg, Conexión context)
+    public static IQueryable<AccountModel> GetStableAccount(int userId, bool includeOrg, Conexión context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
-                                            where account.ID == userID
+                                            where account.ID == userId
                                             select account;
 
         // Armar el modelo
@@ -140,17 +140,17 @@ public class Accounts
 
     }
 
-
-
+    
 
     /// <summary>
     /// Obtiene una cuenta valida
     /// </summary>
     /// <param name="user">Usuario único</param>
-    /// <param name="contextUserID">ID del usuario que busca la información</param>
-    /// <param name="contextOrgID">Contexto de organización</param>
+    /// <param name="contextUserId">ID del usuario que busca la información</param>
+    /// <param name="contextOrgId">Contexto de organización</param>
+    /// <param name="includeOrg">Incluir la organizacion</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(string user, int contextUserID, int contextOrgID, bool includeOrg, Conexión context)
+    public static IQueryable<AccountModel> GetStableAccount(string user, int contextUserId, int contextOrgId, bool includeOrg, Conexión context)
     {
 
         // Query general
@@ -159,7 +159,7 @@ public class Accounts
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserID, contextOrgID, includeOrg);
+        accounts = BuildModel(accounts, contextUserId, contextOrgId, includeOrg);
 
         // Retorno
         return accounts;
@@ -172,10 +172,11 @@ public class Accounts
     /// Obtiene una lista cuentas valida
     /// </summary>
     /// <param name="ids">IDs de los usuarios a obtener</param>
-    /// <param name="contextUserID">ID del usuario que busca la información</param>
-    /// <param name="contextOrgID">Contexto de organización</param>
+    /// <param name="contextUserId">ID del usuario que busca la información</param>
+    /// <param name="contextOrgId">Contexto de organización</param>
+    /// <param name="includeOrg">Incluir la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccounts(IEnumerable<int> ids, int contextUserID, int contextOrgID, bool includeOrg, Conexión context)
+    public static IQueryable<AccountModel> GetStableAccounts(IEnumerable<int> ids, int contextUserId, int contextOrgId, bool includeOrg, Conexión context)
     {
 
         // Query general
@@ -184,7 +185,7 @@ public class Accounts
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserID, contextOrgID, includeOrg);
+        accounts = BuildModel(accounts, contextUserId, contextOrgId, includeOrg);
 
         // Retorno
         return accounts;
@@ -197,20 +198,21 @@ public class Accounts
     /// Busca en usuarios activos
     /// </summary>
     /// <param name="pattern">Patron de búsqueda</param>
-    /// <param name="contextUserID">ID del usuario que busca la información</param>
-    /// <param name="contextOrgID">Contexto de organización</param>
+    /// <param name="contextUserId">ID del usuario que busca la información</param>
+    /// <param name="contextOrgId">Contexto de organización</param>
+    /// <param name="includeOrg">Incluir la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> Search(string pattern, int contextUserID, int contextOrgID, bool includeOrg, Conexión context)
+    public static IQueryable<AccountModel> Search(string pattern, int contextUserId, int contextOrgId, bool includeOrg, Conexión context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
                                             where account.Usuario.ToLower().Contains(pattern.ToLower())
-                                                  && account.ID != contextUserID
+                                                  && account.ID != contextUserId
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserID, contextOrgID, includeOrg);
+        accounts = BuildModel(accounts, contextUserId, contextOrgId, includeOrg);
 
         // Retorno
         return accounts;

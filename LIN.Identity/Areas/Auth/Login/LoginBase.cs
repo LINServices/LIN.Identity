@@ -45,7 +45,9 @@ public abstract class LoginBase
     /// </summary>
     /// <param name="account">Datos de la cuenta</param>
     /// <param name="application">Llave</param>
-    public LoginBase(AccountModel? account, string? application, string password, LoginTypes loginType = LoginTypes.Credentials)
+    /// <param name="password">Contraseña</param>
+    /// <param name="loginType">Tipo de inicio</param>
+    protected LoginBase(AccountModel? account, string? application, string? password, LoginTypes loginType = LoginTypes.Credentials)
     {
         ApplicationKey = application ?? string.Empty;
         Account = account ?? new();

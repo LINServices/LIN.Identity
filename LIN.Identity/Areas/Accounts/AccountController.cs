@@ -43,8 +43,7 @@ public class AccountController : ControllerBase
     }
 
 
-
-
+    
     /// <summary>
     /// Obtiene la información de usuario.
     /// </summary>
@@ -58,7 +57,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var (isValid, _, user, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, user, orgId, _) = Jwt.Validate(token);
 
         if (!isValid)
         {
@@ -73,7 +72,7 @@ public class AccountController : ControllerBase
         // Obtiene el usuario
         var response = await Data.Accounts.Read(id,
             user,
-            orgID);
+            orgId);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -89,8 +88,7 @@ public class AccountController : ControllerBase
     }
 
 
-
-
+    
     /// <summary>
     /// Obtiene la información de usuario.
     /// </summary>
@@ -104,7 +102,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var (isValid, _, userID, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
 
         if (!isValid)
         {
@@ -117,7 +115,7 @@ public class AccountController : ControllerBase
 
 
 
-        var response = await Data.Accounts.Read(user, userID, orgID);
+        var response = await Data.Accounts.Read(user, userId, orgId);
 
 
 
@@ -151,7 +149,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Info del token
-        var (isValid, _, userID, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
 
         // Token es invalido
         if (!isValid)
@@ -164,7 +162,7 @@ public class AccountController : ControllerBase
         }
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Search(pattern, userID, orgID);
+        var response = await Data.Accounts.Search(pattern, userId, orgId);
 
         return response;
     }
@@ -176,11 +174,12 @@ public class AccountController : ControllerBase
     /// Obtiene una lista cuentas
     /// </summary>
     /// <param name="ids">IDs de las cuentas</param>
+    /// <param name="token">Token de acceso</param>
     [HttpPost("findAll")]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids, [FromHeader] string token)
     {
 
-        var (isValid, _, userID, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
 
         if (!isValid)
         {
@@ -188,7 +187,7 @@ public class AccountController : ControllerBase
         }
 
         // Obtiene el usuario
-        var response = await Data.Accounts.FindAll(ids, userID, orgID);
+        var response = await Data.Accounts.FindAll(ids, userId, orgId);
 
         return response;
 
@@ -201,6 +200,7 @@ public class AccountController : ControllerBase
     /// Actualiza la contraseña de una cuenta
     /// </summary>
     /// <param name="modelo">Modelo de actualización</param>
+    /// <param name="token">Token de acceso</param>
     [HttpPatch("update/password")]
     public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo, [FromHeader] string token)
     {
@@ -209,7 +209,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -217,7 +217,7 @@ public class AccountController : ControllerBase
             return new(Responses.Unauthorized);
         }
 
-        modelo.Account = userID;
+        modelo.Account = userId;
 
         var actualData = await Data.Accounts.ReadBasic(modelo.Account);
 
@@ -247,7 +247,7 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Delete([FromHeader] string token)
     {
 
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
         if (!isValid)
             return new ResponseBase
@@ -256,10 +256,10 @@ public class AccountController : ControllerBase
                 Message = "Token invalido"
             };
 
-        if (userID <= 0)
+        if (userId <= 0)
             return new(Responses.InvalidParam);
 
-        var response = await Data.Accounts.Delete(userID);
+        var response = await Data.Accounts.Delete(userId);
         return response;
     }
 
@@ -304,7 +304,7 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        var (isValid, _, id, ordID, _) = Jwt.Validate(token);
+        var (isValid, _, id, _, _) = Jwt.Validate(token);
 
 
         if (!isValid)
@@ -340,7 +340,7 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo, [FromHeader] string token)
     {
 
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
         if (!isValid)
             return new ResponseBase
@@ -349,7 +349,7 @@ public class AccountController : ControllerBase
                 Message = "Token Invalido"
             };
 
-        modelo.ID = userID;
+        modelo.ID = userId;
         modelo.Perfil = Image.Zip(modelo.Perfil);
 
         if (modelo.ID <= 0 || modelo.Nombre.Any())

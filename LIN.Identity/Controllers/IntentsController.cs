@@ -28,9 +28,9 @@ public class IntentsController : ControllerBase
 
 
             // Cuenta
-            var account = (from A in PassKeyHub.Attempts
-                           where A.Key == user.ToLower()
-                           select A).FirstOrDefault().Value ?? new();
+            var account = (from a in PassKeyHub.Attempts
+                           where a.Key == user.ToLower()
+                           select a).FirstOrDefault().Value ?? new();
 
             // Hora actual
             var timeNow = DateTime.Now;

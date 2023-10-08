@@ -15,14 +15,14 @@ public class LoginLogController : ControllerBase
     {
 
         // JWT
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
-        // Validación
+        // Validaciï¿½n
         if (!isValid)
             return new(Responses.Unauthorized);
 
         // Obtiene el usuario
-        var result = await Data.Logins.ReadAll(userID);
+        var result = await Data.Logins.ReadAll(userId);
 
         // Retorna el resultado
         return result ?? new();

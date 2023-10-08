@@ -28,14 +28,14 @@ public class DeviceController : ControllerBase
             }
 
 
-            var devices = (from A in AccountHub.Cuentas
-                           where A.Key == userId
-                           select A).FirstOrDefault().Value ?? new();
+            var devices = (from account in AccountHub.Cuentas
+                           where account.Key == userId
+                           select account).FirstOrDefault().Value ?? new();
 
 
-            var filter = (from D in devices
-                          where D.Estado == DeviceState.Actived
-                          select D).ToList();
+            var filter = (from device in devices
+                          where device.Estado == DeviceState.Actived
+                          select device).ToList();
 
             // Retorna
             return new(Responses.Success, filter ?? new());

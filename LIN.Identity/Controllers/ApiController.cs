@@ -2,7 +2,7 @@ namespace LIN.Identity.Controllers;
 
 
 [Route("/")]
-public class APIVersion : Controller
+public class ApiVersion : Controller
 {
 
 

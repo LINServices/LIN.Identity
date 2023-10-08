@@ -103,7 +103,7 @@ public class MemberController : ControllerBase
 
 
         // Conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
         var response = await Data.Organizations.Members.Create(modelo, org, rol, context);
@@ -162,7 +162,7 @@ public class MemberController : ControllerBase
 
 
         // Conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         context.CloseActions(connectionKey);
 

@@ -15,7 +15,7 @@ public class ApplicationOrgsController : ControllerBase
     {
 
         // Token
-        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, _, orgId, _) = Jwt.Validate(token);
 
         // Token es invalido
         if (!isValid)
@@ -27,7 +27,7 @@ public class ApplicationOrgsController : ControllerBase
 
 
         // Si no tiene ninguna organización
-        if (orgID <= 0)
+        if (orgId <= 0)
             return new ReadAllResponse<ApplicationModel>
             {
                 Message = "No estas vinculado con ninguna organización.",
@@ -36,7 +36,7 @@ public class ApplicationOrgsController : ControllerBase
 
 
         // Obtiene las aplicaciones
-        var org = await Data.Organizations.Organizations.ReadApps(orgID);
+        var org = await Data.Organizations.Organizations.ReadApps(orgId);
 
         // Su no se encontraron aplicaciones
         if (org.Response != Responses.Success)
@@ -47,7 +47,7 @@ public class ApplicationOrgsController : ControllerBase
             };
 
         // Conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         context.CloseActions(connectionKey);
 
@@ -68,7 +68,7 @@ public class ApplicationOrgsController : ControllerBase
     {
 
         // Token
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
 
         // Si el token es invalido
@@ -80,7 +80,7 @@ public class ApplicationOrgsController : ControllerBase
             };
 
         // Información del usuario
-        var userData = await Data.Accounts.ReadBasic(userID);
+        var userData = await Data.Accounts.ReadBasic(userId);
 
         // Si no existe el usuario
         if (userData.Response != Responses.Success)
@@ -92,7 +92,7 @@ public class ApplicationOrgsController : ControllerBase
 
 
         // Si no tiene organización
-        if (userData.Model.OrganizationAccess == null || userData.Model.OrganizationAccess.Organization == null)
+        if (userData.Model.OrganizationAccess == null || userData.Model.OrganizationAccess?.Organization == null)
             return new CreateResponse
             {
                 Message = $"El usuario '{userData.Model.Usuario}' no pertenece a una organización.",
@@ -120,7 +120,7 @@ public class ApplicationOrgsController : ControllerBase
 
 
         // Conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         context.CloseActions(connectionKey);
 
@@ -131,8 +131,6 @@ public class ApplicationOrgsController : ControllerBase
             Message = "",
             Response = Responses.Success
         };
-        ;
-
     }
 
 
@@ -147,16 +145,16 @@ public class ApplicationOrgsController : ControllerBase
     {
 
         // Token
-        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, _, orgId, _) = Jwt.Validate(token);
 
         // Valida el token
-        if (!isValid || orgID <= 0)
+        if (!isValid || orgId <= 0)
         {
             return new(Responses.Unauthorized);
         }
 
         // Encuentra las apps
-        var finds = await Data.Organizations.Applications.Search(param, orgID);
+        var finds = await Data.Organizations.Applications.Search(param, orgId);
 
         return finds;
     }

@@ -16,7 +16,7 @@ public class MailLinks
     {
 
         // Obtiene la conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
         var res = await Create(data, context);
         context.CloseActions(connectionKey);
         return res;
@@ -32,7 +32,7 @@ public class MailLinks
     {
 
         // Obtiene la conexión
-        (var context, var connectionKey) = Conexión.GetOneConnection();
+        var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await ReadAndDisable(value, context);
         context.CloseActions(connectionKey);
