@@ -306,7 +306,8 @@ public class Accounts
                        {
                            ID = account.OrganizationAccess.Organization.ID,
                            Name = account.OrganizationAccess.Organization.Name,
-                           Domain = account.OrganizationAccess.Organization.Domain
+                           Domain = account.OrganizationAccess.Organization.Domain,
+                           LoginAccess = account.OrganizationAccess.Organization.LoginAccess
                        }
                    } : null
                };

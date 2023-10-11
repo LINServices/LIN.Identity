@@ -29,7 +29,7 @@ public class AccountProcessor
                 ? File.ReadAllBytes("wwwroot/profile.png")
                 : modelo.Perfil
         };
-
+        
         model.Perfil = Image.Zip(model.Perfil);
         return model;
 

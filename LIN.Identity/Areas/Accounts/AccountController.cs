@@ -313,8 +313,6 @@ public class AccountController : ControllerBase
         }
 
 
-
-
         var rol = (await Data.Accounts.Read(id, true)).Model.Rol;
 
 

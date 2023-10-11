@@ -13,15 +13,15 @@ public class Configuration
     public static string GetConfiguration(string route)
     {
 
-        if (!_isStart || Config == null)
-        {
-            var configBuilder = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile("appsettings.json", false, true);
+        if (_isStart && Config != null)
+            return Config[route] ?? string.Empty;
+        
+        var configBuilder = new ConfigurationBuilder()
+           .SetBasePath(Directory.GetCurrentDirectory())
+           .AddJsonFile("appsettings.json", false, true);
 
-            Config = configBuilder.Build();
-            _isStart = true;
-        }
+        Config = configBuilder.Build();
+        _isStart = true;
 
         return Config[route] ?? string.Empty;
 
