@@ -52,7 +52,7 @@ public class LoginOnOrg : LoginBase
             return false;
         }
 
-        OrganizationAccess.Rol = Account.OrganizationAccess.Rol;
+        OrganizationAccess.Rol = Account.OrganizationAccess!.Rol;
         OrganizationAccess.ID = Account.OrganizationAccess.ID;
         OrganizationAccess.Organization = orgResponse.Model;
 
@@ -138,7 +138,7 @@ public class LoginOnOrg : LoginBase
                 Message = "Hubo un error al validar la organización.",
                 Response = Responses.Undefined
             };
-
+ 
 
         // Valida la aplicación
         var validateApp = await ValidateApp();

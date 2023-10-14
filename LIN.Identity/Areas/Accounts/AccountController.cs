@@ -231,34 +231,56 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo, [FromHeader] string token)
     {
 
+        // Validar parámetros.
+        if (modelo == null)
+            return new ResponseBase()
+            {
+                Message = "Parámetro para nueva actualización de contraseña es invalido.",
+                Response = Responses.InvalidParam
+            };
+        
+        // Validar de la nueva contraseña.
         if (modelo.OldPassword.Length < 4 || modelo.NewPassword.Length < 4)
-            return new(Responses.InvalidParam);
+            return new ResponseBase(Responses.InvalidParam)
+            {
+                Message = "Antigua contraseña o nueva contraseña tienen una longitud invalida."
+            };
 
-
+        // Validar el token.
         var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
-
+        // No es valido.
         if (!isValid)
-        {
-            return new(Responses.Unauthorized);
-        }
+            return new ResponseBase(Responses.Unauthorized)
+            {
+                Message = "Token invalido"
+            };
 
+        // Obtener datos antiguos.
+        var actualData = await Data.Accounts.ReadBasic(userId);
+
+        // Error al encontrar usuario.
+        if (actualData.Response != Responses.Success)
+            return new ResponseBase(Responses.Unauthorized)
+            {
+                Message = $"Error al encontrar el usuario con ID '{userId}'"
+            };
+        
+
+        // Encriptar la contraseña
+        modelo.OldPassword = EncryptClass.Encrypt(modelo.OldPassword);
+        
+        // Valida la contraseña actual
+        if (modelo.OldPassword != actualData.Model.Contraseña)
+            return new ResponseBase(Responses.InvalidPassword)
+            {
+                Message = $"Las contraseñas no coinciden."
+            };
+
+        // Actualiza el ID.
         modelo.Account = userId;
 
-        var actualData = await Data.Accounts.ReadBasic(modelo.Account);
-
-        if (actualData.Response != Responses.Success)
-            return new(Responses.NotExistAccount);
-
-
-        var oldEncrypted = LIN.Modules.EncryptClass.Encrypt(modelo.NewPassword);
-
-
-        if (oldEncrypted != actualData.Model.Contraseña)
-        {
-            return new ResponseBase(Responses.InvalidPassword);
-        }
-
+        // Actualizar la contraseña
         return await Data.Accounts.Update(modelo);
 
     }
