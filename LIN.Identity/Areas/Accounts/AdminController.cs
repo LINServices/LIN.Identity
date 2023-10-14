@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace LIN.Identity.Areas.Accounts;
 
 
@@ -20,7 +22,7 @@ public class AdminController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var (isValid, _, user, _, _) = Jwt.Validate(token);
+        var (isValid, _, user, orgID, _) = Jwt.Validate(token);
 
         if (!isValid)
         {
@@ -31,7 +33,11 @@ public class AdminController : ControllerBase
             };
         }
 
-        var rol = (await Data.Accounts.Read(user, false)).Model.Rol;
+        var rol = (await Data.Accounts.Read(user, new()
+        {
+            IncludeOrg = FilterModels.IncludeOrg.None,
+            FindOn = FilterModels.FindOn.StableAccounts
+        })).Model.Rol;
 
         if (rol != AccountRoles.Admin)
         {
@@ -44,7 +50,15 @@ public class AdminController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(id, true);
+        var response = await Data.Accounts.Read(id, new()
+        {
+            SensibleInfo = false,
+            ContextOrg = orgID,
+            ContextUser = user,
+            FindOn = FilterModels.FindOn.StableAccounts,
+            IncludeOrg = FilterModels.IncludeOrg.Include,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+        });
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -74,7 +88,7 @@ public class AdminController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        var (isValid, _, userId, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
 
         if (!isValid)
         {
@@ -86,7 +100,11 @@ public class AdminController : ControllerBase
         }
 
 
-        var rol = (await Data.Accounts.Read(userId, false)).Model.Rol;
+        var rol = (await Data.Accounts.Read(userId, new()
+        {
+            IncludeOrg = FilterModels.IncludeOrg.None,
+            FindOn = FilterModels.FindOn.StableAccounts
+        })).Model.Rol;
 
         if (rol != AccountRoles.Admin)
         {
@@ -99,7 +117,15 @@ public class AdminController : ControllerBase
 
 
 
-        var response = await Data.Accounts.Read(user, true);
+        var response = await Data.Accounts.Read(user, new()
+        {
+            SensibleInfo = false,
+            ContextOrg = orgId,
+            ContextUser = userId,
+            FindOn = FilterModels.FindOn.StableAccounts,
+            IncludeOrg = FilterModels.IncludeOrg.Include,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+        });
 
 
 

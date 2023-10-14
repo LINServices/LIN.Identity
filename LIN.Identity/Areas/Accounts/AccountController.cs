@@ -1,3 +1,5 @@
+using LIN.Identity.Validations;
+
 namespace LIN.Identity.Areas.Accounts;
 
 
@@ -19,7 +21,7 @@ public class AccountController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Organización del modelo
-        modelo = Controllers.Processors.AccountProcessor.Process(modelo);
+        modelo = Account.Process(modelo);
 
         // Creación del usuario
         var response = await Data.Accounts.Create(modelo);
@@ -56,7 +58,6 @@ public class AccountController : ControllerBase
         if (id <= 0)
             return new(Responses.InvalidParam);
 
-
         var (isValid, _, user, orgId, _) = Jwt.Validate(token);
 
         if (!isValid)
@@ -68,11 +69,16 @@ public class AccountController : ControllerBase
             };
         }
 
-
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(id,
-            user,
-            orgId);
+        var response = await Data.Accounts.Read(id, new FilterModels.Account()
+        {
+            ContextOrg = orgId,
+            ContextUser = user,
+            FindOn = FilterModels.FindOn.StableAccounts,
+            IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
+            IsAdmin = false,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+        });
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -115,7 +121,14 @@ public class AccountController : ControllerBase
 
 
 
-        var response = await Data.Accounts.Read(user, userId, orgId);
+        var response = await Data.Accounts.Read(user, new FilterModels.Account()
+        {
+            ContextOrg = orgId,
+            ContextUser = userId,
+            FindOn= FilterModels.FindOn.StableAccounts,
+            IncludeOrg= FilterModels.IncludeOrg.IncludeIf,
+            OrgLevel= FilterModels.IncludeOrgLevel.Advance
+        });
 
 
 
@@ -162,7 +175,14 @@ public class AccountController : ControllerBase
         }
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Search(pattern, userId, orgId);
+        var response = await Data.Accounts.Search(pattern, new()
+        {
+            ContextOrg= orgId,
+            ContextUser= userId,
+            FindOn = FilterModels.FindOn.StableAccounts,
+            IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+        });
 
         return response;
     }
@@ -187,7 +207,14 @@ public class AccountController : ControllerBase
         }
 
         // Obtiene el usuario
-        var response = await Data.Accounts.FindAll(ids, userId, orgId);
+        var response = await Data.Accounts.FindAll(ids, new()
+        {
+            ContextOrg = orgId,
+            ContextUser = userId,
+            FindOn = FilterModels.FindOn.StableAccounts,
+            IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+        });
 
         return response;
 
@@ -224,7 +251,8 @@ public class AccountController : ControllerBase
         if (actualData.Response != Responses.Success)
             return new(Responses.NotExistAccount);
 
-        var oldEncrypted = actualData.Model.Contraseña;
+
+        var oldEncrypted = LIN.Modules.EncryptClass.Encrypt(modelo.NewPassword);
 
 
         if (oldEncrypted != actualData.Model.Contraseña)
@@ -313,14 +341,26 @@ public class AccountController : ControllerBase
         }
 
 
-        var rol = (await Data.Accounts.Read(id, true)).Model.Rol;
+        var rol = (await Data.Accounts.Read(id, new FilterModels.Account
+        {
+            FindOn = FilterModels.FindOn.StableAccounts,
+            IncludeOrg = FilterModels.IncludeOrg.None
+        })).Model.Rol;
 
 
         if (rol != AccountRoles.Admin)
             return new(Responses.Unauthorized);
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Search(pattern);
+        var response = await Data.Accounts.Search(pattern, new()
+        {
+            ContextOrg = 0,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance,
+            ContextUser =0,
+            FindOn = FilterModels.FindOn.AllAccount,
+            IncludeOrg = FilterModels.IncludeOrg.Include,
+            IsAdmin = true,
+        });
 
         return response;
 

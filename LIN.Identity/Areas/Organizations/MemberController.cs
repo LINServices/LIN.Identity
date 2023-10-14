@@ -1,3 +1,5 @@
+using LIN.Identity.Validations;
+
 namespace LIN.Identity.Areas.Organizations;
 
 
@@ -30,7 +32,7 @@ public class MemberController : ControllerBase
         modelo.Visibilidad = AccountVisibility.Hidden;
 
         // Organización del modelo
-        modelo = Controllers.Processors.AccountProcessor.Process(modelo);
+        modelo = Account.Process(modelo);
 
 
         // Establece la contraseña default

@@ -23,7 +23,14 @@ public class AuthenticationController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Obtiene el usuario.
-        var response = await Data.Accounts.Read(user, true);
+        var response = await Data.Accounts.Read(user, new()
+        {
+            SensibleInfo = true,
+            IsAdmin = true,
+            IncludeOrg = FilterModels.IncludeOrg.Include,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance,
+            FindOn = FilterModels.FindOn.StableAccounts
+        });
 
         // Validación al obtener el usuario
         switch (response.Response)
@@ -85,7 +92,14 @@ public class AuthenticationController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, true);
+        var response = await Data.Accounts.Read(user, new()
+        {
+            SensibleInfo = true,
+            IsAdmin = true,
+            IncludeOrg = FilterModels.IncludeOrg.Include,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance,
+            FindOn = FilterModels.FindOn.StableAccounts
+        });
 
         if (response.Response != Responses.Success)
             return new(response.Response);

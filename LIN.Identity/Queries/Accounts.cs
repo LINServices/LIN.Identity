@@ -43,24 +43,26 @@ public class Accounts
 
 
 
-    /// <summary>
-    /// Obtiene una cuenta valida
-    /// </summary>
-    /// <param name="userId">ID del usuario a obtener</param>
-    /// <param name="contextUserId">ID del usuario que busca la información</param>
-    /// <param name="contextOrgId">Contexto de organización</param>
-    /// <param name="includeOrg">Incluir la organizacion</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(int userId, int contextUserId, int contextOrgId, bool includeOrg, Conexión context)
+
+
+
+    public static IQueryable<AccountModel> GetAccounts(int id, FilterModels.Account filters, Conexión context)
     {
 
         // Query general
-        IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
-                                            where account.ID == userId
-                                            select account;
+        IQueryable<AccountModel> accounts;
+
+        if (filters.FindOn == FilterModels.FindOn.StableAccounts)
+            accounts = from account in GetValidAccounts(context)
+                       where account.ID == id
+                       select account;
+        else
+            accounts = from account in GetAccounts(context)
+                       where account.ID == id
+                       select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserId, contextOrgId, includeOrg);
+        accounts = BuildModel(accounts, filters);
 
         // Retorno
         return accounts;
@@ -68,23 +70,23 @@ public class Accounts
     }
 
 
-    
-    /// <summary>
-    /// Obtiene una cuenta valida
-    /// </summary>
-    /// <param name="userId">ID del usuario a obtener</param>
-    /// <param name="includeOrg">Incluir la organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(int userId, bool includeOrg, Conexión context)
+    public static IQueryable<AccountModel> GetAccounts(string user, FilterModels.Account filters, Conexión context)
     {
 
         // Query general
-        IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
-                                            where account.ID == userId
-                                            select account;
+        IQueryable<AccountModel> accounts;
+
+        if (filters.FindOn == FilterModels.FindOn.StableAccounts)
+            accounts = from account in GetValidAccounts(context)
+                       where account.Usuario == user
+                       select account;
+        else
+            accounts = from account in GetAccounts(context)
+                       where account.Usuario == user
+                       select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, includeOrg);
+        accounts = BuildModel(accounts, filters);
 
         // Retorno
         return accounts;
@@ -92,91 +94,7 @@ public class Accounts
     }
 
 
-
-
-    /// <summary>
-    /// Obtiene una cuenta valida
-    /// </summary>
-    /// <param name="user">Usuario único</param>
-    /// <param name="includeOrg">Incluir la organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(string user, bool includeOrg, Conexión context)
-    {
-
-        // Query general
-        IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
-                                            where account.Usuario == user
-                                            select account;
-
-        // Armar el modelo
-        accounts = BuildModel(accounts, includeOrg);
-
-        // Retorno
-        return accounts;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtiene una cuenta valida
-    /// </summary>
-    /// <param name="user">Usuario único</param>
-    /// <param name="includeOrg">Incluir la organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> SearchOnAll(string user, bool includeOrg, Conexión context)
-    {
-
-        // Query general
-        IQueryable<AccountModel> accounts = from account in GetAccounts(context)
-                                            where account.Usuario.ToLower().Contains(user)
-                                            select account;
-
-        // Armar el modelo
-        accounts = BuildModel(accounts, includeOrg);
-
-        // Retorno
-        return accounts;
-
-    }
-
-    
-
-    /// <summary>
-    /// Obtiene una cuenta valida
-    /// </summary>
-    /// <param name="user">Usuario único</param>
-    /// <param name="contextUserId">ID del usuario que busca la información</param>
-    /// <param name="contextOrgId">Contexto de organización</param>
-    /// <param name="includeOrg">Incluir la organizacion</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccount(string user, int contextUserId, int contextOrgId, bool includeOrg, Conexión context)
-    {
-
-        // Query general
-        IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
-                                            where account.Usuario == user
-                                            select account;
-
-        // Armar el modelo
-        accounts = BuildModel(accounts, contextUserId, contextOrgId, includeOrg);
-
-        // Retorno
-        return accounts;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtiene una lista cuentas valida
-    /// </summary>
-    /// <param name="ids">IDs de los usuarios a obtener</param>
-    /// <param name="contextUserId">ID del usuario que busca la información</param>
-    /// <param name="contextOrgId">Contexto de organización</param>
-    /// <param name="includeOrg">Incluir la organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> GetStableAccounts(IEnumerable<int> ids, int contextUserId, int contextOrgId, bool includeOrg, Conexión context)
+    public static IQueryable<AccountModel> GetAccounts(IEnumerable<int> ids, FilterModels.Account filters, Conexión context)
     {
 
         // Query general
@@ -185,7 +103,7 @@ public class Accounts
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserId, contextOrgId, includeOrg);
+        accounts = BuildModel(accounts, filters);
 
         // Retorno
         return accounts;
@@ -193,26 +111,16 @@ public class Accounts
     }
 
 
-
-    /// <summary>
-    /// Busca en usuarios activos
-    /// </summary>
-    /// <param name="pattern">Patron de búsqueda</param>
-    /// <param name="contextUserId">ID del usuario que busca la información</param>
-    /// <param name="contextOrgId">Contexto de organización</param>
-    /// <param name="includeOrg">Incluir la organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static IQueryable<AccountModel> Search(string pattern, int contextUserId, int contextOrgId, bool includeOrg, Conexión context)
+    public static IQueryable<AccountModel> Search(string pattern, FilterModels.Account filters, Conexión context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
-                                            where account.Usuario.ToLower().Contains(pattern.ToLower())
-                                                  && account.ID != contextUserId
+                                            where account.Usuario.Contains(pattern)
                                             select account;
 
         // Armar el modelo
-        accounts = BuildModel(accounts, contextUserId, contextOrgId, includeOrg);
+        accounts = BuildModel(accounts, filters);
 
         // Retorno
         return accounts;
@@ -221,13 +129,21 @@ public class Accounts
 
 
 
+
+
+
+
+
+
+
+
+
     /// <summary>
-    /// Armar el modelo final
+    /// Construir la consulta
     /// </summary>
     /// <param name="query">Query base</param>
-    /// <param name="contextUserID">Usuario de contexto</param>
-    /// <param name="contextOrgID">Organización de contexto</param>
-    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, int contextUserID, int contextOrgID, bool includeOrg)
+    /// <param name="filters">Filtros</param>
+    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, FilterModels.Account filters)
     {
 
         byte[] profile =
@@ -235,7 +151,6 @@ public class Accounts
         };
         try
         {
-            // Imagen genérica
             profile = File.ReadAllBytes("wwwroot/user.png");
         }
         catch { }
@@ -244,74 +159,46 @@ public class Accounts
                select new AccountModel
                {
                    ID = account.ID,
-                   Nombre = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Nombre : "Usuario privado",
+                   Nombre = (account.Visibilidad == AccountVisibility.Visible) || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg) || (account.ID == filters.ContextUser) || filters.IsAdmin
+                            ? account.Nombre
+                            : "Usuario privado",
                    Rol = account.Rol,
                    Insignia = account.Insignia,
                    Estado = account.Estado,
                    Usuario = account.Usuario,
+                   Contraseña = filters.SensibleInfo ? account.Contraseña : "",
                    Visibilidad = account.Visibilidad,
-                   Birthday = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Birthday : new(),
-                   Genero = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Genero : Genders.Undefined,
-                   Creación = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Creación : default,
-                   Perfil = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID ? account.Perfil : profile,
-                   OrganizationAccess = includeOrg && account.OrganizationAccess != null && (account.OrganizationAccess.Organization.ID == contextOrgID || account.ID == contextUserID) ? new OrganizationAccessModel()
-                   {
-                       ID = account.OrganizationAccess.ID,
-                       Rol = account.OrganizationAccess.Rol
-                   } : null
+                   Birthday = (account.Visibilidad == AccountVisibility.Visible) || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg) || (account.ID == filters.ContextUser) || filters.IsAdmin
+                            ? account.Birthday
+                            : default,
+                   Genero = (account.Visibilidad == AccountVisibility.Visible) || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg) || (account.ID == filters.ContextUser) || filters.IsAdmin
+                            ? account.Genero
+                            : Genders.Undefined,
+                   Creación = (account.Visibilidad == AccountVisibility.Visible) || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg) || (account.ID == filters.ContextUser) || filters.IsAdmin
+                            ? account.Creación
+                            : default,
+                   Perfil = (account.Visibilidad == AccountVisibility.Visible) || (account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg) || (account.ID == filters.ContextUser) || filters.IsAdmin
+                            ? account.Perfil
+                            : profile,
+                   OrganizationAccess = (account.OrganizationAccess != null) && (filters.IncludeOrg != FilterModels.IncludeOrg.None) && ((account.Visibilidad == AccountVisibility.Visible && filters.IncludeOrg == FilterModels.IncludeOrg.Include) || (account.OrganizationAccess.Organization.ID == filters.ContextOrg) || (account.ID == filters.ContextUser) || filters.IsAdmin)
+                            ? new OrganizationAccessModel()
+                            {
+                                ID = account.ID,
+                                Rol = account.OrganizationAccess.Rol,
+                                Organization = (filters.OrgLevel == FilterModels.IncludeOrgLevel.Advance) ? new()
+                                {
+                                    ID = account.OrganizationAccess.Organization.ID,
+                                    Domain = account.OrganizationAccess.Organization.Domain,
+                                    Name = account.OrganizationAccess.Organization.Name
+                                } : new()
+                            }
+                            : null,
                };
     }
 
 
 
-    /// <summary>
-    /// Armar el modelo final
-    /// </summary>
-    /// <param name="query">Query base</param>
-    /// <param name="contextUserID">Usuario de contexto</param>
-    /// <param name="contextOrgID">Organización de contexto</param>
-    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, bool includeOrg)
-    {
 
-        byte[] profile =
-        {
-        };
-        try
-        {
-            // Imagen genérica
-            profile = File.ReadAllBytes("wwwroot/user.png");
-        }
-        catch { }
-
-        return from account in query
-               select new AccountModel
-               {
-                   ID = account.ID,
-                   Nombre = account.Nombre,
-                   Rol = account.Rol,
-                   Insignia = account.Insignia,
-                   Estado = account.Estado,
-                   Usuario = account.Usuario,
-                   Visibilidad = account.Visibilidad,
-                   Birthday = account.Birthday,
-                   Genero = account.Genero,
-                   Contraseña = account.Contraseña,
-                   Creación = account.Creación,
-                   Perfil = account.Perfil,
-                   OrganizationAccess = includeOrg && account.OrganizationAccess != null ? new OrganizationAccessModel()
-                   {
-                       ID = account.OrganizationAccess.ID,
-                       Rol = account.OrganizationAccess.Rol,
-                       Organization = new()
-                       {
-                           ID = account.OrganizationAccess.Organization.ID,
-                           Name = account.OrganizationAccess.Organization.Name,
-                           Domain = account.OrganizationAccess.Organization.Domain,
-                           LoginAccess = account.OrganizationAccess.Organization.LoginAccess
-                       }
-                   } : null
-               };
-    }
 
 
 }

@@ -14,7 +14,7 @@ public class MailController : ControllerBase
     public async Task<HttpReadAllResponse<EmailModel>> GetMails([FromHeader] string token)
     {
 
-        // Validacion de JWT
+        // Validación de JWT
         var (isValid, _, id, _, _) = Jwt.Validate(token);
 
         if (!isValid)

@@ -1,7 +1,7 @@
-﻿namespace LIN.Identity.Controllers.Processors;
+﻿namespace LIN.Identity.Validations;
 
 
-public class AccountProcessor
+public class Account
 {
 
 
@@ -23,13 +23,14 @@ public class AccountProcessor
             Contraseña = modelo.Contraseña = EncryptClass.Encrypt(modelo.Contraseña),
             Creación = modelo.Creación = DateTime.Now,
             Estado = modelo.Estado = AccountStatus.Normal,
+            Birthday = modelo.Birthday,
             Insignia = modelo.Insignia = AccountBadges.None,
             Rol = modelo.Rol = AccountRoles.User,
             Perfil = modelo.Perfil = modelo.Perfil.Length == 0
                 ? File.ReadAllBytes("wwwroot/profile.png")
                 : modelo.Perfil
         };
-        
+
         model.Perfil = Image.Zip(model.Perfil);
         return model;
 

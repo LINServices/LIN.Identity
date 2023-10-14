@@ -1,4 +1,5 @@
-using LIN.Identity.Controllers.Processors;
+using LIN.Identity.Validations;
+
 namespace LIN.Identity.Areas.Organizations;
 
 
@@ -28,7 +29,7 @@ public class OrganizationsController : ControllerBase
         modelo.ID = 0;
         modelo.AppList = new();
 
-        modelo.Members[0].Member = AccountProcessor.Process(modelo.Members[0].Member);
+        modelo.Members[0].Member = Account.Process(modelo.Members[0].Member);
         foreach (var member in modelo.Members)
         {
             member.Rol = OrgRoles.SuperManager;

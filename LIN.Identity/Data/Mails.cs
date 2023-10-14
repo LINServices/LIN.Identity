@@ -250,15 +250,15 @@ public class Mails
                     actualDefault.IsDefault = false;
                 }
 
-                var seted = emails.Where(T => T.ID == emailID && T.Status == EmailStatus.Verified).FirstOrDefault();
+                var setted = emails.Where(T => T.ID == emailID && T.Status == EmailStatus.Verified).FirstOrDefault();
 
-                if (seted == null)
+                if (setted == null)
                 {
                     transaction.Rollback();
                     return new(Responses.NotRows);
                 }
 
-                seted.IsDefault = true;
+                setted.IsDefault = true;
                 context.DataBase.SaveChanges();
                 transaction.Commit();
 
