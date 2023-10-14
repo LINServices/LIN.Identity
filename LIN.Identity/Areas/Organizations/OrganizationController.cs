@@ -9,7 +9,7 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Crea una nueva organizaci�n
+    /// Crea una nueva organizacion
     /// </summary>
     /// <param name="modelo">Modelo de la organizaci�n y el usuario administrador</param>
     [HttpPost("create")]
@@ -60,27 +60,54 @@ public class OrganizationsController : ControllerBase
     /// <summary>
     /// Obtiene una organizaci�n por medio del ID
     /// </summary>
-    /// <param name="id">ID de la organizaci�n</param>
+    /// <param name="id">ID de la organización</param>
     [HttpGet("read/id")]
-    public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id)
+    public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id, [FromHeader] string token)
     {
 
+        // Parámetros
         if (id <= 0)
             return new(Responses.InvalidParam);
 
-        // Obtiene el usuario
+        // Validar el token
+        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
+
+
+        if (!isValid)
+            return new(Responses.Unauthorized);
+
+
+        // Obtiene la organización
         var response = await Data.Organizations.Organizations.Read(id);
 
-        // Si es err�neo
+        // Organización no encontrada.
         if (response.Response != Responses.Success)
             return new ReadOneResponse<OrganizationModel>()
             {
-                Response = response.Response,
-                Model = new()
+                Response = Responses.NotRows,
+                Message = "No se encontró la organización."
             };
 
-        // Retorna el resultado
-        return response;
+        // No es publica y no pertenece a ella
+        if (!response.Model.IsPublic && orgID != response.Model.ID)
+            return new ReadOneResponse<OrganizationModel>()
+            {
+                Response = Responses.Unauthorized,
+                Message = "Esta organización es privada y tu usuario no esta vinculado a ella.",
+                Model = new()
+                {
+                    ID = response.Model.ID,
+                    IsPublic = false,
+                    Name = "Organización privada"
+                }
+            };
+
+        return new ReadOneResponse<OrganizationModel>()
+        {
+            Response = Responses.Success,
+            Model = response.Model
+        };
+
 
     }
 

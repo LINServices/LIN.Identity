@@ -188,8 +188,8 @@ public class Accounts
                                 Organization = (filters.OrgLevel == FilterModels.IncludeOrgLevel.Advance) ? new()
                                 {
                                     ID = account.OrganizationAccess.Organization.ID,
-                                    Domain = account.OrganizationAccess.Organization.Domain,
-                                    Name = account.OrganizationAccess.Organization.Name
+                                    Domain = (!account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID) ? "" : account.OrganizationAccess.Organization.Domain,
+                                    Name = (!account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID) ? "Organización privada": account.OrganizationAccess.Organization.Name
                                 } : new()
                             }
                             : null,
