@@ -8,7 +8,7 @@ public class LoginOnOrg : LoginBase
     /// <summary>
     /// Acceso a la organización
     /// </summary>
-    private OrganizationAccessModel? OrganizationAccess => Account.OrganizationAccess;
+    private OrganizationAccessModel OrganizationAccess { get; set; } = new();
 
 
 
@@ -31,7 +31,33 @@ public class LoginOnOrg : LoginBase
     /// </summary>
     private bool ValidateParams()
     {
-        return OrganizationAccess != null;
+        return Account.OrganizationAccess != null;
+    }
+
+
+
+    /// <summary>
+    /// Valida parámetros necesarios para iniciar sesión en una organización
+    /// </summary>
+    private async Task<bool> LoadOrganization()
+    {
+
+        var z = Account.OrganizationAccess?.Organization.ID;
+
+        var orgResponse = await Data.Organizations.Organizations.Read(z ?? 0);
+
+
+        if (orgResponse.Response != Responses.Success)
+        {
+            return false;
+        }
+
+        OrganizationAccess.Rol = Account.OrganizationAccess.Rol;
+        OrganizationAccess.ID = Account.OrganizationAccess.ID;
+        OrganizationAccess.Organization = orgResponse.Model;
+
+        return true;
+
     }
 
 
@@ -90,7 +116,6 @@ public class LoginOnOrg : LoginBase
     public override async Task<ResponseBase> Login()
     {
 
-
         // Valida la aplicación
         var validateParams = ValidateParams();
 
@@ -99,6 +124,18 @@ public class LoginOnOrg : LoginBase
             return new()
             {
                 Message = "Este usuario no pertenece a una organización.",
+                Response = Responses.Undefined
+            };
+
+
+        // Validar la organización
+        var validateAccess = await LoadOrganization();
+
+        // Retorna el error
+        if (!validateAccess)
+            return new()
+            {
+                Message = "Hubo un error al validar la organización.",
                 Response = Responses.Undefined
             };
 

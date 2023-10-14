@@ -147,7 +147,6 @@ public class AccountController : ControllerBase
 
 
 
-
     /// <summary>
     /// Obtiene una lista de diez (10) usuarios que coincidan con un patron
     /// </summary>
