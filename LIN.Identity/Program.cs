@@ -1,22 +1,3 @@
-global using System.Text;
-global using Microsoft.Data.SqlClient;
-global using Http.ResponsesList;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.EntityFrameworkCore.SqlServer;
-global using Microsoft.IdentityModel.Tokens;
-global using LIN.Types.Enumerations;
-global using LIN.Identity.Services;
-global using LIN.Types.Responses;
-global using LIN.Types.Auth.Enumerations;
-global using LIN.Types.Auth.Models;
-global using LIN.Modules;
-global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.AspNetCore.SignalR;
-global using LIN.Identity.Hubs;
-global using LIN.Identity;
-using LIN.Identity.Data;
-
-
 {
 
     var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +23,7 @@ using LIN.Identity.Data;
 
     var sqlConnection = builder.Configuration["ConnectionStrings:somee"] ?? string.Empty;
 
-// Servicio de BD
+    // Servicio de BD
     builder.Services.AddDbContext<Context>(options =>
     {
         options.UseSqlServer(sqlConnection);
@@ -51,7 +32,7 @@ using LIN.Identity.Data;
 
 
     builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
