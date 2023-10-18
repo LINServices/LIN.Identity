@@ -1,5 +1,4 @@
 using LIN.Identity.Validations;
-
 namespace LIN.Identity.Areas.Accounts;
 
 
