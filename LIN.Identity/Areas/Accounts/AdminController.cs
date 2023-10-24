@@ -53,6 +53,7 @@ public class AdminController : ControllerBase
             SensibleInfo = false,
             ContextOrg = orgID,
             ContextUser = user,
+            IsAdmin = true,
             FindOn = FilterModels.FindOn.StableAccounts,
             IncludeOrg = FilterModels.IncludeOrg.Include,
             OrgLevel = FilterModels.IncludeOrgLevel.Advance
@@ -119,6 +120,7 @@ public class AdminController : ControllerBase
         {
             SensibleInfo = false,
             ContextOrg = orgId,
+            IsAdmin = true,
             ContextUser = userId,
             FindOn = FilterModels.FindOn.StableAccounts,
             IncludeOrg = FilterModels.IncludeOrg.Include,
