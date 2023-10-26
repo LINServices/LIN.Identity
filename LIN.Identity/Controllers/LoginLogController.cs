@@ -14,17 +14,17 @@ public class LoginLogController : ControllerBase
     public async Task<HttpReadAllResponse<LoginLogModel>> GetAll([FromHeader] string token)
     {
 
-        // JWT
+        // JWT.
         var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
-        // Validaci�n
+        // Validación.
         if (!isValid)
             return new(Responses.Unauthorized);
 
-        // Obtiene el usuario
+        // Obtiene el usuario.
         var result = await Data.Logins.ReadAll(userId);
 
-        // Retorna el resultado
+        // Retorna el resultado.
         return result ?? new();
 
     }

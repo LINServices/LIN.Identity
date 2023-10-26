@@ -1,7 +1,7 @@
 ﻿namespace LIN.Identity.Areas.Auth.Login;
 
 
-public abstract class LoginBase
+public abstract class LoginService
 {
 
 
@@ -47,7 +47,7 @@ public abstract class LoginBase
     /// <param name="application">Llave</param>
     /// <param name="password">Contraseña</param>
     /// <param name="loginType">Tipo de inicio</param>
-    protected LoginBase(AccountModel? account, string? application, string? password, LoginTypes loginType = LoginTypes.Credentials)
+    protected LoginService(AccountModel? account, string? application, string? password, LoginTypes loginType = LoginTypes.Credentials)
     {
         ApplicationKey = application ?? string.Empty;
         Account = account ?? new();
@@ -104,6 +104,20 @@ public abstract class LoginBase
                 Message = "La aplicación no esta autorizada para iniciar sesión en LIN Identity",
                 Response = Responses.Unauthorized
             };
+
+        // Si es una app privada.
+        if (!app.Model.AllowAnyAccount)
+        {
+            var allow = await Data.Applications.IsAllow(app.Model.ID, Account.ID, Conexión.GetOneConnection().context);
+
+            if (allow.Response!= Responses.Success)
+                return new ReadOneResponse<AccountModel>
+                {
+                    Message = $"No tienes permiso para acceder a la aplicación '{app.Model.Name}'",
+                    Response = Responses.Unauthorized
+                };
+        }
+
 
         // Establece la aplicación
         Application = app.Model;

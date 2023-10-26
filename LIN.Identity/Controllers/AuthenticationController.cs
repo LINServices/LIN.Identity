@@ -46,7 +46,7 @@ public class AuthenticationController : ControllerBase
 
 
         // Estrategia de login
-        LoginBase strategy;
+        LoginService strategy;
 
         // Definir la estrategia
         strategy = response.Model.OrganizationAccess == null ? new LoginNormal(response.Model, application, password)

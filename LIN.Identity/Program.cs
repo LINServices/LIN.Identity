@@ -71,7 +71,6 @@ using LIN.Identity.Data;
 
     app.UseCors("AllowAnyOrigin");
 
-
     app.MapHub<AccountHub>("/realTime/service");
     app.MapHub<PassKeyHub>("/realTime/auth/passkey");
 

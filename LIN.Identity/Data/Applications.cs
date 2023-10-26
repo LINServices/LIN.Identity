@@ -236,4 +236,37 @@ public class Applications
 
 
 
+    
+    public static async Task<ReadOneResponse<bool>> IsAllow(int appId, int accountId, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Query
+            var has = (from app in context.DataBase.Applications
+                               where app.ID == appId
+                               select app.Allowed.FirstOrDefault(t => t.ID == accountId) != null);
+
+            var s = has.ToQueryString();
+
+            var result = await has.FirstOrDefaultAsync();
+
+            // Email no existe
+            if (!result)
+            {
+                return new(Responses.Unauthorized);
+            }
+
+            return new(Responses.Success, true );
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
 }

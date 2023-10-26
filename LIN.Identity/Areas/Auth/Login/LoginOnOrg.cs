@@ -1,7 +1,7 @@
 ﻿namespace LIN.Identity.Areas.Auth.Login;
 
 
-public class LoginOnOrg : LoginBase
+public class LoginOnOrg : LoginService
 {
 
 
@@ -140,12 +140,7 @@ public class LoginOnOrg : LoginBase
             };
  
 
-        // Valida la aplicación
-        var validateApp = await ValidateApp();
-
-        // Retorna el error
-        if (validateApp.Response != Responses.Success)
-            return validateApp;
+        
 
         // Validar credenciales y estado
         var validateAccount = Validate();
@@ -153,6 +148,14 @@ public class LoginOnOrg : LoginBase
         // Retorna el error
         if (validateAccount.Response != Responses.Success)
             return validateAccount;
+
+
+        // Valida la aplicación
+        var validateApp = await ValidateApp();
+
+        // Retorna el error
+        if (validateApp.Response != Responses.Success)
+            return validateApp;
 
         // Validar las políticas
         var validatePolicies = await ValidatePolicies();

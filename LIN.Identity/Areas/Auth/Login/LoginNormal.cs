@@ -1,7 +1,7 @@
 ﻿namespace LIN.Identity.Areas.Auth.Login;
 
 
-public class LoginNormal : LoginBase
+public class LoginNormal : LoginService
 {
 
 
@@ -24,6 +24,14 @@ public class LoginNormal : LoginBase
     public override async Task<ResponseBase> Login()
     {
 
+        // Validar credenciales y estado
+        var validateAccount = Validate();
+
+        // Retorna el error
+        if (validateAccount.Response != Responses.Success)
+            return validateAccount;
+
+
         // Valida la aplicación
         var validateApp = await ValidateApp();
 
@@ -31,12 +39,6 @@ public class LoginNormal : LoginBase
         if (validateApp.Response != Responses.Success)
             return validateApp;
 
-        // Validar credenciales y estado
-        var validateAccount = Validate();
-
-        // Retorna el error
-        if (validateAccount.Response != Responses.Success)
-            return validateAccount;
 
         // Genera el login
         GenerateLogin();
