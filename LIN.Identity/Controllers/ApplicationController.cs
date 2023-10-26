@@ -85,7 +85,7 @@ public class ApplicationController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, _, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
         // Si el token es invalido.
         if (!isValid)
@@ -95,7 +95,19 @@ public class ApplicationController : ControllerBase
                 Message = "El token es invalido."
             };
 
-        // Obtiene la data.
+        // Respuesta de Iam.
+        var iam = await Services.Iam.Applications.ValidateAccess(userId, appId);
+
+        // Validación de Iam
+        if (iam.Model != IamLevels.Privileged)
+            return new ReadOneResponse<bool>()
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes autorización para modificar este recurso."
+            };
+
+
+        // Enviar la actualización
         var data = await Data.Applications.AllowTo(appId, accountId);
 
         return data;
