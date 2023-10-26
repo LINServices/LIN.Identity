@@ -38,6 +38,27 @@ public class Applications
 
 
 
+    public static async Task<ReadOneResponse<bool>> AllowTo(int appId, int accountId)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await AllowTo(appId, accountId, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
+
+
+    public static async Task<ReadOneResponse<bool>> IsAllow(int appId, int accountId)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await IsAllow(appId, accountId, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
+
+
+
 
 
 
@@ -89,6 +110,12 @@ public class Applications
         // Ejecución
         try
         {
+
+            foreach (var account in data.Allowed)
+            {
+                context.DataBase.Attach(account.Account);
+                account.App = data;
+            }
 
             var res = await context.DataBase.Applications.AddAsync(data);
             context.DataBase.SaveChanges();
@@ -236,7 +263,7 @@ public class Applications
 
 
 
-    
+
     public static async Task<ReadOneResponse<bool>> IsAllow(int appId, int accountId, Conexión context)
     {
 
@@ -245,21 +272,21 @@ public class Applications
         {
 
             // Query
-            var has = (from app in context.DataBase.Applications
-                               where app.ID == appId
-                               select app.Allowed.FirstOrDefault(t => t.ID == accountId) != null);
+            var has = (from access in context.DataBase.ApplicationAccess
+                       where access.AppID == appId && access.AccountID == accountId
+                       select access);
 
             var s = has.ToQueryString();
 
             var result = await has.FirstOrDefaultAsync();
 
             // Email no existe
-            if (!result)
+            if (result == null)
             {
                 return new(Responses.Unauthorized);
             }
 
-            return new(Responses.Success, true );
+            return new(Responses.Success, true);
         }
         catch
         {
@@ -267,6 +294,46 @@ public class Applications
 
         return new();
     }
+
+
+
+    public static async Task<ReadOneResponse<bool>> AllowTo(int appId, int accountId, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+
+            var access = new AppAccessModel()
+            {
+                Account = new()
+                {
+                    ID = accountId
+                },
+                App = new()
+                {
+                    ID = appId
+                }
+            };
+
+            context.DataBase.Attach(access.Account);
+            context.DataBase.Attach(access.App);
+
+            await context.DataBase.AddAsync(access);
+            context.DataBase.SaveChanges();
+
+            return new(Responses.Success, true);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
 
 
 }

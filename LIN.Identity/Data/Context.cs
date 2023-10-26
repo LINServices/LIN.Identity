@@ -25,6 +25,11 @@ public class Context : DbContext
 
 
 
+
+    public DbSet<AppAccessModel> ApplicationAccess { get; set; }
+
+
+
     /// <summary>
     /// Tabla de aplicaciones
     /// </summary>
@@ -135,7 +140,6 @@ public class Context : DbContext
                 a.OrgID
             });
 
-
         modelBuilder.Entity<AppOnOrgModel>()
            .HasOne(p => p.App)
            .WithMany()
@@ -148,9 +152,30 @@ public class Context : DbContext
            .HasForeignKey(p => p.OrgID);
 
 
-        modelBuilder.Entity<ApplicationModel>()
-         .HasMany(p => p.Allowed)
-         .WithMany();
+
+
+
+        modelBuilder.Entity<AppAccessModel>()
+          .HasKey(a => new
+          {
+              a.AppID,
+              a.AccountID
+          });
+
+        modelBuilder.Entity<AppAccessModel>()
+           .HasOne(p => p.App)
+           .WithMany()
+           .HasForeignKey(p => p.AppID);
+
+
+        modelBuilder.Entity<AppAccessModel>()
+           .HasOne(p => p.Account)
+           .WithMany()
+           .HasForeignKey(p => p.AccountID);
+
+
+
+
 
 
         // Nombre de la tablas
