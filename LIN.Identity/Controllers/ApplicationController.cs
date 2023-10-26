@@ -70,13 +70,12 @@ public class ApplicationController : ControllerBase
 
         return data;
 
-
     }
 
 
 
     /// <summary>
-    /// Crear acceso permitido a una cuenta.
+    /// Crear acceso permitido a una app.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
     /// <param name="appId">ID de la aplicación.</param>
@@ -100,7 +99,6 @@ public class ApplicationController : ControllerBase
         var data = await Data.Applications.AllowTo(appId, accountId);
 
         return data;
-
 
     }
 
