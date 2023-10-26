@@ -144,7 +144,6 @@ public class AdminController : ControllerBase
 
 
 
-
     /// <summary>
     /// Actualiza la contraseña de una cuenta
     /// </summary>
@@ -187,7 +186,6 @@ public class AdminController : ControllerBase
 
 
 
-
     /// <summary>
     /// Elimina una cuenta
     /// </summary>
@@ -211,7 +209,6 @@ public class AdminController : ControllerBase
         var response = await Data.Accounts.Delete(userId);
         return response;
     }
-
 
 
 
@@ -240,7 +237,6 @@ public class AdminController : ControllerBase
         return await Data.Accounts.Update(user.ID, AccountStatus.Disable);
 
     }
-
 
 
 

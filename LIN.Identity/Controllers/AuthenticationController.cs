@@ -1,4 +1,4 @@
-using LIN.Identity.Areas.Auth.Login;
+using LIN.Identity.Services.Login;
 
 namespace LIN.Identity.Controllers;
 

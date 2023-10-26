@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Areas.Auth.Login;
+﻿namespace LIN.Identity.Services.Login;
 
 
 public class LoginOnOrg : LoginService
@@ -138,9 +138,9 @@ public class LoginOnOrg : LoginService
                 Message = "Hubo un error al validar la organización.",
                 Response = Responses.Undefined
             };
- 
 
-        
+
+
 
         // Validar credenciales y estado
         var validateAccount = Validate();

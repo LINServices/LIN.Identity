@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Areas.Auth.Login;
+﻿namespace LIN.Identity.Services.Login;
 
 
 public abstract class LoginService
@@ -110,7 +110,7 @@ public abstract class LoginService
         {
             var allow = await Data.Applications.IsAllow(app.Model.ID, Account.ID, Conexión.GetOneConnection().context);
 
-            if (allow.Response!= Responses.Success)
+            if (allow.Response != Responses.Success)
                 return new ReadOneResponse<AccountModel>
                 {
                     Message = $"No tienes permiso para acceder a la aplicación '{app.Model.Name}'",

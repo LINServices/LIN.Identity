@@ -187,7 +187,6 @@ public class AccountController : ControllerBase
 
 
 
-
     /// <summary>
     /// Obtiene una lista cuentas
     /// </summary>
@@ -217,7 +216,6 @@ public class AccountController : ControllerBase
         return response;
 
     }
-
 
 
 
@@ -286,7 +284,6 @@ public class AccountController : ControllerBase
 
 
 
-
     /// <summary>
     /// Elimina una cuenta
     /// </summary>
@@ -310,7 +307,6 @@ public class AccountController : ControllerBase
         var response = await Data.Accounts.Delete(userId);
         return response;
     }
-
 
 
 
@@ -339,7 +335,6 @@ public class AccountController : ControllerBase
         return await Data.Accounts.Update(user.ID, AccountStatus.Disable);
 
     }
-
 
 
 
@@ -385,7 +380,6 @@ public class AccountController : ControllerBase
         return response;
 
     }
-
 
 
 
@@ -440,7 +434,6 @@ public class AccountController : ControllerBase
         return await Data.Accounts.Update(id, genero);
 
     }
-
 
 
 

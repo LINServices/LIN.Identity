@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Areas.Auth.Login;
+﻿namespace LIN.Identity.Services.Login;
 
 
 public class LoginNormal : LoginService
