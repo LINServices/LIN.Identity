@@ -14,11 +14,15 @@ public class MailController : ControllerBase
     public async Task<HttpReadAllResponse<EmailModel>> GetMails([FromHeader] string token)
     {
 
-        // Validación de JWT
+        // Información del token.
         var (isValid, _, id, _, _) = Jwt.Validate(token);
 
+        // Validación del token
         if (!isValid)
-            return new(Responses.Unauthorized);
+            return new(Responses.Unauthorized)
+            {
+                Message = "Token invalido."
+            };
 
         return await Data.Mails.ReadAll(id);
 

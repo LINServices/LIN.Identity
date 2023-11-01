@@ -42,7 +42,10 @@ public class DeviceController : ControllerBase
         }
         catch
         {
-            return new(Responses.Undefined);
+            return new(Responses.Undefined)
+            {
+                Message = "Hubo un error al obtener los dispositivos asociados."
+            };
         }
     }
 

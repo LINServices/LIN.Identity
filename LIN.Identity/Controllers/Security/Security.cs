@@ -93,13 +93,14 @@ public class Security : ControllerBase
     private static string CensorEmail(string email)
     {
         var atIndex = email.IndexOf('@');
+
         if (atIndex >= 0)
         {
             var dotIndex = email.IndexOf('.');
             if (dotIndex > atIndex + 3)
             {
-                var username = email.Substring(0, atIndex - 3); // Censura los últimos 3 caracteres antes del "@"
-                var domain = email.Substring(atIndex); // Censura el dominio antes del primer punto
+                var username = email.Substring(0, atIndex - 3); // Censura los últimos 3 caracteres antes del "@".
+                var domain = email.Substring(atIndex); // Censura el dominio antes del primer punto.
                 return $"{username}***{domain}";
             }
         }

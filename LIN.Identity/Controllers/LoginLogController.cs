@@ -19,7 +19,10 @@ public class LoginLogController : ControllerBase
 
         // Validación.
         if (!isValid)
-            return new(Responses.Unauthorized);
+            return new(Responses.Unauthorized)
+            {
+                Message = "Token invalido."
+            };
 
         // Obtiene el usuario.
         var result = await Data.Logins.ReadAll(userId);

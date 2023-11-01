@@ -46,7 +46,10 @@ public class IntentsController : ControllerBase
         }
         catch
         {
-            return new(Responses.Undefined);
+            return new(Responses.Undefined)
+            {
+                Message = "Hubo un error al obtener los intentos de passkey"
+            };
         }
     }
 
