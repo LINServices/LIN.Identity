@@ -1,4 +1,6 @@
-﻿namespace LIN.Identity.Hubs;
+﻿using LIN.Access.Logger;
+
+namespace LIN.Identity.Hubs;
 
 
 public class AccountHub : Hub
@@ -136,8 +138,9 @@ public class AccountHub : Hub
             // Envia el cambio de dispositivos
             await RegisterDevice(device);
         }
-        catch
+        catch (Exception ex)
         {
+            _ = Logger.Log(ex, 2);
         }
 
 
@@ -177,9 +180,9 @@ public class AccountHub : Hub
             }
 
         }
-        catch
+        catch (Exception ex) 
         {
-
+            _ = Logger.Log(ex, 2);
         }
 
     }

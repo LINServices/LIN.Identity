@@ -25,6 +25,8 @@ public class EmailWorker
     /// Enviar un correo
     /// </summary>
     /// <param name="to">Destinatario</param>
+    /// <param name="url">url</param>
+    /// <param name="mail">Info del mail</param>
     public static async Task<bool> SendVerification(string to, string url, string mail)
     {
 
@@ -50,6 +52,8 @@ public class EmailWorker
     /// Enviar un correo
     /// </summary>
     /// <param name="to">Destinatario</param>
+    /// <param name="nombre">Nombre del usuario</param>
+    /// <param name="url">URL</param>
     public static async Task<bool> SendPassword(string to, string nombre, string url)
     {
 
@@ -81,7 +85,6 @@ public class EmailWorker
         try
         {
 
-
             using (var client = new HttpClient())
             {
                 var url = "https://api.resend.com/emails";
@@ -108,18 +111,18 @@ public class EmailWorker
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine("Response: " + responseBody);
+                    return true;
                 }
                 else
                 {
-                    Console.WriteLine("Request failed with status code: " + response.StatusCode);
+                    _ = Logger.Log("Error al enviar un correo: ",response.StatusCode.ToString(), 3);
                 }
             }
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            _ = Logger.Log(ex, 2);
         }
         return false;
     }

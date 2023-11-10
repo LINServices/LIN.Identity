@@ -70,12 +70,12 @@ public class Mails
     /// Establece el email default de una cuenta
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
-    /// <param name="emailID">ID de el email</param>
-    public static async Task<ResponseBase> SetDefaultEmail(int id, int emailID)
+    /// <param name="emailId">ID de el email</param>
+    public static async Task<ResponseBase> SetDefaultEmail(int id, int emailId)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
-        var res = await SetDefaultEmail(id, emailID, context);
+        var res = await SetDefaultEmail(id, emailId, context);
         context.CloseActions(contextKey);
         return res;
     }
@@ -145,15 +145,16 @@ public class Mails
         {
 
             // Query
-            var emails = await (from E in context.DataBase.Emails
-                                where E.UserID == id
-                                where E.Status != EmailStatus.Delete
-                                select E).ToListAsync();
+            var emails = await (from email in context.DataBase.Emails
+                                where email.UserID == id
+                                where email.Status != EmailStatus.Delete
+                                select email).ToListAsync();
 
             return new(Responses.Success, emails);
         }
-        catch
+        catch (Exception ex)
         {
+            // Notificar a LIN Error Logger.
         }
 
         return new();
@@ -174,9 +175,9 @@ public class Mails
         {
 
             // Query
-            var email = await (from E in context.DataBase.Emails
-                               where E.ID == id
-                               select E).FirstOrDefaultAsync();
+            var email = await (from mail in context.DataBase.Emails
+                               where mail.ID == id
+                               select mail).FirstOrDefaultAsync();
 
             // Email no existe
             if (email == null)
@@ -186,8 +187,9 @@ public class Mails
 
             return new(Responses.Success, email);
         }
-        catch
+        catch (Exception ex)
         {
+            _ = Logger.Log(ex, 1);
         }
 
         return new();
@@ -214,9 +216,9 @@ public class Mails
 
             return new(Responses.Success, emails);
         }
-        catch
+        catch (Exception ex)
         {
-
+            _ = Logger.Log(ex, 1);
         }
 
         return new();
@@ -304,8 +306,9 @@ public class Mails
 
             return new(Responses.Success);
         }
-        catch
+        catch (Exception ex)
         {
+            _ = Logger.Log(ex, 1);
         }
 
         return new();

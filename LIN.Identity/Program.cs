@@ -1,26 +1,26 @@
-global using System.Text;
-global using Microsoft.Data.SqlClient;
 global using Http.ResponsesList;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.EntityFrameworkCore.SqlServer;
-global using Microsoft.IdentityModel.Tokens;
-global using LIN.Types.Enumerations;
+global using LIN.Identity;
+global using LIN.Identity.Hubs;
 global using LIN.Identity.Services;
-global using LIN.Types.Responses;
+global using LIN.Modules;
 global using LIN.Types.Auth.Enumerations;
 global using LIN.Types.Auth.Models;
-global using LIN.Modules;
+global using LIN.Types.Enumerations;
+global using LIN.Types.Responses;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.SignalR;
-global using LIN.Identity.Hubs;
-global using LIN.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.IdentityModel.Tokens;
+global using System.Text;
+global using LIN.Access.Logger;
 using LIN.Identity.Data;
 {
+
+    LIN.Access.Logger.Logger.AppName = "LIN.IDENTITY";
 
     var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
-
     builder.Services.AddSignalR();
 
 
@@ -63,8 +63,9 @@ using LIN.Identity.Data;
         var dataContext = scope.ServiceProvider.GetRequiredService<Context>();
         var res = dataContext.Database.EnsureCreated();
     }
-    catch
+    catch (Exception ex)
     {
+        _ = LIN.Access.Logger.Logger.Log(ex, 3);
     }
 
 
@@ -82,6 +83,7 @@ using LIN.Identity.Data;
     app.UseHttpsRedirection();
     Jwt.Open();
     EmailWorker.StarService();
+
 
     app.UseAuthorization();
 
