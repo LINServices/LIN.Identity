@@ -60,28 +60,8 @@ public class Logins
         try
         {
 
-            var appResult = await Applications.Read(data.Application.Key, context);
-
-
-            if (appResult.Response != Responses.Success)
-            {
-                return new(Responses.NotRows);
-            }
-
-
-            data.Application = new()
-            {
-                ID = appResult.Model.ID
-            };
-
-            try
-            {
-                context.DataBase.Attach(data.Application);
-            }
-            catch
-            {
-            }
-
+            // 
+            context.DataBase.Attach(data.Application);
 
             var res = context.DataBase.LoginLogs.Add(data);
             await context.DataBase.SaveChangesAsync();

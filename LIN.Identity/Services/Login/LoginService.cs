@@ -132,8 +132,12 @@ public abstract class LoginService
     /// <summary>
     /// Genera el login
     /// </summary>
-    public void GenerateLogin()
+    public async void GenerateLogin()
     {
+
+
+        var app = await Data.Applications.Read(ApplicationKey);
+
         // Crea registro del login
         _ = Data.Logins.Create(new()
         {
@@ -142,7 +146,7 @@ public abstract class LoginService
             Type = LoginType,
             Application = new()
             {
-                Key = ApplicationKey
+                ID = app.Model.ID
             }
         });
     }

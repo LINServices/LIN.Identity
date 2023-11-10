@@ -135,7 +135,7 @@ public class AccountHub : Hub
             device.BateryLevel = battery;
             device.BateryConected = bateryConected;
 
-            // Envia el cambio de dispositivos
+            // Envía el cambio de dispositivos
             await RegisterDevice(device);
         }
         catch (Exception ex)

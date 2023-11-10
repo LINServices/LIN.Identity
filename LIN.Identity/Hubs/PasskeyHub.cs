@@ -245,6 +245,23 @@ public class PassKeyHub : Hub
                 return;
             }
 
+            // Guarda el acceso.
+            LoginLogModel loginLog = new()
+            {
+                AccountID = userID,
+                Application = new()
+                {
+                    ID = app.Model.ID
+                },
+                Date = DateTime.Now,
+                Platform = Platforms.Undefined,
+                Type = LoginTypes.Passkey,
+                ID = 0
+            };
+
+            _ = Data.Logins.Create(loginLog);
+
+
             // Nuevo token 
             var newToken = Jwt.Generate(new()
             {
