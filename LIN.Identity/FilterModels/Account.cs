@@ -14,8 +14,6 @@ public class Account
 
 }
 
-
-
 public enum IncludeOrg
 {
 
@@ -36,8 +34,6 @@ public enum IncludeOrg
 
 }
 
-
-
 public enum IncludeOrgLevel
 {
 
@@ -53,8 +49,6 @@ public enum IncludeOrgLevel
 
 }
 
-
-
 public enum FindOn
 {
 
@@ -66,6 +60,6 @@ public enum FindOn
     /// <summary>
     /// En las cuentas estables
     /// </summary>
-    StableAccounts,
+    StableAccounts
 
 }

@@ -8,7 +8,6 @@ internal static partial class Accounts
     #region Abstracciones
 
 
-
     public static async Task<ReadOneResponse<AccountModel>> Read(int id, FilterModels.Account filters)
     {
 

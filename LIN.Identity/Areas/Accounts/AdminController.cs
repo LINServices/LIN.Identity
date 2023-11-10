@@ -6,7 +6,7 @@ public class AdminController : ControllerBase
 {
 
 
-    
+
     /// <summary>
     /// Obtiene la información de usuario.
     /// </summary>
@@ -73,7 +73,7 @@ public class AdminController : ControllerBase
     }
 
 
-    
+
     /// <summary>
     /// Obtiene la información de usuario.
     /// </summary>

@@ -14,7 +14,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.SignalR;
 global using LIN.Identity.Hubs;
 global using LIN.Identity;
-
 using LIN.Identity.Data;
 {
 

@@ -15,7 +15,7 @@ public class Configuration
 
         if (_isStart && Config != null)
             return Config[route] ?? string.Empty;
-        
+
         var configBuilder = new ConfigurationBuilder()
            .SetBasePath(Directory.GetCurrentDirectory())
            .AddJsonFile("appsettings.json", false, true);

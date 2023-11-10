@@ -272,9 +272,9 @@ public class Applications
         {
 
             // Query
-            var has = (from access in context.DataBase.ApplicationAccess
-                       where access.AppID == appId && access.AccountID == accountId
-                       select access);
+            var has = from access in context.DataBase.ApplicationAccess
+                      where access.AppID == appId && access.AccountID == accountId
+                      select access;
 
             var s = has.ToQueryString();
 

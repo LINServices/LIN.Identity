@@ -44,7 +44,7 @@ public class AccountController : ControllerBase
     }
 
 
-    
+
     /// <summary>
     /// Obtiene la información de usuario.
     /// </summary>
@@ -69,7 +69,7 @@ public class AccountController : ControllerBase
         }
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(id, new FilterModels.Account()
+        var response = await Data.Accounts.Read(id, new()
         {
             ContextOrg = orgId,
             ContextUser = user,
@@ -93,7 +93,7 @@ public class AccountController : ControllerBase
     }
 
 
-    
+
     /// <summary>
     /// Obtiene la información de usuario.
     /// </summary>
@@ -120,13 +120,13 @@ public class AccountController : ControllerBase
 
 
 
-        var response = await Data.Accounts.Read(user, new FilterModels.Account()
+        var response = await Data.Accounts.Read(user, new()
         {
             ContextOrg = orgId,
             ContextUser = userId,
-            FindOn= FilterModels.FindOn.StableAccounts,
-            IncludeOrg= FilterModels.IncludeOrg.IncludeIf,
-            OrgLevel= FilterModels.IncludeOrgLevel.Advance
+            FindOn = FilterModels.FindOn.StableAccounts,
+            IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
+            OrgLevel = FilterModels.IncludeOrgLevel.Advance
         });
 
 
@@ -175,8 +175,8 @@ public class AccountController : ControllerBase
         // Obtiene el usuario
         var response = await Data.Accounts.Search(pattern, new()
         {
-            ContextOrg= orgId,
-            ContextUser= userId,
+            ContextOrg = orgId,
+            ContextUser = userId,
             FindOn = FilterModels.FindOn.StableAccounts,
             IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
             OrgLevel = FilterModels.IncludeOrgLevel.Advance
@@ -235,7 +235,7 @@ public class AccountController : ControllerBase
                 Message = "Parámetro para nueva actualización de contraseña es invalido.",
                 Response = Responses.InvalidParam
             };
-        
+
         // Validar de la nueva contraseña.
         if (modelo.OldPassword.Length < 4 || modelo.NewPassword.Length < 4)
             return new ResponseBase(Responses.InvalidParam)
@@ -262,11 +262,11 @@ public class AccountController : ControllerBase
             {
                 Message = $"Error al encontrar el usuario con ID '{userId}'"
             };
-        
+
 
         // Encriptar la contraseña
         modelo.OldPassword = EncryptClass.Encrypt(modelo.OldPassword);
-        
+
         // Valida la contraseña actual
         if (modelo.OldPassword != actualData.Model.Contraseña)
             return new ResponseBase(Responses.InvalidPassword)
@@ -356,7 +356,7 @@ public class AccountController : ControllerBase
         }
 
 
-        var rol = (await Data.Accounts.Read(id, new FilterModels.Account
+        var rol = (await Data.Accounts.Read(id, new()
         {
             FindOn = FilterModels.FindOn.StableAccounts,
             IncludeOrg = FilterModels.IncludeOrg.None
@@ -371,10 +371,10 @@ public class AccountController : ControllerBase
         {
             ContextOrg = 0,
             OrgLevel = FilterModels.IncludeOrgLevel.Advance,
-            ContextUser =0,
+            ContextUser = 0,
             FindOn = FilterModels.FindOn.AllAccount,
             IncludeOrg = FilterModels.IncludeOrg.Include,
-            IsAdmin = true,
+            IsAdmin = true
         });
 
         return response;

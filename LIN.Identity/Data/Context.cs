@@ -156,11 +156,11 @@ public class Context : DbContext
 
 
         modelBuilder.Entity<AppAccessModel>()
-          .HasKey(a => new
-          {
-              a.AppID,
-              a.AccountID
-          });
+           .HasKey(a => new
+            {
+                a.AppID,
+                a.AccountID
+            });
 
         modelBuilder.Entity<AppAccessModel>()
            .HasOne(p => p.App)
