@@ -54,21 +54,22 @@ public class AccountController : ControllerBase
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id, [FromHeader] string token)
     {
 
+        // Id es invalido.
         if (id <= 0)
             return new(Responses.InvalidParam);
 
+        // Información del token.
         var (isValid, _, user, orgId, _) = Jwt.Validate(token);
 
+        // Token es invalido.
         if (!isValid)
-        {
             return new ReadOneResponse<AccountModel>()
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
             };
-        }
 
-        // Obtiene el usuario
+        // Obtiene el usuario.
         var response = await Data.Accounts.Read(id, new()
         {
             ContextOrg = orgId,
@@ -83,8 +84,7 @@ public class AccountController : ControllerBase
         if (response.Response != Responses.Success)
             return new ReadOneResponse<AccountModel>()
             {
-                Response = response.Response,
-                Model = new()
+                Response = response.Response
             };
 
         // Retorna el resultado
@@ -103,23 +103,22 @@ public class AccountController : ControllerBase
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
     {
 
+        // Usuario es invalido.
         if (string.IsNullOrWhiteSpace(user))
             return new(Responses.InvalidParam);
 
-
+        // Información del token.
         var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
 
+        // Token es invalido.
         if (!isValid)
-        {
-            return new ReadOneResponse<AccountModel>()
+            return new()
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
             };
-        }
 
-
-
+        // Obtiene el usuario.
         var response = await Data.Accounts.Read(user, new()
         {
             ContextOrg = orgId,
@@ -128,8 +127,6 @@ public class AccountController : ControllerBase
             IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
             OrgLevel = FilterModels.IncludeOrgLevel.Advance
         });
-
-
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -164,13 +161,11 @@ public class AccountController : ControllerBase
 
         // Token es invalido
         if (!isValid)
-        {
             return new ReadAllResponse<AccountModel>
             {
                 Message = "Token es invalido",
                 Response = Responses.Unauthorized
             };
-        }
 
         // Obtiene el usuario
         var response = await Data.Accounts.Search(pattern, new()
@@ -196,13 +191,17 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids, [FromHeader] string token)
     {
 
+        // Información del token.
         var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
 
+        // Es invalido.
         if (!isValid)
-        {
-            return new(Responses.Unauthorized);
-        }
-
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
+            };
+        
         // Obtiene el usuario
         var response = await Data.Accounts.FindAll(ids, new()
         {
@@ -292,8 +291,10 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Delete([FromHeader] string token)
     {
 
+        // Información del token.
         var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
+        // Si es invalido.
         if (!isValid)
             return new ResponseBase
             {
