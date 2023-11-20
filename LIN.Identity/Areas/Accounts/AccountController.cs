@@ -385,7 +385,7 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Actualiza la información de una cuenta
+    /// Actualiza la información de una cuenta.
     /// </summary>
     /// <param name="modelo">Modelo</param>
     /// <param name="token">Token de acceso</param>
@@ -393,8 +393,10 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo, [FromHeader] string token)
     {
 
+        // Información del token.
         var (isValid, _, userId, _, _) = Jwt.Validate(token);
 
+        // Es invalido.
         if (!isValid)
             return new ResponseBase
             {
@@ -402,6 +404,7 @@ public class AccountController : ControllerBase
                 Message = "Token Invalido"
             };
 
+        // Organizar el modelo.
         modelo.ID = userId;
         modelo.Perfil = Image.Zip(modelo.Perfil);
 
@@ -423,15 +426,18 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromHeader] string token, [FromHeader] Genders genero)
     {
 
-
+        // Información del token.
         var (isValid, _, id, _, _) = Jwt.Validate(token);
 
-
+        // Token es invalido.
         if (!isValid)
-        {
-            return new(Responses.Unauthorized);
-        }
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
+            };
 
+        // Realizar actualización.
         return await Data.Accounts.Update(id, genero);
 
     }
@@ -439,22 +445,25 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Actualiza la visibilidad de una cuenta
+    /// Actualiza la visibilidad de una cuenta.
     /// </summary>
-    /// <param name="token">Token de acceso</param>
-    /// <param name="visibility">Nueva visibilidad</param>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="visibility">Nueva visibilidad.</param>
     [HttpPatch("update/visibility")]
     public async Task<HttpResponseBase> Update([FromHeader] string token, [FromHeader] AccountVisibility visibility)
     {
 
-
+        // Información del token.
         var (isValid, _, id, _, _) = Jwt.Validate(token);
 
+        // Token es invalido.
         if (!isValid)
-        {
-            return new(Responses.Unauthorized);
-        }
-
+            return new() { 
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
+            };
+        
+        // Actualización.
         return await Data.Accounts.Update(id, visibility);
 
     }

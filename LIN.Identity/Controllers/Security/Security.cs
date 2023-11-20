@@ -79,7 +79,7 @@ public class Security : ControllerBase
 
 
         // Envía el correo
-        await EmailWorker.SendPassword(verifiedMail?.Email!, userData.Usuario, $"http://linaccount.somee.com/resetpassword/{userData.ID}/{link.Key}");
+        await EmailWorker.SendPassword(verifiedMail?.Email!, userData.Usuario, $"http://linapps.co/resetpassword/{userData.ID}/{link.Key}");
 
 
         return new(Responses.Success, new()
