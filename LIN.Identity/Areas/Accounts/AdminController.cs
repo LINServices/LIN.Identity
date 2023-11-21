@@ -83,20 +83,21 @@ public class AdminController : ControllerBase
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
     {
 
+        // Validar el parámetro.
         if (string.IsNullOrWhiteSpace(user))
             return new(Responses.InvalidParam);
 
-
+        // Información del token.
         var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
 
+        // Token es invalido.
         if (!isValid)
-        {
             return new ReadOneResponse<AccountModel>()
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
             };
-        }
+        
 
 
         var rol = (await Data.Accounts.Read(userId, new()
@@ -106,13 +107,12 @@ public class AdminController : ControllerBase
         })).Model.Rol;
 
         if (rol != AccountRoles.Admin)
-        {
             return new ReadOneResponse<AccountModel>()
             {
                 Response = Responses.Unauthorized,
                 Message = "Tienes que ser un administrador."
             };
-        }
+        
 
 
 
