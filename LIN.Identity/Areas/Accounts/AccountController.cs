@@ -8,7 +8,7 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Crear nueva cuenta (Cuenta de LIN)
+    /// Crear nueva cuenta (Cuenta de LIN).
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta</param>
     [HttpPost("create")]
