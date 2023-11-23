@@ -1,4 +1,4 @@
-namespace LIN.Identity.Controllers;
+namespace LIN.Identity.Areas.Accounts;
 
 
 [Route("Account/logs")]
@@ -10,7 +10,7 @@ public class LoginLogController : ControllerBase
     /// Obtienes la lista de accesos asociados a una cuenta
     /// </summary>
     /// <param name="token">Token de acceso</param>
-    [HttpGet("read/all")]
+    [HttpGet]
     public async Task<HttpReadAllResponse<LoginLogModel>> GetAll([FromHeader] string token)
     {
 

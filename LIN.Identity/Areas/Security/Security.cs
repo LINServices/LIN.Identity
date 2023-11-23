@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Controllers.Security;
+﻿namespace LIN.Identity.Areas.Security;
 
 
 [Route("security")]
