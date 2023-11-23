@@ -1,4 +1,4 @@
-namespace LIN.Identity.Controllers;
+namespace LIN.Identity.Areas.Accounts;
 
 
 [Route("mails")]
