@@ -1,6 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 
 namespace LIN.Identity.Services;
 
@@ -111,7 +110,6 @@ public class Jwt
             }
             catch (SecurityTokenException)
             {
-
             }
 
 
