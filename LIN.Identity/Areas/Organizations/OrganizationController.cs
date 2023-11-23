@@ -3,15 +3,15 @@ using LIN.Identity.Validations;
 namespace LIN.Identity.Areas.Organizations;
 
 
-[Route("orgs")]
+[Route("organizations")]
 public class OrganizationsController : ControllerBase
 {
 
 
     /// <summary>
-    /// Crea una nueva organizacion
+    /// Crea una nueva organización.
     /// </summary>
-    /// <param name="modelo">Modelo de la organizaci�n y el usuario administrador</param>
+    /// <param name="modelo">Modelo de la organización y el usuario administrador</param>
     [HttpPost("create")]
     public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo)
     {
@@ -25,7 +25,7 @@ public class OrganizationsController : ControllerBase
         var (context, connectionKey) = Conexión.GetOneConnection();
 
 
-        // Organizaci�n del modelo
+        // organización del modelo
         modelo.ID = 0;
         modelo.AppList = new();
 
@@ -36,7 +36,7 @@ public class OrganizationsController : ControllerBase
             member.Organization = modelo;
         }
 
-        // Creaci�n de la organizaci�n
+        // Creaci�n de la organización
         var response = await Data.Organizations.Organizations.Create(modelo, context);
 
         // Evaluaci�n
@@ -58,9 +58,10 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene una organizaci�n por medio del ID
+    /// Obtiene una organización por medio del Id.
     /// </summary>
     /// <param name="id">ID de la organización</param>
+    /// <param name="token">Token de acceso</param>
     [HttpGet("read/id")]
     public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id, [FromHeader] string token)
     {
@@ -114,7 +115,7 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Actualiza si una organizaci�n tiene lista blanca
+    /// Actualiza si una organización tiene lista blanca.
     /// </summary>
     /// <param name="token">Toke de acceso administrador</param>
     /// <param name="haveWhite">Nuevo estado</param>
@@ -142,22 +143,22 @@ public class OrganizationsController : ControllerBase
             };
         }
 
-        // Si el usuario no tiene una organizaci�n
+        // Si el usuario no tiene una organización
         if (userContext.Model.OrganizationAccess == null)
         {
             return new ResponseBase
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organizaci�n.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
                 Response = Responses.Unauthorized
             };
         }
 
-        // Verificaci�n del rol dentro de la organizaci�n
+        // Verificaci�n del rol dentro de la organización
         if (!userContext.Model.OrganizationAccess.Rol.IsAdmin())
         {
             return new ResponseBase
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de la lista blanca de esta organizaci�n.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de la lista blanca de esta organización.",
                 Response = Responses.Unauthorized
             };
         }
@@ -173,7 +174,7 @@ public class OrganizationsController : ControllerBase
 
 
     /// <summary>
-    /// Actualiza si los usuarios no admins de una organizaci�n tienen acceso a su cuenta
+    /// Actualiza si los usuarios no admins de una organización tienen acceso a su cuenta.
     /// </summary>
     /// <param name="token">Token de acceso administrador</param>
     /// <param name="state">Nuevo estado</param>
@@ -201,22 +202,22 @@ public class OrganizationsController : ControllerBase
             };
         }
 
-        // Si el usuario no tiene una organizaci�n
+        // Si el usuario no tiene una organización
         if (userContext.Model.OrganizationAccess == null)
         {
             return new ResponseBase
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organizaci�n.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
                 Response = Responses.Unauthorized
             };
         }
 
-        // Verificaci�n del rol dentro de la organizaci�n
+        // Verificaci�n del rol dentro de la organización
         if (userContext.Model.OrganizationAccess.Rol != OrgRoles.SuperManager)
         {
             return new ResponseBase
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de accesos de esta organizaci�n.",
+                Message = $"El usuario '{userContext.Model.Usuario}' no puede actualizar el estado de accesos de esta organización.",
                 Response = Responses.Unauthorized
             };
         }
