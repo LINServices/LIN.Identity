@@ -7,7 +7,6 @@ namespace LIN.Identity.Services;
 public class Image
 {
 
-
     /// <summary>
     /// Comprime una imagen
     /// </summary>
