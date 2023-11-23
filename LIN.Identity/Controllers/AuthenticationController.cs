@@ -41,7 +41,10 @@ public class AuthenticationController : ControllerBase
 
             // Incorrecto
             default:
-                return new(response.Response);
+                return new(response.Response)
+                {
+                    Message = "Hubo un error grave."
+                };
         }
 
 
@@ -84,12 +87,15 @@ public class AuthenticationController : ControllerBase
     public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token)
     {
 
-        // Valida el token
+        // Información del token de acceso.
         var (isValid, _, user, _, _) = Jwt.Validate(token);
 
+        // Si el token es invalido.
         if (!isValid)
-            return new(Responses.InvalidParam);
-
+            return new(Responses.InvalidParam)
+            {
+                Message = "El token proporcionado no es valido."
+            };
 
         // Obtiene el usuario
         var response = await Data.Accounts.Read(user, new()
