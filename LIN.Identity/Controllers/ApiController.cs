@@ -6,7 +6,6 @@ public class ApiVersion : Controller
 {
 
 
-
     /// <summary>
     /// Obtiene el estado del servidor
     /// </summary>
@@ -17,16 +16,6 @@ public class ApiVersion : Controller
         {
             Status = "Open"
         });
-    }
-
-
-
-
-
-    [HttpGet]
-    public dynamic Index()
-    {
-        return Ok("Abierto");
     }
 
 
