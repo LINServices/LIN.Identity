@@ -1,6 +1,6 @@
 using LIN.Identity.Services.Login;
 
-namespace LIN.Identity.Controllers;
+namespace LIN.Identity.Areas.Authentication;
 
 
 [Route("authentication")]
