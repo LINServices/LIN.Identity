@@ -1,4 +1,4 @@
-namespace LIN.Identity.Controllers;
+namespace LIN.Identity.Areas.Applications;
 
 
 [Route("applications")]
@@ -11,7 +11,7 @@ public class ApplicationController : ControllerBase
     /// </summary>
     /// <param name="applicationModel">Modelo.</param>
     /// <param name="token">Token de acceso.</param>
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] ApplicationModel applicationModel, [FromHeader] string token)
     {
 
