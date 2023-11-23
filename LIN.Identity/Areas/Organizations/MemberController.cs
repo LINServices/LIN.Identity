@@ -9,24 +9,23 @@ public class MemberController : ControllerBase
 
 
     /// <summary>
-    /// Crea un nuevo miembro en una organización
+    /// Crea un nuevo miembro en una organización.
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta</param>
     /// <param name="token">Token de acceso de un administrador</param>
     /// <param name="rol">Rol asignado</param>
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] OrgRoles rol)
     {
 
         // Validación del modelo.
         if (modelo == null || !modelo.Usuario.Trim().Any() || !modelo.Nombre.Trim().Any())
-        {
             return new CreateResponse
             {
                 Response = Responses.InvalidParam,
                 Message = "Uno o varios parámetros inválidos."
             };
-        }
+        
 
         // Visibilidad oculta
         modelo.Visibilidad = AccountVisibility.Hidden;
@@ -130,44 +129,35 @@ public class MemberController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene la lista de miembros asociados a una organización
+    /// Obtiene la lista de integrantes asociados a una organización.
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromHeader] string token)
     {
 
+        // Información del token.
         var (isValid, _, _, orgID, _) = Jwt.Validate(token);
 
-
+        // Si el token es invalido.
         if (!isValid)
-        {
             return new ReadAllResponse<AccountModel>
             {
-                Message = "",
+                Message = "El token es invalido.",
                 Response = Responses.Unauthorized
             };
-        }
-
+        
+        // Obtiene los miembros.
         var members = await Data.Organizations.Members.ReadAll(orgID);
 
-
+        // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
-        {
             return new ReadAllResponse<AccountModel>
             {
-                Message = "No found Organization",
+                Message = "No se encontró la organización.",
                 Response = Responses.Unauthorized
             };
-        }
-
-
-
-        // Conexión
-        var (context, connectionKey) = Conexión.GetOneConnection();
-
-        context.CloseActions(connectionKey);
-
+        
         // Retorna el resultado
         return members;
 
