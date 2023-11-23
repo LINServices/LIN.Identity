@@ -1,4 +1,4 @@
-namespace LIN.Identity.Controllers;
+namespace LIN.Identity.Areas.Authentication;
 
 
 [Route("Intents")]
@@ -6,7 +6,7 @@ public class IntentsController : ControllerBase
 {
 
     /// <summary>
-    /// Obtiene la lista de intentos Passkey activos
+    /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet]
