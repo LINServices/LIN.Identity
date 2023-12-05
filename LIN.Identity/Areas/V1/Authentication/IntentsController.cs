@@ -1,7 +1,7 @@
-namespace LIN.Identity.Areas.Authentication;
+namespace LIN.Identity.Areas.V1.Authentication;
 
 
-[Route("Intents")]
+[Route("v1/Intents")]
 public class IntentsController : ControllerBase
 {
 

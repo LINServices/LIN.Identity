@@ -1,9 +1,9 @@
 using LIN.Identity.Validations;
 
-namespace LIN.Identity.Areas.Organizations;
+namespace LIN.Identity.Areas.V3;
 
 
-[Route("organizations")]
+[Route("v3/organizations")]
 public class OrganizationsController : ControllerBase
 {
 

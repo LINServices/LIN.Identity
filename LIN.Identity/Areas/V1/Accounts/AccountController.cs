@@ -1,8 +1,8 @@
 using LIN.Identity.Validations;
-namespace LIN.Identity.Areas.Accounts;
+namespace LIN.Identity.Areas.V1.Accounts;
 
 
-[Route("account")]
+[Route("v1/account")]
 public class AccountController : ControllerBase
 {
 
@@ -201,7 +201,7 @@ public class AccountController : ControllerBase
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
             };
-        
+
         // Obtiene el usuario
         var response = await Data.Accounts.FindAll(ids, new()
         {
@@ -458,11 +458,12 @@ public class AccountController : ControllerBase
 
         // Token es invalido.
         if (!isValid)
-            return new() { 
+            return new()
+            {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
             };
-        
+
         // Actualización.
         return await Data.Accounts.Update(id, visibility);
 

@@ -1,7 +1,7 @@
-namespace LIN.Identity.Areas.Accounts;
+namespace LIN.Identity.Areas.V3;
 
 
-[Route("Account/logs")]
+[Route("v3/Account/logs")]
 public class LoginLogController : ControllerBase
 {
 

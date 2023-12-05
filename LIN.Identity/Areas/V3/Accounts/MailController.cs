@@ -1,7 +1,7 @@
-namespace LIN.Identity.Areas.Accounts;
+namespace LIN.Identity.Areas.V3;
 
 
-[Route("mails")]
+[Route("v3/mails")]
 public class MailController : ControllerBase
 {
 

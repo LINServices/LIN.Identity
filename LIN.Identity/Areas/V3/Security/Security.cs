@@ -1,7 +1,7 @@
-﻿namespace LIN.Identity.Areas.Security;
+﻿namespace LIN.Identity.Areas.V3;
 
 
-[Route("security")]
+[Route("v3/security")]
 public class Security : ControllerBase
 {
 

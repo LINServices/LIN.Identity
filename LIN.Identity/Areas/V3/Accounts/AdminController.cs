@@ -1,7 +1,7 @@
-namespace LIN.Identity.Areas.Accounts;
+namespace LIN.Identity.Areas.V3;
 
 
-[Route("administrator")]
+[Route("v3/administrator")]
 public class AdminController : ControllerBase
 {
 
@@ -97,7 +97,7 @@ public class AdminController : ControllerBase
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
             };
-        
+
 
 
         var rol = (await Data.Accounts.Read(userId, new()
@@ -112,7 +112,7 @@ public class AdminController : ControllerBase
                 Response = Responses.Unauthorized,
                 Message = "Tienes que ser un administrador."
             };
-        
+
 
 
 
