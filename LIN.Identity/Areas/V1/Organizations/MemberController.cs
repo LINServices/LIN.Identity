@@ -1,9 +1,9 @@
 using LIN.Identity.Validations;
 
-namespace LIN.Identity.Areas.Organizations;
+namespace LIN.Identity.Areas.V1.Organizations;
 
 
-[Route("orgs/members")]
+[Route("v1/orgs/members")]
 public class MemberController : ControllerBase
 {
 
@@ -25,7 +25,7 @@ public class MemberController : ControllerBase
                 Response = Responses.InvalidParam,
                 Message = "Uno o varios parámetros inválidos."
             };
-        
+
 
         // Visibilidad oculta
         modelo.Visibilidad = AccountVisibility.Hidden;
@@ -146,7 +146,7 @@ public class MemberController : ControllerBase
                 Message = "El token es invalido.",
                 Response = Responses.Unauthorized
             };
-        
+
         // Obtiene los miembros.
         var members = await Data.Organizations.Members.ReadAll(orgID);
 
@@ -157,7 +157,7 @@ public class MemberController : ControllerBase
                 Message = "No se encontró la organización.",
                 Response = Responses.Unauthorized
             };
-        
+
         // Retorna el resultado
         return members;
 

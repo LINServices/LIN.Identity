@@ -1,7 +1,7 @@
-namespace LIN.Identity.Areas.Accounts;
+namespace LIN.Identity.Areas.V1.Accounts;
 
 
-[Route("devices")]
+[Route("v1/devices")]
 public class DeviceController : ControllerBase
 {
 

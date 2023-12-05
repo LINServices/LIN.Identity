@@ -1,7 +1,7 @@
-namespace LIN.Identity.Areas.Organizations;
+namespace LIN.Identity.Areas.V3;
 
 
-[Route("orgs/applications")]
+[Route("v3/orgs/applications")]
 public class ApplicationOrgsController : ControllerBase
 {
 

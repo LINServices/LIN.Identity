@@ -1,7 +1,7 @@
-namespace LIN.Identity.Areas.Applications;
+namespace LIN.Identity.Areas.V1.Applications;
 
 
-[Route("applications")]
+[Route("v1/applications")]
 public class ApplicationController : ControllerBase
 {
 
