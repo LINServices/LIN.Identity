@@ -68,26 +68,26 @@ public class LoginOnOrg : LoginService
     private async Task<ResponseBase> ValidatePolicies()
     {
 
-        // Si el inicio de sesión fue desactivado por la organización
-        if (!OrganizationAccess!.Organization.LoginAccess && !OrganizationAccess.Rol.IsAdmin())
-            return new()
-            {
-                Message = "Tu organización a deshabilitado el inicio de sesión temporalmente.",
-                Response = Responses.LoginBlockedByOrg
-            };
+        //// Si el inicio de sesión fue desactivado por la organización
+        //if (!OrganizationAccess!.Organization.LoginAccess && !OrganizationAccess.Rol.IsAdmin())
+        //    return new()
+        //    {
+        //        Message = "Tu organización a deshabilitado el inicio de sesión temporalmente.",
+        //        Response = Responses.LoginBlockedByOrg
+        //    };
 
 
-        // Si la organización tiene lista blanca
-        if (OrganizationAccess.Organization.HaveWhiteList)
-        {
-            var whiteList = await ValidateWhiteList();
-            if (!whiteList)
-                return new()
-                {
-                    Message = "Tu organización no permite iniciar sesión en esta aplicación.",
-                    Response = Responses.UnauthorizedByOrg
-                };
-        }
+        //// Si la organización tiene lista blanca
+        //if (OrganizationAccess.Organization.HaveWhiteList)
+        //{
+        //    var whiteList = await ValidateWhiteList();
+        //    if (!whiteList)
+        //        return new()
+        //        {
+        //            Message = "Tu organización no permite iniciar sesión en esta aplicación.",
+        //            Response = Responses.UnauthorizedByOrg
+        //        };
+        //}
 
         return new(Responses.Success);
 
@@ -95,24 +95,6 @@ public class LoginOnOrg : LoginService
 
 
 
-    /// <summary>
-    /// Valida la app en la lista blanca
-    /// </summary>
-    private async Task<bool> ValidateWhiteList()
-    {
-
-        // Busca la app en la organización
-        var appOnOrg = await Data.Organizations.Applications.AppOnOrg(ApplicationKey, OrganizationAccess!.Organization.ID);
-
-        return appOnOrg.Response == Responses.Success;
-
-    }
-
-
-
-    /// <summary>
-    /// Iniciar sesión
-    /// </summary>
     public override async Task<ResponseBase> Login()
     {
 

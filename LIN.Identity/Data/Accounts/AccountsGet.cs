@@ -278,7 +278,12 @@ internal static partial class Accounts
                         select new AccountModel
                         {
                             ID = account.ID,
-                            Usuario = account.Usuario,
+                            Identity = new()
+                            {
+                                Id = account.Identity.Id,
+                                Type = account.Identity.Type,
+                                Unique = account.Identity.Unique
+                            },
                             Contraseña = account.Contraseña,
                             Estado = account.Estado,
                             Nombre = account.Nombre,
@@ -316,11 +321,16 @@ internal static partial class Accounts
         {
 
             var query = from account in Queries.Accounts.GetValidAccounts(context)
-                        where account.Usuario == user
+                        where account.Identity.Unique == user
                         select new AccountModel
                         {
                             ID = account.ID,
-                            Usuario = account.Usuario,
+                            Identity = new()
+                            {
+                                Id = account.Identity.Id,
+                                Type = account.Identity.Type,
+                                Unique = account.Identity.Unique
+                            },
                             Contraseña = account.Contraseña,
                             Estado = account.Estado,
                             Nombre = account.Nombre,

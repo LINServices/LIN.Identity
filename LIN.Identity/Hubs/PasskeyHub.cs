@@ -202,27 +202,27 @@ public class PassKeyHub : Hub
                 var organization = await Data.Organizations.Organizations.Read(orgID);
 
                 // Si tiene lista blanca
-                if (organization.Model.HaveWhiteList)
-                {
-                    // Validación de la app
-                    var applicationOnOrg = await Data.Organizations.Applications.AppOnOrg(attempt.Application.Key, orgID);
+                //if (organization.Model.HaveWhiteList)
+                //{
+                //    //// Validación de la app
+                //    //var applicationOnOrg = await Data.Organizations.Applications.AppOnOrg(attempt.Application.Key, orgID);
 
-                    // Si la app no existe o no esta activa
-                    if (applicationOnOrg.Response != Responses.Success)
-                    {
-                        // Modelo de falla
-                        PassKeyModel badPass = new()
-                        {
-                            Status = PassKeyStatus.BlockedByOrg,
-                            User = modelo.User
-                        };
+                //    //// Si la app no existe o no esta activa
+                //    //if (applicationOnOrg.Response != Responses.Success)
+                //    //{
+                //    //    // Modelo de falla
+                //    //    PassKeyModel badPass = new()
+                //    //    {
+                //    //        Status = PassKeyStatus.BlockedByOrg,
+                //    //        User = modelo.User
+                //    //    };
 
-                        // comunica la respuesta
-                        await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", badPass);
-                        return;
+                //    //    // comunica la respuesta
+                //    //    await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", badPass);
+                //    //    return;
 
-                    }
-                }
+                //    //}
+                //}
 
 
             }
@@ -254,7 +254,6 @@ public class PassKeyHub : Hub
                     ID = app.Model.ID
                 },
                 Date = DateTime.Now,
-                Platform = Platforms.Undefined,
                 Type = LoginTypes.Passkey,
                 ID = 0
             };
@@ -266,7 +265,10 @@ public class PassKeyHub : Hub
             var newToken = Jwt.Generate(new()
             {
                 ID = userID,
-                Usuario = userUnique,
+                Identity = new()
+                {
+                    Unique = userUnique
+                },
                 OrganizationAccess = new()
                 {
                     Organization = new()

@@ -124,8 +124,13 @@ public class Members
                           Creación = O.Member.Creación,
                           ID = O.Member.ID,
                           Nombre = O.Member.Nombre,
-                          Genero = O.Member.Genero,
-                          Usuario = O.Member.Usuario,
+                          Identity = new()
+                          {
+                              Id = O.Member.Identity.Id,
+                              Type = O.Member.Identity.Type,
+                              Unique = O.Member.Identity.Unique
+                          },
+
                           OrganizationAccess = new()
                           {
                               ID = O.Member.OrganizationAccess == null ? 0 : O.Member.OrganizationAccess.ID,

@@ -1,8 +1,8 @@
 using LIN.Identity.Validations;
-namespace LIN.Identity.Areas.V1.Accounts;
+namespace LIN.Identity.Areas.Accounts;
 
 
-[Route("v1/account")]
+[Route("account")]
 public class AccountController : ControllerBase
 {
 
@@ -16,7 +16,7 @@ public class AccountController : ControllerBase
     {
 
         // Comprobaciones
-        if (modelo == null || modelo.Contraseña.Length < 4 || modelo.Nombre.Length <= 0 || modelo.Usuario.Length <= 0)
+        if (modelo == null || modelo.Identity == null || modelo.Contraseña.Length < 4 || modelo.Nombre.Length <= 0 || modelo.Identity.Unique.Length <= 0)
             return new(Responses.InvalidParam);
 
         // Organización del modelo
@@ -35,7 +35,7 @@ public class AccountController : ControllerBase
         // Retorna el resultado
         return new CreateResponse()
         {
-            LastID = response.Model.ID,
+            LastID = response.Model.Identity.Id,
             Response = Responses.Success,
             Token = token,
             Message = "Success"
@@ -218,70 +218,6 @@ public class AccountController : ControllerBase
 
 
 
-    /// <summary>
-    /// Actualiza la contraseña de una cuenta
-    /// </summary>
-    /// <param name="modelo">Modelo de actualización</param>
-    /// <param name="token">Token de acceso</param>
-    [HttpPatch("update/password")]
-    public async Task<HttpResponseBase> Update([FromBody] UpdatePasswordModel modelo, [FromHeader] string token)
-    {
-
-        // Validar parámetros.
-        if (modelo == null)
-            return new ResponseBase()
-            {
-                Message = "Parámetro para nueva actualización de contraseña es invalido.",
-                Response = Responses.InvalidParam
-            };
-
-        // Validar de la nueva contraseña.
-        if (modelo.OldPassword.Length < 4 || modelo.NewPassword.Length < 4)
-            return new ResponseBase(Responses.InvalidParam)
-            {
-                Message = "Antigua contraseña o nueva contraseña tienen una longitud invalida."
-            };
-
-        // Validar el token.
-        var (isValid, _, userId, _, _) = Jwt.Validate(token);
-
-        // No es valido.
-        if (!isValid)
-            return new ResponseBase(Responses.Unauthorized)
-            {
-                Message = "Token invalido"
-            };
-
-        // Obtener datos antiguos.
-        var actualData = await Data.Accounts.ReadBasic(userId);
-
-        // Error al encontrar usuario.
-        if (actualData.Response != Responses.Success)
-            return new ResponseBase(Responses.Unauthorized)
-            {
-                Message = $"Error al encontrar el usuario con ID '{userId}'"
-            };
-
-
-        // Encriptar la contraseña
-        modelo.OldPassword = EncryptClass.Encrypt(modelo.OldPassword);
-
-        // Valida la contraseña actual
-        if (modelo.OldPassword != actualData.Model.Contraseña)
-            return new ResponseBase(Responses.InvalidPassword)
-            {
-                Message = $"Las contraseñas no coinciden."
-            };
-
-        // Actualiza el ID.
-        modelo.Account = userId;
-
-        // Actualizar la contraseña
-        return await Data.Accounts.Update(modelo);
-
-    }
-
-
 
     /// <summary>
     /// Elimina una cuenta
@@ -311,33 +247,7 @@ public class AccountController : ControllerBase
 
 
 
-    /// <summary>
-    /// Desactiva una cuenta
-    /// </summary>
-    /// <param name="user">Modelo</param>
-    [HttpPatch("disable")]
-    public async Task<HttpResponseBase> Disable([FromBody] AccountModel user)
-    {
-
-        if (user.ID <= 0)
-        {
-            return new(Responses.ExistAccount);
-        }
-
-        // Modelo de usuario de la BD
-        var userModel = await Data.Accounts.ReadBasic(user.ID);
-
-        if (userModel.Model.Contraseña != EncryptClass.Encrypt(user.Contraseña))
-        {
-            return new(Responses.InvalidPassword);
-        }
-
-
-        return await Data.Accounts.Update(user.ID, AccountStatus.Disable);
-
-    }
-
-
+   
 
     /// <summary>
     /// (ADMIN) encuentra diez (10) usuarios que coincidan con el patron
@@ -357,11 +267,7 @@ public class AccountController : ControllerBase
         }
 
 
-        var rol = (await Data.Accounts.Read(id, new()
-        {
-            FindOn = FilterModels.FindOn.StableAccounts,
-            IncludeOrg = FilterModels.IncludeOrg.None
-        })).Model.Rol;
+        var rol = AccountRoles.User;
 
 
         if (rol != AccountRoles.Admin)
@@ -405,10 +311,10 @@ public class AccountController : ControllerBase
             };
 
         // Organizar el modelo.
-        modelo.ID = userId;
+        modelo.Identity.Id = userId;
         modelo.Perfil = Image.Zip(modelo.Perfil);
 
-        if (modelo.ID <= 0 || modelo.Nombre.Any())
+        if (modelo.Identity.Id <= 0 || modelo.Nombre.Any())
             return new(Responses.InvalidParam);
 
         return await Data.Accounts.Update(modelo);

@@ -96,7 +96,6 @@ public class Logins
                              ID = L.ID,
                              Type = L.Type,
                              Date = L.Date,
-                             Platform = L.Platform,
                              Application = new()
                              {
                                  Name = L.Application.Name,

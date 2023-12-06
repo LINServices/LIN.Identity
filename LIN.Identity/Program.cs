@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 {
 
-    LIN.Access.Logger.Logger.AppName = "LIN.IDENTITY";
+    LIN.Access.Logger.Logger.AppName = "LIN.IDENTITY.V3";
 
     var builder = WebApplication.CreateBuilder(args);
 
@@ -27,12 +27,6 @@ using System.ComponentModel;
 
 
 
-    builder.Services.AddControllers(options =>
-    {
-        options.Conventions.Add(new GroupingByNamespaceConvention());
-    });
-
-
     var sqlConnection = builder.Configuration["ConnectionStrings:somee"] ?? string.Empty;
 
     // Servicio de BD
@@ -46,42 +40,7 @@ using System.ComponentModel;
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen((config) =>
-    {
-        var titleBase = "LIN Identity";
-        var description = "IDENTITY";
-        var TermsOfService = new Uri("http://linapps.co/");
-        var License = new OpenApiLicense()
-        {
-            Name = "MIT"
-        };
-
-        var Contact = new OpenApiContact()
-        {
-            Name = "Alexander Giraldo",
-            Email = "",
-            Url = new Uri("http://linapps.co/")
-        };
-
-        config.SwaggerDoc("v1", new OpenApiInfo
-        {
-            Version = "v1",
-            Title = titleBase + " v1",
-            Description = description,
-            TermsOfService = TermsOfService,
-            License = License,
-            Contact = Contact
-        });
-        config.SwaggerDoc("v3", new OpenApiInfo
-        {
-            Version = "v3",
-            Title = titleBase + " v3",
-            Description = description,
-            TermsOfService = TermsOfService,
-            License = License,
-            Contact = Contact
-        });
-    });
+    builder.Services.AddSwaggerGen();
 
     var app = builder.Build();
 
@@ -101,15 +60,10 @@ using System.ComponentModel;
 
     app.UseCors("AllowAnyOrigin");
 
-    app.MapHub<AccountHub>("/realTime/service");
     app.MapHub<PassKeyHub>("/realTime/auth/passkey");
 
     app.UseSwagger();
-    app.UseSwaggerUI(config =>
-    {
-        config.SwaggerEndpoint("/swagger/v1/swagger.json", "MoviesAPI v1");
-        config.SwaggerEndpoint("/swagger/v3/swagger.json", "MoviesAPI v3");
-    });
+    app.UseSwaggerUI();
 
     Conexión.SetStringConnection(sqlConnection);
 
