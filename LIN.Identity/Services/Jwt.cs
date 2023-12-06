@@ -44,7 +44,7 @@ public class Jwt
         var claims = new[]
         {
             new Claim(ClaimTypes.PrimarySid, user.ID.ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Usuario),
+            new Claim(ClaimTypes.NameIdentifier, user.Identity.Unique),
             new Claim(ClaimTypes.Role, ((int)user.Rol).ToString()),
             new Claim(ClaimTypes.UserData, (user.OrganizationAccess?.Organization.ID).ToString() ?? ""),
             new Claim(ClaimTypes.Authentication, appID.ToString())

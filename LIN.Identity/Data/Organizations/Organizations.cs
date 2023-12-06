@@ -37,51 +37,6 @@ public class Organizations
 
 
 
-    /// <summary>
-    /// Obtiene la lista de aplicaciones permitidas en una organización.
-    /// </summary>
-    /// <param name="id">ID de la organización</param>
-    public static async Task<ReadAllResponse<ApplicationModel>> ReadApps(int id)
-    {
-        var (context, contextKey) = Conexión.GetOneConnection();
-
-        var res = await ReadApps(id, context);
-        context.CloseActions(contextKey);
-        return res;
-    }
-
-
-
-    /// <summary>
-    /// Actualiza el estado de la lista blanca de una organización
-    /// </summary>
-    /// <param name="id">ID de la organización</param>
-    /// <param name="estado">Nuevo estado</param>
-    public static async Task<ResponseBase> UpdateState(int id, bool estado)
-    {
-        var (context, contextKey) = Conexión.GetOneConnection();
-
-        var res = await UpdateState(id, estado, context);
-        context.CloseActions(contextKey);
-        return res;
-    }
-
-
-
-
-    /// <summary>
-    /// Actualiza el estado de logins una organización
-    /// </summary>
-    /// <param name="id">ID de la organización</param>
-    /// <param name="estado">Nuevo estado</param>
-    public static async Task<ResponseBase> UpdateAccess(int id, bool estado)
-    {
-        var (context, contextKey) = Conexión.GetOneConnection();
-
-        var res = await UpdateAccess(id, estado, context);
-        context.CloseActions(contextKey);
-        return res;
-    }
 
 
     #endregion
@@ -104,27 +59,93 @@ public class Organizations
             try
             {
 
-                string[] defaultApps =
-                {
-                    "linauthenticator", "linorgsapp"
-                };
+                List<AccountModel> accounts = [];
 
-                foreach (var app in defaultApps)
+                // Crear cuentas
+                foreach (var account in data.Members.Select(t => t.Member))
                 {
-                    var appData = await Data.Applications.ReadByAppUid(app, context);
+                    AccountModel accountModel = new()
+                    {
+                        Birthday = account.Birthday,
+                        Contraseña = account.Contraseña,
+                        Creación = account.Creación,
+                        Estado = account.Estado,
+                        ID = 0,
+                        Identity = account.Identity,
+                        Insignia = account.Insignia,
+                        Nombre = account.Nombre,
+                        Visibilidad = account.Visibilidad,
+                        Rol = account.Rol,
+                        Perfil = account.Perfil,
+                        OrganizationAccess = null,
+                        DirectoryMembers = [],
+                        IdentityId = 0,
+                    };
 
-                    if (appData.Response == Responses.Success)
-                        data.AppList.Add(new()
-                        {
-                            Organization = data,
-                            State = AppOnOrgStates.Activated,
-                            App = appData.Model
-                        });
+                    accounts.Add(accountModel);
+context.DataBase.Accounts.Add(accountModel);
                 }
 
-                var res = await context.DataBase.Organizations.AddAsync(data);
+
+                
+                context.DataBase.SaveChanges();
+
+
+
+                OrganizationModel org = new()
+                {
+                    Domain = data.Domain,
+                    Name = data.Name,
+                    IsPublic = data.IsPublic,
+                    ID = 0,
+                    Directory = new()
+                    {
+                        Creación = DateTime.Now,
+                        ID = 0,
+                        Identity = new()
+                        {
+                            Unique = data.Directory.Identity.Unique,
+                            Type = IdentityTypes.Directory
+                        },
+                        Nombre = data.Directory.Nombre,
+                        IdentityId = 0,
+                    }
+                };
+
+
+
+                org.Members = [];
+
+                foreach(var x in accounts)
+                {
+                    org.Members.Add(new()
+                    {
+                        ID = 0,
+                        Member = x,
+                        Organization = org,
+                        Rol = OrgRoles.SuperManager
+                    });
+                }
+
+
+
+                var res = await context.DataBase.Organizations.AddAsync(org);
+
 
                 context.DataBase.SaveChanges();
+
+
+                foreach (var x in  org.Members)
+                {
+                    org.Directory.Members.Add(new()
+                    {
+                        Account = x.Member,
+                        Directory = org.Directory
+                    });
+                }
+                context.DataBase.SaveChanges();
+
+
 
                 transaction.Commit();
 
@@ -159,7 +180,17 @@ public class Organizations
             // Query
             var org = await (from E in context.DataBase.Organizations
                              where E.ID == id
-                             select E).FirstOrDefaultAsync();
+
+                             select new OrganizationModel
+                             {
+                                 Directory = null!,
+                                 DirectoryId = id,
+                                 Domain = E.Domain,
+                                 ID = E.ID,
+                                 IsPublic = E.IsPublic,
+                                 Members = null!,
+                                 Name = E.Name,
+                             }).FirstOrDefaultAsync();
 
             // Email no existe
             if (org == null)
@@ -176,126 +207,6 @@ public class Organizations
         return new();
     }
 
-
-
-
-    /// <summary>
-    /// Obtiene la lista de aplicaciones permitidas en una organización.
-    /// </summary>
-    /// <param name="id">ID de la organización</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static async Task<ReadAllResponse<ApplicationModel>> ReadApps(int id, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            // Organización
-            var apps = from ORG in context.DataBase.AppOnOrg
-                       where ORG.Organization.ID == id
-                       select new ApplicationModel
-                       {
-                           ID = ORG.App.ID,
-                           Name = ORG.App.Name,
-                           Badge = ORG.App.Badge,
-                           ApplicationUid = ORG.App.ApplicationUid
-                       };
-
-
-            var lista = await apps.ToListAsync();
-
-            // Email no existe
-            if (lista == null)
-                return new(Responses.NotRows);
-
-            return new(Responses.Success, lista);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
-
-
-
-
-    /// <summary>
-    /// Actualiza el estado de la lista blanca de una organización
-    /// </summary>
-    /// <param name="id">ID de la organización</param>
-    /// <param name="estado">Nuevo estado</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static async Task<ResponseBase> UpdateState(int id, bool estado, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            // Query
-            var org = await (from E in context.DataBase.Organizations
-                             where E.ID == id
-                             select E).FirstOrDefaultAsync();
-
-            // Email no existe
-            if (org == null)
-            {
-                return new(Responses.NotRows);
-            }
-
-            org.HaveWhiteList = estado;
-            context.DataBase.SaveChanges();
-
-            return new(Responses.Success);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
-
-
-
-
-
-    /// <summary>
-    /// Actualiza el estado de accesos de una organización
-    /// </summary>
-    /// <param name="id">ID de la organización</param>
-    /// <param name="estado">Nuevo estado</param>
-    /// <param name="context">Contexto de conexión</param>
-    public static async Task<ResponseBase> UpdateAccess(int id, bool estado, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            // Query
-            var org = await (from E in context.DataBase.Organizations
-                             where E.ID == id
-                             select E).FirstOrDefaultAsync();
-
-            // Email no existe
-            if (org == null)
-            {
-                return new(Responses.NotRows);
-            }
-
-            org.LoginAccess = estado;
-            context.DataBase.SaveChanges();
-
-            return new(Responses.Success);
-        }
-        catch
-        {
-        }
-
-        return new();
-    }
 
 
 

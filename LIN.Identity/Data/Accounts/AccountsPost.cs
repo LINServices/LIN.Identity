@@ -36,6 +36,8 @@ internal static partial class Accounts
     public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, Conexión context)
     {
 
+        // Identidad.
+        data.Identity.Id = 0;
         data.ID = 0;
 
         // Ejecución

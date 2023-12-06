@@ -6,28 +6,33 @@ public class Context : DbContext
 
 
     /// <summary>
-    /// Tabla de cuentas
+    /// Identidades.
+    /// </summary>
+    public DbSet<IdentityModel> Identities { get; set; }
+
+
+    /// <summary>
+    /// Cuentas de usuario.
     /// </summary>
     public DbSet<AccountModel> Accounts { get; set; }
 
 
     /// <summary>
-    /// Tabla de organizaciones
+    /// Organizaciones.
     /// </summary>
     public DbSet<OrganizationModel> Organizations { get; set; }
 
 
+    /// <summary>
+    /// Directorios.
+    /// </summary>
+    public DbSet<DirectoryModel> Directories { get; set; }
+
 
     /// <summary>
-    /// Tabla de accesos a organizaciones
+    /// Accesos a organizaciones.
     /// </summary>
     public DbSet<OrganizationAccessModel> OrganizationAccess { get; set; }
-
-
-
-
-    public DbSet<AppAccessModel> ApplicationAccess { get; set; }
-
 
 
     /// <summary>
@@ -35,12 +40,6 @@ public class Context : DbContext
     /// </summary>
     public DbSet<ApplicationModel> Applications { get; set; }
 
-
-
-    /// <summary>
-    /// Tabla de aplicaciones
-    /// </summary>
-    public DbSet<AppOnOrgModel> AppOnOrg { get; set; }
 
 
     /// <summary>
@@ -57,18 +56,6 @@ public class Context : DbContext
 
 
 
-    /// <summary>
-    /// Tabla de links únicos
-    /// </summary>
-    public DbSet<UniqueLink> UniqueLinks { get; set; }
-
-
-
-    /// <summary>
-    /// Tabla de links únicos para email
-    /// </summary>
-    public DbSet<MailMagicLink> MailMagicLinks { get; set; }
-
 
 
 
@@ -81,111 +68,108 @@ public class Context : DbContext
 
 
 
+
     /// <summary>
     /// Naming DB
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
-        // Indices y identidad
-        modelBuilder.Entity<AccountModel>()
-           .HasIndex(e => e.Usuario)
+
+        // Indices y identidad.
+        modelBuilder.Entity<IdentityModel>()
+           .HasIndex(e => e.Unique)
            .IsUnique();
 
-        // Indices y identidad
+        // Indices y identidad.
         modelBuilder.Entity<OrganizationModel>()
            .HasIndex(e => e.Domain)
            .IsUnique();
 
-        // Indices y identidad
+        // Indices y identidad.
         modelBuilder.Entity<ApplicationModel>()
            .HasIndex(e => e.Key)
            .IsUnique();
 
-        // Indices y identidad
+        // Indices y identidad.
         modelBuilder.Entity<ApplicationModel>()
            .HasIndex(e => e.ApplicationUid)
            .IsUnique();
 
-
-        // Indices y identidad
+        // Indices y identidad.
         modelBuilder.Entity<EmailModel>()
            .HasIndex(e => e.Email)
-           .IsUnique();
-
-        // Indices y identidad
-        modelBuilder.Entity<UniqueLink>()
-           .HasIndex(e => e.Key)
-           .IsUnique();
-
-        // Indices y identidad
-        modelBuilder.Entity<MailMagicLink>()
-           .HasIndex(e => e.Key)
-           .IsUnique();
-
-        // Indices
-        modelBuilder.Entity<LoginLogModel>().HasIndex(e => e.ID);
+        .IsUnique();
 
 
-        modelBuilder.Entity<AccountModel>()
-           .HasOne(a => a.OrganizationAccess)
-           .WithOne(oa => oa.Member)
-           .HasForeignKey<OrganizationAccessModel>(oa => oa.ID);
 
 
-        modelBuilder.Entity<AppOnOrgModel>()
-           .HasKey(a => new
-           {
-               a.AppID,
-               a.OrgID
-           });
 
-        modelBuilder.Entity<AppOnOrgModel>()
-           .HasOne(p => p.App)
+
+
+
+
+
+        modelBuilder.Entity<DirectoryMember>()
+           .HasOne(p => p.Directory)
            .WithMany()
-           .HasForeignKey(p => p.AppID);
-
-
-        modelBuilder.Entity<AppOnOrgModel>()
-           .HasOne(p => p.Organization)
-           .WithMany()
-           .HasForeignKey(p => p.OrgID);
-
-
-
-
-
-        modelBuilder.Entity<AppAccessModel>()
-          .HasKey(a => new
-          {
-              a.AppID,
-              a.AccountID
-          });
-
-        modelBuilder.Entity<AppAccessModel>()
-           .HasOne(p => p.App)
-           .WithMany()
-           .HasForeignKey(p => p.AppID);
-
-
-        modelBuilder.Entity<AppAccessModel>()
-           .HasOne(p => p.Account)
-           .WithMany()
-           .HasForeignKey(p => p.AccountID);
+           .HasForeignKey(p => p.DirectoryId);
 
 
 
 
 
 
-        // Nombre de la tablas
-        modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
+        modelBuilder.Entity<OrganizationAccessModel>()
+    .HasOne(oa => oa.Organization)
+    .WithMany(o => o.Members)
+    .HasForeignKey(oa => oa.OrganizationId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+
+        modelBuilder.Entity<DirectoryMember>()
+  .HasOne(dm => dm.Directory)
+  .WithMany(d => d.Members)
+  .HasForeignKey(dm => dm.DirectoryId)
+  .OnDelete(DeleteBehavior.Restrict); // You can a
+
+
+        modelBuilder.Entity<DirectoryMember>()
+         .HasOne(p => p.Account)
+         .WithMany(d => d.DirectoryMembers)
+         .HasForeignKey(p => p.AccountId)
+          .OnDelete(DeleteBehavior.Restrict); ;
+
+
+
+
+        // Configure OrganizationAccessModel
+        modelBuilder.Entity<OrganizationAccessModel>()
+            .HasOne(o => o.Member)
+            .WithOne(a => a.OrganizationAccess)  // Assuming OrganizationAccess is the navigation property in AccountModel
+            .HasForeignKey<OrganizationAccessModel>(o => o.MemberId)
+            .IsRequired();
+
+
+
+
+
+
+        modelBuilder.Entity<DirectoryMember>()
+         .HasKey(t => new
+         {
+             t.AccountId,
+             t.DirectoryId
+         });
+
+
+        // Nombre de la identidades.
+        modelBuilder.Entity<IdentityModel>().ToTable("IDENTITIES");
         modelBuilder.Entity<OrganizationModel>().ToTable("ORGANIZATIONS");
+        modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
         modelBuilder.Entity<ApplicationModel>().ToTable("APPLICATIONS");
         modelBuilder.Entity<EmailModel>().ToTable("EMAILS");
-        modelBuilder.Entity<LoginLogModel>().ToTable("LOGIN_LOGS");
-        modelBuilder.Entity<UniqueLink>().ToTable("UNIQUE_LINKS");
-        modelBuilder.Entity<MailMagicLink>().ToTable("EMAIL_MAGIC_LINKS");
+        modelBuilder.Entity<DirectoryModel>().ToTable("DIRECTORIES");
 
     }
 

@@ -1,9 +1,9 @@
 using LIN.Identity.Validations;
 
-namespace LIN.Identity.Areas.V1.Organizations;
+namespace LIN.Identity.Areas.Organizations;
 
 
-[Route("v1/orgs/members")]
+[Route("orgs/members")]
 public class MemberController : ControllerBase
 {
 
@@ -19,7 +19,7 @@ public class MemberController : ControllerBase
     {
 
         // Validación del modelo.
-        if (modelo == null || !modelo.Usuario.Trim().Any() || !modelo.Nombre.Trim().Any())
+        if (modelo == null || !modelo.Identity.Unique.Trim().Any() || !modelo.Nombre.Trim().Any())
             return new CreateResponse
             {
                 Response = Responses.InvalidParam,
@@ -72,7 +72,7 @@ public class MemberController : ControllerBase
         {
             return new CreateResponse
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no pertenece a una organización.",
+                Message = $"El usuario '{userContext.Model.Identity.Unique}' no pertenece a una organización.",
                 Response = Responses.Unauthorized
             };
         }
@@ -82,7 +82,7 @@ public class MemberController : ControllerBase
         {
             return new CreateResponse
             {
-                Message = $"El usuario '{userContext.Model.Usuario}' no puede crear nuevos usuarios en esta organización.",
+                Message = $"El usuario '{userContext.Model.Identity.Unique}' no puede crear nuevos usuarios en esta organización.",
                 Response = Responses.Unauthorized
             };
         }
@@ -93,7 +93,7 @@ public class MemberController : ControllerBase
         {
             return new CreateResponse
             {
-                Message = $"El '{userContext.Model.Usuario}' no puede crear nuevos usuarios con mas privilegios de los propios.",
+                Message = $"El '{userContext.Model.Identity.Unique}' no puede crear nuevos usuarios con mas privilegios de los propios.",
                 Response = Responses.Unauthorized
             };
         }

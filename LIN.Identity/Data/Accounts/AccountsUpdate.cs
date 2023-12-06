@@ -40,22 +40,7 @@ internal static partial class Accounts
 
 
 
-    /// <summary>
-    /// Actualiza las credenciales (Contraseña de un usuario)
-    /// </summary>
-    /// <param name="newData">Nuevas credenciales</param>
-    public static async Task<ResponseBase> Update(UpdatePasswordModel newData)
-    {
-
-        var (context, key) = Conexión.GetOneConnection();
-
-        var res = await Update(newData, context);
-        context.CloseActions(key);
-        return res;
-
-    }
-
-
+  
 
     /// <summary>
     /// Actualiza el estado de un usuario
@@ -171,7 +156,6 @@ internal static partial class Accounts
             // Nuevos datos
             user.Perfil = modelo.Perfil;
             user.Nombre = modelo.Nombre;
-            user.Genero = modelo.Genero;
 
             context.DataBase.SaveChanges();
             return new(Responses.Success);
@@ -183,37 +167,6 @@ internal static partial class Accounts
         return new();
     }
 
-
-
-    /// <summary>
-    /// Actualiza la contraseña
-    /// </summary>
-    /// <param name="newData">Nuevas credenciales</param>
-    /// <param name="context">Contexto de conexión con la BD</param>
-    public static async Task<ResponseBase> Update(UpdatePasswordModel newData, Conexión context)
-    {
-
-        // Encontrar el usuario
-        var usuario = await (from U in context.DataBase.Accounts
-                             where U.ID == newData.Account
-                             select U).FirstOrDefaultAsync();
-
-        // Si el usuario no existe
-        if (usuario == null)
-        {
-            return new(Responses.NotExistAccount);
-        }
-
-        // Confirmar contraseña
-        var newEncrypted = EncryptClass.Encrypt(newData.NewPassword);
-
-        // Cambiar Contraseña
-        usuario.Contraseña = newEncrypted;
-
-        context.DataBase.SaveChanges();
-        return new(Responses.Success);
-
-    }
 
 
 
@@ -305,7 +258,7 @@ internal static partial class Accounts
         }
 
         // Cambiar Contraseña
-        usuario.Genero = genero;
+       // usuario.Genero = genero;
 
         context.DataBase.SaveChanges();
         return new(Responses.Success);

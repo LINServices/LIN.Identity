@@ -34,23 +34,23 @@ public static class Applications
             };
 
         // Si es un recurso publico.
-        if (resource.Model.AllowAnyAccount)
-            return new()
-            {
-                Response = Responses.Success,
-                Model = IamLevels.Visualizer
-            };
+        //if (resource.Model.AllowAnyAccount)
+        //    return new()
+        //    {
+        //        Response = Responses.Success,
+        //        Model = IamLevels.Visualizer
+        //    };
 
-        // Validar acceso al recurso privado.
-        var isAllowed = await Data.Applications.IsAllow(app, account);
+        //// Validar acceso al recurso privado.
+        //var isAllowed = await Data.Applications.IsAllow(app, account);
 
-        // No es permitido.
-        if (!isAllowed.Model)
-            return new()
-            {
-                Response = Responses.Success,
-                Model = IamLevels.NotAccess
-            };
+        //// No es permitido.
+        //if (!isAllowed.Model)
+        //    return new()
+        //    {
+        //        Response = Responses.Success,
+        //        Model = IamLevels.NotAccess
+        //    };
 
         // Acceso visualizador.
         return new()

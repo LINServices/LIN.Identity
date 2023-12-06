@@ -78,11 +78,11 @@ public class Accounts
 
         if (filters.FindOn == FilterModels.FindOn.StableAccounts)
             accounts = from account in GetValidAccounts(context)
-                       where account.Usuario == user
+                       where account.Identity.Unique == user
                        select account;
         else
             accounts = from account in GetAccounts(context)
-                       where account.Usuario == user
+                       where account.Identity.Unique == user
                        select account;
 
         // Armar el modelo
@@ -116,7 +116,7 @@ public class Accounts
 
         // Query general
         IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
-                                            where account.Usuario.Contains(pattern)
+                                            where account.Identity.Unique.Contains(pattern)
                                             select account;
 
         // Armar el modelo
@@ -130,7 +130,26 @@ public class Accounts
 
 
 
+    public static IQueryable<DirectoryModel> GetDirectory(int id, Conexión context)
+    {
 
+        // Query general
+        IQueryable<DirectoryModel> accounts;
+
+
+        var directories = from directory in context.DataBase.Directories
+                          where directory.ID == id
+                          select directory;
+
+       
+
+        // Armar el modelo
+        accounts = BuildModel(directories);
+
+        // Retorno
+        return accounts;
+
+    }
 
 
 
@@ -165,15 +184,18 @@ public class Accounts
                    Rol = account.Rol,
                    Insignia = account.Insignia,
                    Estado = account.Estado,
-                   Usuario = account.Usuario,
+                  Identity = new()
+                  {
+                      Id = account.Identity.Id,
+                      Unique = account.Identity.Unique,
+                      Type = account.Identity.Type,
+                  },
                    Contraseña = filters.SensibleInfo ? account.Contraseña : "",
                    Visibilidad = account.Visibilidad,
                    Birthday = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
                        ? account.Birthday
                        : default,
-                   Genero = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
-                       ? account.Genero
-                       : Genders.Undefined,
+                 
                    Creación = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
                        ? account.Creación
                        : default,
@@ -194,9 +216,45 @@ public class Accounts
                                    : account.OrganizationAccess.Organization.Domain,
                                Name = !account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID
                                    ? "Organización privada" : account.OrganizationAccess.Organization.Name
-                           } : new()
+                           } : new(),
+                           Member = null!,
                        }
                        : null
+               };
+    }
+
+
+
+    /// <summary>
+    /// Construir la consulta
+    /// </summary>
+    /// <param name="query">Query base</param>
+    /// <param name="filters">Filtros</param>
+    private static IQueryable<DirectoryModel> BuildModel(IQueryable<DirectoryModel> query)
+    {
+
+        byte[] profile =
+        {
+        };
+        try
+        {
+            profile = File.ReadAllBytes("wwwroot/user.png");
+        }
+        catch { }
+
+        return from d in query
+               select new DirectoryModel
+               {
+                  Creación = d.Creación,
+                  ID = d.ID,
+                  Identity = new()
+                  {
+                      Id = d.Identity.Id,
+                      Type = d.Identity.Type,
+                      Unique = d.Identity.Unique
+                  },
+                  IdentityId = d.Identity.Id,
+                  Nombre = d.Nombre
                };
     }
 

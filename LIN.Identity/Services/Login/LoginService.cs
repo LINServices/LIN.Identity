@@ -73,7 +73,9 @@ public abstract class LoginService
                 Message = "Esta cuenta fue eliminada o desactivada."
             };
 
+       
         // Valida la contraseña
+        
         if (Account.Contraseña != EncryptClass.Encrypt(Password))
             return new()
             {
@@ -95,32 +97,32 @@ public abstract class LoginService
     public async Task<ResponseBase> ValidateApp()
     {
         // Obtiene la App.
-        var app = await Data.Applications.Read(ApplicationKey);
+        //var app = await Data.Applications.Read(ApplicationKey);
 
-        // Verifica si la app existe.
-        if (app.Response != Responses.Success)
-            return new ReadOneResponse<AccountModel>
-            {
-                Message = "La aplicación no esta autorizada para iniciar sesión en LIN Identity",
-                Response = Responses.Unauthorized
-            };
+        //// Verifica si la app existe.
+        //if (app.Response != Responses.Success)
+        //    return new ReadOneResponse<AccountModel>
+        //    {
+        //        Message = "La aplicación no esta autorizada para iniciar sesión en LIN Identity",
+        //        Response = Responses.Unauthorized
+        //    };
 
-        // Si es una app privada.
-        if (!app.Model.AllowAnyAccount)
-        {
-            var allow = await Data.Applications.IsAllow(app.Model.ID, Account.ID, Conexión.GetOneConnection().context);
+        //// Si es una app privada.
+        //if (!app.Model.AllowAnyAccount)
+        //{
+        //    var allow = await Data.Applications.IsAllow(app.Model.ID, Account.ID, Conexión.GetOneConnection().context);
 
-            if (allow.Response != Responses.Success)
-                return new ReadOneResponse<AccountModel>
-                {
-                    Message = $"No tienes permiso para acceder a la aplicación '{app.Model.Name}'",
-                    Response = Responses.Unauthorized
-                };
-        }
+        //    if (allow.Response != Responses.Success)
+        //        return new ReadOneResponse<AccountModel>
+        //        {
+        //            Message = $"No tienes permiso para acceder a la aplicación '{app.Model.Name}'",
+        //            Response = Responses.Unauthorized
+        //        };
+        //}
 
 
         // Establece la aplicación
-        Application = app.Model;
+       // Application = app.Model;
 
         // Correcto
         return new(Responses.Success);
@@ -136,19 +138,19 @@ public abstract class LoginService
     {
 
 
-        var app = await Data.Applications.Read(ApplicationKey);
+        //var app = await Data.Applications.Read(ApplicationKey);
 
-        // Crea registro del login
-        _ = Data.Logins.Create(new()
-        {
-            Date = DateTime.Now,
-            AccountID = Account.ID,
-            Type = LoginType,
-            Application = new()
-            {
-                ID = app.Model.ID
-            }
-        });
+        //// Crea registro del login
+        //_ = Data.Logins.Create(new()
+        //{
+        //    Date = DateTime.Now,
+        //    AccountID = Account.ID,
+        //    Type = LoginType,
+        //    Application = new()
+        //    {
+        //        ID = app.Model.ID
+        //    }
+        //});
     }
 
 

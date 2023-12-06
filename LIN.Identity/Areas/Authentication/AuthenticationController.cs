@@ -1,9 +1,9 @@
 using LIN.Identity.Services.Login;
 
-namespace LIN.Identity.Areas.V1.Authentication;
+namespace LIN.Identity.Areas.Authentication;
 
 
-[Route("v1/authentication")]
+[Route("authentication")]
 public class AuthenticationController : ControllerBase
 {
 

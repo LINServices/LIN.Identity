@@ -16,9 +16,13 @@ public class Account
         {
             ID = 0,
             Nombre = modelo.Nombre,
-            Genero = modelo.Genero,
             OrganizationAccess = modelo.OrganizationAccess,
-            Usuario = modelo.Usuario,
+            Identity = new()
+            {
+                Id = 0,
+                Type = IdentityTypes.Account,
+                Unique = modelo.Identity.Unique
+            },
             Visibilidad = modelo.Visibilidad,
             Contraseña = modelo.Contraseña = EncryptClass.Encrypt(modelo.Contraseña),
             Creación = modelo.Creación = DateTime.Now,
