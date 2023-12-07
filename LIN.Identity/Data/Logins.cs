@@ -60,14 +60,14 @@ public class Logins
         try
         {
 
-            // 
+            // Ya existe la app.
             context.DataBase.Attach(data.Application);
 
             var res = context.DataBase.LoginLogs.Add(data);
             await context.DataBase.SaveChangesAsync();
             return new(Responses.Success, data.ID);
         }
-        catch
+        catch (Exception)
         {
         }
 
@@ -88,6 +88,7 @@ public class Logins
         try
         {
 
+            // Consulta.
             var logins = from L in context.DataBase.LoginLogs
                          where L.AccountID == id
                          orderby L.Date descending
@@ -98,17 +99,18 @@ public class Logins
                              Date = L.Date,
                              Application = new()
                              {
+                                 ID = L.Application.ID,
                                  Name = L.Application.Name,
                                  Badge = L.Application.Badge
                              }
                          };
 
-
+            // Resultado
             var result = await logins.Take(50).ToListAsync();
 
             return new(Responses.Success, result);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
