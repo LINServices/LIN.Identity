@@ -86,15 +86,17 @@ public class Applications
     public static async Task<CreateResponse> Create(ApplicationModel data, Conexión context)
     {
 
+        // ID.
         data.ID = 0;
 
         // Ejecución
         try
         {
 
-           
+            // Guardar la información.
+            await context.DataBase.Applications.AddAsync(data);
 
-            var res = await context.DataBase.Applications.AddAsync(data);
+            // Llevar info a la BD.
             context.DataBase.SaveChanges();
 
             return new(Responses.Success, data.ID);
@@ -159,13 +161,12 @@ public class Applications
 
             // Email no existe
             if (email == null)
-            {
                 return new(Responses.NotRows);
-            }
-
+            
+            // Correcto.
             return new(Responses.Success, email);
         }
-        catch
+        catch (Exception)
         {
         }
 
@@ -193,13 +194,12 @@ public class Applications
 
             // Email no existe
             if (email == null)
-            {
                 return new(Responses.NotRows);
-            }
+            
 
             return new(Responses.Success, email);
         }
-        catch
+        catch (Exception)
         {
         }
 
@@ -231,21 +231,12 @@ public class Applications
 
             return new(Responses.Success, app);
         }
-        catch
+        catch (Exception) 
         {
         }
 
         return new();
     }
-
-
-
-
-
-
-   
-
-
 
 
 
