@@ -71,6 +71,11 @@ public class Jwt
         try
         {
 
+
+            // Comprobación
+            if (string.IsNullOrWhiteSpace(token))
+                return (false, string.Empty, 0, 0, 0);
+
             // Configurar la clave secreta
             var key = Encoding.ASCII.GetBytes(JwtKey);
 

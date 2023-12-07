@@ -8,7 +8,7 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Crear nueva cuenta (Cuenta de LIN).
+    /// Crear nueva cuenta.
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta</param>
     [HttpPost("create")]
@@ -17,7 +17,10 @@ public class AccountController : ControllerBase
 
         // Comprobaciones
         if (modelo == null || modelo.Identity == null || modelo.Contraseña.Length < 4 || modelo.Nombre.Length <= 0 || modelo.Identity.Unique.Length <= 0)
-            return new(Responses.InvalidParam);
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son inválidos."
+            };
 
         // Organización del modelo
         modelo = Account.Process(modelo);
@@ -27,7 +30,10 @@ public class AccountController : ControllerBase
 
         // Evaluación
         if (response.Response != Responses.Success)
-            return new(response.Response);
+            return new(response.Response)
+            {
+                Message = "Hubo un error al crear la cuenta."
+            };
 
         // Obtiene el usuario
         var token = Jwt.Generate(response.Model, 0);
@@ -38,7 +44,7 @@ public class AccountController : ControllerBase
             LastID = response.Model.Identity.Id,
             Response = Responses.Success,
             Token = token,
-            Message = "Success"
+            Message = "Cuenta creada satisfactoriamente."
         };
 
     }
@@ -55,8 +61,11 @@ public class AccountController : ControllerBase
     {
 
         // Id es invalido.
-        if (id <= 0)
-            return new(Responses.InvalidParam);
+        if (id <= 0 || string.IsNullOrWhiteSpace(token))
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son inválidos."
+            };
 
         // Información del token.
         var (isValid, _, user, orgId, _) = Jwt.Validate(token);
@@ -104,8 +113,11 @@ public class AccountController : ControllerBase
     {
 
         // Usuario es invalido.
-        if (string.IsNullOrWhiteSpace(user))
-            return new(Responses.InvalidParam);
+        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(token))
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son inválidos."
+            };
 
         // Información del token.
         var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
@@ -153,8 +165,11 @@ public class AccountController : ControllerBase
     {
 
         // Comprobación
-        if (pattern.Trim().Length <= 0)
-            return new(Responses.InvalidParam);
+        if (pattern.Trim().Length <= 0 || string.IsNullOrWhiteSpace(pattern) || string.IsNullOrWhiteSpace(token))
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son inválidos."
+            };
 
         // Info del token
         var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
@@ -190,6 +205,14 @@ public class AccountController : ControllerBase
     [HttpPost("findAll")]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids, [FromHeader] string token)
     {
+
+        // Comprobación
+        if (string.IsNullOrWhiteSpace(token))
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son inválidos."
+            };
+
 
         // Información del token.
         var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
@@ -247,7 +270,7 @@ public class AccountController : ControllerBase
 
 
 
-   
+
 
     /// <summary>
     /// (ADMIN) encuentra diez (10) usuarios que coincidan con el patron
@@ -258,7 +281,7 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        var (isValid, _, id, _, _) = Jwt.Validate(token);
+        var (isValid, _, _, _, _) = Jwt.Validate(token);
 
 
         if (!isValid)
