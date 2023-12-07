@@ -63,44 +63,49 @@ public class Members
             try
             {
 
-                // Obtiene la organización
-                var org = await (from U in context.DataBase.Organizations
-                                 where U.ID == orgID
-                                 select U).FirstOrDefaultAsync();
+                // Obtiene la organización.
+                OrganizationModel? organization = await (from org in context.DataBase.Organizations
+                                                        where org.ID == orgID
+                                                        select org).FirstOrDefaultAsync();
 
-                // No existe la organización
-                if (org == null)
+                // No existe la organización.
+                if (organization == null)
                 {
                     transaction.Rollback();
                     return new(Responses.NotRows);
                 }
 
-                // Modelo de acceso
+                // Modelo de acceso.
                 data.OrganizationAccess = new()
                 {
                     Member = data,
                     Rol = rol,
-                    Organization = org
+                    Organization = organization
                 };
 
-                var res = await context.DataBase.Accounts.AddAsync(data);
+
+                // Guardar la cuenta.
+                await context.DataBase.Accounts.AddAsync(data);
                 context.DataBase.SaveChanges();
 
+                // Miembro del directorio.
                 var memberOnDirectory = new DirectoryMember
                 {
                     Account = data,
                     Directory = new()
                     {
-                        ID = org.DirectoryId
+                        ID = organization.DirectoryId
                     }
                 };
-                context.DataBase.Attach(memberOnDirectory.Directory);
 
+                // Guardar el miembro en el directorio.
+                context.DataBase.Attach(memberOnDirectory.Directory);
                 context.DataBase.DirectoryMembers.Add(memberOnDirectory);
 
+                // Guardar cambios.
                 context.DataBase.SaveChanges();
 
-
+                // Enviar la transacción.
                 transaction.Commit();
 
                 return new(Responses.Success, data);
@@ -145,7 +150,6 @@ public class Members
                               Type = O.Member.Identity.Type,
                               Unique = O.Member.Identity.Unique
                           },
-
                           OrganizationAccess = new()
                           {
                               ID = O.Member.OrganizationAccess == null ? 0 : O.Member.OrganizationAccess.ID,
