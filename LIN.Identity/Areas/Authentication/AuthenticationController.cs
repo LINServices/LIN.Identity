@@ -19,8 +19,12 @@ public class AuthenticationController : ControllerBase
     {
 
         // Validación de parámetros.
-        if (!user.Any() || !password.Any() || !application.Any())
-            return new(Responses.InvalidParam);
+        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(application))
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son invalido."
+            };
+
 
         // Obtiene el usuario.
         var response = await Data.Accounts.Read(user, new()
