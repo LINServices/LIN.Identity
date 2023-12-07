@@ -100,7 +100,7 @@ public class MemberController : ControllerBase
 
 
         // ID de la organización
-        var org = userContext.Model.OrganizationAccess.Organization.ID;
+        var org = userContext.Model.OrganizationAccess.OrganizationId;
 
 
         // Conexión
