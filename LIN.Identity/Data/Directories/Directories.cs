@@ -5,6 +5,14 @@ public class Directories
 {
 
 
+    #region Abstracciones
+
+
+
+    /// <summary>
+    /// Obtener un directorio.
+    /// </summary>
+    /// <param name="id">Id del directorio.</param>
     public static async Task<ReadOneResponse<DirectoryModel>> Read(int id)
     {
 
@@ -19,7 +27,15 @@ public class Directories
 
 
 
+    #endregion
 
+
+
+    /// <summary>
+    /// Obtener un directorio.
+    /// </summary>
+    /// <param name="id">Id del directorio.</param>
+    /// <param name="context">Contexto de conexión.</param>
     public static async Task<ReadOneResponse<DirectoryModel>> Read(int id, Conexión context)
     {
 
@@ -27,6 +43,7 @@ public class Directories
         try
         {
 
+            // Consulta.
             var query = Queries.Accounts.GetDirectory(id, context);
 
             // Obtiene el usuario
@@ -38,7 +55,7 @@ public class Directories
 
             return new(Responses.Success, result);
         }
-        catch
+        catch (Exception)
         {
         }
 
