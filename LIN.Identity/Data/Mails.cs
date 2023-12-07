@@ -101,7 +101,7 @@ public class Mails
 
 
     /// <summary>
-    /// Crea un nuevo email
+    /// Crea un nuevo mail.
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
@@ -152,9 +152,8 @@ public class Mails
 
             return new(Responses.Success, emails);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Notificar a LIN Error Logger.
         }
 
         return new();
@@ -181,15 +180,12 @@ public class Mails
 
             // Email no existe
             if (email == null)
-            {
                 return new(Responses.NotRows);
-            }
 
             return new(Responses.Success, email);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _ = Logger.Log(ex, 1);
         }
 
         return new();
@@ -240,33 +236,36 @@ public class Mails
         {
             try
             {
-                // Query
-                var emails = await (from E in context.DataBase.Emails
-                                    where E.UserID == id && E.Status == EmailStatus.Verified
-                                    select E).ToListAsync();
 
+                // Consulta.
+                var mails = await (from E in context.DataBase.Emails
+                                   where E.UserID == id && E.Status == EmailStatus.Verified
+                                   where E.ID == id || E.IsDefault
+                                   select E).ToListAsync();
 
-                var actualDefault = emails.Where(T => T.IsDefault).FirstOrDefault();
-                if (actualDefault != null)
-                {
-                    actualDefault.IsDefault = false;
-                }
+                // Obtiene los emails default y los establece normal.
+                foreach (var item in mails.Where(t => t.IsDefault))
+                    item.IsDefault = false;
 
-                var setted = emails.Where(T => T.ID == emailID && T.Status == EmailStatus.Verified).FirstOrDefault();
+                // Elemento actual.
+                var element = mails.Where(T => T.ID == emailID && T.Status == EmailStatus.Verified).FirstOrDefault();
 
-                if (setted == null)
+                // No existe.
+                if (element == null)
                 {
                     transaction.Rollback();
                     return new(Responses.NotRows);
                 }
 
-                setted.IsDefault = true;
+                // Establece como default.
+                element.IsDefault = true;
+
                 context.DataBase.SaveChanges();
                 transaction.Commit();
 
                 return new(Responses.Success);
             }
-            catch
+            catch (Exception)
             {
                 transaction.Rollback();
             }
@@ -306,9 +305,8 @@ public class Mails
 
             return new(Responses.Success);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _ = Logger.Log(ex, 1);
         }
 
         return new();
