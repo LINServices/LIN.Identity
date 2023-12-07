@@ -30,6 +30,12 @@ public class Context : DbContext
 
 
     /// <summary>
+    /// Directorios.
+    /// </summary>
+    public DbSet<DirectoryMember> DirectoryMembers { get; set; }
+
+
+    /// <summary>
     /// Accesos a organizaciones.
     /// </summary>
     public DbSet<OrganizationAccessModel> OrganizationAccess { get; set; }
@@ -170,6 +176,7 @@ public class Context : DbContext
         modelBuilder.Entity<ApplicationModel>().ToTable("APPLICATIONS");
         modelBuilder.Entity<EmailModel>().ToTable("EMAILS");
         modelBuilder.Entity<DirectoryModel>().ToTable("DIRECTORIES");
+        modelBuilder.Entity<DirectoryMember>().ToTable("DIRECTORY_MEMBERS");
 
     }
 

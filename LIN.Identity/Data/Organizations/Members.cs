@@ -86,6 +86,21 @@ public class Members
                 var res = await context.DataBase.Accounts.AddAsync(data);
                 context.DataBase.SaveChanges();
 
+                var memberOnDirectory = new DirectoryMember
+                {
+                    Account = data,
+                    Directory = new()
+                    {
+                        ID = org.DirectoryId
+                    }
+                };
+                context.DataBase.Attach(memberOnDirectory.Directory);
+
+                context.DataBase.DirectoryMembers.Add(memberOnDirectory);
+
+                context.DataBase.SaveChanges();
+
+
                 transaction.Commit();
 
                 return new(Responses.Success, data);

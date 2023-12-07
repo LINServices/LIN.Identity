@@ -1,20 +1,15 @@
 ﻿namespace LIN.Identity.Services.Login;
 
 
-public class LoginNormal : LoginService
+/// <summary>
+/// Nuevo login
+/// </summary>
+/// <param name="account">Datos de la cuenta</param>
+/// <param name="application">Llave</param>
+/// <param name="password">Contraseña</param>
+/// <param name="loginType">Tipo de inicio</param>
+public class LoginNormal(AccountModel? account, string? application, string password, LoginTypes loginType = LoginTypes.Credentials) : LoginService(account, application, password, loginType)
 {
-
-
-    /// <summary>
-    /// Nuevo login
-    /// </summary>
-    /// <param name="account">Datos de la cuenta</param>
-    /// <param name="application">Llave</param>
-    /// <param name="password">Contraseña</param>
-    /// <param name="loginType">Tipo de inicio</param>
-    public LoginNormal(AccountModel? account, string? application, string password, LoginTypes loginType = LoginTypes.Credentials) : base(account, application, password, loginType)
-    {
-    }
 
 
 

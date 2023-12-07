@@ -141,7 +141,7 @@ public class Accounts
                           where directory.ID == id
                           select directory;
 
-       
+
 
         // Armar el modelo
         accounts = BuildModel(directories);
@@ -182,20 +182,22 @@ public class Accounts
                        ? account.Nombre
                        : "Usuario privado",
                    Rol = account.Rol,
+                   DirectoryMembers = new(),
+                   IdentityId = account.Identity.Id,
                    Insignia = account.Insignia,
                    Estado = account.Estado,
-                  Identity = new()
-                  {
-                      Id = account.Identity.Id,
-                      Unique = account.Identity.Unique,
-                      Type = account.Identity.Type,
-                  },
+                   Identity = new()
+                   {
+                       Id = account.Identity.Id,
+                       Unique = account.Identity.Unique,
+                       Type = account.Identity.Type,
+                   },
                    Contraseña = filters.SensibleInfo ? account.Contraseña : "",
                    Visibilidad = account.Visibilidad,
                    Birthday = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
                        ? account.Birthday
                        : default,
-                 
+
                    Creación = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
                        ? account.Creación
                        : default,
@@ -245,16 +247,16 @@ public class Accounts
         return from d in query
                select new DirectoryModel
                {
-                  Creación = d.Creación,
-                  ID = d.ID,
-                  Identity = new()
-                  {
-                      Id = d.Identity.Id,
-                      Type = d.Identity.Type,
-                      Unique = d.Identity.Unique
-                  },
-                  IdentityId = d.Identity.Id,
-                  Nombre = d.Nombre
+                   Creación = d.Creación,
+                   ID = d.ID,
+                   Identity = new()
+                   {
+                       Id = d.Identity.Id,
+                       Type = d.Identity.Type,
+                       Unique = d.Identity.Unique
+                   },
+                   IdentityId = d.Identity.Id,
+                   Nombre = d.Nombre
                };
     }
 
