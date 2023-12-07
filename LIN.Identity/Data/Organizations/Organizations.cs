@@ -83,11 +83,11 @@ public class Organizations
                     };
 
                     accounts.Add(accountModel);
-context.DataBase.Accounts.Add(accountModel);
+                    context.DataBase.Accounts.Add(accountModel);
                 }
 
 
-                
+
                 context.DataBase.SaveChanges();
 
 
@@ -116,7 +116,7 @@ context.DataBase.Accounts.Add(accountModel);
 
                 org.Members = [];
 
-                foreach(var x in accounts)
+                foreach (var x in accounts)
                 {
                     org.Members.Add(new()
                     {
@@ -135,7 +135,7 @@ context.DataBase.Accounts.Add(accountModel);
                 context.DataBase.SaveChanges();
 
 
-                foreach (var x in  org.Members)
+                foreach (var x in org.Members)
                 {
                     org.Directory.Members.Add(new()
                     {
