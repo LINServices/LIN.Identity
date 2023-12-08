@@ -51,6 +51,7 @@ public class Organizations
     public static async Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data, Conexión context)
     {
 
+        // Modelo.
         data.ID = 0;
 
         // Ejecución
@@ -59,9 +60,10 @@ public class Organizations
             try
             {
 
+                // Lista de cuentas.
                 List<AccountModel> accounts = [];
 
-                // Crear cuentas
+                // Enumerar las cuentas actuales.
                 foreach (var account in data.Members.Select(t => t.Member))
                 {
                     AccountModel accountModel = new()
@@ -86,18 +88,17 @@ public class Organizations
                     context.DataBase.Accounts.Add(accountModel);
                 }
 
-
-
+                // Guardar cambios.
                 context.DataBase.SaveChanges();
 
-
-
+                // Modelo la organización.
                 OrganizationModel org = new()
                 {
+                    ID = 0,
                     Domain = data.Domain,
                     Name = data.Name,
                     IsPublic = data.IsPublic,
-                    ID = 0,
+                    Members = [],
                     Directory = new()
                     {
                         Creación = DateTime.Now,
@@ -112,40 +113,34 @@ public class Organizations
                     }
                 };
 
-
-
-                org.Members = [];
-
-                foreach (var x in accounts)
+                // Agregar miembros.
+                foreach (var account in accounts)
                 {
+                    // Miembros de la organización.
                     org.Members.Add(new()
                     {
-                        Member = x,
+                        Member = account,
                         Organization = org,
                         Rol = OrgRoles.SuperManager
                     });
-                }
 
-
-
-                var res = await context.DataBase.Organizations.AddAsync(org);
-
-
-                context.DataBase.SaveChanges();
-
-
-                foreach (var x in org.Members)
-                {
+                    // Miembros del directorio.
                     org.Directory.Members.Add(new()
                     {
-                        Account = x.Member,
-                        Directory = org.Directory
+                        Account = account,
+                        Directory = org.Directory,
+                        Rol = DirectoryRoles.Administrator
                     });
                 }
+
+
+                // Agregar el modelo.
+                await context.DataBase.Organizations.AddAsync(org);
+
+                // Guardar en la BD.
                 context.DataBase.SaveChanges();
 
-
-
+                // Commit cambios.
                 transaction.Commit();
 
                 return new(Responses.Success, data);
@@ -193,10 +188,8 @@ public class Organizations
 
             // Email no existe
             if (org == null)
-            {
                 return new(Responses.NotRows);
-            }
-
+            
             return new(Responses.Success, org);
         }
         catch

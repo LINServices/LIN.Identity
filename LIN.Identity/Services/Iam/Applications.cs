@@ -25,7 +25,7 @@ public static class Applications
                 Model = IamLevels.NotAccess
             };
 
-        // Si es admin del recurso / creador
+        // Si es admin del recurso / creador.
         if (resource.Model.AccountID == account)
             return new()
             {
@@ -33,32 +33,43 @@ public static class Applications
                 Model = IamLevels.Privileged
             };
 
-        // Si es un recurso publico.
-        //if (resource.Model.AllowAnyAccount)
-        //    return new()
-        //    {
-        //        Response = Responses.Success,
-        //        Model = IamLevels.Visualizer
-        //    };
 
-        //// Validar acceso al recurso privado.
-        //var isAllowed = await Data.Applications.IsAllow(app, account);
+        // App publica.
+        if (resource.Model.DirectoryId <= 0)
+        {
+            return new()
+            {
+                Response = Responses.Success,
+                Model = IamLevels.Visualizer
+            };
+        }
 
-        //// No es permitido.
-        //if (!isAllowed.Model)
-        //    return new()
-        //    {
-        //        Response = Responses.Success,
-        //        Model = IamLevels.NotAccess
-        //    };
 
-        // Acceso visualizador.
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+
+        var directory = (from m in context.DataBase.DirectoryMembers
+                where m.AccountId == account
+                && m.DirectoryId == resource.Model.DirectoryId
+                select m).FirstOrDefault();
+
+
+        if (directory == null)
+        {
+            return new()
+            {
+                Response = Responses.NotRows,
+                Model = IamLevels.NotAccess,
+                Message = "No tienes acceso a este recurso/app."
+            };
+        }
+
+
         return new()
         {
             Response = Responses.Success,
-            Model = IamLevels.Visualizer
+            Model = (directory.Rol == DirectoryRoles.Administrator) ? IamLevels.Privileged : IamLevels.Visualizer
         };
-
 
     }
 
