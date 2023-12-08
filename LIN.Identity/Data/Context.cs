@@ -113,6 +113,28 @@ public class Context : DbContext
            .HasForeignKey(p => p.DirectoryId);
 
 
+        modelBuilder.Entity<ApplicationModel>()
+          .HasOne(p => p.Directory)
+          .WithMany()
+          .HasForeignKey(p => p.DirectoryId);
+
+
+        modelBuilder.Entity<LoginLogModel>()
+       .HasOne(p => p.Application)
+       .WithMany()
+       .HasForeignKey(p => p.ApplicationID)
+       .OnDelete(DeleteBehavior.NoAction);
+       ;
+
+
+        modelBuilder.Entity<LoginLogModel>()
+ .HasOne(p => p.Account)
+ .WithMany()
+ .HasForeignKey(p => p.AccountID);
+
+
+
+
         modelBuilder.Entity<OrganizationAccessModel>()
             .HasOne(oa => oa.Organization)
             .WithMany(o => o.Members)
