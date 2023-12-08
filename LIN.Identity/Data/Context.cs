@@ -30,7 +30,7 @@ public class Context : DbContext
 
 
     /// <summary>
-    /// Directorios.
+    /// Integrantes de Directorios.
     /// </summary>
     public DbSet<DirectoryMember> DirectoryMembers { get; set; }
 
@@ -81,7 +81,6 @@ public class Context : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
-
         // Indices y identidad.
         modelBuilder.Entity<IdentityModel>()
            .HasIndex(e => e.Unique)
@@ -105,15 +104,7 @@ public class Context : DbContext
         // Indices y identidad.
         modelBuilder.Entity<EmailModel>()
            .HasIndex(e => e.Email)
-        .IsUnique();
-
-
-
-
-
-
-
-
+           .IsUnique();
 
 
         modelBuilder.Entity<DirectoryMember>()
@@ -122,22 +113,18 @@ public class Context : DbContext
            .HasForeignKey(p => p.DirectoryId);
 
 
-
-
-
-
         modelBuilder.Entity<OrganizationAccessModel>()
-    .HasOne(oa => oa.Organization)
-    .WithMany(o => o.Members)
-    .HasForeignKey(oa => oa.OrganizationId)
-    .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(oa => oa.Organization)
+            .WithMany(o => o.Members)
+            .HasForeignKey(oa => oa.OrganizationId)
+            .OnDelete(DeleteBehavior.Restrict);
 
 
         modelBuilder.Entity<DirectoryMember>()
-  .HasOne(dm => dm.Directory)
-  .WithMany(d => d.Members)
-  .HasForeignKey(dm => dm.DirectoryId)
-  .OnDelete(DeleteBehavior.Restrict); // You can a
+          .HasOne(dm => dm.Directory)
+          .WithMany(d => d.Members)
+          .HasForeignKey(dm => dm.DirectoryId)
+          .OnDelete(DeleteBehavior.Restrict);
 
 
         modelBuilder.Entity<DirectoryMember>()
@@ -147,25 +134,25 @@ public class Context : DbContext
           .OnDelete(DeleteBehavior.Restrict); ;
 
 
-
-
         // Configure OrganizationAccessModel
         modelBuilder.Entity<OrganizationAccessModel>()
             .HasOne(o => o.Member)
-            .WithOne(a => a.OrganizationAccess)  // Assuming OrganizationAccess is the navigation property in AccountModel
+            .WithOne(a => a.OrganizationAccess)
             .HasForeignKey<OrganizationAccessModel>(o => o.MemberId)
             .IsRequired();
-
-
-
-
-
 
         modelBuilder.Entity<DirectoryMember>()
          .HasKey(t => new
          {
              t.AccountId,
              t.DirectoryId
+         });
+
+        modelBuilder.Entity<OrganizationAccessModel>()
+         .HasKey(t => new
+         {
+             t.MemberId,
+             t.OrganizationId
          });
 
 
@@ -177,6 +164,8 @@ public class Context : DbContext
         modelBuilder.Entity<EmailModel>().ToTable("EMAILS");
         modelBuilder.Entity<DirectoryModel>().ToTable("DIRECTORIES");
         modelBuilder.Entity<DirectoryMember>().ToTable("DIRECTORY_MEMBERS");
+        modelBuilder.Entity<OrganizationAccessModel>().ToTable("ORGANIZATIONS_MEMBERS");
+        modelBuilder.Entity<LoginLogModel>().ToTable("LOGS");
 
     }
 

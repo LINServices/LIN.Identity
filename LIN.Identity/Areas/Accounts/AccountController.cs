@@ -7,9 +7,9 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Crear nueva cuenta.
+    /// Crear una cuenta.
     /// </summary>
-    /// <param name="modelo">Modelo de la cuenta</param>
+    /// <param name="modelo">Modelo de la cuenta.</param>
     [HttpPost("create")]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel? modelo)
     {
@@ -50,11 +50,11 @@ public class AccountController : ControllerBase
 
 
 
-    /// <summary>
-    /// Obtiene la información de usuario.
-    /// </summary>
-    /// <param name="id">ID del usuario</param>
-    /// <param name="token">Token de acceso</param>
+   /// <summary>
+   /// Obtener una cuenta.
+   /// </summary>
+   /// <param name="id">Id de la cuenta.</param>
+   /// <param name="token">Token de acceso.</param>
     [HttpGet("read/id")]
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id, [FromHeader] string token)
     {
@@ -103,10 +103,10 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene la información de usuario.
+    /// Obtener una cuenta.
     /// </summary>
-    /// <param name="user">Usuario único</param>
-    /// <param name="token">Token de acceso</param>
+    /// <param name="user">Identidad.</param>
+    /// <param name="token">Token de acceso.</param>
     [HttpGet("read/user")]
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
     {
@@ -266,7 +266,6 @@ public class AccountController : ControllerBase
         var response = await Data.Accounts.Delete(userId);
         return response;
     }
-
 
 
 

@@ -53,7 +53,6 @@ public class LoginOnOrg : LoginService
         }
 
         OrganizationAccess.Rol = Account.OrganizationAccess!.Rol;
-        OrganizationAccess.ID = Account.OrganizationAccess.ID;
         OrganizationAccess.Organization = orgResponse.Model;
 
         return true;

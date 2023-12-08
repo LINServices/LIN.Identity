@@ -1,12 +1,11 @@
 using LIN.Identity.Data;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.OpenApi.Models;
-using System.ComponentModel;
 
 
+try
 {
 
-    LIN.Access.Logger.Logger.AppName = "LIN.IDENTITY.V3";
+    // Nombre de la app en Error Logger.
+    Logger.AppName = "LIN.IDENTITY.V3";
 
     var builder = WebApplication.CreateBuilder(args);
 
@@ -73,9 +72,17 @@ using System.ComponentModel;
     EmailWorker.StarService();
 
 
+
+    app.MapGet("/", () => "Hello World!");
+
     app.UseAuthorization();
 
     app.MapControllers();
 
     app.Run();
+}
+catch (Exception ex)
+{
+    Logger.AppName = "LIN.Identity.V3";
+    await Logger.Log(ex, 3);
 }
