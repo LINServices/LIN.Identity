@@ -12,6 +12,8 @@ public class Account
     public FindOn FindOn { get; set; } = FindOn.AllAccount;
     public IncludeOrgLevel OrgLevel { get; set; } = IncludeOrgLevel.Basic;
 
+
+
 }
 
 public enum IncludeOrg

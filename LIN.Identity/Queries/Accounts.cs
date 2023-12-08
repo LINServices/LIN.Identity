@@ -174,55 +174,87 @@ public class Accounts
         }
         catch { }
 
-        return from account in query
-               select new AccountModel
-               {
-                   ID = account.ID,
-                   Nombre = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
-                       ? account.Nombre
-                       : "Usuario privado",
-                   Rol = account.Rol,
-                   DirectoryMembers = new(),
-                   IdentityId = account.Identity.Id,
-                   Insignia = account.Insignia,
-                   Estado = account.Estado,
-                   Identity = new()
-                   {
-                       Id = account.Identity.Id,
-                       Unique = account.Identity.Unique,
-                       Type = account.Identity.Type,
-                   },
-                   Contraseña = filters.SensibleInfo ? account.Contraseña : "",
-                   Visibilidad = account.Visibilidad,
-                   Birthday = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
-                       ? account.Birthday
-                       : default,
+        var queryFinal = from account in query
+                         select new AccountModel
+                         {
+                             ID = account.ID,
+                             Rol = account.Rol,
+                             DirectoryMembers = null!,
+                             IdentityId = account.Identity.Id,
+                             Insignia = account.Insignia,
+                             Estado = account.Estado,
+                             Contraseña = filters.SensibleInfo ? account.Contraseña : "",
+                             Visibilidad = account.Visibilidad,
+                             Identity = new()
+                             {
+                                 Id = account.Identity.Id,
+                                 Unique = account.Identity.Unique,
+                                 Type = account.Identity.Type,
+                             },
 
-                   Creación = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
-                       ? account.Creación
-                       : default,
-                   Perfil = account.Visibilidad == AccountVisibility.Visible || account.OrganizationAccess != null && account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser || filters.IsAdmin
-                       ? account.Perfil
-                       : profile,
-                   OrganizationAccess = account.OrganizationAccess != null && filters.IncludeOrg != FilterModels.IncludeOrg.None && (account.Visibilidad == AccountVisibility.Visible && filters.IncludeOrg == FilterModels.IncludeOrg.Include
-                                                                                                                                     || account.OrganizationAccess.Organization.ID == filters.ContextOrg || account.ID == filters.ContextUser
-                                                                                                                                     || filters.IsAdmin)
-                       ? new OrganizationAccessModel()
-                       {
-                           ID = account.ID,
-                           Rol = account.OrganizationAccess.Rol,
-                           Organization = filters.OrgLevel == FilterModels.IncludeOrgLevel.Advance ? new()
-                           {
-                               ID = account.OrganizationAccess.Organization.ID,
-                               Domain = !account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID ? ""
-                                   : account.OrganizationAccess.Organization.Domain,
-                               Name = !account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID
-                                   ? "Organización privada" : account.OrganizationAccess.Organization.Name
-                           } : new(),
-                           Member = null!,
-                       }
-                       : null
-               };
+                             // Nombre.
+                             Nombre = account.Visibilidad == AccountVisibility.Visible
+                                      || (account.OrganizationAccess != null
+                                      && account.OrganizationAccess.Organization.ID == filters.ContextOrg)
+                                      || account.ID == filters.ContextUser
+                                      || filters.IsAdmin
+                                 ? account.Nombre
+                                 : "Usuario privado",
+
+                             // Cumpleaños.
+                             Birthday = account.Visibilidad == AccountVisibility.Visible
+                                        || (account.OrganizationAccess != null
+                                        && account.OrganizationAccess.Organization.ID == filters.ContextOrg)
+                                        || account.ID == filters.ContextUser
+                                        || filters.IsAdmin
+                                 ? account.Birthday
+                                 : default,
+
+                             // Creación.
+                             Creación = account.Visibilidad == AccountVisibility.Visible
+                                        || (account.OrganizationAccess != null
+                                        && account.OrganizationAccess.Organization.ID == filters.ContextOrg)
+                                        || account.ID == filters.ContextUser
+                                        || filters.IsAdmin
+                                 ? account.Creación
+                                 : default,
+
+                             // Perfil.
+                             Perfil = account.Visibilidad == AccountVisibility.Visible
+                                        || (account.OrganizationAccess != null
+                                        && account.OrganizationAccess.Organization.ID == filters.ContextOrg)
+                                        || account.ID == filters.ContextUser
+                                        || filters.IsAdmin
+                                 ? account.Perfil
+                                 : profile,
+
+                             // Organización.
+                             OrganizationAccess = account.OrganizationAccess != null
+                                                  && filters.IncludeOrg != FilterModels.IncludeOrg.None
+                                                  && (account.Visibilidad == AccountVisibility.Visible
+                                                  && filters.IncludeOrg == FilterModels.IncludeOrg.Include
+                                                  || account.OrganizationAccess.Organization.ID == filters.ContextOrg
+                                                  || account.ID == filters.ContextUser
+                                                  || filters.IsAdmin)
+                                 ?
+                                 new OrganizationAccessModel()
+                                 {
+                                     Rol = account.OrganizationAccess.Rol,
+                                     Organization = filters.OrgLevel == FilterModels.IncludeOrgLevel.Advance ? new()
+                                     {
+                                         ID = account.OrganizationAccess.Organization.ID,
+                                         Domain = !account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID ? ""
+                                             : account.OrganizationAccess.Organization.Domain,
+                                         Name = !account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID
+                                             ? "Organización privada" : account.OrganizationAccess.Organization.Name
+                                     } : new(),
+                                     Member = null!,
+                                 }
+                                 : null
+                         };
+
+        return queryFinal;
+
     }
 
 
@@ -234,15 +266,6 @@ public class Accounts
     /// <param name="filters">Filtros</param>
     private static IQueryable<DirectoryModel> BuildModel(IQueryable<DirectoryModel> query)
     {
-
-        byte[] profile =
-        {
-        };
-        try
-        {
-            profile = File.ReadAllBytes("wwwroot/user.png");
-        }
-        catch { }
 
         return from d in query
                select new DirectoryModel
@@ -259,10 +282,6 @@ public class Accounts
                    Nombre = d.Nombre
                };
     }
-
-
-
-
 
 
 }

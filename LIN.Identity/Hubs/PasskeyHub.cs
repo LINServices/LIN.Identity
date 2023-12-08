@@ -6,14 +6,14 @@ public class PassKeyHub : Hub
 
 
     /// <summary>
-    /// Lista de intentos Passkey
+    /// Lista de intentos Passkey.
     /// </summary>
     public readonly static Dictionary<string, List<PassKeyModel>> Attempts = new();
 
 
 
     /// <summary>
-    /// Nuevo intento passkey
+    /// Nuevo intento passkey.
     /// </summary>
     /// <param name="attempt">Intento passkey</param>
     public async Task JoinIntent(PassKeyModel attempt)
@@ -44,10 +44,8 @@ public class PassKeyHub : Hub
 
         // Agrega el modelo
         if (!Attempts.ContainsKey(attempt.User.ToLower()))
-            Attempts.Add(attempt.User.ToLower(), new()
-            {
-                attempt
-            });
+            Attempts.Add(attempt.User.ToLower(), [attempt]);
+
         else
             Attempts[attempt.User.ToLower()].Add(attempt);
 
@@ -101,7 +99,7 @@ public class PassKeyHub : Hub
 
 
     /// <summary>
-    /// Un dispositivo envia el PassKey intent
+    /// Un dispositivo envía el PassKey intent
     /// </summary>
     public async Task JoinAdmin(string usuario)
     {

@@ -259,8 +259,6 @@ internal static partial class Accounts
 
 
 
-
-
     /// <summary>
     /// Obtiene la información básica de un usuario
     /// </summary>
@@ -352,5 +350,6 @@ internal static partial class Accounts
 
         return new();
     }
+
 
 }

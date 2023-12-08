@@ -152,7 +152,6 @@ public class Members
                           },
                           OrganizationAccess = new()
                           {
-                              ID = O.Member.OrganizationAccess == null ? 0 : O.Member.OrganizationAccess.ID,
                               Rol = O.Member.OrganizationAccess == null ? OrgRoles.Undefine : O.Member.OrganizationAccess.Rol
                           }
                       };

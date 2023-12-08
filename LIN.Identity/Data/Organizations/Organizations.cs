@@ -120,7 +120,6 @@ public class Organizations
                 {
                     org.Members.Add(new()
                     {
-                        ID = 0,
                         Member = x,
                         Organization = org,
                         Rol = OrgRoles.SuperManager
