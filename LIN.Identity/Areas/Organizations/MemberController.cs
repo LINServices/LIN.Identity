@@ -1,5 +1,3 @@
-using LIN.Identity.Validations;
-
 namespace LIN.Identity.Areas.Organizations;
 
 
@@ -32,7 +30,6 @@ public class MemberController : ControllerBase
 
         // Organización del modelo
         modelo = Account.Process(modelo);
-
 
         // Establece la contraseña default
         var password = $"ChangePwd@{modelo.Creación:dd.MM.yyyy}";
