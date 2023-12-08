@@ -4,4 +4,5 @@
 [Route("security")]
 public class Security : ControllerBase
 {
+
 }
