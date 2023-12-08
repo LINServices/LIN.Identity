@@ -6,10 +6,10 @@ public class DirectoryController : ControllerBase
 {
 
     /// <summary>
-    /// Obtiene la información de usuario.
+    /// Obtener un directorio.
     /// </summary>
-    /// <param name="id">ID del usuario</param>
-    /// <param name="token">Token de acceso</param>
+    /// <param name="id">ID del directorio.</param>
+    /// <param name="token">Token de acceso.</param>
     [HttpGet("read/id")]
     public async Task<HttpReadOneResponse<DirectoryModel>> Read([FromQuery] int id, [FromHeader] string token)
     {
