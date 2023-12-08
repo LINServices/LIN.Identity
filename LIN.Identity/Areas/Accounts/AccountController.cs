@@ -242,35 +242,6 @@ public class AccountController : ControllerBase
 
 
     /// <summary>
-    /// Elimina una cuenta
-    /// </summary>
-    /// <param name="token">Token de acceso</param>
-    [HttpDelete("delete")]
-    public async Task<HttpResponseBase> Delete([FromHeader] string token)
-    {
-
-        // Información del token.
-        var (isValid, _, userId, _, _) = Jwt.Validate(token);
-
-        // Si es invalido.
-        if (!isValid)
-            return new ResponseBase
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido"
-            };
-
-        if (userId <= 0)
-            return new(Responses.InvalidParam);
-
-        var response = await Data.Accounts.Delete(userId);
-        return response;
-    }
-
-
-
-
-    /// <summary>
     /// (ADMIN) encuentra diez (10) usuarios que coincidan con el patron
     /// </summary>
     /// <param name="pattern"></param>
