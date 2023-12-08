@@ -54,6 +54,9 @@ public static class Applications
                 select m).FirstOrDefault();
 
 
+        context.CloseActions(contextKey);
+
+
         if (directory == null)
         {
             return new()

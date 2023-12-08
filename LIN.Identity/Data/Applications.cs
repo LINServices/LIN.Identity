@@ -39,7 +39,14 @@ public class Applications
 
 
 
+    public static async Task<ReadOneResponse<bool>> AllowTo(int appId, int accountId)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
 
+        var res = await AllowTo(appId, accountId, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
 
 
 
@@ -162,7 +169,7 @@ public class Applications
             // Email no existe
             if (email == null)
                 return new(Responses.NotRows);
-            
+
             // Correcto.
             return new(Responses.Success, email);
         }
@@ -195,7 +202,7 @@ public class Applications
             // Email no existe
             if (email == null)
                 return new(Responses.NotRows);
-            
+
 
             return new(Responses.Success, email);
         }
@@ -231,7 +238,7 @@ public class Applications
 
             return new(Responses.Success, app);
         }
-        catch (Exception) 
+        catch (Exception)
         {
         }
 
@@ -239,5 +246,66 @@ public class Applications
     }
 
 
+
+
+    public static async Task<ReadOneResponse<bool>> AllowTo(int appId, int accountId, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+
+            var application = await (from app in context.DataBase.Applications
+                                     where app.ID == appId
+                                     select new ApplicationModel()
+                                     {
+                                         ID = app.ID,
+                                         DirectoryId = app.Directory.ID
+                                     }).FirstOrDefaultAsync();
+
+            if (application == null)
+            {
+                return new()
+                {
+                    Response = Responses.NotRows
+                };
+            }
+
+
+            if (application.DirectoryId <= 0)
+            {
+                return new()
+                {
+                    Response = Responses.NotFoundDirectory
+                };
+            }
+
+            DirectoryMember member = new()
+            {
+                Account = new()
+                {
+                    ID = accountId,
+                },
+                Directory = new()
+                {
+                    ID = application.DirectoryId,
+                }
+            };
+            context.DataBase.Attach(member.Account);
+            context.DataBase.Attach(member.Directory);
+
+            context.DataBase.DirectoryMembers.Add(member);
+
+            context.DataBase.SaveChanges();
+
+            return new(Responses.Success, true);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
 
 }

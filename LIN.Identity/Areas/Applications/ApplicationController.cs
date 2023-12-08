@@ -74,5 +74,44 @@ public class ApplicationController : ControllerBase
 
 
 
+    /// <summary>
+    /// Crear acceso permitido a una app.
+    /// </summary>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="appId">ID de la aplicación.</param>
+    /// <param name="accountId">ID del integrante.</param>
+    [HttpPut]
+    public async Task<HttpReadOneResponse<bool>> InsertAllow([FromHeader] string token, [FromHeader] int appId, [FromHeader] int accountId)
+    {
+
+        // Información del token.
+        var (isValid, _, userId, _, _) = Jwt.Validate(token);
+
+        // Si el token es invalido.
+        if (!isValid)
+            return new ReadOneResponse<bool>()
+            {
+                Response = Responses.Unauthorized,
+                Message = "El token es invalido."
+            };
+
+        // Respuesta de Iam.
+        var iam = await Services.Iam.Applications.ValidateAccess(userId, appId);
+
+        // Validación de Iam
+        if (iam.Model != IamLevels.Privileged)
+            return new ReadOneResponse<bool>()
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes autorización para modificar este recurso."
+            };
+
+
+        // Enviar la actualización
+        var data = await Data.Applications.AllowTo(appId, accountId);
+
+        return data;
+
+    }
 
 }
