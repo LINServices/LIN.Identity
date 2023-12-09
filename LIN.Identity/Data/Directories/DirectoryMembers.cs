@@ -25,7 +25,25 @@ public class DirectoryMembers
     }
 
 
-    
+
+    /// <summary>
+    /// Obtiene los directorios donde un usuario es integrante.
+    /// </summary>
+    /// <param name="accountId">Id de la cuenta.</param>
+    public static async Task<ReadAllResponse<DirectoryMember>> ReadAll(int accountId)
+    {
+
+        // Obtiene la conexión
+        var (context, connectionKey) = Conexión.GetOneConnection();
+
+        var res = await ReadAll(accountId, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
+
     #endregion
 
 
@@ -57,6 +75,53 @@ public class DirectoryMembers
             {
                 Response = Responses.Success
             };
+
+        }
+        catch (Exception)
+        {
+        }
+
+        return new();
+    }
+
+
+
+    /// <summary>
+    /// Obtiene los directorios donde un usuario es integrante.
+    /// </summary>
+    /// <param name="accountId">Id de la cuenta.</param>
+    /// <param name="context">Contexto de conexión.</param>
+    public static async Task<ReadAllResponse<DirectoryMember>> ReadAll(int accountId, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Directorios.
+            var directories = await (from directory in context.DataBase.DirectoryMembers
+                                     where directory.AccountId == accountId
+                                     select new DirectoryMember
+                                     {
+                                         Rol = directory.Rol,
+                                         DirectoryId = directory.AccountId,
+                                         Directory = new()
+                                         {
+                                             ID = directory.Directory.ID,
+                                             Creación = directory.Directory.Creación,
+                                             Nombre = directory.Directory.Nombre,
+                                             IdentityId = directory.Directory.IdentityId,
+                                             Identity = new()
+                                             {
+                                                 Id = directory.Directory.Identity.Id,
+                                                 Unique = directory.Directory.Identity.Unique,
+                                                 Type = directory.Directory.Identity.Type
+                                             }
+                                         },
+                                         AccountId = accountId
+                                     }).ToListAsync();
+
+            return new(Responses.Success, directories);
 
         }
         catch (Exception)
