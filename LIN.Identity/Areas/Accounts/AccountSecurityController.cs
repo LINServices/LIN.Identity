@@ -86,6 +86,16 @@ public class AccountSecurityController : ControllerBase
                 Message = "La contraseña actual es diferente a la proporcionada."
             };
 
+        // Validar políticas de contraseña.
+        var result = await AccountPassword.ValidatePassword(account, newPassword);
+
+        // Invalido por políticas
+        if (!result)
+            return new(Responses.PoliciesNotComplied)
+            {
+                Message = "Invalidado por no cumplir las políticas del directorio."
+            };
+
         // Encriptar la nueva contraseña.
         var response = await Data.Accounts.Update(account, EncryptClass.Encrypt(newPassword));
 
