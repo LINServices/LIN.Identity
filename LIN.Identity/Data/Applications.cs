@@ -261,7 +261,7 @@ public class Applications
                                      select new ApplicationModel()
                                      {
                                          ID = app.ID,
-                                         DirectoryId = app.Directory.ID
+                                         DirectoryId = app.DirectoryId
                                      }).FirstOrDefaultAsync();
 
             if (application == null)

@@ -304,7 +304,7 @@ public class AccountController : ControllerBase
 
         // Organizar el modelo.
         modelo.Identity.Id = userId;
-        modelo.Perfil = Image.Zip(modelo.Perfil);
+        modelo.Perfil = Image.Zip(modelo.Perfil ?? []);
 
         if (modelo.Identity.Id <= 0 || modelo.Nombre.Any())
             return new(Responses.InvalidParam);
