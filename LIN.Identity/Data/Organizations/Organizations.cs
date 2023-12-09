@@ -110,8 +110,19 @@ public class Organizations
                         },
                         Nombre = data.Directory.Nombre,
                         IdentityId = 0,
+                        Policies =
+                        [
+                            new PolicyModel
+                            {
+                                 Creation = DateTime.Now,
+                                 Id =0,
+                                 Type = PolicyTypes.PasswordLength,
+                                 ValueJson = """ {"length": 8} """
+                            }
+                        ]
                     }
                 };
+
 
                 // Agregar miembros.
                 foreach (var account in accounts)
@@ -189,7 +200,7 @@ public class Organizations
             // Email no existe
             if (org == null)
                 return new(Responses.NotRows);
-            
+
             return new(Responses.Success, org);
         }
         catch

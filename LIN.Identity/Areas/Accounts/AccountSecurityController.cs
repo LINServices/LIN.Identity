@@ -56,7 +56,7 @@ public class AccountSecurityController : ControllerBase
         if (newPassword.Length < 4)
             return new(Responses.InvalidParam)
             {
-                Message = "La nueva contraseña debe de tener mas de 4 dígitos."
+                Message = "La nueva contraseña debe de tener mas de 4 dígitos y cumplir con las políticas asociadas."
             };
 
 
