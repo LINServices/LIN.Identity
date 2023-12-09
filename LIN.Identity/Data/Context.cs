@@ -61,6 +61,12 @@ public class Context : DbContext
     public DbSet<EmailModel> Emails { get; set; }
 
 
+    /// <summary>
+    /// Políticas.
+    /// </summary>
+    public DbSet<PolicyModel> Policies { get; set; }
+
+
 
 
 
@@ -156,6 +162,19 @@ public class Context : DbContext
           .OnDelete(DeleteBehavior.Restrict); ;
 
 
+
+        modelBuilder.Entity<PolicyModel>()
+         .HasOne(p => p.Directory)
+         .WithMany(d => d.Policies)
+         .HasForeignKey(p => p.DirectoryId)
+          .OnDelete(DeleteBehavior.Restrict); 
+
+
+
+
+
+
+
         // Configure OrganizationAccessModel
         modelBuilder.Entity<OrganizationAccessModel>()
             .HasOne(o => o.Member)
@@ -188,6 +207,7 @@ public class Context : DbContext
         modelBuilder.Entity<DirectoryMember>().ToTable("DIRECTORY_MEMBERS");
         modelBuilder.Entity<OrganizationAccessModel>().ToTable("ORGANIZATIONS_MEMBERS");
         modelBuilder.Entity<LoginLogModel>().ToTable("LOGS");
+        modelBuilder.Entity<PolicyModel>().ToTable("POLICIES");
 
     }
 
