@@ -40,7 +40,6 @@ public class EmailWorker
         body = body.Replace("@@Mensaje", "Hemos recibido tu solicitud para agregar una dirección de correo electrónico adicional a tu cuenta. Para completar este proceso, da click en el siguiente botón");
         body = body.Replace("@@ButtonMessage", "Verificar");
 
-
         // Envía el email
         return await SendMail(to, "Verifica el email", body);
 
@@ -101,8 +100,7 @@ public class EmailWorker
                 };
 
 
-
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestData);
+                var json = System.Text.Json.JsonSerializer.Serialize(requestData);
 
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
                 client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
