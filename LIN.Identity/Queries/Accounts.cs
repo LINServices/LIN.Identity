@@ -179,7 +179,6 @@ public class Accounts
                          {
                              ID = account.ID,
                              Rol = account.Rol,
-                             DirectoryMembers = null!,
                              IdentityId = account.Identity.Id,
                              Insignia = account.Insignia,
                              Estado = account.Estado,

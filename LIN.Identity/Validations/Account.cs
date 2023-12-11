@@ -23,7 +23,7 @@ public class Account
                 Type = IdentityTypes.Account,
                 Unique = modelo.Identity.Unique
             },
-            DirectoryMembers = [],
+            
             IdentityId = 0,
             Visibilidad = modelo.Visibilidad,
             Contraseña = modelo.Contraseña = EncryptClass.Encrypt(modelo.Contraseña),

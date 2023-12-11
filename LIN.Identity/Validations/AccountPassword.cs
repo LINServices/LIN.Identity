@@ -18,7 +18,7 @@ public class AccountPassword
 
         // Política.
         var policy = await (from directory in context.DataBase.DirectoryMembers
-                            where directory.AccountId == account
+                            where directory.IdentityId == account
                             join policie in context.DataBase.Policies
                             on directory.DirectoryId equals policie.DirectoryId
                             where policie.Type == PolicyTypes.PasswordLength

@@ -94,7 +94,7 @@ public class Policies
         {
 
             var policies = await (from directory in context.DataBase.DirectoryMembers
-                                  where directory.AccountId == id
+                                  where directory.IdentityId == id
                                   join policie in context.DataBase.Policies
                                   on directory.DirectoryId equals policie.DirectoryId
                                   select policie).ToListAsync();

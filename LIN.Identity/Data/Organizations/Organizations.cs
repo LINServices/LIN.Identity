@@ -80,7 +80,6 @@ public class Organizations
                         Rol = account.Rol,
                         Perfil = account.Perfil,
                         OrganizationAccess = null,
-                        DirectoryMembers = [],
                         IdentityId = 0,
                     };
 
@@ -138,7 +137,7 @@ public class Organizations
                     // Miembros del directorio.
                     org.Directory.Members.Add(new()
                     {
-                        Account = account,
+                        Identity = account.Identity,
                         Directory = org.Directory,
                         Rol = DirectoryRoles.Administrator
                     });
