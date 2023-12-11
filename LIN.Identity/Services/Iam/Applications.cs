@@ -13,6 +13,40 @@ public static class Applications
     public static async Task<ReadOneResponse<IamLevels>> ValidateAccess(int account, int app)
     {
 
+
+        // Conexión.
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+
+        var identity = (from a in context.DataBase.Accounts
+                        where a.ID == account
+                        select a.IdentityId).FirstOrDefault();
+
+
+
+
+
+        List<DirectoryMember> final = new List<DirectoryMember>();
+
+
+
+        await A(identity, final);
+
+
+
+        var mapp = final.Select(t => t.DirectoryId).ToList();
+
+
+        var policies = (from p in context.DataBase.Policies
+                        where mapp.Contains(p.DirectoryId)
+                        select p).Distinct();
+
+        var q = policies.ToQueryString();
+        
+        
+        var ssss = policies.ToList();
+
+
         // Obtiene el recurso.
         var resource = await Data.Applications.Read(app);
 
@@ -23,14 +57,6 @@ public static class Applications
                 Message = "No se encontró el recurso.",
                 Response = Responses.NotRows,
                 Model = IamLevels.NotAccess
-            };
-
-        // Si es admin del recurso / creador.
-        if (resource.Model.AccountID == account)
-            return new()
-            {
-                Response = Responses.Success,
-                Model = IamLevels.Privileged
             };
 
 
@@ -45,34 +71,86 @@ public static class Applications
         }
 
 
-        var (context, contextKey) = Conexión.GetOneConnection();
 
 
-        var directory = (from m in context.DataBase.DirectoryMembers
-                where m.AccountId == account
-                && m.DirectoryId == resource.Model.DirectoryId
-                select m).FirstOrDefault();
+
+
+
+
+
+
+
+
+
+
+
+
+
+        return new()
+        {
+            Response = Responses.NotRows,
+            Model = IamLevels.NotAccess,
+            Message = "TESTING."
+        };
+
+
 
 
         context.CloseActions(contextKey);
 
 
-        if (directory == null)
+        //if (directory == null)
+        //{
+        //    return new()
+        //    {
+        //        Response = Responses.NotRows,
+        //        Model = IamLevels.NotAccess,
+        //        Message = "No tienes acceso a este recurso/app."
+        //    };
+        //}
+
+
+        //return new()
+        //{
+        //    Response = Responses.Success,
+        //    Model = (directory.Rol == DirectoryRoles.Administrator) ? IamLevels.Privileged : IamLevels.Visualizer
+        //};
+
+    }
+
+
+
+    static async Task A(int identidad, List<DirectoryMember> final, Conexión context)
+    {
+
+
+        var x = from DM in context.DataBase.DirectoryMembers
+                where DM.IdentityId == identidad
+                select new DirectoryMember
+                {
+                    DirectoryId = DM.DirectoryId,
+                    Directory = new()
+                    {
+                        ID = DM.Directory.ID,
+                        Identity = new()
+                        {
+                            Id = DM.Directory.Identity.Id
+                        }
+                    }
+                };
+
+
+        if (x.Any())
         {
-            return new()
+            var ss = x.ToList();
+            final.AddRange(ss);
+
+            foreach (var member in ss)
             {
-                Response = Responses.NotRows,
-                Model = IamLevels.NotAccess,
-                Message = "No tienes acceso a este recurso/app."
-            };
+                await A(member.Directory.Identity.Id, final, context);
+            }
+
         }
-
-
-        return new()
-        {
-            Response = Responses.Success,
-            Model = (directory.Rol == DirectoryRoles.Administrator) ? IamLevels.Privileged : IamLevels.Visualizer
-        };
 
     }
 

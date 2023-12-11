@@ -38,7 +38,11 @@ public class Applications
 
 
 
-
+    /// <summary>
+    /// Agregar una identidad al directorio de una app.
+    /// </summary>
+    /// <param name="appId">Id de la app.</param>
+    /// <param name="accountId">Id de la identidad.</param>
     public static async Task<ReadOneResponse<bool>> AllowTo(int appId, int accountId)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -247,8 +251,13 @@ public class Applications
 
 
 
-
-    public static async Task<ReadOneResponse<bool>> AllowTo(int appId, int accountId, Conexión context)
+    /// <summary>
+    /// Permitir acceso a una identidad al directorio de una app.
+    /// </summary>
+    /// <param name="appId">Id de la app.</param>
+    /// <param name="identityId">Id de la identidad.</param>
+    /// <param name="context">Cuenta de conexión.</param>
+    public static async Task<ReadOneResponse<bool>> AllowTo(int appId, int identityId, Conexión context)
     {
 
         // Ejecución
@@ -283,16 +292,16 @@ public class Applications
 
             DirectoryMember member = new()
             {
-                Account = new()
+                Identity = new IdentityModel()
                 {
-                    ID = accountId,
+                    Id = identityId
                 },
                 Directory = new()
                 {
                     ID = application.DirectoryId,
                 }
             };
-            context.DataBase.Attach(member.Account);
+            context.DataBase.Attach(member.Identity);
             context.DataBase.Attach(member.Directory);
 
             context.DataBase.DirectoryMembers.Add(member);
@@ -307,5 +316,6 @@ public class Applications
 
         return new();
     }
+
 
 }

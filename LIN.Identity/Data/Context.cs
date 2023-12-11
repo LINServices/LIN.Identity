@@ -152,10 +152,10 @@ public class Context : DbContext
 
 
         modelBuilder.Entity<DirectoryMember>()
-         .HasOne(p => p.Account)
+         .HasOne(p => p.Identity)
          .WithMany(d => d.DirectoryMembers)
-         .HasForeignKey(p => p.AccountId)
-          .OnDelete(DeleteBehavior.Restrict); ;
+         .HasForeignKey(p => p.IdentityId)
+          .OnDelete(DeleteBehavior.Restrict);
 
 
 
@@ -181,7 +181,7 @@ public class Context : DbContext
         modelBuilder.Entity<DirectoryMember>()
          .HasKey(t => new
          {
-             t.AccountId,
+             t.IdentityId,
              t.DirectoryId
          });
 

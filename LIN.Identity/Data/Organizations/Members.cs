@@ -91,7 +91,7 @@ public class Members
                 // Miembro del directorio.
                 var memberOnDirectory = new DirectoryMember
                 {
-                    Account = data,
+                   Identity= data.Identity,
                     Directory = new()
                     {
                         ID = organization.DirectoryId

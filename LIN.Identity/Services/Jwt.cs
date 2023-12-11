@@ -47,6 +47,7 @@ public class Jwt
             new Claim(ClaimTypes.NameIdentifier, user.Identity.Unique),
             new Claim(ClaimTypes.Role, ((int)user.Rol).ToString()),
             new Claim(ClaimTypes.UserData, (user.OrganizationAccess?.Organization.ID).ToString() ?? ""),
+            new Claim(ClaimTypes.GroupSid, (user.Identity.Id).ToString() ?? ""),
             new Claim(ClaimTypes.Authentication, appID.ToString())
         };
 
@@ -103,10 +104,9 @@ public class Jwt
 
                 // 
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.PrimarySid)?.Value, out var id);
-
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.UserData)?.Value, out var orgID);
-
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Authentication)?.Value, out var appID);
+                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.GroupSid)?.Value, out var identityId);
 
 
                 // Devuelve una respuesta exitosa

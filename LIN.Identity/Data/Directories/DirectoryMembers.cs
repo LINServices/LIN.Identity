@@ -61,7 +61,7 @@ public class DirectoryMembers
         {
 
             // Ya existen los registros.
-            context.DataBase.Attach(model.Account);
+            context.DataBase.Attach(model.Identity);
             context.DataBase.Attach(model.Directory);
 
             // Agregar el elemento.
@@ -91,7 +91,7 @@ public class DirectoryMembers
     /// </summary>
     /// <param name="accountId">Id de la cuenta.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ReadAllResponse<DirectoryMember>> ReadAll(int accountId, Conexión context)
+    public static async Task<ReadAllResponse<DirectoryMember>> ReadAll(int identityId, Conexión context)
     {
 
         // Ejecución
@@ -100,11 +100,11 @@ public class DirectoryMembers
 
             // Directorios.
             var directories = await (from directory in context.DataBase.DirectoryMembers
-                                     where directory.AccountId == accountId
+                                     where directory.IdentityId == identityId
                                      select new DirectoryMember
                                      {
                                          Rol = directory.Rol,
-                                         DirectoryId = directory.AccountId,
+                                         DirectoryId = directory.DirectoryId,
                                          Directory = new()
                                          {
                                              ID = directory.Directory.ID,
@@ -118,7 +118,7 @@ public class DirectoryMembers
                                                  Type = directory.Directory.Identity.Type
                                              }
                                          },
-                                         AccountId = accountId
+                                         IdentityId = directory.IdentityId
                                      }).ToListAsync();
 
             return new(Responses.Success, directories);

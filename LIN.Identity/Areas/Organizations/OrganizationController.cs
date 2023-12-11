@@ -19,7 +19,7 @@ public class OrganizationsController : ControllerBase
             return new(Responses.InvalidParam);
 
 
-        // Conexi�n
+        // BD.
         var (context, connectionKey) = Conexión.GetOneConnection();
 
 
@@ -47,8 +47,8 @@ public class OrganizationsController : ControllerBase
         {
             modelo.Directory.Members.Add(new()
             {
-                Account = member.Member,
-                AccountId = 0,
+                Identity = member.Member.Identity,
+                IdentityId =0,
                 Directory = modelo.Directory,
                 DirectoryId = 0
             });
