@@ -87,7 +87,7 @@ public class AccountSecurityController : ControllerBase
             };
 
         // Validar políticas de contraseña.
-        var result = await AccountPassword.ValidatePassword(account, newPassword);
+        var result = await AccountPassword.ValidatePassword(actualData.Model.IdentityId, newPassword);
 
         // Invalido por políticas
         if (!result)

@@ -10,25 +10,27 @@ public class AccountPassword
     /// </summary>
     /// <param name="account">Id de la cuenta.</param>
     /// <param name="password">Contraseña a validar.</param>
-    public static async Task<bool> ValidatePassword(int account, string password)
+    public static async Task<bool> ValidatePassword(int identity, string password)
     {
 
         // Contexto.
         var (context, contextKey) = Conexión.GetOneConnection();
 
+        // Directorios.
+        var directories = await Queries.Directories.GetDirectories(identity);
+
         // Política.
-        var policy = await (from directory in context.DataBase.DirectoryMembers
-                            where directory.IdentityId == account
-                            join policie in context.DataBase.Policies
-                            on directory.DirectoryId equals policie.DirectoryId
-                            where policie.Type == PolicyTypes.PasswordLength
-                            orderby policie.Creation
+        var policy = await (from p in context.DataBase.Policies
+                            where p.Type == PolicyTypes.PasswordLength
+                            where directories.Contains(p.DirectoryId)
+                            orderby p.Creation
                             select new PolicyModel
                             {
-                                Id = policie.Id,
-                                ValueJson = policie.ValueJson,
-                                Type = policie.Type
+                                Id = p.Id,
+                                ValueJson = p.ValueJson,
+                                Type = p.Type
                             }).LastOrDefaultAsync();
+
 
         // Política no existe.
         if (policy == null)

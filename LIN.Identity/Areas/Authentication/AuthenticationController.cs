@@ -122,13 +122,4 @@ public class AuthenticationController : ControllerBase
 
     }
 
-
-
-
-    [HttpGet("Hi")]
-    public async Task<dynamic> Get([FromHeader]int account)
-    {
-        var iam = await Services.Iam.Applications.ValidateAccess(account, 0);
-        return iam;
-    }
 }
