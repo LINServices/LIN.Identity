@@ -67,7 +67,7 @@ public class Jwt
     /// Valida un JSON Web token
     /// </summary>
     /// <param name="token">Token a validar</param>
-    internal static (bool isValid, string user, int userID, int orgID, int appID) Validate(string token)
+    internal static (bool isValid, string user, int userID, int orgID, int appID, int identity) Validate(string token)
     {
         try
         {
@@ -75,7 +75,7 @@ public class Jwt
 
             // Comprobación
             if (string.IsNullOrWhiteSpace(token))
-                return (false, string.Empty, 0, 0, 0);
+                return (false, string.Empty, 0, 0, 0, 0);
 
             // Configurar la clave secreta
             var key = Encoding.ASCII.GetBytes(JwtKey);
@@ -110,7 +110,7 @@ public class Jwt
 
 
                 // Devuelve una respuesta exitosa
-                return (true, user ?? string.Empty, id, orgID, appID);
+                return (true, user ?? string.Empty, id, orgID, appID, identityId);
 
             }
             catch (SecurityTokenException)
@@ -121,9 +121,11 @@ public class Jwt
         }
         catch { }
 
-        return (false, string.Empty, 0, 0, 0);
+        return (false, string.Empty, 0, 0, 0, 0);
 
     }
 
+
+   
 
 }

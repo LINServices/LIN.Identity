@@ -92,7 +92,7 @@ public class OrganizationsController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Validar el token
-        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, _, orgID, _, _) = Jwt.Validate(token);;
 
 
         if (!isValid)

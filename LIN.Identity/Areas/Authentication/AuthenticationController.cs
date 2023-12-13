@@ -92,7 +92,7 @@ public class AuthenticationController : ControllerBase
     {
 
         // Información del token de acceso.
-        var (isValid, _, user, _, _) = Jwt.Validate(token);
+        var (isValid, _, user, _, _, _) = Jwt.Validate(token);;
 
         // Si el token es invalido.
         if (!isValid)
