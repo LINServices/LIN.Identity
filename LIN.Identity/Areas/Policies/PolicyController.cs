@@ -7,27 +7,57 @@ public class PolicyController : ControllerBase
 
 
     /// <summary>
-    /// Valida el acceso a un permiso de una identidad.
+    /// Crear política.
     /// </summary>
-    /// <param name="identity">ID de la identidad</param>
-    /// <param name="policy">ID de la política de permisos</param>
+    /// <param name="policy">Modelo.</param>
+    /// <param name="token">Token de acceso.</param>
     [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] PolicyModel policy, [FromHeader] string token)
     {
 
+        // Validar parámetros.
+        if (policy == null || string.IsNullOrEmpty(token) || policy.DirectoryId <= 0)
+            return new CreateResponse
+            {
+                Message = "Parámetros inválidos.",
+                Response = Responses.InvalidParam
+            };
+
         // Validación del token
-        var (isValid, _, _, _, _, _, _) = Jwt.Validate(token);;
+        var (isValid, _, _, _, _, identity) = Jwt.Validate(token); ;
 
         // Token es invalido
         if (!isValid)
-        {
             return new CreateResponse
             {
                 Message = "Token invalido.",
                 Response = Responses.Unauthorized
             };
-        }
 
+
+        // Acceso IAM.
+        var iam = await Services.Iam.Directories.ValidateAccess(identity, policy.DirectoryId);
+
+        // SI no tiene permisos de modificación.
+        if (iam.Model != IamLevels.Privileged)
+            return new CreateResponse
+            {
+                Message = "No tienes permiso para modificar este directorio.",
+                Response = Responses.Unauthorized
+            };
+
+
+        return await Data.Policies.Create(new()
+        {
+            Creation = DateTime.Now,
+            Directory = new()
+            {
+                ID = policy.DirectoryId,
+            },
+            Id = 0,
+            Type = policy.Type,
+            ValueJson = policy.ValueJson,
+        });
 
     }
 
@@ -43,7 +73,7 @@ public class PolicyController : ControllerBase
     {
 
         // Validar parámetros.
-        if (identity <= 0 || policy <=0)
+        if (identity <= 0 || policy <= 0)
             return new()
             {
                 Message = "Parámetros inválidos.",

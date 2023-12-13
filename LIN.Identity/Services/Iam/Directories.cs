@@ -19,17 +19,27 @@ public static class Directories
         var (context, contextKey) = Conexión.GetOneConnection();
 
 
-
+        // Encuentra el acceso en order Admin -> User.
         var dirM = (from DM in context.DataBase.DirectoryMembers
                     where DM.DirectoryId == directory
                     && identities.Contains(DM.IdentityId)
-                    select DM).GroupBy(b=>b.Rol).ToList();
+                    select DM).OrderByDescending(t => t.Rol).FirstOrDefault();
 
+        if (dirM == null)
+            return new()
+            {
+                Model = IamLevels.NotAccess
+            };
 
+        if (dirM.Rol == DirectoryRoles.Administrator)
+            return new()
+            {
+                Model = IamLevels.Privileged
+            };
 
         return new()
         {
-            Model = IamLevels.NotAccess
+            Model = IamLevels.Visualizer
         };
 
 
