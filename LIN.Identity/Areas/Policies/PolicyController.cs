@@ -69,7 +69,7 @@ public class PolicyController : ControllerBase
     /// <param name="identity">ID de la identidad</param>
     /// <param name="policy">ID de la política de permisos</param>
     [HttpGet("access")]
-    public async Task<HttpReadOneResponse<bool>> ReadAll([FromQuery] int identity, [FromQuery] int policy)
+    public async Task<HttpReadOneResponse<bool>> ValidatePermissions([FromQuery] int identity, [FromQuery] int policy)
     {
 
         // Validar parámetros.
