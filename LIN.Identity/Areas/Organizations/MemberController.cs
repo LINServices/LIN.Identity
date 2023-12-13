@@ -38,7 +38,7 @@ public class MemberController : ControllerBase
         modelo.Contraseña = EncryptClass.Encrypt(password);
 
         // Validación del token
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userID, _, _, _) = Jwt.Validate(token);;
 
         // Token es invalido
         if (!isValid)
@@ -134,7 +134,7 @@ public class MemberController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, _, orgID, _) = Jwt.Validate(token);
+        var (isValid, _, _, orgID, _, _) = Jwt.Validate(token);;
 
         // Si el token es invalido.
         if (!isValid)

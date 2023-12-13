@@ -16,7 +16,7 @@ public class ApplicationController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userID, _, _, _) = Jwt.Validate(token);;
 
         // Si el token es invalido.
         if (!isValid)
@@ -55,7 +55,7 @@ public class ApplicationController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, userID, _, _) = Jwt.Validate(token);
+        var (isValid, _, userID, _, _, _) = Jwt.Validate(token);;
 
         // Si el token es invalido.
         if (!isValid)
@@ -85,7 +85,7 @@ public class ApplicationController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, userId, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _, _) = Jwt.Validate(token);;
 
         // Si el token es invalido.
         if (!isValid)

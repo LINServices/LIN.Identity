@@ -19,7 +19,7 @@ public class DirectoryController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Información del token.
-        var (isValid, _, user, orgId, _) = Jwt.Validate(token);
+        var (isValid, _, user, orgId, _, _) = Jwt.Validate(token);;
 
         // Token es invalido.
         if (!isValid)
@@ -55,7 +55,7 @@ public class DirectoryController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, user, _, _) = Jwt.Validate(token);
+        var (isValid, _, user, _, _, _) = Jwt.Validate(token);;
 
         // Token es invalido.
         if (!isValid)

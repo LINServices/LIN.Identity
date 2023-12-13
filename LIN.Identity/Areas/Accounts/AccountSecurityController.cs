@@ -16,7 +16,7 @@ public class AccountSecurityController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, userId, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _, _) = Jwt.Validate(token);;
 
         // Si es invalido.
         if (!isValid)

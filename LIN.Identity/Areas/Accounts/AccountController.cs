@@ -66,7 +66,7 @@ public class AccountController : ControllerBase
             };
 
         // Información del token.
-        var (isValid, _, user, orgId, _) = Jwt.Validate(token);
+        var (isValid, _, user, orgId, _, _) = Jwt.Validate(token);;
 
         // Token es invalido.
         if (!isValid)
@@ -118,7 +118,7 @@ public class AccountController : ControllerBase
             };
 
         // Información del token.
-        var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
+        var (isValid, _, userId, orgId, _, _) = Jwt.Validate(token);;
 
         // Token es invalido.
         if (!isValid)
@@ -170,7 +170,7 @@ public class AccountController : ControllerBase
             };
 
         // Info del token
-        var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
+        var (isValid, _, userId, orgId, _, _) = Jwt.Validate(token);;
 
         // Token es invalido
         if (!isValid)
@@ -213,7 +213,7 @@ public class AccountController : ControllerBase
 
 
         // Información del token.
-        var (isValid, _, userId, orgId, _) = Jwt.Validate(token);
+        var (isValid, _, userId, orgId, _, _) = Jwt.Validate(token);;
 
         // Es invalido.
         if (!isValid)
@@ -249,7 +249,7 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        var (isValid, _, _, _, _) = Jwt.Validate(token);
+        var (isValid, _, _, _, _, _) = Jwt.Validate(token);;
 
 
         if (!isValid)
@@ -291,7 +291,7 @@ public class AccountController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, userId, _, _) = Jwt.Validate(token);
+        var (isValid, _, userId, _, _, _) = Jwt.Validate(token);;
 
         // Es invalido.
         if (!isValid)
@@ -324,7 +324,7 @@ public class AccountController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, id, _, _) = Jwt.Validate(token);
+        var (isValid, _, id, _, _, _) = Jwt.Validate(token);;
 
         // Token es invalido.
         if (!isValid)
@@ -351,7 +351,7 @@ public class AccountController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, id, _, _) = Jwt.Validate(token);
+        var (isValid, _, id, _, _, _) = Jwt.Validate(token);;
 
         // Token es invalido.
         if (!isValid)
