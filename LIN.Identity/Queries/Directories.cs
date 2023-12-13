@@ -11,7 +11,7 @@ public class Directories
     /// <param name="identity">Identidad base</param>
     public static async Task<(List<int> directories, List<int> identities)> Get(int identity)
     {
-        List<int> identities = [];
+        List<int> identities = [identity];
         List<int> directories = [];
 
         var (context, contextKey) = Conexión.GetOneConnection();
