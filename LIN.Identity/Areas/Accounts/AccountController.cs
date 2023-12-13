@@ -5,7 +5,6 @@ namespace LIN.Identity.Areas.Accounts;
 public class AccountController : ControllerBase
 {
 
-
     /// <summary>
     /// Crear una cuenta.
     /// </summary>

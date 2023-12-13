@@ -17,7 +17,7 @@ public class AccountPassword
         var (context, contextKey) = Conexión.GetOneConnection();
 
         // Directorios.
-        var directories = await Queries.Directories.GetDirectories(identity);
+        var(directories, _) = await Queries.Directories.Get(identity);
 
         // Política.
         var policy = await (from p in context.DataBase.Policies
