@@ -5,29 +5,38 @@ public class Directories
 
 
 
-    public static async Task<List<int>> GetDirectories(int identidad)
+    /// <summary>
+    /// Obtiene las identidades y directorios.
+    /// </summary>
+    /// <param name="identity">Identidad base</param>
+    public static async Task<(List<int> directories, List<int> identities)> Get(int identity)
     {
         List<int> identities = [];
         List<int> directories = [];
 
         var (context, contextKey) = Conexión.GetOneConnection();
 
-        await GetDirectories(identidad, identities, context, directories);
+        await Get(identity, context, identities, directories);
 
         context.CloseActions(contextKey);
-        return directories;
+        return (directories, identities);
     }
 
 
 
-    public static async Task GetDirectories(int identidad, List<int> final, Conexión context, List<int> directories)
+    /// <summary>
+    /// Obtiene las identidades y directorios.
+    /// </summary>
+    /// <param name="identityBase">Identidad base</param>
+    /// <param name="context">Contexto</param>
+    /// <param name="identities">Lista de identidades.</param>
+    /// <param name="directories">Directorios</param>
+    private static async Task Get(int identityBase, Conexión context, List<int> identities, List<int> directories)
     {
-
-
         // Consulta.
         var query = from DM in context.DataBase.DirectoryMembers
-                    where DM.IdentityId == identidad
-                    && !final.Contains(DM.Directory.IdentityId)
+                    where DM.IdentityId == identityBase
+                    && !identities.Contains(DM.Directory.IdentityId)
                     select new
                     {
                         Identity = DM.Directory.Identity.Id,
@@ -38,14 +47,15 @@ public class Directories
         if (query.Any())
         {
             var local = query.ToList();
-            final.AddRange(local.Select(t => t.Identity));
+            identities.AddRange(local.Select(t => t.Identity));
             directories.AddRange(local.Select(t => t.Directory));
 
             foreach (var id in local)
-                await GetDirectories(id.Identity, final, context, directories);
+                await Get(id.Identity, context, identities, directories);
 
         }
 
     }
+
 
 }

@@ -47,7 +47,7 @@ public static class Applications
                         select a.IdentityId).FirstOrDefault();
 
 
-        var directories = await Queries.Directories.GetDirectories(identity);
+        var (directories, _) = await Queries.Directories.Get(identity);
 
 
         // Tiene acceso.
