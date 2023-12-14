@@ -119,8 +119,10 @@ public class DirectoryController : ControllerBase
         // Acceso IAM.
         var iam = await Services.Iam.Directories.ValidateAccess(identity, directory);
 
+        // Roles disponibles.
         IEnumerable<IamLevels> have = [IamLevels.Privileged, IamLevels.Visualizer];
 
+        // No tiene un permitido.
         if (!have.Contains(iam.Model))
             return new()
             {
