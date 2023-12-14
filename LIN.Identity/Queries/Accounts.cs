@@ -130,7 +130,7 @@ public class Accounts
 
 
 
-    public static IQueryable<DirectoryMember> GetDirectory(int id, Conexión context)
+    public static IQueryable<DirectoryMember> GetDirectory(int id, int identityContext, Conexión context)
     {
 
         // Query general
@@ -141,6 +141,9 @@ public class Accounts
                         where dm.Directory.ID == id
                         select dm;
 
+        if (identityContext > 0)
+            directory = directory.Where(t => t.IdentityId == identityContext);
+
         // Armar el modelo
         accounts = BuildModel(directory);
 
@@ -148,6 +151,7 @@ public class Accounts
         return accounts;
 
     }
+
 
 
 
