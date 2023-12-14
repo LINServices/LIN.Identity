@@ -30,7 +30,7 @@ public class Directories
     /// Obtener un directorio.
     /// </summary>
     /// <param name="id">Id del directorio.</param>
-    public static async Task<ReadOneResponse<DirectoryModel>> Read(int id)
+    public static async Task<ReadOneResponse<DirectoryMember>> Read(int id)
     {
 
         // Obtiene la conexión
@@ -92,7 +92,7 @@ public class Directories
     /// </summary>
     /// <param name="id">Id del directorio.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ReadOneResponse<DirectoryModel>> Read(int id, Conexión context)
+    public static async Task<ReadOneResponse<DirectoryMember>> Read(int id, Conexión context)
     {
 
         // Ejecución

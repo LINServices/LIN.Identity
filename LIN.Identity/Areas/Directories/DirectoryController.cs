@@ -11,7 +11,7 @@ public class DirectoryController : ControllerBase
     /// <param name="id">ID del directorio.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/id")]
-    public async Task<HttpReadOneResponse<DirectoryModel>> Read([FromQuery] int id, [FromHeader] string token)
+    public async Task<HttpReadOneResponse<DirectoryMember>> Read([FromQuery] int id, [FromHeader] string token)
     {
 
         // Id es invalido.
@@ -23,7 +23,7 @@ public class DirectoryController : ControllerBase
 
         // Token es invalido.
         if (!isValid)
-            return new ReadOneResponse<DirectoryModel>()
+            return new ReadOneResponse<DirectoryMember>()
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
@@ -34,7 +34,7 @@ public class DirectoryController : ControllerBase
 
         // Si es erróneo
         if (response.Response != Responses.Success)
-            return new ReadOneResponse<DirectoryModel>()
+            return new ReadOneResponse<DirectoryMember>()
             {
                 Response = response.Response
             };

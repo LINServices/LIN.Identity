@@ -120,6 +120,12 @@ public class DirectoryMembers
                                                  Type = directoryMember.Directory.Identity.Type
                                              }
                                          },
+                                         Identity = new()
+                                         {
+                                             Id = directoryMember.Identity.Id,
+                                             Unique = directoryMember.Identity.Unique,
+                                             Type = directoryMember.Identity.Type
+                                         },
                                          IdentityId = directoryMember.IdentityId
                                      }).ToListAsync();
 
