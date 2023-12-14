@@ -130,21 +130,19 @@ public class Accounts
 
 
 
-    public static IQueryable<DirectoryModel> GetDirectory(int id, Conexión context)
+    public static IQueryable<DirectoryMember> GetDirectory(int id, Conexión context)
     {
 
         // Query general
-        IQueryable<DirectoryModel> accounts;
+        IQueryable<DirectoryMember> accounts;
 
 
-        var directories = from directory in context.DataBase.Directories
-                          where directory.ID == id
-                          select directory;
-
-
+        var directory = from dm in context.DataBase.DirectoryMembers
+                        where dm.Directory.ID == id
+                        select dm;
 
         // Armar el modelo
-        accounts = BuildModel(directories);
+        accounts = BuildModel(directory);
 
         // Retorno
         return accounts;
@@ -263,22 +261,27 @@ public class Accounts
     /// </summary>
     /// <param name="query">Query base</param>
     /// <param name="filters">Filtros</param>
-    private static IQueryable<DirectoryModel> BuildModel(IQueryable<DirectoryModel> query)
+    private static IQueryable<DirectoryMember> BuildModel(IQueryable<DirectoryMember> query)
     {
 
         return from d in query
-               select new DirectoryModel
+               select new DirectoryMember
                {
-                   Creación = d.Creación,
-                   ID = d.ID,
-                   Identity = new()
+                   Rol = d.Rol,
+                   IdentityId = d.IdentityId,
+                   Directory = new()
                    {
-                       Id = d.Identity.Id,
-                       Type = d.Identity.Type,
-                       Unique = d.Identity.Unique
-                   },
-                   IdentityId = d.Identity.Id,
-                   Nombre = d.Nombre
+                       Nombre = d.Directory.Nombre,
+                       Creación = d.Directory.Creación,
+                       ID = d.Directory.ID,
+                       Identity = new()
+                       {
+                           Id = d.Directory.Identity.Id,
+                           Type = d.Directory.Identity.Type,
+                           Unique = d.Directory.Identity.Unique
+                       },
+                       IdentityId = d.Directory.Identity.Id
+                   }
                };
     }
 
