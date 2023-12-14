@@ -9,9 +9,10 @@ public class DirectoryController : ControllerBase
     /// Obtener un directorio.
     /// </summary>
     /// <param name="id">ID del directorio.</param>
+    /// <param name="findIdentity">Identidad de contexto.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/id")]
-    public async Task<HttpReadOneResponse<DirectoryMember>> Read([FromQuery] int id, [FromHeader] string token)
+    public async Task<HttpReadOneResponse<DirectoryMember>> Read([FromQuery] int id, [FromQuery] int findIdentity, [FromHeader] string token)
     {
 
         // Id es invalido.
@@ -42,7 +43,7 @@ public class DirectoryController : ControllerBase
             };
 
         // Obtiene el usuario.
-        var response = await Data.Directories.Read(id);
+        var response = await Data.Directories.Read(id, findIdentity);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

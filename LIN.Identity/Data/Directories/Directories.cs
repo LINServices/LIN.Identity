@@ -30,13 +30,14 @@ public class Directories
     /// Obtener un directorio.
     /// </summary>
     /// <param name="id">Id del directorio.</param>
-    public static async Task<ReadOneResponse<DirectoryMember>> Read(int id)
+    /// <param name="identityContext">Identidad del contexto (No necesaria)..</param>
+    public static async Task<ReadOneResponse<DirectoryMember>> Read(int id, int identityContext = 0)
     {
 
         // Obtiene la conexión
         var (context, connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id, context);
+        var res = await Read(id,identityContext, context );
         context.CloseActions(connectionKey);
         return res;
 
@@ -91,8 +92,9 @@ public class Directories
     /// Obtener un directorio.
     /// </summary>
     /// <param name="id">Id del directorio.</param>
+    /// <param name="identityContext">Identidad de contexto (No necesaria).</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ReadOneResponse<DirectoryMember>> Read(int id, Conexión context)
+    public static async Task<ReadOneResponse<DirectoryMember>> Read(int id, int identityContext, Conexión context)
     {
 
         // Ejecución
@@ -100,7 +102,7 @@ public class Directories
         {
 
             // Consulta.
-            var query = Queries.Accounts.GetDirectory(id, context);
+            var query = Queries.Accounts.GetDirectory(id, identityContext, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
