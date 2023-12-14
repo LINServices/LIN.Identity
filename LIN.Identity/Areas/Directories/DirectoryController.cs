@@ -19,7 +19,7 @@ public class DirectoryController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Información del token.
-        var (isValid, _, user, orgId, _, _) = Jwt.Validate(token);;
+        var (isValid, _, _, _, _, identity) = Jwt.Validate(token);;
 
         // Token es invalido.
         if (!isValid)
@@ -27,6 +27,18 @@ public class DirectoryController : ControllerBase
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
+            };
+
+
+        // Acceso IAM.
+        var iam = await Services.Iam.Directories.ValidateAccess(identity, id);
+
+        // Validar Iam.
+        if (iam.Model == IamLevels.NotAccess)
+            return new ReadOneResponse<DirectoryMember>()
+            {
+                Message = "No tienes acceso a este directorio, si crees que es un error comunícate con tu administrador.",
+                Response = Responses.Unauthorized
             };
 
         // Obtiene el usuario.
