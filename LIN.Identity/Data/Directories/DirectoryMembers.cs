@@ -98,27 +98,29 @@ public class DirectoryMembers
         try
         {
 
+            var (_, identities) = await Queries.Directories.Get(identityId);
+
             // Directorios.
-            var directories = await (from directory in context.DataBase.DirectoryMembers
-                                     where directory.IdentityId == identityId
+            var directories = await (from directoryMember in context.DataBase.DirectoryMembers
+                                     where identities.Contains(directoryMember.IdentityId)
                                      select new DirectoryMember
                                      {
-                                         Rol = directory.Rol,
-                                         DirectoryId = directory.DirectoryId,
+                                         Rol = directoryMember.Rol,
+                                         DirectoryId = directoryMember.DirectoryId,
                                          Directory = new()
                                          {
-                                             ID = directory.Directory.ID,
-                                             Creación = directory.Directory.Creación,
-                                             Nombre = directory.Directory.Nombre,
-                                             IdentityId = directory.Directory.IdentityId,
+                                             ID = directoryMember.Directory.ID,
+                                             Creación = directoryMember.Directory.Creación,
+                                             Nombre = directoryMember.Directory.Nombre,
+                                             IdentityId = directoryMember.Directory.IdentityId,
                                              Identity = new()
                                              {
-                                                 Id = directory.Directory.Identity.Id,
-                                                 Unique = directory.Directory.Identity.Unique,
-                                                 Type = directory.Directory.Identity.Type
+                                                 Id = directoryMember.Directory.Identity.Id,
+                                                 Unique = directoryMember.Directory.Identity.Unique,
+                                                 Type = directoryMember.Directory.Identity.Type
                                              }
                                          },
-                                         IdentityId = directory.IdentityId
+                                         IdentityId = directoryMember.IdentityId
                                      }).ToListAsync();
 
             return new(Responses.Success, directories);
