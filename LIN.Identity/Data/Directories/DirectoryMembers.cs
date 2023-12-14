@@ -27,16 +27,33 @@ public class DirectoryMembers
 
 
     /// <summary>
-    /// Obtiene los directorios donde un usuario es integrante.
+    /// Obtiene los directorios donde una identidad es integrante.
     /// </summary>
-    /// <param name="accountId">Id de la cuenta.</param>
-    public static async Task<ReadAllResponse<DirectoryMember>> ReadAll(int accountId)
+    /// <param name="identityId">Id de la identidad.</param>
+    public static async Task<ReadAllResponse<DirectoryMember>> ReadAll(int identityId)
     {
 
         // Obtiene la conexión
         var (context, connectionKey) = Conexión.GetOneConnection();
 
-        var res = await ReadAll(accountId, context);
+        var res = await ReadAll(identityId, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
+    /// <summary>
+    /// Obtiene los integrantes de un directorio.
+    /// </summary>
+    /// <param name="identityId">Id del directorio.</param>
+    public static async Task<ReadAllResponse<DirectoryMember>> ReadMembers(int identityId)
+    {
+
+        // Obtiene la conexión
+        var (context, connectionKey) = Conexión.GetOneConnection();
+
+        var res = await ReadMembers(identityId, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -87,9 +104,9 @@ public class DirectoryMembers
 
 
     /// <summary>
-    /// Obtiene los directorios donde un usuario es integrante.
+    /// Obtiene los directorios donde una identidad es integrante.
     /// </summary>
-    /// <param name="accountId">Id de la cuenta.</param>
+    /// <param name="identityId">Id de la identidad.</param>
     /// <param name="context">Contexto de conexión.</param>
     public static async Task<ReadAllResponse<DirectoryMember>> ReadAll(int identityId, Conexión context)
     {
@@ -120,6 +137,46 @@ public class DirectoryMembers
                                                  Type = directoryMember.Directory.Identity.Type
                                              }
                                          },
+                                         Identity = new()
+                                         {
+                                             Id = directoryMember.Identity.Id,
+                                             Unique = directoryMember.Identity.Unique,
+                                             Type = directoryMember.Identity.Type
+                                         },
+                                         IdentityId = directoryMember.IdentityId
+                                     }).ToListAsync();
+
+            return new(Responses.Success, directories);
+
+        }
+        catch (Exception)
+        {
+        }
+
+        return new();
+    }
+
+
+
+    /// <summary>
+    /// Obtiene los integrantes de un directorio.
+    /// </summary>
+    /// <param name="directoryId">Id del directorio.</param>
+    /// <param name="context">Contexto de conexión.</param>
+    public static async Task<ReadAllResponse<DirectoryMember>> ReadMembers(int directoryId, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Directorios.
+            var directories = await (from directoryMember in context.DataBase.DirectoryMembers
+                                     where directoryMember.DirectoryId == directoryId
+                                     select new DirectoryMember
+                                     {
+                                         Rol = directoryMember.Rol,
+                                         DirectoryId = directoryMember.DirectoryId,
                                          Identity = new()
                                          {
                                              Id = directoryMember.Identity.Id,

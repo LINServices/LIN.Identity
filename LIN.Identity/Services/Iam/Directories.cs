@@ -37,6 +37,12 @@ public static class Directories
                 Model = IamLevels.Privileged
             };
 
+        if (dirM.Rol == DirectoryRoles.Guest)
+            return new()
+            {
+                Model = IamLevels.Guest
+            };
+
         return new()
         {
             Model = IamLevels.Visualizer

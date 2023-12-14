@@ -95,4 +95,54 @@ public class DirectoryController : ControllerBase
 
 
 
+    /// <summary>
+    /// Obtener los integrantes asociados a un directorio.
+    /// </summary>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="directory">ID del directorio.</param>
+    [HttpGet("read/members")]
+    public async Task<HttpReadAllResponse<DirectoryMember>> ReadAll([FromHeader] string token, [FromQuery] int directory)
+    {
+
+        // Información del token.
+        var (isValid, _, user, _, _, identity) = Jwt.Validate(token); ;
+
+        // Token es invalido.
+        if (!isValid)
+            return new ReadAllResponse<DirectoryMember>()
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
+            };
+
+
+        // Acceso IAM.
+        var iam = await Services.Iam.Directories.ValidateAccess(identity, directory);
+
+        IEnumerable<IamLevels> have = [IamLevels.Privileged, IamLevels.Visualizer];
+
+        if (!have.Contains(iam.Model))
+            return new()
+            {
+                Message = "No tienes acceso a este recurso.",
+                Response = Responses.Unauthorized
+            };
+
+        // Obtiene el usuario.
+        var response = await Data.DirectoryMembers.ReadMembers(directory);
+
+        // Si es erróneo
+        if (response.Response != Responses.Success)
+            return new()
+            {
+                Response = response.Response
+            };
+
+        // Retorna el resultado
+        return response;
+
+    }
+
+
+
 }
