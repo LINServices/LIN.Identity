@@ -68,7 +68,7 @@ public class DirectoryController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, user, _, _, _) = Jwt.Validate(token);;
+        var (isValid, _, _, _, _, identity) = Jwt.Validate(token);;
 
         // Token es invalido.
         if (!isValid)
@@ -79,7 +79,7 @@ public class DirectoryController : ControllerBase
             };
 
         // Obtiene el usuario.
-        var response = await Data.DirectoryMembers.ReadAll(user);
+        var response = await Data.Directories.ReadAll(identity);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
