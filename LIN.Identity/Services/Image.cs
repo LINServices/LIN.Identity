@@ -1,11 +1,14 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.Versioning;
 
 namespace LIN.Identity.Services;
 
 
 public class Image
 {
+
+
 
     /// <summary>
     /// Comprime una imagen
@@ -15,6 +18,24 @@ public class Image
     /// <param name="height">Alto</param>
     /// <param name="max">Maximo</param>
     public static byte[] Zip(byte[] originalImage, int width = 50, int height = 50, int max = 1900)
+    {
+        if (OperatingSystem.IsWindows())
+            return ZipOnWindows(originalImage, width, height, max);
+        else
+            return ZipOthers(originalImage, width, height, max);
+    }
+
+
+
+    /// <summary>
+    /// Comprime una imagen
+    /// </summary>
+    /// <param name="originalImage">Original image</param>
+    /// <param name="width">Ancho</param>
+    /// <param name="height">Alto</param>
+    /// <param name="max">Maximo</param>
+    [SupportedOSPlatform("windows")]
+    public static byte[] ZipOnWindows(byte[] originalImage, int width = 50, int height = 50, int max = 1900)
     {
         try
         {
@@ -43,7 +64,7 @@ public class Image
             byte[] imagenBytes;
             using (MemoryStream stream = new())
             {
-                nuevaImagen.Save(stream, ImageFormat.Png);
+                nuevaImagen.Save(stream, ImageFormat.Jpeg);
                 imagenBytes = stream.ToArray();
             }
 
@@ -51,11 +72,51 @@ public class Image
             image.Dispose();
 
             return imagenBytes;
+
         }
         catch
         {
         }
-        return Array.Empty<byte>();
+        return [];
+    }
+
+
+
+    /// <summary>
+    /// Comprime una imagen
+    /// </summary>
+    /// <param name="originalImage">Original image</param>
+    /// <param name="width">Ancho</param>
+    /// <param name="height">Alto</param>
+    /// <param name="max">Maximo</param>
+    public static byte[] ZipOthers(byte[] originalImage, int width = 100, int height = 100, int max = 1900)
+    {
+        try
+        {
+
+            MemoryStream memoryStream = new(originalImage);
+
+            // Cargar imagen
+            using Aspose.Imaging.Image pic = Aspose.Imaging.Image.Load(memoryStream);
+
+            // Cambiar el tamaño de la imagen y guardar la imagen redimensionada
+
+            pic.ResizeWidthProportionally(100);
+
+            byte[] imagenBytes;
+            using MemoryStream stream = new();
+            pic.Save(stream);
+            imagenBytes = stream.ToArray();
+
+            var ss = Convert.ToBase64String(imagenBytes);
+
+            return imagenBytes;
+
+        }
+        catch
+        {
+        }
+        return [];
     }
 
 

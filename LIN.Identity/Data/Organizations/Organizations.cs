@@ -168,7 +168,6 @@ public class Organizations
 
 
 
-
     /// <summary>
     /// Obtiene una organización.
     /// </summary>
@@ -208,7 +207,6 @@ public class Organizations
 
         return new();
     }
-
 
 
 

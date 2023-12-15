@@ -5,6 +5,7 @@ public class Configuration
 {
 
 
+
     private static IConfiguration? Config;
 
     private static bool _isStart = false;

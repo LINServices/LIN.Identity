@@ -11,6 +11,7 @@ public class EmailWorker
     private static string Password { get; set; } = string.Empty;
 
 
+
     /// <summary>
     /// Inicia el servicio
     /// </summary>
