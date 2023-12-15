@@ -23,8 +23,9 @@ public class Account
                 Type = IdentityTypes.Account,
                 Unique = modelo.Identity.Unique
             },
-            
+
             IdentityId = 0,
+            Gender = modelo.Gender,
             Visibilidad = modelo.Visibilidad,
             Contraseña = modelo.Contraseña = EncryptClass.Encrypt(modelo.Contraseña),
             Creación = modelo.Creación = DateTime.Now,
@@ -32,12 +33,13 @@ public class Account
             Birthday = modelo.Birthday,
             Insignia = modelo.Insignia = AccountBadges.None,
             Rol = modelo.Rol = AccountRoles.User,
-            Perfil = modelo.Perfil = modelo.Perfil.Length == 0
+            Perfil = modelo.Perfil = modelo.Perfil?.Length == 0
                 ? File.ReadAllBytes("wwwroot/profile.png")
                 : modelo.Perfil
         };
 
-        model.Perfil = Image.Zip(model.Perfil);
+        model.Perfil = Image.Zip(model.Perfil ?? []);
+
         return model;
 
     }
