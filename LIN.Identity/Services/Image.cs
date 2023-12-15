@@ -28,7 +28,7 @@ public class Image
 
 
     /// <summary>
-    /// Comprime una imagen
+    /// Comprime una imagen (En Windows)
     /// </summary>
     /// <param name="originalImage">Original image</param>
     /// <param name="width">Ancho</param>
@@ -83,7 +83,7 @@ public class Image
 
 
     /// <summary>
-    /// Comprime una imagen
+    /// Comprime una imagen (Plataformas .NET)
     /// </summary>
     /// <param name="originalImage">Original image</param>
     /// <param name="width">Ancho</param>
