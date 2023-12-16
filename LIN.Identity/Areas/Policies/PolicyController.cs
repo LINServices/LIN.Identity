@@ -87,4 +87,50 @@ public class PolicyController : ControllerBase
 
 
 
+    /// <summary>
+    /// Obtiene las políticas asociadas a un directorio.
+    /// </summary>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="directory">Id del directorio.</param>
+    [HttpGet("read/all")]
+    public async Task<HttpReadAllResponse<PolicyModel>> ReadAll([FromHeader] string token, [FromQuery] int directory)
+    {
+
+        // Validar parámetros.
+        if (directory <= 0)
+            return new()
+            {
+                Message = "Parámetros inválidos.",
+                Response = Responses.InvalidParam
+            };
+
+        // Validar JSON.
+        var (isValid, _, _, _, _, identity) = Jwt.Validate(token);
+
+        // Token es invalido.
+        if (!isValid)
+            return new()
+            {
+                Message = "Token invalido.",
+                Response = Responses.Unauthorized
+            };
+
+        // Acceso IAM.
+        var iam = await Services.Iam.Directories.ValidateAccess(identity, directory);
+
+        // No tiene acceso.
+        if (iam.Model == IamLevels.NotAccess)
+            return new()
+            {
+                Message = "No tienes acceso a este directorio.",
+                Response = Responses.Unauthorized
+            };
+
+        // Respuesta.
+        return await Data.Policies.ReadAll(directory);
+
+    }
+
+
+
 }
