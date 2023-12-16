@@ -57,13 +57,14 @@ public class OrganizationsController : ControllerBase
             member.Organization = modelo;
         }
 
-        // Creaci�n de la organización
+        // Creación de la organización
         var response = await Data.Organizations.Organizations.Create(modelo, context);
 
-        // Evaluaci�n
+        // Evaluación.
         if (response.Response != Responses.Success)
             return new(response.Response);
 
+        // Cerrar la conexión.
         context.CloseActions(connectionKey);
 
         // Retorna el resultado

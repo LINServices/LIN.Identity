@@ -24,14 +24,14 @@ public class Policies
 
 
     /// <summary>
-    /// Obtener las políticas.
+    /// Obtener las políticas asociadas a un directorio
     /// </summary>
-    /// <param name="id">Id de la cuenta.</param>
-    public static async Task<ReadAllResponse<PolicyModel>> ReadAll(int id)
+    /// <param name="directory">Id del directorio.</param>
+    public static async Task<ReadAllResponse<PolicyModel>> ReadAll(int directory)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
-        var res = await ReadAll(id, context);
+        var res = await ReadAll(directory, context);
         context.CloseActions(contextKey);
         return res;
     }
@@ -97,9 +97,9 @@ public class Policies
 
 
     /// <summary>
-    /// Obtiene las políticas asociadas a un usuario.
+    /// Obtiene las políticas asociadas a un directorio.
     /// </summary>
-    /// <param name="id">ID de la cuenta</param>
+    /// <param name="id">ID del directorio</param>
     /// <param name="context">Contexto de conexión</param>
     public static async Task<ReadAllResponse<PolicyModel>> ReadAll(int id, Conexión context)
     {
@@ -108,12 +108,16 @@ public class Policies
         try
         {
 
-            var policies = await (from directory in context.DataBase.DirectoryMembers
-                                  where directory.IdentityId == id
-                                  join policie in context.DataBase.Policies
-                                  on directory.DirectoryId equals policie.DirectoryId
-                                  select policie).ToListAsync();
-
+            var policies = await (from policy in context.DataBase.Policies
+                                  where policy.DirectoryId == id
+                                  select new PolicyModel
+                                  {
+                                      Id = policy.Id,
+                                      Creation = policy.Creation,
+                                      DirectoryId = policy.DirectoryId,
+                                      Type = policy.Type,
+                                      ValueJson = policy.ValueJson
+                                  }).ToListAsync();
 
             return new(Responses.Success, policies);
 
