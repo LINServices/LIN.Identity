@@ -119,10 +119,10 @@ public class PolicyController : ControllerBase
         var iam = await Services.Iam.Directories.ValidateAccess(identity, directory);
 
         // No tiene acceso.
-        if (iam.Model == IamLevels.NotAccess)
+        if (iam.Model == IamLevels.NotAccess || iam.Model == IamLevels.Guest)
             return new()
             {
-                Message = "No tienes acceso a este directorio.",
+                Message = "No tienes acceso a este directoriopp.",
                 Response = Responses.Unauthorized
             };
 
