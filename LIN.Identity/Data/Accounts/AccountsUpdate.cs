@@ -183,41 +183,6 @@ internal static partial class Accounts
 
 
 
-    /// <summary>
-    /// Actualiza la organización de una cuenta
-    /// </summary>
-    /// <param name="newData">organización</param>
-    /// <param name="context">Contexto de conexión con la BD</param>
-    public static async Task<ResponseBase> Update(OrganizationModel newData, int id, Conexión context)
-    {
-
-        // Encontrar el usuario
-        var usuario = await (from U in context.DataBase.OrganizationAccess
-                             where U.Member.ID == id
-                             select U).FirstOrDefaultAsync();
-
-
-        var org = await (from U in context.DataBase.Organizations
-                         where U.ID == newData.ID
-                         select U
-            ).FirstOrDefaultAsync();
-
-
-
-        // Si el usuario no existe
-        if (usuario == null || org == null)
-        {
-            return new(Responses.NotExistAccount);
-        }
-
-        // Cambiar Contraseña
-        usuario.Organization = org;
-
-        context.DataBase.SaveChanges();
-        return new(Responses.Success);
-
-    }
-
 
 
     /// <summary>

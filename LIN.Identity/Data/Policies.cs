@@ -144,7 +144,7 @@ public class Policies
         try
         {
 
-            var (directories, _) = await Queries.Directories.Get(identity);
+            var (directories, _, _) = await Queries.Directories.Get(identity);
 
 
             // Consulta.

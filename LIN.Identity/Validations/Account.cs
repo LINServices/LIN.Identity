@@ -16,14 +16,13 @@ public class Account
         {
             ID = 0,
             Nombre = modelo.Nombre,
-            OrganizationAccess = modelo.OrganizationAccess,
             Identity = new()
             {
                 Id = 0,
                 Type = IdentityTypes.Account,
-                Unique = modelo.Identity.Unique
+                Unique = modelo.Identity.Unique,
+                DirectoryMembers = []
             },
-
             IdentityId = 0,
             Gender = modelo.Gender,
             Visibilidad = modelo.Visibilidad,

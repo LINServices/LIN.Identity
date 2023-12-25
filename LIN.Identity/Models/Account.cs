@@ -1,18 +1,15 @@
-﻿namespace LIN.Identity.FilterModels;
+﻿namespace LIN.Identity.Models;
 
 
 public class Account
 {
 
-    public int ContextUser { get; set; }
-    public int ContextOrg { get; set; }
+    public int ContextAccount { get; set; }
     public bool IsAdmin { get; set; }
     public bool SensibleInfo { get; set; }
     public IncludeOrg IncludeOrg { get; set; } = IncludeOrg.None;
     public FindOn FindOn { get; set; } = FindOn.AllAccount;
     public IncludeOrgLevel OrgLevel { get; set; } = IncludeOrgLevel.Basic;
-
-
 
 }
 

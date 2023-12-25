@@ -15,15 +15,15 @@ public class ApplicationController : ControllerBase
     public async Task<HttpCreateResponse> Create([FromBody] ApplicationModel applicationModel, [FromHeader] string token)
     {
 
-        // Información del token.
-        var (isValid, _, userID, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Si el token es invalido.
-        if (!isValid)
-            return new CreateResponse()
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
-                Message = "El token es invalido."
+                Message = "Token invalido."
             };
 
         // Validaciones.
@@ -54,15 +54,15 @@ public class ApplicationController : ControllerBase
     public async Task<HttpReadAllResponse<ApplicationModel>> GetAll([FromHeader] string token)
     {
 
-        // Información del token.
-        var (isValid, _, userID, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Si el token es invalido.
-        if (!isValid)
-            return new ReadAllResponse<ApplicationModel>()
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
-                Message = "El token es invalido."
+                Message = "Token invalido."
             };
 
         // Obtiene la data.
@@ -84,15 +84,15 @@ public class ApplicationController : ControllerBase
     public async Task<HttpReadOneResponse<bool>> InsertAllow([FromHeader] string token, [FromHeader] int appId, [FromHeader] int accountId)
     {
 
-        // Información del token.
-        var (isValid, _, userId, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Si el token es invalido.
-        if (!isValid)
-            return new ReadOneResponse<bool>()
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
-                Message = "El token es invalido."
+                Message = "Token invalido."
             };
 
         // Respuesta de Iam.

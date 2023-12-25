@@ -14,13 +14,14 @@ public class AccountLogsController : ControllerBase
     public async Task<HttpReadAllResponse<LoginLogModel>> GetAll([FromHeader] string token)
     {
 
-        // JWT.
-        var (isValid, _, userId, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Validación.
-        if (!isValid)
-            return new(Responses.Unauthorized)
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
+                Response = Responses.Unauthorized,
                 Message = "Token invalido."
             };
 

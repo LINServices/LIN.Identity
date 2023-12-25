@@ -23,28 +23,27 @@ public class PolicyController : ControllerBase
                 Response = Responses.InvalidParam
             };
 
-        // Validación del token
-        var (isValid, _, _, _, _, identity) = Jwt.Validate(token); ;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido
-        if (!isValid)
-            return new CreateResponse
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
-                Message = "Token invalido.",
-                Response = Responses.Unauthorized
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
             };
-
 
         // Acceso IAM.
-        var iam = await Services.Iam.Directories.ValidateAccess(identity, policy.DirectoryId);
+        // var iam = await Services.Iam.Directories.ValidateAccess(identity, policy.DirectoryId);
 
         // SI no tiene permisos de modificación.
-        if (iam.Model != IamLevels.Privileged)
-            return new CreateResponse
-            {
-                Message = "No tienes permiso para modificar este directorio.",
-                Response = Responses.Unauthorized
-            };
+        //if (iam.Model != IamLevels.Privileged)
+        //    return new CreateResponse
+        //    {
+        //        Message = "No tienes permiso para modificar este directorio.",
+        //        Response = Responses.Unauthorized
+        //    };
 
 
         return await Data.Policies.Create(new()
@@ -116,14 +115,14 @@ public class PolicyController : ControllerBase
             };
 
         // Acceso IAM.
-        var iam = await Services.Iam.Directories.ValidateAccess(identity, directory);
+        var (_, _, roles) = await Queries.Directories.Get(identity);
 
-        // No tiene acceso.
-        if (iam.Model == IamLevels.NotAccess || iam.Model == IamLevels.Guest)
+        // Si no hay acceso.
+        if (Roles.ViewPolicy(roles))
             return new()
             {
-                Message = "No tienes acceso a este directoriopp.",
-                Response = Responses.Unauthorized
+                Response = Responses.Unauthorized,
+                Message = "No tienes permisos para visualizar las políticas de este recurso."
             };
 
         // Respuesta.

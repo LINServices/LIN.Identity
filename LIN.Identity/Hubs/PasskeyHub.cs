@@ -266,13 +266,6 @@ public class PassKeyHub : Hub
                 Identity = new()
                 {
                     Unique = userUnique
-                },
-                OrganizationAccess = new()
-                {
-                    Organization = new()
-                    {
-                        ID = orgID
-                    }
                 }
             }, app.Model.ID);
 

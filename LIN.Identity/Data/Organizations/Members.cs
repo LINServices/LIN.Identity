@@ -24,17 +24,11 @@ public class Members
 
 
 
-    // <summary>
-    /// Crea una cuenta en una organización
-    /// </summary>
-    /// <param name="data">Modelo</param>
-    /// <param name="orgID">ID de la organización</param>
-    /// <param name="rol">Rol dentro de la organización</param>
-    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, OrgRoles rol)
+    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int dir, DirectoryRoles rol)
     {
 
         var (context, contextKey) = Conexión.GetOneConnection();
-        var res = await Create(data, orgID, rol, context);
+        var res = await Create(data, dir, rol, context);
         context.CloseActions(contextKey);
         return res;
     }
@@ -51,7 +45,7 @@ public class Members
     /// <param name="orgID">ID de la organización</param>
     /// <param name="rol">Rol dentro de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int orgID, OrgRoles rol, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int directory, DirectoryRoles rol, Conexión context)
     {
 
         data.ID = 0;
@@ -62,46 +56,37 @@ public class Members
             try
             {
 
+                // Guardar la cuenta.
+                context.DataBase.Accounts.Add(data);
+                context.DataBase.SaveChanges();
+
                 // Obtiene la organización.
-                OrganizationModel? organization = await (from org in context.DataBase.Organizations
-                                                        where org.ID == orgID
-                                                        select org).FirstOrDefaultAsync();
+                int directoryId = await (from org in context.DataBase.Organizations
+                                         where org.DirectoryId == directory
+                                         select org.DirectoryId).FirstOrDefaultAsync();
 
                 // No existe la organización.
-                if (organization == null)
+                if (directoryId <= 0)
                 {
                     transaction.Rollback();
                     return new(Responses.NotRows);
                 }
 
-                // Modelo de acceso.
-                data.OrganizationAccess = new()
+                // Modelo del integrante.
+                var member = new DirectoryMember()
                 {
-                    Member = data,
-                    Rol = rol,
-                    Organization = organization
-                };
-
-
-                // Guardar la cuenta.
-                await context.DataBase.Accounts.AddAsync(data);
-                context.DataBase.SaveChanges();
-
-                // Miembro del directorio.
-                var memberOnDirectory = new DirectoryMember
-                {
-                   Identity= data.Identity,
                     Directory = new()
                     {
-                        ID = organization.DirectoryId
-                    }
+                        ID = directoryId
+                    },
+                    Identity = data.Identity
                 };
 
-                // Guardar el miembro en el directorio.
-                context.DataBase.Attach(memberOnDirectory.Directory);
-                context.DataBase.DirectoryMembers.Add(memberOnDirectory);
+                // El directorio ya existe.
+                context.DataBase.Attach(member.Directory);
 
                 // Guardar cambios.
+                context.DataBase.DirectoryMembers.Add(member);
                 context.DataBase.SaveChanges();
 
                 // Enviar la transacción.
@@ -136,32 +121,30 @@ public class Members
         {
 
             // Organización
-            var org = from O in context.DataBase.OrganizationAccess
-                      where O.Organization.ID == id
-                      select new AccountModel
-                      {
-                          Creación = O.Member.Creación,
-                          ID = O.Member.ID,
-                          Nombre = O.Member.Nombre,
-                          Identity = new()
-                          {
-                              Id = O.Member.Identity.Id,
-                              Type = O.Member.Identity.Type,
-                              Unique = O.Member.Identity.Unique
-                          },
-                          OrganizationAccess = new()
-                          {
-                              Rol = O.Member.OrganizationAccess == null ? OrgRoles.Undefine : O.Member.OrganizationAccess.Rol
-                          }
-                      };
+            var members = from org in context.DataBase.Organizations
+                          where org.ID == id
+                          join m in context.DataBase.DirectoryMembers
+                          on org.DirectoryId equals m.DirectoryId
+                          select org.Directory;
 
-            var orgList = await org.ToListAsync();
 
-            // Email no existe
-            if (org == null)
-                return new(Responses.NotRows);
+            var accounts = await (from account in context.DataBase.Accounts
+                                  join m in members
+                                  on account.IdentityId equals m.IdentityId
+                                  select new AccountModel
+                                  {
+                                      Creación = account.Creación,
+                                      ID = account.ID,
+                                      Nombre = account.Nombre,
+                                      Identity = new()
+                                      {
+                                          Id = account.Identity.Id,
+                                          Type = IdentityTypes.Account,
+                                          Unique = account.Identity.Unique
+                                      }
+                                  }).ToListAsync();
 
-            return new(Responses.Success, orgList);
+            return new(Responses.Success, accounts);
         }
         catch
         {
