@@ -26,7 +26,7 @@ try
 
 
 
-    var sqlConnection = builder.Configuration["ConnectionStrings:somee"] ?? string.Empty;
+    var sqlConnection = builder.Configuration["ConnectionStrings:local"] ?? string.Empty;
 
 
     // Servicio de BD

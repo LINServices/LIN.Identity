@@ -25,16 +25,14 @@ public static class Applications
                 Model = IamLevels.NotAccess
             };
 
-
         // App publica.
         if (resource.Model.DirectoryId <= 0)
-        {
             return new()
             {
                 Response = Responses.Success,
                 Model = IamLevels.Visualizer
             };
-        }
+        
 
 
 
@@ -47,7 +45,7 @@ public static class Applications
                         select a.IdentityId).FirstOrDefault();
 
 
-        var (directories, _) = await Queries.Directories.Get(identity);
+        var (directories, _,_) = await Queries.Directories.Get(identity);
 
 
         // Tiene acceso.

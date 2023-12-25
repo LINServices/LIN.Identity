@@ -65,12 +65,13 @@ public class AccountController : ControllerBase
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Información del token.
-        var (isValid, _, user, orgId, _, _) = Jwt.Validate(token);;
 
-        // Token es invalido.
-        if (!isValid)
-            return new ReadOneResponse<AccountModel>()
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
+
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
@@ -79,12 +80,11 @@ public class AccountController : ControllerBase
         // Obtiene el usuario.
         var response = await Data.Accounts.Read(id, new()
         {
-            ContextOrg = orgId,
-            ContextUser = user,
-            FindOn = FilterModels.FindOn.StableAccounts,
-            IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
+            ContextAccount = tokenInfo.AccountId,
+            FindOn = Models.FindOn.StableAccounts,
+            IncludeOrg = Models.IncludeOrg.IncludeIf,
             IsAdmin = false,
-            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+            OrgLevel = Models.IncludeOrgLevel.Advance
         });
 
         // Si es erróneo
@@ -117,11 +117,11 @@ public class AccountController : ControllerBase
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Información del token.
-        var (isValid, _, userId, orgId, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido.
-        if (!isValid)
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
             return new()
             {
                 Response = Responses.Unauthorized,
@@ -131,11 +131,10 @@ public class AccountController : ControllerBase
         // Obtiene el usuario.
         var response = await Data.Accounts.Read(user, new()
         {
-            ContextOrg = orgId,
-            ContextUser = userId,
-            FindOn = FilterModels.FindOn.StableAccounts,
-            IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
-            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+            ContextAccount = tokenInfo.AccountId,
+            FindOn = Models.FindOn.StableAccounts,
+            IncludeOrg = Models.IncludeOrg.IncludeIf,
+            OrgLevel = Models.IncludeOrgLevel.Advance
         });
 
         // Si es erróneo
@@ -169,25 +168,24 @@ public class AccountController : ControllerBase
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Info del token
-        var (isValid, _, userId, orgId, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido
-        if (!isValid)
-            return new ReadAllResponse<AccountModel>
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
-                Message = "Token es invalido",
-                Response = Responses.Unauthorized
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
             };
 
         // Obtiene el usuario
         var response = await Data.Accounts.Search(pattern, new()
         {
-            ContextOrg = orgId,
-            ContextUser = userId,
-            FindOn = FilterModels.FindOn.StableAccounts,
-            IncludeOrg = FilterModels.IncludeOrg.IncludeIf,
-            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+            ContextAccount = tokenInfo.AccountId,
+            FindOn = Models.FindOn.StableAccounts,
+            IncludeOrg = Models.IncludeOrg.IncludeIf,
+            OrgLevel = Models.IncludeOrgLevel.Advance
         });
 
         return response;
@@ -212,11 +210,11 @@ public class AccountController : ControllerBase
             };
 
 
-        // Información del token.
-        var (isValid, _, userId, orgId, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Es invalido.
-        if (!isValid)
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
             return new()
             {
                 Response = Responses.Unauthorized,
@@ -226,11 +224,10 @@ public class AccountController : ControllerBase
         // Obtiene el usuario
         var response = await Data.Accounts.FindAll(ids, new()
         {
-            ContextOrg = orgId,
-            ContextUser = userId,
-            FindOn = FilterModels.FindOn.StableAccounts,
-            IncludeOrg = FilterModels.IncludeOrg.Include,
-            OrgLevel = FilterModels.IncludeOrgLevel.Advance
+            ContextAccount = tokenInfo.AccountId,
+            FindOn = Models.FindOn.StableAccounts,
+            IncludeOrg = Models.IncludeOrg.Include,
+            OrgLevel = Models.IncludeOrgLevel.Advance
         });
 
         return response;
@@ -249,14 +246,16 @@ public class AccountController : ControllerBase
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        var (isValid, _, _, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-
-        if (!isValid)
-        {
-            return new(Responses.Unauthorized);
-        }
-
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
+            };
 
         var rol = AccountRoles.User;
 
@@ -268,10 +267,10 @@ public class AccountController : ControllerBase
         var response = await Data.Accounts.Search(pattern, new()
         {
             ContextOrg = 0,
-            OrgLevel = FilterModels.IncludeOrgLevel.Advance,
-            ContextUser = 0,
-            FindOn = FilterModels.FindOn.AllAccount,
-            IncludeOrg = FilterModels.IncludeOrg.Include,
+            OrgLevel = Models.IncludeOrgLevel.Advance,
+            ContextAccount = 0,
+            FindOn = Models.FindOn.AllAccount,
+            IncludeOrg = Models.IncludeOrg.Include,
             IsAdmin = true
         });
 
@@ -290,19 +289,19 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo, [FromHeader] string token)
     {
 
-        // Información del token.
-        var (isValid, _, userId, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Es invalido.
-        if (!isValid)
-            return new ResponseBase
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
-                Message = "Token Invalido"
+                Message = "Token invalido."
             };
 
         // Organizar el modelo.
-        modelo.Identity.Id = userId;
+        modelo.Identity.Id = tokenInfo.IdentityId;
         modelo.Perfil = Image.Zip(modelo.Perfil ?? []);
 
         if (modelo.Identity.Id <= 0 || modelo.Nombre.Any())
@@ -323,11 +322,11 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromHeader] string token, [FromHeader] Genders genero)
     {
 
-        // Información del token.
-        var (isValid, _, id, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido.
-        if (!isValid)
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
             return new()
             {
                 Response = Responses.Unauthorized,
@@ -350,11 +349,11 @@ public class AccountController : ControllerBase
     public async Task<HttpResponseBase> Update([FromHeader] string token, [FromHeader] AccountVisibility visibility)
     {
 
-        // Información del token.
-        var (isValid, _, id, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido.
-        if (!isValid)
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
             return new()
             {
                 Response = Responses.Unauthorized,

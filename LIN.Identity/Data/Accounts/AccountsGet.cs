@@ -8,13 +8,28 @@ internal static partial class Accounts
     #region Abstracciones
 
 
-    public static async Task<ReadOneResponse<AccountModel>> Read(int id, FilterModels.Account filters)
+    public static async Task<ReadOneResponse<AccountModel>> Read(int id, Models.Account filters)
     {
 
         // Obtiene la conexión
         var (context, connectionKey) = Conexión.GetOneConnection();
 
         var res = await Read(id, filters, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
+
+
+    public static async Task<ReadOneResponse<AccountModel>> ReadByIdentity(int id, Models.Account filters)
+    {
+
+        // Obtiene la conexión
+        var (context, connectionKey) = Conexión.GetOneConnection();
+
+        var res = await ReadByIdentity(id, filters, context);
         context.CloseActions(connectionKey);
         return res;
 
@@ -30,7 +45,7 @@ internal static partial class Accounts
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="includeOrg">Incluir la organización</param>
-    public static async Task<ReadOneResponse<AccountModel>> Read(string user, FilterModels.Account filters)
+    public static async Task<ReadOneResponse<AccountModel>> Read(string user, Models.Account filters)
     {
 
         // Obtiene la conexión
@@ -87,7 +102,7 @@ internal static partial class Accounts
     /// <param name="pattern">Patron de búsqueda</param>
     /// <param name="me">Mi ID</param>
     /// <param name="orgId">ID de la org de contexto</param>
-    public static async Task<ReadAllResponse<AccountModel>> Search(string pattern, FilterModels.Account filters)
+    public static async Task<ReadAllResponse<AccountModel>> Search(string pattern, Models.Account filters)
     {
 
         // Obtiene la conexión
@@ -109,7 +124,7 @@ internal static partial class Accounts
     /// <param name="ids">Lista de IDs</param>
     /// <param name="me">ID del usuario contexto</param>
     /// <param name="org">ID de organización</param>
-    public static async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, FilterModels.Account filters)
+    public static async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, Models.Account filters)
     {
 
         // Obtiene la conexión
@@ -132,14 +147,47 @@ internal static partial class Accounts
     /// <param name="id">ID del usuario</param>
     /// <param name="filters">Filtros de búsqueda</param>
     /// <param name="context">Contexto de base de datos</param>
-    public static async Task<ReadOneResponse<AccountModel>> Read(int id, FilterModels.Account filters, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Read(int id, Models.Account filters, Conexión context)
     {
 
         // Ejecución
         try
         {
 
-            var query = Queries.Accounts.GetAccounts(id, filters, context);
+            var query = Queries.Identities.GetAccounts(id, filters, context);
+
+            // Obtiene el usuario
+            var result = await query.FirstOrDefaultAsync();
+
+            // Si no existe el modelo
+            if (result == null)
+                return new(Responses.NotExistAccount);
+
+            return new(Responses.Success, result);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+    /// <summary>
+    /// Obtiene un usuario
+    /// </summary>
+    /// <param name="id">ID de la identidad</param>
+    /// <param name="filters">Filtros de búsqueda</param>
+    /// <param name="context">Contexto de base de datos</param>
+    public static async Task<ReadOneResponse<AccountModel>> ReadByIdentity(int id, Models.Account filters, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            var query = Queries.Identities.GetAccountsByIdentity(id, filters, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -165,14 +213,14 @@ internal static partial class Accounts
     /// <param name="user">Usuario único</param>
     /// <param name="filters">Filtros de búsqueda</param>
     /// <param name="context">Contexto de base de datos</param>
-    public static async Task<ReadOneResponse<AccountModel>> Read(string user, FilterModels.Account filters, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Read(string user, Models.Account filters, Conexión context)
     {
 
         // Ejecución
         try
         {
 
-            var query = Queries.Accounts.GetAccounts(user, filters, context);
+            var query = Queries.Identities.GetAccounts(user, filters, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();
@@ -201,14 +249,14 @@ internal static partial class Accounts
     /// <param name="orgId">ID de la organización de contexto</param>
     /// <param name="isAdmin">Es administrador</param>
     /// <param name="context">Contexto de base de datos</param>
-    public static async Task<ReadAllResponse<AccountModel>> Search(string pattern, FilterModels.Account filters, Conexión context)
+    public static async Task<ReadAllResponse<AccountModel>> Search(string pattern, Models.Account filters, Conexión context)
     {
 
         // Ejecución
         try
         {
 
-            List<AccountModel> accountModels = await Queries.Accounts.Search(pattern, filters, context).Take(10).ToListAsync();
+            List<AccountModel> accountModels = await Queries.Identities.Search(pattern, filters, context).Take(10).ToListAsync();
 
             // Si no existe el modelo
             if (accountModels == null)
@@ -232,14 +280,14 @@ internal static partial class Accounts
     /// <param name="me">ID del usuario contexto</param>
     /// <param name="org">ID de la organización de contexto</param>
     /// <param name="context">Contexto de base de datos</param>
-    public static async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, FilterModels.Account filters, Conexión context)
+    public static async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, Models.Account filters, Conexión context)
     {
 
         // Ejecución
         try
         {
 
-            var query = Queries.Accounts.GetAccounts(ids, filters, context);
+            var query = Queries.Identities.GetAccounts(ids, filters, context);
 
             // Ejecuta
             var result = await query.ToListAsync();
@@ -271,7 +319,7 @@ internal static partial class Accounts
         try
         {
 
-            var query = from account in Queries.Accounts.GetValidAccounts(context)
+            var query = from account in Queries.Identities.GetValidAccounts(context)
                         where account.ID == id
                         select new AccountModel
                         {
@@ -284,8 +332,7 @@ internal static partial class Accounts
                             },
                             Contraseña = account.Contraseña,
                             Estado = account.Estado,
-                            Nombre = account.Nombre,
-                            OrganizationAccess = account.OrganizationAccess
+                            Nombre = account.Nombre
                         };
 
             // Obtiene el usuario
@@ -318,7 +365,7 @@ internal static partial class Accounts
         try
         {
 
-            var query = from account in Queries.Accounts.GetValidAccounts(context)
+            var query = from account in Queries.Identities.GetValidAccounts(context)
                         where account.Identity.Unique == user
                         select new AccountModel
                         {
@@ -331,8 +378,7 @@ internal static partial class Accounts
                             },
                             Contraseña = account.Contraseña,
                             Estado = account.Estado,
-                            Nombre = account.Nombre,
-                            OrganizationAccess = account.OrganizationAccess
+                            Nombre = account.Nombre
                         };
 
             // Obtiene el usuario

@@ -39,6 +39,19 @@ public class Organizations
 
 
 
+    public static async Task<ReadOneResponse<DirectoryMember>> FindBaseDirectory(int id)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await FindBaseDirectory(id, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
+
+
+
+
+
     #endregion
 
 
@@ -60,95 +73,51 @@ public class Organizations
             try
             {
 
-                // Lista de cuentas.
-                List<AccountModel> accounts = [];
+                // Guardar datos.
+                await context.DataBase.Organizations.AddAsync(data);
 
-                // Enumerar las cuentas actuales.
-                foreach (var account in data.Members.Select(t => t.Member))
-                {
-                    AccountModel accountModel = new()
-                    {
-                        Birthday = account.Birthday,
-                        Contraseña = account.Contraseña,
-                        Creación = account.Creación,
-                        Estado = account.Estado,
-                        ID = 0,
-                        Identity = account.Identity,
-                        Insignia = account.Insignia,
-                        Nombre = account.Nombre,
-                        Visibilidad = account.Visibilidad,
-                        Rol = account.Rol,
-                        Perfil = account.Perfil,
-                        OrganizationAccess = null,
-                        IdentityId = 0,
-                    };
-
-                    accounts.Add(accountModel);
-                    context.DataBase.Accounts.Add(accountModel);
-                }
-
-                // Guardar cambios.
+                // Guardar en BD.
                 context.DataBase.SaveChanges();
 
-                // Modelo la organización.
-                OrganizationModel org = new()
+                // Cuenta de administración.
+                AccountModel account = new()
                 {
+                    Contraseña = "root123",
+                    Creación = DateTime.Now,
+                    Estado = AccountStatus.Normal,
+                    Gender = Genders.Undefined,
                     ID = 0,
-                    Domain = data.Domain,
-                    Name = data.Name,
-                    IsPublic = data.IsPublic,
-                    Members = [],
-                    Directory = new()
+                    Identity = new()
                     {
-                        Creación = DateTime.Now,
-                        ID = 0,
-                        Identity = new()
-                        {
-                            Unique = data.Directory.Identity.Unique,
-                            Type = IdentityTypes.Directory
-                        },
-                        Nombre = data.Directory.Nombre,
-                        IdentityId = 0,
-                        Policies =
-                        [
-                            new PolicyModel
-                            {
-                                 Creation = DateTime.Now,
-                                 Id =0,
-                                 Type = PolicyTypes.PasswordLength,
-                                 ValueJson = """ {"length": 8} """
-                            }
-                        ]
-                    }
+                        DirectoryMembers = [],
+                        Id = 0,
+                        Type = IdentityTypes.Account,
+                        Unique = $"root@{data.Directory.Identity.Unique}",
+                        Roles = [new() { Rol = DirectoryRoles.SuperManager }],
+                    },
+                    Insignia = AccountBadges.None,
+                    Nombre = $"Root user {data.Directory.Identity.Unique}",
+                    Perfil = [],
+                    Rol = AccountRoles.User,
+                    Visibilidad = AccountVisibility.Hidden,
+                    IdentityId = 0
                 };
 
+                // Procesar la cuenta.
+                account = Account.Process(account);
 
-                // Agregar miembros.
-                foreach (var account in accounts)
+                // Guardar la cuenta.
+                context.DataBase.Accounts.Add(account);
+
+                // Agregar el miembro.
+                data.Directory.Members.Add(new()
                 {
-                    // Miembros de la organización.
-                    org.Members.Add(new()
-                    {
-                        Member = account,
-                        Organization = org,
-                        Rol = OrgRoles.SuperManager
-                    });
-
-                    // Miembros del directorio.
-                    org.Directory.Members.Add(new()
-                    {
-                        Identity = account.Identity,
-                        Directory = org.Directory,
-                        Rol = DirectoryRoles.Administrator
-                    });
-                }
+                    Directory = data.Directory,
+                    Identity = account.Identity
+                });
 
 
-                // Agregar el modelo.
-                await context.DataBase.Organizations.AddAsync(org);
-
-                // Guardar en la BD.
-                context.DataBase.SaveChanges();
+                context.DataBase.SaveChanges(); ;
 
                 // Commit cambios.
                 transaction.Commit();
@@ -183,15 +152,12 @@ public class Organizations
             // Query
             var org = await (from E in context.DataBase.Organizations
                              where E.ID == id
-
                              select new OrganizationModel
                              {
                                  Directory = null!,
                                  DirectoryId = id,
-                                 Domain = E.Domain,
                                  ID = E.ID,
                                  IsPublic = E.IsPublic,
-                                 Members = null!,
                                  Name = E.Name,
                              }).FirstOrDefaultAsync();
 
@@ -200,6 +166,35 @@ public class Organizations
                 return new(Responses.NotRows);
 
             return new(Responses.Success, org);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+    public static async Task<ReadOneResponse<DirectoryMember>> FindBaseDirectory(int identity, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Roles de integrante base.
+            DirectoryRoles[] roles = [DirectoryRoles.AccountsOperator, DirectoryRoles.Operator, DirectoryRoles.Manager, DirectoryRoles.SuperManager, DirectoryRoles.Regular];
+
+            // Consulta.
+            var query = await (from org in context.DataBase.Organizations
+                               select org.Directory.Members.Where(t => t.IdentityId == identity).FirstOrDefault()).FirstOrDefaultAsync();
+
+            // Email no existe
+            if (query == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, query);
         }
         catch
         {

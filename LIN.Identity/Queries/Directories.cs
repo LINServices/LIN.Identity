@@ -9,18 +9,38 @@ public class Directories
     /// Obtiene las identidades y directorios.
     /// </summary>
     /// <param name="identity">Identidad base</param>
-    public static async Task<(List<int> directories, List<int> identities)> Get(int identity)
+    public static async Task<(List<int> directories, List<int> identities, List<DirectoryRoles> roles)> Get(int identity)
     {
         List<int> identities = [identity];
         List<int> directories = [];
+        List<DirectoryRoles> roles = [];
 
         var (context, contextKey) = Conexión.GetOneConnection();
 
-        await Get(identity, context, identities, directories);
+        await Get(identity, context, identities, directories, roles);
 
         context.CloseActions(contextKey);
-        return (directories, identities);
+        return (directories, identities, roles);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31,7 +51,8 @@ public class Directories
     /// <param name="context">Contexto</param>
     /// <param name="identities">Lista de identidades.</param>
     /// <param name="directories">Directorios</param>
-    private static async Task Get(int identityBase, Conexión context, List<int> identities, List<int> directories)
+    /// <param name="roles">Roles</param>
+    private static async Task Get(int identityBase, Conexión context, List<int> identities, List<int> directories, List<DirectoryRoles> roles)
     {
         // Consulta.
         var query = from DM in context.DataBase.DirectoryMembers
@@ -40,7 +61,8 @@ public class Directories
                     select new
                     {
                         Identity = DM.Directory.Identity.Id,
-                        Directory = DM.Directory.ID
+                        Directory = DM.Directory.ID,
+                        Roles = DM.Identity.Roles.Select(x => x.Rol).DistinctBy(t => t)
                     };
 
         // Si hay elementos.
@@ -49,9 +71,10 @@ public class Directories
             var local = query.ToList();
             identities.AddRange(local.Select(t => t.Identity));
             directories.AddRange(local.Select(t => t.Directory));
+            roles.AddRange(local.Select(t => t.Roles).SelectMany(t => t));
 
             foreach (var id in local)
-                await Get(id.Identity, context, identities, directories);
+                await Get(id.Identity, context, identities, directories, roles);
 
         }
 

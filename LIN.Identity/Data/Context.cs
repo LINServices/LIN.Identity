@@ -35,11 +35,6 @@ public class Context : DbContext
     public DbSet<DirectoryMember> DirectoryMembers { get; set; }
 
 
-    /// <summary>
-    /// Accesos a organizaciones.
-    /// </summary>
-    public DbSet<OrganizationAccessModel> OrganizationAccess { get; set; }
-
 
     /// <summary>
     /// Tabla de aplicaciones
@@ -89,11 +84,6 @@ public class Context : DbContext
            .IsUnique();
 
         // Indices y identidad.
-        modelBuilder.Entity<OrganizationModel>()
-           .HasIndex(e => e.Domain)
-           .IsUnique();
-
-        // Indices y identidad.
         modelBuilder.Entity<ApplicationModel>()
            .HasIndex(e => e.Key)
            .IsUnique();
@@ -126,7 +116,7 @@ public class Context : DbContext
        .WithMany()
        .HasForeignKey(p => p.ApplicationID)
        .OnDelete(DeleteBehavior.NoAction);
-       ;
+        ;
 
 
         modelBuilder.Entity<LoginLogModel>()
@@ -135,13 +125,6 @@ public class Context : DbContext
  .HasForeignKey(p => p.AccountID);
 
 
-
-
-        modelBuilder.Entity<OrganizationAccessModel>()
-            .HasOne(oa => oa.Organization)
-            .WithMany(o => o.Members)
-            .HasForeignKey(oa => oa.OrganizationId)
-            .OnDelete(DeleteBehavior.Restrict);
 
 
         modelBuilder.Entity<DirectoryMember>()
@@ -163,20 +146,12 @@ public class Context : DbContext
          .HasOne(p => p.Directory)
          .WithMany(d => d.Policies)
          .HasForeignKey(p => p.DirectoryId)
-          .OnDelete(DeleteBehavior.Restrict); 
+          .OnDelete(DeleteBehavior.Restrict);
 
 
 
 
 
-
-
-        // Configure OrganizationAccessModel
-        modelBuilder.Entity<OrganizationAccessModel>()
-            .HasOne(o => o.Member)
-            .WithOne(a => a.OrganizationAccess)
-            .HasForeignKey<OrganizationAccessModel>(o => o.MemberId)
-            .IsRequired();
 
         modelBuilder.Entity<DirectoryMember>()
          .HasKey(t => new
@@ -185,12 +160,6 @@ public class Context : DbContext
              t.DirectoryId
          });
 
-        modelBuilder.Entity<OrganizationAccessModel>()
-         .HasKey(t => new
-         {
-             t.MemberId,
-             t.OrganizationId
-         });
 
 
         // Nombre de la identidades.
@@ -201,7 +170,6 @@ public class Context : DbContext
         modelBuilder.Entity<EmailModel>().ToTable("EMAILS");
         modelBuilder.Entity<DirectoryModel>().ToTable("DIRECTORIES");
         modelBuilder.Entity<DirectoryMember>().ToTable("DIRECTORY_MEMBERS");
-        modelBuilder.Entity<OrganizationAccessModel>().ToTable("ORGANIZATIONS_MEMBERS");
         modelBuilder.Entity<LoginLogModel>().ToTable("LOGS");
         modelBuilder.Entity<PolicyModel>().ToTable("POLICIES");
 

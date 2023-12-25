@@ -13,7 +13,7 @@ public class MemberController : ControllerBase
     /// <param name="token">Token de acceso de un administrador</param>
     /// <param name="rol">Rol asignado</param>
     [HttpPost]
-    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] OrgRoles rol)
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] DirectoryRoles rol)
     {
 
         // Validación del modelo.
@@ -37,19 +37,16 @@ public class MemberController : ControllerBase
         // Contraseña default
         modelo.Contraseña = EncryptClass.Encrypt(password);
 
-        // Validación del token
-        var (isValid, _, userID, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido
-        if (!isValid)
-        {
-            return new CreateResponse
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
-                Message = "Token invalido.",
-                Response = Responses.Unauthorized
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
             };
-        }
-
 
         // Obtiene el usuario
         var userContext = await Data.Accounts.ReadBasic(userID);
@@ -64,47 +61,37 @@ public class MemberController : ControllerBase
             };
         }
 
-        // Si el usuario no tiene una organización
-        if (userContext.Model.OrganizationAccess == null)
+
+        var orgBase = await Data.Organizations.Organizations.FindBaseDirectory(userContext.Model.IdentityId);
+
+        if (orgBase.Response != Responses.Success)
         {
-            return new CreateResponse
+            return new()
             {
-                Message = $"El usuario '{userContext.Model.Identity.Unique}' no pertenece a una organización.",
-                Response = Responses.Unauthorized
+                Response = Responses.NotRows,
+                Message = "No se encontró una organización permitida a este usuario."
             };
         }
 
-        // Verificación del rol dentro de la organización
-        if (!userContext.Model.OrganizationAccess.Rol.IsAdmin())
-        {
-            return new CreateResponse
-            {
-                Message = $"El usuario '{userContext.Model.Identity.Unique}' no puede crear nuevos usuarios en esta organización.",
-                Response = Responses.Unauthorized
-            };
-        }
+        // Validar acceso en el directorio con IAM.
+        //var iam = await Services.Iam.Directories.ValidateAccess(userContext.Model.IdentityId, orgBase.Model.DirectoryId);
 
 
-        // Verificación del rol dentro de la organización
-        if (userContext.Model.OrganizationAccess.Rol.IsGretter(rol))
-        {
-            return new CreateResponse
-            {
-                Message = $"El '{userContext.Model.Identity.Unique}' no puede crear nuevos usuarios con mas privilegios de los propios.",
-                Response = Responses.Unauthorized
-            };
-        }
+        //DirectoryRoles[] roles = [DirectoryRoles.System, DirectoryRoles.SuperManager, DirectoryRoles.Manager, DirectoryRoles.AccountsOperator, DirectoryRoles.Operator];
 
 
-        // ID de la organización
-        var org = userContext.Model.OrganizationAccess.OrganizationId;
-
+        //if (!roles.Contains(iam.Model))
+        //    return new CreateResponse
+        //    {
+        //        Message = $"No tienes permisos suficientes para crear nuevas cuentas en el directorio general de tu organización.",
+        //        Response = Responses.Unauthorized
+        //    };
 
         // Conexión
         var (context, connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await Data.Organizations.Members.Create(modelo, org, rol, context);
+        var response = await Data.Organizations.Members.Create(modelo, orgBase.Model.DirectoryId, rol, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -134,7 +121,7 @@ public class MemberController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, _, orgID, _, _) = Jwt.Validate(token);;
+        var (isValid, _, _, orgID, _, _) = Jwt.Validate(token); ;
 
         // Si el token es invalido.
         if (!isValid)

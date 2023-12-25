@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using LIN.Identity.Models;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace LIN.Identity.Services;
@@ -46,7 +47,6 @@ public class Jwt
             new Claim(ClaimTypes.PrimarySid, user.ID.ToString()),
             new Claim(ClaimTypes.NameIdentifier, user.Identity.Unique),
             new Claim(ClaimTypes.Role, ((int)user.Rol).ToString()),
-            new Claim(ClaimTypes.UserData, (user.OrganizationAccess?.Organization.ID).ToString() ?? ""),
             new Claim(ClaimTypes.GroupSid, (user.Identity.Id).ToString() ?? ""),
             new Claim(ClaimTypes.Authentication, appID.ToString())
         };
@@ -67,7 +67,7 @@ public class Jwt
     /// Valida un JSON Web token
     /// </summary>
     /// <param name="token">Token a validar</param>
-    internal static (bool isValid, string user, int userID, int orgID, int appID, int identity) Validate(string token)
+    internal static JwtModel Validate(string token)
     {
         try
         {
@@ -75,7 +75,10 @@ public class Jwt
 
             // Comprobación
             if (string.IsNullOrWhiteSpace(token))
-                return (false, string.Empty, 0, 0, 0, 0);
+                return new()
+                {
+                    IsAuthenticated = false
+                };
 
             // Configurar la clave secreta
             var key = Encoding.ASCII.GetBytes(JwtKey);
@@ -104,13 +107,19 @@ public class Jwt
 
                 // 
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.PrimarySid)?.Value, out var id);
-                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.UserData)?.Value, out var orgID);
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Authentication)?.Value, out var appID);
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.GroupSid)?.Value, out var identityId);
 
 
                 // Devuelve una respuesta exitosa
-                return (true, user ?? string.Empty, id, orgID, appID, identityId);
+                return new()
+                {
+                    IsAuthenticated = true,
+                    AccountId = id,
+                    ApplicationId = appID,
+                    IdentityId = identityId,
+                    Unique = user ?? ""
+                };
 
             }
             catch (SecurityTokenException)
@@ -121,7 +130,10 @@ public class Jwt
         }
         catch { }
 
-        return (false, string.Empty, 0, 0, 0, 0);
+        return new()
+        {
+            IsAuthenticated = false
+        };
 
     }
 

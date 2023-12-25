@@ -107,7 +107,6 @@ public class DirectoryMembers
                                      where directoryMember.DirectoryId == directoryId
                                      select new DirectoryMember
                                      {
-                                         Rol = directoryMember.Rol,
                                          DirectoryId = directoryMember.DirectoryId,
                                          Identity = new()
                                          {

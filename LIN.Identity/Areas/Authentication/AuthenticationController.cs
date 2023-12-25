@@ -31,9 +31,9 @@ public class AuthenticationController : ControllerBase
         {
             SensibleInfo = true,
             IsAdmin = true,
-            IncludeOrg = FilterModels.IncludeOrg.Include,
-            OrgLevel = FilterModels.IncludeOrgLevel.Advance,
-            FindOn = FilterModels.FindOn.StableAccounts
+            IncludeOrg = Models.IncludeOrg.Include,
+            OrgLevel = Models.IncludeOrgLevel.Advance,
+            FindOn = Models.FindOn.StableAccounts
         });
 
         // Validación al obtener el usuario
@@ -56,8 +56,7 @@ public class AuthenticationController : ControllerBase
         LoginService strategy;
 
         // Definir la estrategia
-        strategy = response.Model.OrganizationAccess == null ? new LoginNormal(response.Model, application, password)
-            : new LoginOnOrg(response.Model, application, password);
+        strategy = new LoginNormal(response.Model, application, password);
 
         // Respuesta del login
         var loginResponse = await strategy.Login();
@@ -91,24 +90,25 @@ public class AuthenticationController : ControllerBase
     public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token)
     {
 
-        // Información del token de acceso.
-        var (isValid, _, user, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Si el token es invalido.
-        if (!isValid)
-            return new(Responses.InvalidParam)
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
-                Message = "El token proporcionado no es valido."
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
             };
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, new()
+        var response = await Data.Accounts.Read(user, new Models.Account()
         {
             SensibleInfo = true,
             IsAdmin = true,
-            IncludeOrg = FilterModels.IncludeOrg.Include,
-            OrgLevel = FilterModels.IncludeOrgLevel.Advance,
-            FindOn = FilterModels.FindOn.StableAccounts
+            IncludeOrg = Models.IncludeOrg.Include,
+            OrgLevel = Models.IncludeOrgLevel.Advance,
+            FindOn = Models.FindOn.StableAccounts
         });
 
         if (response.Response != Responses.Success)

@@ -20,12 +20,12 @@ public class DirectoryController : ControllerBase
         if (id <= 0)
             return new(Responses.InvalidParam);
 
-        // Información del token.
-        var (isValid, _, _, _, _, identity) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido.
-        if (!isValid)
-            return new ReadOneResponse<DirectoryMember>()
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
@@ -33,17 +33,17 @@ public class DirectoryController : ControllerBase
 
 
         // Acceso IAM.
-        var iam = await Services.Iam.Directories.ValidateAccess(identity, id);
+        var (_, _, roles) = await Queries.Directories.Get(tokenInfo.IdentityId);
 
-        // Validar Iam.
-        if (iam.Model == IamLevels.NotAccess)
+        // Si no hay acceso.
+        if (Roles.View(roles))
             return new ReadOneResponse<DirectoryMember>()
             {
-                Message = "No tienes acceso a este directorio, si crees que es un error comunícate con tu administrador.",
-                Response = Responses.Unauthorized
+                Response = Responses.Unauthorized,
+                Message = "No tienes permisos para acceder a este recurso."
             };
 
-        // Obtiene el usuario.
+        // Obtiene el directorio.
         var response = await Data.Directories.Read(id, findIdentity);
 
         // Si es erróneo
@@ -68,19 +68,19 @@ public class DirectoryController : ControllerBase
     public async Task<HttpReadAllResponse<DirectoryMember>> ReadAll([FromHeader] string token)
     {
 
-        // Información del token.
-        var (isValid, _, _, _, _, identity) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido.
-        if (!isValid)
-            return new ReadAllResponse<DirectoryMember>()
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
             };
 
         // Obtiene el usuario.
-        var response = await Data.Directories.ReadAll(identity);
+        var response = await Data.Directories.ReadAll(tokenInfo.IdentityId);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -105,12 +105,12 @@ public class DirectoryController : ControllerBase
     public async Task<HttpReadAllResponse<DirectoryMember>> ReadAll([FromHeader] string token, [FromQuery] int directory)
     {
 
-        // Información del token.
-        var (isValid, _, user, _, _, identity) = Jwt.Validate(token); ;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Token es invalido.
-        if (!isValid)
-            return new ReadAllResponse<DirectoryMember>()
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
                 Message = "Token invalido."
@@ -118,17 +118,14 @@ public class DirectoryController : ControllerBase
 
 
         // Acceso IAM.
-        var iam = await Services.Iam.Directories.ValidateAccess(identity, directory);
+        var (_, _, roles) = await Queries.Directories.Get(tokenInfo.IdentityId);
 
-        // Roles disponibles.
-        IEnumerable<IamLevels> have = [IamLevels.Privileged, IamLevels.Visualizer];
-
-        // No tiene un permitido.
-        if (!have.Contains(iam.Model))
+        // Si no hay acceso.
+        if (Roles.ViewMembers(roles))
             return new()
             {
-                Message = "No tienes acceso a este recurso.",
-                Response = Responses.Unauthorized
+                Response = Responses.Unauthorized,
+                Message = "No tienes permisos para visualizar los integrantes de este recurso."
             };
 
         // Obtiene el usuario.

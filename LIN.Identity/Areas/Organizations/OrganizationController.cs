@@ -14,60 +14,37 @@ public class OrganizationsController : ControllerBase
     public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo)
     {
 
-        // Comprobaciones
-        if (modelo == null || modelo.Domain.Length <= 0 || modelo.Name.Length <= 0 || modelo.Members.Count <= 0)
-            return new(Responses.InvalidParam);
-
-
-        // BD.
-        var (context, connectionKey) = Conexión.GetOneConnection();
-
-
-        // organización del modelo
-        modelo.ID = 0;
-
-        // Directorio
-        modelo.Directory = new()
-        {
-            ID = 0,
-            Creación = DateTime.Now,
-            Nombre = "Directorio General: " + modelo.Name,
-            Identity = new()
+        // Validar el modelo.
+        if (modelo == null || string.IsNullOrWhiteSpace(modelo.Name) || modelo.Directory == null || modelo.Directory.Identity == null || string.IsNullOrWhiteSpace(modelo.Directory.Identity.Unique))
+            return new()
             {
-                Id = 0,
-                Type = IdentityTypes.Directory,
-                Unique = "d_" + modelo.Domain
-            },
-            IdentityId = 0
-        };
+                Response = Responses.InvalidParam,
+                Message = "Parámetros inválidos."
+            };
 
 
-
-        foreach (var member in modelo.Members)
+        // Ordenar el modelo.
         {
-            modelo.Directory.Members.Add(new()
-            {
-                Identity = member.Member.Identity,
-                IdentityId =0,
-                Directory = modelo.Directory,
-                DirectoryId = 0
-            });
-            member.Member = Account.Process(member.Member);
-            member.Rol = OrgRoles.SuperManager;
-            member.Organization = modelo;
+            modelo.ID = 0;
+            modelo.Name = modelo.Name.Trim();
+            modelo.Directory.Nombre = modelo.Directory.Nombre.Trim();
+            modelo.Directory.Members = [];
+            modelo.Directory.Policies = [];
+            modelo.Directory.Creación = DateTime.Now;
+            modelo.Directory.Identity.Type = IdentityTypes.Directory;
+            modelo.Directory.Identity.DirectoryMembers = [];
+            modelo.Directory.Identity.Unique = modelo.Directory.Identity.Unique.Trim();
         }
 
-        // Creación de la organización
-        var response = await Data.Organizations.Organizations.Create(modelo, context);
+
+        // Creación de la organización.
+        var response = await Data.Organizations.Organizations.Create(modelo);
 
         // Evaluación.
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-        // Cerrar la conexión.
-        context.CloseActions(connectionKey);
-
-        // Retorna el resultado
+        // Retorna el resultado.
         return new CreateResponse()
         {
             LastID = response.Model.ID,
@@ -92,12 +69,16 @@ public class OrganizationsController : ControllerBase
         if (id <= 0)
             return new(Responses.InvalidParam);
 
-        // Validar el token
-        var (isValid, _, _, orgID, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-
-        if (!isValid)
-            return new(Responses.Unauthorized);
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "Token invalido."
+            };
 
 
         // Obtiene la organización

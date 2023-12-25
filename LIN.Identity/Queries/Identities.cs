@@ -1,12 +1,13 @@
 ﻿namespace LIN.Identity.Queries;
 
 
-public class Accounts
+public class Identities
 {
 
 
+
     /// <summary>
-    /// Query general para todas las cuentas
+    /// Consulta sobre todas lac cuentas.
     /// </summary>
     /// <param name="context">Contexto DB</param>
     public static IQueryable<AccountModel> GetAccounts(Conexión context)
@@ -23,11 +24,12 @@ public class Accounts
 
 
     /// <summary>
-    /// Solo tiene en cuenta cuentas validas
+    /// Consulta sobre las cuentas validas.
     /// </summary>
     /// <param name="context">Contexto DB</param>
     public static IQueryable<AccountModel> GetValidAccounts(Conexión context)
     {
+
         // Query general
         IQueryable<AccountModel> accounts = from account in GetAccounts(context)
                                             where account.Estado == AccountStatus.Normal
@@ -46,13 +48,13 @@ public class Accounts
 
 
 
-    public static IQueryable<AccountModel> GetAccounts(int id, FilterModels.Account filters, Conexión context)
+    public static IQueryable<AccountModel> GetAccounts(int id, Models.Account filters, Conexión context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts;
 
-        if (filters.FindOn == FilterModels.FindOn.StableAccounts)
+        if (filters.FindOn == Models.FindOn.StableAccounts)
             accounts = from account in GetValidAccounts(context)
                        where account.ID == id
                        select account;
@@ -69,14 +71,37 @@ public class Accounts
 
     }
 
-
-    public static IQueryable<AccountModel> GetAccounts(string user, FilterModels.Account filters, Conexión context)
+    public static IQueryable<AccountModel> GetAccountsByIdentity(int id, Models.Account filters, Conexión context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts;
 
-        if (filters.FindOn == FilterModels.FindOn.StableAccounts)
+        if (filters.FindOn == Models.FindOn.StableAccounts)
+            accounts = from account in GetValidAccounts(context)
+                       where account.Identity.Id == id
+                       select account;
+        else
+            accounts = from account in GetAccounts(context)
+                       where account.Identity.Id == id
+                       select account;
+
+        // Armar el modelo
+        accounts = BuildModel(accounts, filters);
+
+        // Retorno
+        return accounts;
+
+    }
+
+
+    public static IQueryable<AccountModel> GetAccounts(string user, Models.Account filters, Conexión context)
+    {
+
+        // Query general
+        IQueryable<AccountModel> accounts;
+
+        if (filters.FindOn == Models.FindOn.StableAccounts)
             accounts = from account in GetValidAccounts(context)
                        where account.Identity.Unique == user
                        select account;
@@ -94,7 +119,7 @@ public class Accounts
     }
 
 
-    public static IQueryable<AccountModel> GetAccounts(IEnumerable<int> ids, FilterModels.Account filters, Conexión context)
+    public static IQueryable<AccountModel> GetAccounts(IEnumerable<int> ids, Models.Account filters, Conexión context)
     {
 
         // Query general
@@ -111,7 +136,7 @@ public class Accounts
     }
 
 
-    public static IQueryable<AccountModel> Search(string pattern, FilterModels.Account filters, Conexión context)
+    public static IQueryable<AccountModel> Search(string pattern, Models.Account filters, Conexión context)
     {
 
         // Query general
@@ -153,6 +178,26 @@ public class Accounts
     }
 
 
+    public static IQueryable<DirectoryMember> GetDirectoryByIdentity(int id, Conexión context)
+    {
+
+        // Query general
+        IQueryable<DirectoryMember> accounts;
+
+
+        var directory = from dm in context.DataBase.DirectoryMembers
+                        where dm.Directory.Identity.Id == id
+                        select dm;
+
+        // Armar el modelo
+        accounts = BuildModel(directory);
+
+        // Retorno
+        return accounts;
+
+    }
+
+
 
 
 
@@ -164,7 +209,7 @@ public class Accounts
     /// </summary>
     /// <param name="query">Query base</param>
     /// <param name="filters">Filtros</param>
-    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, FilterModels.Account filters)
+    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, Models.Account filters)
     {
 
         byte[] profile =
@@ -195,63 +240,32 @@ public class Accounts
 
                              // Nombre.
                              Nombre = account.Visibilidad == AccountVisibility.Visible
-                                      || (account.OrganizationAccess != null
-                                      && account.OrganizationAccess.Organization.ID == filters.ContextOrg)
-                                      || account.ID == filters.ContextUser
+                                      || account.ID == filters.ContextAccount
                                       || filters.IsAdmin
                                  ? account.Nombre
                                  : "Usuario privado",
 
                              // Cumpleaños.
                              Birthday = account.Visibilidad == AccountVisibility.Visible
-                                        || (account.OrganizationAccess != null
-                                        && account.OrganizationAccess.Organization.ID == filters.ContextOrg)
-                                        || account.ID == filters.ContextUser
+                                        || account.ID == filters.ContextAccount
                                         || filters.IsAdmin
                                  ? account.Birthday
                                  : default,
 
                              // Creación.
                              Creación = account.Visibilidad == AccountVisibility.Visible
-                                        || (account.OrganizationAccess != null
-                                        && account.OrganizationAccess.Organization.ID == filters.ContextOrg)
-                                        || account.ID == filters.ContextUser
+                                        || account.ID == filters.ContextAccount
                                         || filters.IsAdmin
                                  ? account.Creación
                                  : default,
 
                              // Perfil.
                              Perfil = account.Visibilidad == AccountVisibility.Visible
-                                        || (account.OrganizationAccess != null
-                                        && account.OrganizationAccess.Organization.ID == filters.ContextOrg)
-                                        || account.ID == filters.ContextUser
+                                        || account.ID == filters.ContextAccount
                                         || filters.IsAdmin
                                  ? account.Perfil
                                  : profile,
-
-                             // Organización.
-                             OrganizationAccess = account.OrganizationAccess != null
-                                                  && filters.IncludeOrg != FilterModels.IncludeOrg.None
-                                                  && (account.Visibilidad == AccountVisibility.Visible
-                                                  && filters.IncludeOrg == FilterModels.IncludeOrg.Include
-                                                  || account.OrganizationAccess.Organization.ID == filters.ContextOrg
-                                                  || account.ID == filters.ContextUser
-                                                  || filters.IsAdmin)
-                                 ?
-                                 new OrganizationAccessModel()
-                                 {
-                                     Rol = account.OrganizationAccess.Rol,
-                                     Organization = filters.OrgLevel == FilterModels.IncludeOrgLevel.Advance ? new()
-                                     {
-                                         ID = account.OrganizationAccess.Organization.ID,
-                                         Domain = !account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID ? ""
-                                             : account.OrganizationAccess.Organization.Domain,
-                                         Name = !account.OrganizationAccess.Organization.IsPublic && !filters.IsAdmin && filters.IncludeOrg == FilterModels.IncludeOrg.IncludeIf && filters.ContextOrg != account.OrganizationAccess.Organization.ID
-                                             ? "Organización privada" : account.OrganizationAccess.Organization.Name
-                                     } : new(),
-                                     Member = null!,
-                                 }
-                                 : null
+        
                          };
 
         return queryFinal;
@@ -271,7 +285,6 @@ public class Accounts
         return from d in query
                select new DirectoryMember
                {
-                   Rol = d.Rol,
                    IdentityId = d.IdentityId,
                    Directory = new()
                    {

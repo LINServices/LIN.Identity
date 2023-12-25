@@ -62,6 +62,20 @@ public class Directories
     }
 
 
+    
+    public static async Task<ReadOneResponse<DirectoryMember>> ReadByIdentity(int id)
+    {
+
+        // Obtiene la conexión
+        var (context, connectionKey) = Conexión.GetOneConnection();
+
+        var res = await ReadByIdentity(id, context);
+        context.CloseActions(connectionKey);
+        return res;
+
+    }
+
+
     #endregion
 
 
@@ -117,14 +131,13 @@ public class Directories
         try
         {
 
-            var (_, identities) = await Queries.Directories.Get(identityId);
+            var (_, identities,_) = await Queries.Directories.Get(identityId);
 
             // Directorios.
             var directories = await (from directoryMember in context.DataBase.DirectoryMembers
                                      where identities.Contains(directoryMember.IdentityId)
                                      select new DirectoryMember
                                      {
-                                         Rol = directoryMember.Rol,
                                          DirectoryId = directoryMember.DirectoryId,
                                          Directory = new()
                                          {
@@ -174,7 +187,36 @@ public class Directories
         {
 
             // Consulta.
-            var query = Queries.Accounts.GetDirectory(id, identityContext, context);
+            var query = Queries.Identities.GetDirectory(id, identityContext, context);
+
+            // Obtiene el usuario
+            var result = await query.FirstOrDefaultAsync();
+
+            // Si no existe el modelo
+            if (result == null)
+                return new(Responses.NotExistAccount);
+
+            return new(Responses.Success, result);
+        }
+        catch (Exception)
+        {
+        }
+
+        return new();
+    }
+
+
+
+
+    public static async Task<ReadOneResponse<DirectoryMember>> ReadByIdentity(int id, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Consulta.
+            var query = Queries.Identities.GetDirectoryByIdentity(id, context);
 
             // Obtiene el usuario
             var result = await query.FirstOrDefaultAsync();

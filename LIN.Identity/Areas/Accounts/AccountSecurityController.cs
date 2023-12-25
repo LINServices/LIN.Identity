@@ -15,15 +15,15 @@ public class AccountSecurityController : ControllerBase
     public async Task<HttpResponseBase> Delete([FromHeader] string token)
     {
 
-        // Información del token.
-        var (isValid, _, userId, _, _, _) = Jwt.Validate(token);;
+        // Token.
+        var tokenInfo = Jwt.Validate(token);
 
-        // Si es invalido.
-        if (!isValid)
-            return new ResponseBase
+        // Si el token no es valido.
+        if (!tokenInfo.IsAuthenticated)
+            return new()
             {
                 Response = Responses.Unauthorized,
-                Message = "Token invalido"
+                Message = "Token invalido."
             };
 
         if (userId <= 0)
@@ -65,11 +65,11 @@ public class AccountSecurityController : ControllerBase
         {
             ContextOrg = 0,
             SensibleInfo = true,
-            ContextUser = account,
-            FindOn = FilterModels.FindOn.StableAccounts,
-            IncludeOrg = FilterModels.IncludeOrg.None,
+            ContextAccount = account,
+            FindOn = Models.FindOn.StableAccounts,
+            IncludeOrg = Models.IncludeOrg.None,
             IsAdmin = true,
-            OrgLevel = FilterModels.IncludeOrgLevel.Basic
+            OrgLevel = Models.IncludeOrgLevel.Basic
         });
 
         // Si no existe la cuenta.
