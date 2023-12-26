@@ -25,7 +25,7 @@ public class DirectoryMembersController : ControllerBase
 
 
         // Acceso IAM.
-        var (_, _, roles) = await Data.Queries.Directories.Get(identity);
+        var (_, _, roles) = await Data.Queries.Directories.Get(tokenInfo.IdentityId);
 
         // Si no hay acceso.
         if (Roles.AlterMembers(roles))

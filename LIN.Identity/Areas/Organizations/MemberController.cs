@@ -51,7 +51,7 @@ public class MemberController : ControllerBase
             };
 
         // Obtiene el usuario
-        var userContext = await Data.Accounts.ReadBasic(userID);
+        var userContext = await Data.Accounts.ReadBasic(tokenInfo.AccountId);
 
         // Error al encontrar el usuario
         if (userContext.Response != Responses.Success)
@@ -123,10 +123,10 @@ public class MemberController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, _, _, orgID, _, _) = Jwt.Validate(token); ;
+        var tokenInfo = Jwt.Validate(token); ;
 
         // Si el token es invalido.
-        if (!isValid)
+        if (!tokenInfo.IsAuthenticated)
             return new ReadAllResponse<AccountModel>
             {
                 Message = "El token es invalido.",
@@ -134,7 +134,7 @@ public class MemberController : ControllerBase
             };
 
         // Obtiene los miembros.
-        var members = await Members.ReadAll(orgID);
+        var members = await Members.ReadAll(tokenInfo.OrganizationId);
 
         // Error al obtener los integrantes.
         if (members.Response != Responses.Success)

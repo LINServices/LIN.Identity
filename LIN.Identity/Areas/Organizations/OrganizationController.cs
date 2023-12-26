@@ -93,7 +93,7 @@ public class OrganizationsController : ControllerBase
             };
 
         // No es publica y no pertenece a ella
-        if (!response.Model.IsPublic && orgID != response.Model.ID)
+        if (!response.Model.IsPublic && tokenInfo.OrganizationId != response.Model.ID)
             return new ReadOneResponse<OrganizationModel>()
             {
                 Response = Responses.Unauthorized,
