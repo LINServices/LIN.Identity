@@ -66,7 +66,7 @@ public class ApplicationController : ControllerBase
             };
 
         // Obtiene la data.
-        var data = await Data.Applications.ReadAll(userID);
+        var data = await Data.Applications.ReadAll(tokenInfo.AccountId);
 
         return data;
 
@@ -96,7 +96,7 @@ public class ApplicationController : ControllerBase
             };
 
         // Respuesta de Iam.
-        var iam = await Services.Iam.Applications.ValidateAccess(userId, appId);
+        var iam = await Services.Iam.Applications.ValidateAccess(tokenInfo.AccountId, appId);
 
         // Validación de Iam
         if (iam.Model != IamLevels.Privileged)

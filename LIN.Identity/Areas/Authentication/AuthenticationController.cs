@@ -102,7 +102,7 @@ public class AuthenticationController : ControllerBase
             };
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Read(user, new Models.Account()
+        var response = await Data.Accounts.Read(tokenInfo.AccountId, new Models.Account()
         {
             SensibleInfo = true,
             IsAdmin = true,

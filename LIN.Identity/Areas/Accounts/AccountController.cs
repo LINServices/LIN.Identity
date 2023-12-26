@@ -332,7 +332,7 @@ public class AccountController : ControllerBase
             };
 
         // Realizar actualización.
-        return await Data.Accounts.Update(id, genero);
+        return await Data.Accounts.Update(tokenInfo.AccountId, genero);
 
     }
 
@@ -359,7 +359,7 @@ public class AccountController : ControllerBase
             };
 
         // Actualización.
-        return await Data.Accounts.Update(id, visibility);
+        return await Data.Accounts.Update(tokenInfo.AccountId, visibility);
 
     }
 

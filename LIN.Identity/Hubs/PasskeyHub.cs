@@ -155,10 +155,10 @@ public class PassKeyHub : Hub
         {
 
             // Validación del token recibido.
-            var (isValid, userUnique, userID, orgID, _, _) = Jwt.Validate(modelo.Token);
+            var tokenInfo = Jwt.Validate(modelo.Token);
 
             // No es valido el token
-            if (!isValid || modelo.Status != PassKeyStatus.Success)
+            if (!tokenInfo.IsAuthenticated || modelo.Status != PassKeyStatus.Success)
             {
                 // Modelo de falla
                 PassKeyModel badPass = new()
@@ -196,10 +196,10 @@ public class PassKeyHub : Hub
             }
 
             // Validación de la organización
-            if (orgID > 0)
+            if (tokenInfo.OrganizationId > 0)
             {
                 // Obtiene la organización
-                var organization = await Organizations.Read(orgID);
+                var organization = await Organizations.Read(tokenInfo.OrganizationId);
 
                 // Si tiene lista blanca
                 //if (organization.Model.HaveWhiteList)
@@ -248,7 +248,7 @@ public class PassKeyHub : Hub
             // Guarda el acceso.
             LoginLogModel loginLog = new()
             {
-                AccountID = userID,
+                AccountID = tokenInfo.AccountId,
                 Application = new()
                 {
                     ID = app.Model.ID
@@ -264,10 +264,10 @@ public class PassKeyHub : Hub
             // Nuevo token 
             var newToken = Jwt.Generate(new()
             {
-                ID = userID,
+                ID = tokenInfo.AccountId,
                 Identity = new()
                 {
-                    Unique = userUnique
+                    Unique = tokenInfo.Unique
                 }
             }, app.Model.ID);
 
