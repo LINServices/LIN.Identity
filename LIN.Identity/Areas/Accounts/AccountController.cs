@@ -236,7 +236,6 @@ public class AccountController : ControllerBase
 
 
 
-
     /// <summary>
     /// (ADMIN) encuentra diez (10) usuarios que coincidan con el patron
     /// </summary>

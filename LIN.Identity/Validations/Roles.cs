@@ -27,7 +27,6 @@ public static class Roles
     }
 
 
-
     /// <summary>
     /// Confirmar si un rol tiene permisos de ver los integrantes.
     /// </summary>
@@ -50,7 +49,6 @@ public static class Roles
         return roles.Contains(rol);
 
     }
-
 
 
     /// <summary>

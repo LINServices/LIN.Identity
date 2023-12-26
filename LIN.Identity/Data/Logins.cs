@@ -105,7 +105,7 @@ public class Logins
                              }
                          };
 
-            // Resultado
+            // Resultado.
             var result = await logins.Take(50).ToListAsync();
 
             return new(Responses.Success, result);

@@ -147,8 +147,8 @@ internal static partial class Accounts
 
 
     /// <summary>
-    /// Actualiza la información de una cuenta
-    /// ** No actualiza datos sensibles
+    /// Actualiza la información de una cuenta.
+    /// ** No actualiza datos sensibles.
     /// </summary>
     /// <param name="modelo">Modelo nuevo de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
