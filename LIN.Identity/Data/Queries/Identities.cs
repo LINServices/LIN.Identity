@@ -278,7 +278,6 @@ public class Identities
     /// Construir la consulta
     /// </summary>
     /// <param name="query">Query base</param>
-    /// <param name="filters">Filtros</param>
     private static IQueryable<DirectoryMember> BuildModel(IQueryable<DirectoryMember> query)
     {
 

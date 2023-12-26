@@ -154,7 +154,7 @@ public class PassKeyHub : Hub
         try
         {
 
-            // Validación del token recibido
+            // Validación del token recibido.
             var (isValid, userUnique, userID, orgID, _, _) = Jwt.Validate(modelo.Token);
 
             // No es valido el token

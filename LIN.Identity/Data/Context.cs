@@ -1,7 +1,10 @@
 ﻿namespace LIN.Identity.Data;
 
 
-public class Context : DbContext
+/// <summary>
+/// Nuevo contexto a la base de datos
+/// </summary>
+public class Context(DbContextOptions<Context> options) : DbContext(options)
 {
 
 
@@ -35,19 +38,16 @@ public class Context : DbContext
     public DbSet<DirectoryMember> DirectoryMembers { get; set; }
 
 
-
     /// <summary>
     /// Tabla de aplicaciones
     /// </summary>
     public DbSet<ApplicationModel> Applications { get; set; }
 
 
-
     /// <summary>
     /// Tabla de registros de login
     /// </summary>
     public DbSet<LoginLogModel> LoginLogs { get; set; }
-
 
 
     /// <summary>
@@ -63,15 +63,6 @@ public class Context : DbContext
 
 
 
-
-    /// <summary>
-    /// Nuevo contexto a la base de datos
-    /// </summary>
-    public Context(DbContextOptions<Context> options) : base(options) { }
-
-
-
-
     /// <summary>
     /// Naming DB
     /// </summary>
@@ -80,8 +71,8 @@ public class Context : DbContext
 
         // Indices y identidad.
         modelBuilder.Entity<IdentityModel>()
-           .HasIndex(e => e.Unique)
-           .IsUnique();
+            .HasIndex(e => e.Unique)
+            .IsUnique();
 
         // Indices y identidad.
         modelBuilder.Entity<ApplicationModel>()
@@ -90,68 +81,67 @@ public class Context : DbContext
 
         // Indices y identidad.
         modelBuilder.Entity<ApplicationModel>()
-           .HasIndex(e => e.ApplicationUid)
-           .IsUnique();
+            .HasIndex(e => e.ApplicationUid)
+            .IsUnique();
 
         // Indices y identidad.
         modelBuilder.Entity<EmailModel>()
-           .HasIndex(e => e.Email)
-           .IsUnique();
+            .HasIndex(e => e.Email)
+            .IsUnique();
 
 
         modelBuilder.Entity<DirectoryMember>()
+            .HasOne(p => p.Directory)
+            .WithMany()
+            .HasForeignKey(p => p.DirectoryId);
+
+
+        modelBuilder.Entity<ApplicationModel>()
            .HasOne(p => p.Directory)
            .WithMany()
            .HasForeignKey(p => p.DirectoryId);
 
 
-        modelBuilder.Entity<ApplicationModel>()
-          .HasOne(p => p.Directory)
-          .WithMany()
-          .HasForeignKey(p => p.DirectoryId);
+        modelBuilder.Entity<LoginLogModel>()
+            .HasOne(p => p.Application)
+            .WithMany()
+            .HasForeignKey(p => p.ApplicationID)
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         modelBuilder.Entity<LoginLogModel>()
-           .HasOne(p => p.Application)
-           .WithMany()
-           .HasForeignKey(p => p.ApplicationID)
-           .OnDelete(DeleteBehavior.NoAction);
-
-
-
-        modelBuilder.Entity<LoginLogModel>()
-             .HasOne(p => p.Account)
-             .WithMany()
-             .HasForeignKey(p => p.AccountID);
+            .HasOne(p => p.Account)
+            .WithMany()
+            .HasForeignKey(p => p.AccountID);
 
 
         modelBuilder.Entity<DirectoryMember>()
-          .HasOne(dm => dm.Directory)
-          .WithMany(d => d.Members)
-          .HasForeignKey(dm => dm.DirectoryId)
-          .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(dm => dm.Directory)
+            .WithMany(d => d.Members)
+            .HasForeignKey(dm => dm.DirectoryId)
+            .OnDelete(DeleteBehavior.Restrict);
 
 
         modelBuilder.Entity<DirectoryMember>()
-         .HasOne(p => p.Identity)
-         .WithMany(d => d.DirectoryMembers)
-         .HasForeignKey(p => p.IdentityId)
-          .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(p => p.Identity)
+            .WithMany(d => d.DirectoryMembers)
+            .HasForeignKey(p => p.IdentityId)
+            .OnDelete(DeleteBehavior.Restrict);
 
 
         modelBuilder.Entity<PolicyModel>()
-         .HasOne(p => p.Directory)
-         .WithMany(d => d.Policies)
-         .HasForeignKey(p => p.DirectoryId)
-          .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(p => p.Directory)
+            .WithMany(d => d.Policies)
+            .HasForeignKey(p => p.DirectoryId)
+            .OnDelete(DeleteBehavior.Restrict);
 
 
         modelBuilder.Entity<DirectoryMember>()
-         .HasKey(t => new
-         {
-             t.IdentityId,
-             t.DirectoryId
-         });
+            .HasKey(t => new
+             {
+                 t.IdentityId,
+                 t.DirectoryId
+             });
 
 
 

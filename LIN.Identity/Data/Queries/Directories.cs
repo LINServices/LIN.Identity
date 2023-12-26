@@ -1,7 +1,12 @@
 ﻿namespace LIN.Identity.Data.Queries;
 
+
 public class Directories
 {
+
+
+
+
 
 
 
@@ -62,7 +67,7 @@ public class Directories
                     {
                         Identity = DM.Directory.Identity.Id,
                         Directory = DM.Directory.ID,
-                        Roles = DM.Identity.Roles.Select(x => x.Rol).DistinctBy(t => t)
+                        Roles = DM.Rol
                     };
 
         // Si hay elementos.
@@ -71,7 +76,7 @@ public class Directories
             var local = query.ToList();
             identities.AddRange(local.Select(t => t.Identity));
             directories.AddRange(local.Select(t => t.Directory));
-            roles.AddRange(local.Select(t => t.Roles).SelectMany(t => t));
+            roles.AddRange(local.Select(t => t.Roles));
 
             foreach (var id in local)
                 await Get(id.Identity, context, identities, directories, roles);
