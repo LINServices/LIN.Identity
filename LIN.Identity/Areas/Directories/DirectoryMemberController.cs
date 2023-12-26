@@ -1,4 +1,6 @@
-﻿namespace LIN.Identity.Areas.Directories;
+﻿using LIN.Identity.Data.Areas.Directories;
+
+namespace LIN.Identity.Areas.Directories;
 
 
 [Route("directory/members")]
@@ -23,7 +25,7 @@ public class DirectoryMembersController : ControllerBase
 
 
         // Acceso IAM.
-        var (_, _, roles) = await Queries.Directories.Get(identity);
+        var (_, _, roles) = await Data.Queries.Directories.Get(identity);
 
         // Si no hay acceso.
         if (Roles.AlterMembers(roles))
@@ -46,7 +48,7 @@ public class DirectoryMembersController : ControllerBase
 
 
         // Obtiene el usuario.
-        var response = await Data.DirectoryMembers.Create(model);
+        var response = await DirectoryMembers.Create(model);
 
 
         // Retorna el resultado

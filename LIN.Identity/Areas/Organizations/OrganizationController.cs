@@ -38,7 +38,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Creación de la organización.
-        var response = await Data.Organizations.Organizations.Create(modelo);
+        var response = await Data.Areas.Organizations.Organizations.Create(modelo);
 
         // Evaluación.
         if (response.Response != Responses.Success)
@@ -82,7 +82,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Obtiene la organización
-        var response = await Data.Organizations.Organizations.Read(id);
+        var response = await Data.Areas.Organizations.Organizations.Read(id);
 
         // Organización no encontrada.
         if (response.Response != Responses.Success)

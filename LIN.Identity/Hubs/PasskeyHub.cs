@@ -1,4 +1,6 @@
-﻿namespace LIN.Identity.Hubs;
+﻿using LIN.Identity.Data.Areas.Organizations;
+
+namespace LIN.Identity.Hubs;
 
 
 public class PassKeyHub : Hub
@@ -197,7 +199,7 @@ public class PassKeyHub : Hub
             if (orgID > 0)
             {
                 // Obtiene la organización
-                var organization = await Data.Organizations.Organizations.Read(orgID);
+                var organization = await Organizations.Read(orgID);
 
                 // Si tiene lista blanca
                 //if (organization.Model.HaveWhiteList)

@@ -1,3 +1,5 @@
+using LIN.Identity.Data.Areas.Organizations;
+
 namespace LIN.Identity.Areas.Organizations;
 
 
@@ -62,7 +64,7 @@ public class MemberController : ControllerBase
         }
 
 
-        var orgBase = await Data.Organizations.Organizations.FindBaseDirectory(userContext.Model.IdentityId);
+        var orgBase = await Data.Areas.Organizations.Organizations.FindBaseDirectory(userContext.Model.IdentityId);
 
         if (orgBase.Response != Responses.Success)
         {
@@ -91,7 +93,7 @@ public class MemberController : ControllerBase
         var (context, connectionKey) = Conexión.GetOneConnection();
 
         // Creación del usuario
-        var response = await Data.Organizations.Members.Create(modelo, orgBase.Model.DirectoryId, rol, context);
+        var response = await Members.Create(modelo, orgBase.Model.DirectoryId, rol, context);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -132,7 +134,7 @@ public class MemberController : ControllerBase
             };
 
         // Obtiene los miembros.
-        var members = await Data.Organizations.Members.ReadAll(orgID);
+        var members = await Members.ReadAll(orgID);
 
         // Error al obtener los integrantes.
         if (members.Response != Responses.Success)

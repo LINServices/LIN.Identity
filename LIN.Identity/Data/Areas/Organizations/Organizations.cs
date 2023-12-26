@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Data.Organizations;
+﻿namespace LIN.Identity.Data.Areas.Organizations;
 
 
 public class Organizations
@@ -9,7 +9,7 @@ public class Organizations
 
 
     /// <summary>
-    /// Crea una organización
+    /// Crea una organización.
     /// </summary>
     /// <param name="data">Modelo</param>
     public static async Task<ReadOneResponse<OrganizationModel>> Create(OrganizationModel data)
@@ -23,7 +23,7 @@ public class Organizations
 
 
     /// <summary>
-    /// Obtiene una organización
+    /// Obtiene una organización.
     /// </summary>
     /// <param name="id">ID de la organización</param>
     public static async Task<ReadOneResponse<OrganizationModel>> Read(int id)
@@ -37,17 +37,33 @@ public class Organizations
 
 
 
-
-
-    public static async Task<ReadOneResponse<DirectoryMember>> FindBaseDirectory(int id)
+    /// <summary>
+    /// Encontrar el directorio de una organización.
+    /// </summary>
+    /// <param name="identity">Id del integrante directo.</param>
+    public static async Task<ReadOneResponse<DirectoryMember>> FindBaseDirectory(int identity)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
 
-        var res = await FindBaseDirectory(id, context);
+        var res = await FindBaseDirectory(identity, context);
         context.CloseActions(contextKey);
         return res;
     }
 
+
+
+    /// <summary>
+    /// Encontrar una organización según la identidad de un integrante directo.
+    /// </summary>
+    /// <param name="identity">Id del integrante.</param>
+    public static async Task<ReadOneResponse<DirectoryMember>> FindOrganization(int identity)
+    {
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+        var res = await FindBaseDirectory(identity, context);
+        context.CloseActions(contextKey);
+        return res;
+    }
 
 
 
@@ -57,7 +73,7 @@ public class Organizations
 
 
     /// <summary>
-    /// Crear una organización
+    /// Crear una organización.
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
@@ -89,11 +105,9 @@ public class Organizations
                     ID = 0,
                     Identity = new()
                     {
-                        DirectoryMembers = [],
                         Id = 0,
                         Type = IdentityTypes.Account,
-                        Unique = $"root@{data.Directory.Identity.Unique}",
-                        Roles = [new() { Rol = DirectoryRoles.SuperManager }],
+                        Unique = $"root@{data.Directory.Identity.Unique}"
                     },
                     Insignia = AccountBadges.None,
                     Nombre = $"Root user {data.Directory.Identity.Unique}",
@@ -113,10 +127,11 @@ public class Organizations
                 data.Directory.Members.Add(new()
                 {
                     Directory = data.Directory,
-                    Identity = account.Identity
+                    Identity = account.Identity,
+                    Rol = DirectoryRoles.SuperManager
                 });
 
-
+                // Guardar.
                 context.DataBase.SaveChanges(); ;
 
                 // Commit cambios.
@@ -176,6 +191,11 @@ public class Organizations
 
 
 
+    /// <summary>
+    /// Encontrar el directorio de una organización.
+    /// </summary>
+    /// <param name="identity">Id del integrante directo.</param>
+    /// <param name="context">Contexto de conexión.</param>
     public static async Task<ReadOneResponse<DirectoryMember>> FindBaseDirectory(int identity, Conexión context)
     {
 
@@ -183,12 +203,50 @@ public class Organizations
         try
         {
 
-            // Roles de integrante base.
-            DirectoryRoles[] roles = [DirectoryRoles.AccountsOperator, DirectoryRoles.Operator, DirectoryRoles.Manager, DirectoryRoles.SuperManager, DirectoryRoles.Regular];
-
-            // Consulta.
+            // Consulta el directorio base.
             var query = await (from org in context.DataBase.Organizations
-                               select org.Directory.Members.Where(t => t.IdentityId == identity).FirstOrDefault()).FirstOrDefaultAsync();
+                               join dir in context.DataBase.Directories
+                               on org.DirectoryId equals dir.ID
+                               join mem in context.DataBase.DirectoryMembers
+                               on dir.ID equals mem.DirectoryId
+                               where identity == dir.IdentityId
+                               select mem).FirstOrDefaultAsync();
+
+            // Email no existe
+            if (query == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, query);
+        }
+        catch
+        {
+        }
+
+        return new();
+    }
+
+
+
+    /// <summary>
+    /// Encontrar una organización según la identidad de un integrante directo.
+    /// </summary>
+    /// <param name="identity">Id del integrante.</param>
+    /// <param name="context">Contexto de conexión.</param>
+    public static async Task<ReadOneResponse<OrganizationModel>> FindOrganization(int identity, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Consulta el directorio base.
+            var query = await (from org in context.DataBase.Organizations
+                               join dir in context.DataBase.Directories
+                               on org.DirectoryId equals dir.ID
+                               join mem in context.DataBase.DirectoryMembers
+                               on dir.ID equals mem.DirectoryId
+                               where identity == dir.IdentityId
+                               select org).FirstOrDefaultAsync();
 
             // Email no existe
             if (query == null)

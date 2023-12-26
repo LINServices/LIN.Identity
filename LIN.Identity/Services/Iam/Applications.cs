@@ -1,4 +1,6 @@
-﻿namespace LIN.Identity.Services.Iam;
+﻿using LIN.Identity.Data.Queries;
+
+namespace LIN.Identity.Services.Iam;
 
 
 public static class Applications
@@ -45,7 +47,7 @@ public static class Applications
                         select a.IdentityId).FirstOrDefault();
 
 
-        var (directories, _,_) = await Queries.Directories.Get(identity);
+        var (directories, _,_) = await Directories.Get(identity);
 
 
         // Tiene acceso.

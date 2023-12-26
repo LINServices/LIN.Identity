@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Data.Organizations;
+﻿namespace LIN.Identity.Data.Areas.Organizations;
 
 
 public class Members
@@ -6,6 +6,8 @@ public class Members
 
 
     #region Abstracciones
+
+
 
 
     /// <summary>
@@ -42,7 +44,6 @@ public class Members
     /// Crea una cuenta en una organización
     /// </summary>
     /// <param name="data">Modelo</param>
-    /// <param name="orgID">ID de la organización</param>
     /// <param name="rol">Rol dentro de la organización</param>
     /// <param name="context">Contexto de conexión</param>
     public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int directory, DirectoryRoles rol, Conexión context)

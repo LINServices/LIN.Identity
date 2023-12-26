@@ -88,7 +88,6 @@ public class Image
     /// <param name="originalImage">Original image</param>
     /// <param name="width">Ancho</param>
     /// <param name="height">Alto</param>
-    /// <param name="max">Maximo</param>
     public static byte[] ZipOthers(byte[] originalImage, int width = 100, int height = 100, int max = 1900)
     {
         try

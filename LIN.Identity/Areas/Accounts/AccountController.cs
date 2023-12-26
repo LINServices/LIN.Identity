@@ -266,7 +266,6 @@ public class AccountController : ControllerBase
         // Obtiene el usuario
         var response = await Data.Accounts.Search(pattern, new()
         {
-            ContextOrg = 0,
             OrgLevel = Models.IncludeOrgLevel.Advance,
             ContextAccount = 0,
             FindOn = Models.FindOn.AllAccount,

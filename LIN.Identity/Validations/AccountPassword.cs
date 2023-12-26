@@ -1,4 +1,6 @@
-﻿namespace LIN.Identity.Validations;
+﻿using LIN.Identity.Data.Queries;
+
+namespace LIN.Identity.Validations;
 
 
 public class AccountPassword
@@ -17,7 +19,7 @@ public class AccountPassword
         var (context, contextKey) = Conexión.GetOneConnection();
 
         // Directorios.
-        var (directories, _, _) = await Queries.Directories.Get(identity);
+        var (directories, _, _) = await Directories.Get(identity);
 
         // Política.
         var policy = await (from p in context.DataBase.Policies
