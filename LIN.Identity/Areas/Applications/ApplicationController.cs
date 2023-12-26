@@ -37,7 +37,7 @@ public class ApplicationController : ControllerBase
         // Preparar el modelo
         applicationModel.ApplicationUid = applicationModel.ApplicationUid.Trim().ToLower();
         applicationModel.Name = applicationModel.Name.Trim().ToLower();
-        applicationModel.AccountID = userID;
+        applicationModel.AccountID = tokenInfo.AccountId;
 
         // Crear la aplicación.
         return await Data.Applications.Create(applicationModel);

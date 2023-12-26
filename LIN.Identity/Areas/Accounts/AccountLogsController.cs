@@ -26,7 +26,7 @@ public class AccountLogsController : ControllerBase
             };
 
         // Obtiene el usuario.
-        var result = await Data.Logins.ReadAll(userId);
+        var result = await Data.Logins.ReadAll(tokenInfo.AccountId);
 
         // Retorna el resultado.
         return result ?? new();

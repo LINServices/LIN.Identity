@@ -85,37 +85,35 @@ public class EmailWorker
         try
         {
 
-            using (var client = new HttpClient())
+            using var client = new HttpClient();
+            var url = "https://api.resend.com/emails";
+            var accessToken = Password; // Reemplaza con tu token de acceso
+
+            var requestData = new
             {
-                var url = "https://api.resend.com/emails";
-                var accessToken = Password; // Reemplaza con tu token de acceso
-
-                var requestData = new
+                from = "onboarding@resend.dev",
+                to = new[]
                 {
-                    from = "onboarding@resend.dev",
-                    to = new[]
-                    {
-                        to
-                    },
-                    subject = asunto
-                };
+                  to
+                },
+                subject = asunto
+            };
 
 
-                var json = System.Text.Json.JsonSerializer.Serialize(requestData);
+            var json = System.Text.Json.JsonSerializer.Serialize(requestData);
 
-                using var content = new StringContent(json, Encoding.UTF8, "application/json");
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
 
-                var response = await client.PostAsync(url, content);
+            var response = await client.PostAsync(url, content);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return true;
-                }
-                else
-                {
-                    _ = Logger.Log("Error al enviar un correo: ",response.StatusCode.ToString(), 3);
-                }
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                _ = Logger.Log("Error al enviar un correo: ", response.StatusCode.ToString(), 3);
             }
             return true;
         }

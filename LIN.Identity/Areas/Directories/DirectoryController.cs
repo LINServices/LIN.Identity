@@ -1,4 +1,6 @@
-﻿namespace LIN.Identity.Areas.Directories;
+﻿using LIN.Identity.Data.Areas.Directories;
+
+namespace LIN.Identity.Areas.Directories;
 
 
 [Route("directory")]
@@ -33,7 +35,7 @@ public class DirectoryController : ControllerBase
 
 
         // Acceso IAM.
-        var (_, _, roles) = await Queries.Directories.Get(tokenInfo.IdentityId);
+        var (_, _, roles) = await Data.Queries.Directories.Get(tokenInfo.IdentityId);
 
         // Si no hay acceso.
         if (Roles.View(roles))
@@ -44,7 +46,7 @@ public class DirectoryController : ControllerBase
             };
 
         // Obtiene el directorio.
-        var response = await Data.Directories.Read(id, findIdentity);
+        var response = await Data.Areas.Directories.Directories.Read(id, findIdentity);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -80,7 +82,7 @@ public class DirectoryController : ControllerBase
             };
 
         // Obtiene el usuario.
-        var response = await Data.Directories.ReadAll(tokenInfo.IdentityId);
+        var response = await Data.Areas.Directories.Directories.ReadAll(tokenInfo.IdentityId);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -118,7 +120,7 @@ public class DirectoryController : ControllerBase
 
 
         // Acceso IAM.
-        var (_, _, roles) = await Queries.Directories.Get(tokenInfo.IdentityId);
+        var (_, _, roles) = await Data.Queries.Directories.Get(tokenInfo.IdentityId);
 
         // Si no hay acceso.
         if (Roles.ViewMembers(roles))
@@ -129,7 +131,7 @@ public class DirectoryController : ControllerBase
             };
 
         // Obtiene el usuario.
-        var response = await Data.DirectoryMembers.ReadMembers(directory);
+        var response = await DirectoryMembers.ReadMembers(directory);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

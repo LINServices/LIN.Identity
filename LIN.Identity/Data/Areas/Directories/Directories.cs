@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Data;
+﻿namespace LIN.Identity.Data.Areas.Directories;
 
 
 public class Directories
@@ -55,14 +55,14 @@ public class Directories
         // Obtiene la conexión
         var (context, connectionKey) = Conexión.GetOneConnection();
 
-        var res = await Read(id,identityContext, context );
+        var res = await Read(id, identityContext, context);
         context.CloseActions(connectionKey);
         return res;
 
     }
 
 
-    
+
     public static async Task<ReadOneResponse<DirectoryMember>> ReadByIdentity(int id)
     {
 
@@ -131,7 +131,7 @@ public class Directories
         try
         {
 
-            var (_, identities,_) = await Queries.Directories.Get(identityId);
+            var (_, identities, _) = await Queries.Directories.Get(identityId);
 
             // Directorios.
             var directories = await (from directoryMember in context.DataBase.DirectoryMembers

@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Data;
+﻿namespace LIN.Identity.Data.Areas.Directories;
 
 
 public class DirectoryMembers

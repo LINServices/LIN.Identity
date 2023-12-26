@@ -115,7 +115,7 @@ public class PolicyController : ControllerBase
             };
 
         // Acceso IAM.
-        var (_, _, roles) = await Queries.Directories.Get(identity);
+        var (_, _, roles) = await Data.Queries.Directories.Get(identity);
 
         // Si no hay acceso.
         if (Roles.ViewPolicy(roles))

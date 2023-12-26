@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Queries;
+﻿namespace LIN.Identity.Data.Queries;
 
 
 public class Identities
@@ -265,7 +265,7 @@ public class Identities
                                         || filters.IsAdmin
                                  ? account.Perfil
                                  : profile,
-        
+
                          };
 
         return queryFinal;

@@ -112,19 +112,17 @@ public class Context : DbContext
 
 
         modelBuilder.Entity<LoginLogModel>()
-       .HasOne(p => p.Application)
-       .WithMany()
-       .HasForeignKey(p => p.ApplicationID)
-       .OnDelete(DeleteBehavior.NoAction);
-        ;
+           .HasOne(p => p.Application)
+           .WithMany()
+           .HasForeignKey(p => p.ApplicationID)
+           .OnDelete(DeleteBehavior.NoAction);
+
 
 
         modelBuilder.Entity<LoginLogModel>()
- .HasOne(p => p.Account)
- .WithMany()
- .HasForeignKey(p => p.AccountID);
-
-
+             .HasOne(p => p.Account)
+             .WithMany()
+             .HasForeignKey(p => p.AccountID);
 
 
         modelBuilder.Entity<DirectoryMember>()
@@ -141,16 +139,11 @@ public class Context : DbContext
           .OnDelete(DeleteBehavior.Restrict);
 
 
-
         modelBuilder.Entity<PolicyModel>()
          .HasOne(p => p.Directory)
          .WithMany(d => d.Policies)
          .HasForeignKey(p => p.DirectoryId)
           .OnDelete(DeleteBehavior.Restrict);
-
-
-
-
 
 
         modelBuilder.Entity<DirectoryMember>()

@@ -26,10 +26,10 @@ public class AccountSecurityController : ControllerBase
                 Message = "Token invalido."
             };
 
-        if (userId <= 0)
+        if (tokenInfo.AccountId <= 0)
             return new(Responses.InvalidParam);
 
-        var response = await Data.Accounts.Delete(userId);
+        var response = await Data.Accounts.Delete(tokenInfo.AccountId);
         return response;
     }
 
@@ -63,7 +63,6 @@ public class AccountSecurityController : ControllerBase
         // Data actual.
         var actualData = await Data.Accounts.Read(account, new()
         {
-            ContextOrg = 0,
             SensibleInfo = true,
             ContextAccount = account,
             FindOn = Models.FindOn.StableAccounts,

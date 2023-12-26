@@ -1,4 +1,4 @@
-﻿namespace LIN.Identity.Queries;
+﻿namespace LIN.Identity.Data.Queries;
 
 public class Directories
 {
