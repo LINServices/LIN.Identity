@@ -10,7 +10,7 @@ public class PassKeyHub : Hub
     /// <summary>
     /// Lista de intentos Passkey.
     /// </summary>
-    public readonly static Dictionary<string, List<PassKeyModel>> Attempts = new();
+    public readonly static Dictionary<string, List<PassKeyModel>> Attempts = [];
 
 
 

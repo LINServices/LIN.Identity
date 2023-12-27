@@ -15,6 +15,7 @@ public class DirectoryController : ControllerBase
     /// <param name="findIdentity">Identidad de contexto.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/id")]
+    [TokenAuth]
     public async Task<HttpReadOneResponse<DirectoryMember>> Read([FromQuery] int id, [FromQuery] int findIdentity, [FromHeader] string token)
     {
 
@@ -61,6 +62,7 @@ public class DirectoryController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/all")]
+    [TokenAuth]
     public async Task<HttpReadAllResponse<DirectoryMember>> ReadAll([FromHeader] string token)
     {
 
@@ -93,6 +95,7 @@ public class DirectoryController : ControllerBase
     /// <param name="token">Token de acceso.</param>
     /// <param name="directory">ID del directorio.</param>
     [HttpGet("read/members")]
+    [TokenAuth]
     public async Task<HttpReadAllResponse<DirectoryMember>> ReadAll([FromHeader] string token, [FromQuery] int directory)
     {
 

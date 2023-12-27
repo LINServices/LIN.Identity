@@ -9,6 +9,7 @@ public class DirectoryMembersController : ControllerBase
 
 
     [HttpPost]
+    [TokenAuth]
     public async Task<HttpCreateResponse> Create([FromHeader] string token, [FromBody] DirectoryMember model)
     {
 

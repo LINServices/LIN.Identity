@@ -12,6 +12,7 @@ public class AccountSecurityController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpDelete("delete")]
+    [TokenAuth]
     public async Task<HttpResponseBase> Delete([FromHeader] string token)
     {
 
@@ -35,6 +36,7 @@ public class AccountSecurityController : ControllerBase
     /// <param name="actualPassword">Contraseña actual.</param>
     /// <param name="newPassword">Nueva contraseña.</param>
     [HttpPatch("update/password")]
+    [TokenAuth]
     public async Task<HttpResponseBase> UpdatePassword([FromHeader] int account, [FromQuery] string actualPassword, [FromHeader] string newPassword)
     {
 

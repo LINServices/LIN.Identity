@@ -13,6 +13,7 @@ public class AccountLogsController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet]
+    [TokenAuth]
     public async Task<HttpReadAllResponse<LoginLogModel>> GetAll([FromHeader] string token)
     {
 

@@ -12,6 +12,7 @@ public class ApplicationController : ControllerBase
     /// <param name="applicationModel">Modelo.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpPost]
+    [TokenAuth]
     public async Task<HttpCreateResponse> Create([FromBody] ApplicationModel applicationModel, [FromHeader] string token)
     {
 
@@ -43,6 +44,7 @@ public class ApplicationController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet]
+    [TokenAuth]
     public async Task<HttpReadAllResponse<ApplicationModel>> GetAll([FromHeader] string token)
     {
 
@@ -67,6 +69,7 @@ public class ApplicationController : ControllerBase
     /// <param name="appId">ID de la aplicación.</param>
     /// <param name="accountId">ID del integrante.</param>
     [HttpPut]
+    [TokenAuth]
     public async Task<HttpReadOneResponse<bool>> InsertAllow([FromHeader] string token, [FromHeader] int appId, [FromHeader] int accountId)
     {
 

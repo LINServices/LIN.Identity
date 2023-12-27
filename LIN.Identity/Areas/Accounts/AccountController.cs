@@ -57,6 +57,7 @@ public class AccountController : ControllerBase
    /// <param name="id">Id de la cuenta.</param>
    /// <param name="token">Token de acceso.</param>
     [HttpGet("read/id")]
+    [TokenAuth]
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id, [FromHeader] string token)
     {
 
@@ -101,6 +102,7 @@ public class AccountController : ControllerBase
     /// <param name="user">Identidad.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/user")]
+    [TokenAuth]
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
     {
 
@@ -146,11 +148,12 @@ public class AccountController : ControllerBase
     /// <param name="pattern">Patron</param>
     /// <param name="token">Token de acceso</param>
     [HttpGet("search")]
-    public async Task<HttpReadAllResponse<AccountModel>> Search([FromQuery] string pattern, [FromHeader] string token)
+    [TokenAuth]
+    public async Task<HttpReadAllResponse<AccountModel>> Search([FromQuery] string pattern)
     {
 
         // Comprobación
-        if (pattern.Trim().Length <= 0 || string.IsNullOrWhiteSpace(pattern) || string.IsNullOrWhiteSpace(token))
+        if (pattern.Trim().Length <= 0 || string.IsNullOrWhiteSpace(pattern))
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son inválidos."
@@ -180,16 +183,9 @@ public class AccountController : ControllerBase
     /// <param name="ids">IDs de las cuentas</param>
     /// <param name="token">Token de acceso</param>
     [HttpPost("findAll")]
+    [TokenAuth]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids, [FromHeader] string token)
     {
-
-        // Comprobación
-        if (string.IsNullOrWhiteSpace(token))
-            return new(Responses.InvalidParam)
-            {
-                Message = "Uno o varios parámetros son inválidos."
-            };
-
 
         // Token.
         JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
@@ -216,6 +212,7 @@ public class AccountController : ControllerBase
     /// <param name="pattern"></param>
     /// <param name="token"></param>
     [HttpGet("admin/search")]
+    [TokenAuth]
     public async Task<HttpReadAllResponse<AccountModel>> FindAll([FromQuery] string pattern, [FromHeader] string token)
     {
 
@@ -250,6 +247,7 @@ public class AccountController : ControllerBase
     /// <param name="modelo">Modelo</param>
     /// <param name="token">Token de acceso</param>
     [HttpPut("update")]
+    [TokenAuth]
     public async Task<HttpResponseBase> Update([FromBody] AccountModel modelo, [FromHeader] string token)
     {
 
@@ -275,6 +273,7 @@ public class AccountController : ControllerBase
     /// <param name="token">Token de acceso</param>
     /// <param name="genero">Nuevo genero</param>
     [HttpPatch("update/gender")]
+    [TokenAuth]
     public async Task<HttpResponseBase> Update([FromHeader] string token, [FromHeader] Genders genero)
     {
 
@@ -295,12 +294,12 @@ public class AccountController : ControllerBase
     /// <param name="token">Token de acceso.</param>
     /// <param name="visibility">Nueva visibilidad.</param>
     [HttpPatch("update/visibility")]
+    [TokenAuth]
     public async Task<HttpResponseBase> Update([FromHeader] string token, [FromHeader] AccountVisibility visibility)
     {
 
         // Token.
         JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
-
 
         // Actualización.
         return await Data.Accounts.Update(tokenInfo.AccountId, visibility);
