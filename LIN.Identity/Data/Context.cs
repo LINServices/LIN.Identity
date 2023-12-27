@@ -2,7 +2,7 @@
 
 
 /// <summary>
-/// Nuevo contexto a la base de datos
+/// Nuevo contexto a la base de datos.
 /// </summary>
 public class Context(DbContextOptions<Context> options) : DbContext(options)
 {

@@ -62,6 +62,7 @@ public class OrganizationsController : ControllerBase
     /// <param name="id">ID de la organización</param>
     /// <param name="token">Token de acceso</param>
     [HttpGet("read/id")]
+    [TokenAuth]
     public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id, [FromHeader] string token)
     {
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace LIN.Identity.Filters;
+namespace LIN.Identity.Services.Filters;
 
 public class TokenAuth : ActionFilterAttribute
 {

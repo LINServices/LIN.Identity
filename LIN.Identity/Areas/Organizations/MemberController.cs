@@ -16,6 +16,7 @@ public class MemberController : ControllerBase
     /// <param name="token">Token de acceso de un administrador</param>
     /// <param name="rol">Rol asignado</param>
     [HttpPost]
+    [TokenAuth]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] DirectoryRoles rol)
     {
 
@@ -123,6 +124,7 @@ public class MemberController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet]
+    [TokenAuth]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromHeader] string token)
     {
 

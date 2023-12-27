@@ -12,6 +12,7 @@ public class PolicyController : ControllerBase
     /// <param name="policy">Modelo.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpPost]
+    [TokenAuth]
     public async Task<HttpCreateResponse> Create([FromBody] PolicyModel policy, [FromHeader] string token)
     {
 
@@ -85,6 +86,7 @@ public class PolicyController : ControllerBase
     /// <param name="token">Token de acceso.</param>
     /// <param name="directory">Id del directorio.</param>
     [HttpGet("read/all")]
+    [TokenAuth]
     public async Task<HttpReadAllResponse<PolicyModel>> ReadAll([FromHeader] string token, [FromQuery] int directory)
     {
 

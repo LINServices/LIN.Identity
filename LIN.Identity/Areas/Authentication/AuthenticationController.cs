@@ -16,6 +16,7 @@ public class AuthenticationController : ControllerBase
     /// <param name="password">Contraseña del usuario</param>
     /// <param name="application">Key de aplicación</param>
     [HttpGet("login")]
+    [TokenAuth]
     public async Task<HttpReadOneResponse<AccountModel>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string application)
     {
 
