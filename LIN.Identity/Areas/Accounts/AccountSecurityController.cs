@@ -16,16 +16,9 @@ public class AccountSecurityController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
-
+       
         if (tokenInfo.AccountId <= 0)
             return new(Responses.InvalidParam);
 

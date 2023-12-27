@@ -23,15 +23,9 @@ public class DirectoryController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+       
 
 
         // Acceso IAM.
@@ -71,15 +65,10 @@ public class DirectoryController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
         // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+      
 
         // Obtiene el usuario.
         var response = await Data.Areas.Directories.Directories.ReadAll(tokenInfo.IdentityId);
@@ -108,15 +97,9 @@ public class DirectoryController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+   
 
 
         // Acceso IAM.

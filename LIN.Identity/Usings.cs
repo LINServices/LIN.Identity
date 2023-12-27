@@ -14,3 +14,6 @@ global using Microsoft.IdentityModel.Tokens;
 global using System.Text;
 global using LIN.Access.Logger;
 global using LIN.Identity.Validations;
+
+global using LIN.Identity.Models;
+global using LIN.Identity.Filters;

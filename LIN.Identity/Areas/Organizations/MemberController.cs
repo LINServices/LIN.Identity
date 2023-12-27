@@ -1,4 +1,5 @@
 using LIN.Identity.Data.Areas.Organizations;
+using Account = LIN.Identity.Validations.Account;
 
 namespace LIN.Identity.Areas.Organizations;
 
@@ -18,62 +19,65 @@ public class MemberController : ControllerBase
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] DirectoryRoles rol)
     {
 
-        // Validación del modelo.
-        if (modelo == null || !modelo.Identity.Unique.Trim().Any() || !modelo.Nombre.Trim().Any())
-            return new CreateResponse
+        // Validar el modelo.
+        if (modelo == null || modelo.Identity == null || string.IsNullOrWhiteSpace(modelo.Identity.Unique) || string.IsNullOrWhiteSpace(modelo.Nombre))
+            return new()
             {
                 Response = Responses.InvalidParam,
                 Message = "Uno o varios parámetros inválidos."
             };
 
+        // Token.
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Visibilidad oculta
+        
+
+        // Ajustar el modelo.
         modelo.Visibilidad = AccountVisibility.Hidden;
-
-        // Organización del modelo
+        modelo.Contraseña = $"ChangePwd@{DateTime.Now.Year}";
         modelo = Account.Process(modelo);
 
-        // Establece la contraseña default
-        var password = $"ChangePwd@{modelo.Creación:dd.MM.yyyy}";
-
-        // Contraseña default
-        modelo.Contraseña = EncryptClass.Encrypt(password);
-
-        // Token.
-        var tokenInfo = Jwt.Validate(token);
-
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
-
-        // Obtiene el usuario
+        // Obtiene el usuario.
         var userContext = await Data.Accounts.ReadBasic(tokenInfo.AccountId);
 
         // Error al encontrar el usuario
         if (userContext.Response != Responses.Success)
-        {
             return new CreateResponse
             {
                 Message = "No se encontró un usuario valido.",
                 Response = Responses.Unauthorized
             };
-        }
 
-
+        // Encontrar el directorio de la organización.
         var orgBase = await Data.Areas.Organizations.Organizations.FindBaseDirectory(userContext.Model.IdentityId);
 
+        // Si no se encontró el directorio.
         if (orgBase.Response != Responses.Success)
-        {
             return new()
             {
                 Response = Responses.NotRows,
                 Message = "No se encontró una organización permitida a este usuario."
             };
-        }
+        
+        // Permisos para alterar los integrantes.
+        var iam = Roles.AlterMembers(orgBase.Model.Rol);
+
+        // No tienes permisos.
+        if (!iam)
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes permisos para modificar los integrantes de esta organización."
+            };
+
+
+
+
+
+
+
+
+
 
         // Validar acceso en el directorio con IAM.
         //var iam = await Services.Iam.Directories.ValidateAccess(userContext.Model.IdentityId, orgBase.Model.DirectoryId);
@@ -123,15 +127,9 @@ public class MemberController : ControllerBase
     {
 
         // Información del token.
-        var tokenInfo = Jwt.Validate(token); ;
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new(); ;
 
-        // Si el token es invalido.
-        if (!tokenInfo.IsAuthenticated)
-            return new ReadAllResponse<AccountModel>
-            {
-                Message = "El token es invalido.",
-                Response = Responses.Unauthorized
-            };
+      
 
         // Obtiene los miembros.
         var members = await Members.ReadAll(tokenInfo.OrganizationId);

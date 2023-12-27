@@ -1,4 +1,6 @@
-﻿namespace LIN.Identity.Data.Areas.Organizations;
+﻿using Account = LIN.Identity.Validations.Account;
+
+namespace LIN.Identity.Data.Areas.Organizations;
 
 
 public class Organizations
@@ -209,6 +211,8 @@ public class Organizations
                                on org.DirectoryId equals dir.ID
                                join mem in context.DataBase.DirectoryMembers
                                on dir.ID equals mem.DirectoryId
+                               where mem.Rol != DirectoryRoles.Guest
+                               && mem.Rol != DirectoryRoles.RoyalGuest
                                where identity == dir.IdentityId
                                select mem).FirstOrDefaultAsync();
 

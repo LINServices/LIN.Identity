@@ -24,16 +24,9 @@ public class PolicyController : ControllerBase
             };
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
-
+       
         // Acceso IAM.
         // var iam = await Services.Iam.Directories.ValidateAccess(identity, policy.DirectoryId);
 
@@ -104,15 +97,9 @@ public class PolicyController : ControllerBase
             };
 
         // Validar JSON.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Token es invalido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Message = "Token invalido.",
-                Response = Responses.Unauthorized
-            };
+       
 
         // Acceso IAM.
         var (_, _, roles) = await Data.Queries.Directories.Get(tokenInfo.IdentityId);

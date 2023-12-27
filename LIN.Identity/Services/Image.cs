@@ -107,8 +107,6 @@ public class Image
             pic.Save(stream);
             imagenBytes = stream.ToArray();
 
-            var ss = Convert.ToBase64String(imagenBytes);
-
             return imagenBytes;
 
         }

@@ -13,16 +13,7 @@ public class DirectoryMembersController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
-
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
-
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
         // Acceso IAM.
         var (_, _, roles) = await Data.Queries.Directories.Get(tokenInfo.IdentityId);
