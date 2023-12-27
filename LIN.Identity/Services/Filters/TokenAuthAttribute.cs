@@ -2,7 +2,7 @@
 
 namespace LIN.Identity.Services.Filters;
 
-public class TokenAuth : ActionFilterAttribute
+public class TokenAuthAttribute : ActionFilterAttribute
 {
 
 

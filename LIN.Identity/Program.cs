@@ -9,10 +9,11 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
+
+    builder.Services.AddIP();
+
     // Add services to the container.
     builder.Services.AddSignalR();
-
-    builder.Services.AddSingleton<LIN.Identity.Services.EmailWorker>();
 
     builder.Services.AddCors(options =>
     {
@@ -59,6 +60,7 @@ try
     }
 
 
+    app.UseIP();
     app.UseCors("AllowAnyOrigin");
 
     app.MapHub<PassKeyHub>("/realTime/auth/passkey");
