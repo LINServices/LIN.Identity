@@ -73,10 +73,10 @@ public abstract class LoginService
                 Message = "Esta cuenta fue eliminada o desactivada."
             };
 
-       
+
         // Valida la contraseña
-        
-        if (Account.Contraseña != EncryptClass.Encrypt(Password))
+        var ee = EncryptClass.Encrypt(Password);
+        if (Account.Contraseña != ee)
             return new()
             {
                 Response = Responses.InvalidPassword,

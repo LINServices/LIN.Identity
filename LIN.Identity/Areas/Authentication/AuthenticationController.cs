@@ -1,3 +1,4 @@
+using LIN.Identity.Models;
 using LIN.Identity.Services.Login;
 
 namespace LIN.Identity.Areas.Authentication;
@@ -24,7 +25,6 @@ public class AuthenticationController : ControllerBase
             {
                 Message = "Uno o varios parámetros son invalido."
             };
-
 
         // Obtiene el usuario.
         var response = await Data.Accounts.Read(user, new()
@@ -87,19 +87,12 @@ public class AuthenticationController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet("LoginWithToken")]
+    [TokenAuth]
     public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token)
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
-
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
         // Obtiene el usuario
         var response = await Data.Accounts.Read(tokenInfo.AccountId, new Models.Account()

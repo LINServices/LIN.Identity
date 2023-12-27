@@ -1,3 +1,5 @@
+using Account = LIN.Identity.Validations.Account;
+
 namespace LIN.Identity.Areas.Accounts;
 
 
@@ -67,15 +69,7 @@ public class AccountController : ControllerBase
 
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
-
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
         // Obtiene el usuario.
         var response = await Data.Accounts.Read(id, new()
@@ -118,15 +112,9 @@ public class AccountController : ControllerBase
             };
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+       
 
         // Obtiene el usuario.
         var response = await Data.Accounts.Read(user, new()
@@ -169,15 +157,8 @@ public class AccountController : ControllerBase
             };
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
 
         // Obtiene el usuario
         var response = await Data.Accounts.Search(pattern, new()
@@ -211,15 +192,8 @@ public class AccountController : ControllerBase
 
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
 
         // Obtiene el usuario
         var response = await Data.Accounts.FindAll(ids, new()
@@ -246,15 +220,7 @@ public class AccountController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
-
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
         var rol = AccountRoles.User;
 
@@ -288,15 +254,7 @@ public class AccountController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
-
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
         // Organizar el modelo.
         modelo.Identity.Id = tokenInfo.IdentityId;
@@ -321,15 +279,8 @@ public class AccountController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
 
         // Realizar actualización.
         return await Data.Accounts.Update(tokenInfo.AccountId, genero);
@@ -348,15 +299,8 @@ public class AccountController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
 
         // Actualización.
         return await Data.Accounts.Update(tokenInfo.AccountId, visibility);

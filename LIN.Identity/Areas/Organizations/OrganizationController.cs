@@ -70,17 +70,9 @@ public class OrganizationsController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
-
-
+       
         // Obtiene la organización
         var response = await Data.Areas.Organizations.Organizations.Read(id);
 

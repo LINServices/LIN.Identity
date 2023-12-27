@@ -1,3 +1,5 @@
+using LIN.Identity.Models;
+
 namespace LIN.Identity.Areas.Authentication;
 
 
@@ -10,22 +12,15 @@ public class IntentsController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso</param>
     [HttpGet]
+    [TokenAuth]
     public HttpReadAllResponse<PassKeyModel> GetAll([FromHeader] string token)
     {
         try
         {
+
             // Token.
-            var tokenInfo = Jwt.Validate(token);
-
-            // Si el token no es valido.
-            if (!tokenInfo.IsAuthenticated)
-                return new()
-                {
-                    Response = Responses.Unauthorized,
-                    Message = "Token invalido."
-                };
-
-
+            JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
+           
             // Cuenta
             var account = (from a in PassKeyHub.Attempts
                            where a.Key == tokenInfo.Unique

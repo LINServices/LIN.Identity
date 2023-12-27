@@ -90,7 +90,7 @@ public class Applications
 
 
     /// <summary>
-    /// Crear aplicación
+    /// Crear aplicación.
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión</param>
@@ -126,7 +126,7 @@ public class Applications
 
 
     /// <summary>
-    /// Obtiene la lista de apps asociados a una cuenta
+    /// Obtiene la lista de apps asociados a una cuenta.
     /// </summary>
     /// <param name="id">ID de la cuenta</param>
     /// <param name="context">Contexto de conexión</param>
@@ -154,7 +154,7 @@ public class Applications
 
 
     /// <summary>
-    /// Obtiene una app
+    /// Obtiene una app.
     /// </summary>
     /// <param name="id">ID de la app</param>
     /// <param name="context">Contexto de conexión</param>

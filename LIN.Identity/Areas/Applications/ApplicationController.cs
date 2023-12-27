@@ -16,15 +16,7 @@ public class ApplicationController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
-
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
         // Validaciones.
         if (applicationModel == null || applicationModel.ApplicationUid.Trim().Length < 4 || applicationModel.Name.Trim().Length < 4)
@@ -55,15 +47,9 @@ public class ApplicationController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
+       
 
         // Obtiene la data.
         var data = await Data.Applications.ReadAll(tokenInfo.AccountId);
@@ -85,15 +71,8 @@ public class ApplicationController : ControllerBase
     {
 
         // Token.
-        var tokenInfo = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Si el token no es valido.
-        if (!tokenInfo.IsAuthenticated)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "Token invalido."
-            };
 
         // Respuesta de Iam.
         var iam = await Services.Iam.Applications.ValidateAccess(tokenInfo.AccountId, appId);

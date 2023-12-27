@@ -12,6 +12,7 @@ try
     // Add services to the container.
     builder.Services.AddSignalR();
 
+    builder.Services.AddSingleton<LIN.Identity.Services.EmailWorker>();
 
     builder.Services.AddCors(options =>
     {

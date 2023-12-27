@@ -39,9 +39,10 @@ public class Policies
 
 
     /// <summary>
-    /// Valida el acceso a un permiso de una identidad.
+    /// Valida el acceso a un permiso de una identidad a una política.
     /// </summary>
     /// <param name="identity">ID de la identidad</param>
+    /// <param name="policy">ID de la política</param>
     public static async Task<ReadOneResponse<bool>> ValidatePermission(int identity, int policy)
     {
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -136,6 +137,7 @@ public class Policies
     /// Valida el acceso a un permiso de una identidad.
     /// </summary>
     /// <param name="identity">ID de la identidad</param>
+    /// <param name="policyId">ID de la política</param>
     /// <param name="context">Contexto de conexión</param>
     public static async Task<ReadOneResponse<bool>> ValidatePermission(int identity, int policyId, Conexión context)
     {
