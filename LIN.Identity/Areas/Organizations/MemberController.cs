@@ -17,7 +17,7 @@ public class MemberController : ControllerBase
     /// <param name="rol">Rol asignado</param>
     [HttpPost]
     [TokenAuth]
-    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] DirectoryRoles rol)
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] Types.Identity.Enumerations.Roles rol)
     {
 
         // Validar el modelo.
@@ -61,7 +61,7 @@ public class MemberController : ControllerBase
             };
         
         // Permisos para alterar los integrantes.
-        var iam = Roles.AlterMembers(orgBase.Model.Rol);
+        var iam = Validations.Roles.AlterMembers(orgBase.Model.Rol);
 
         // No tienes permisos.
         if (!iam)

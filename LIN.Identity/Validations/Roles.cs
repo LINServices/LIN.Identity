@@ -7,19 +7,19 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de ver el directorio.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool View(DirectoryRoles rol)
+    public static bool View(Types.Identity.Enumerations.Roles rol)
     {
 
-        DirectoryRoles[] roles =
+        Types.Identity.Enumerations.Roles[] roles =
         [
-            DirectoryRoles.System,
-            DirectoryRoles.SuperManager,
-            DirectoryRoles.Manager,
-            DirectoryRoles.Operator,
-            DirectoryRoles.AccountsOperator,
-            DirectoryRoles.Regular,
-            DirectoryRoles.Guest,
-            DirectoryRoles.RoyalGuest
+            Types.Identity.Enumerations.Roles.System,
+            Types.Identity.Enumerations.Roles.SuperManager,
+            Types.Identity.Enumerations.Roles.Manager,
+            Types.Identity.Enumerations.Roles.Operator,
+            Types.Identity.Enumerations.Roles.AccountsOperator,
+            Types.Identity.Enumerations.Roles.Regular,
+            Types.Identity.Enumerations.Roles.Guest,
+            Types.Identity.Enumerations.Roles.RoyalGuest
         ];
 
         return roles.Contains(rol);
@@ -31,19 +31,19 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de ver los integrantes.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool ViewMembers(DirectoryRoles rol)
+    public static bool ViewMembers(Types.Identity.Enumerations.Roles rol)
     {
 
-        DirectoryRoles[] roles =
+        Types.Identity.Enumerations.Roles[] roles =
         [
-            DirectoryRoles.System,
-            DirectoryRoles.SuperManager,
-            DirectoryRoles.Manager,
-            DirectoryRoles.Operator,
-            DirectoryRoles.AccountsOperator,
-            DirectoryRoles.Regular,
-            DirectoryRoles.Guest,
-            DirectoryRoles.RoyalGuest
+            Types.Identity.Enumerations.Roles.System,
+            Types.Identity.Enumerations.Roles.SuperManager,
+            Types.Identity.Enumerations.Roles.Manager,
+            Types.Identity.Enumerations.Roles.Operator,
+            Types.Identity.Enumerations.Roles.AccountsOperator,
+            Types.Identity.Enumerations.Roles.Regular,
+            Types.Identity.Enumerations.Roles.Guest,
+            Types.Identity.Enumerations.Roles.RoyalGuest
         ];
 
         return roles.Contains(rol);
@@ -55,17 +55,17 @@ public static class Roles
     /// Confirmar si un rol tiene permisos para alterar los integrantes.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool AlterMembers(DirectoryRoles rol)
+    public static bool AlterMembers(Types.Identity.Enumerations.Roles rol)
     {
 
-        DirectoryRoles[] roles =
+        Types.Identity.Enumerations.Roles[] roles =
         [
-            DirectoryRoles.System,
-            DirectoryRoles.SuperManager,
-            DirectoryRoles.Manager,
-            DirectoryRoles.Operator,
-            DirectoryRoles.AccountsOperator,
-            DirectoryRoles.RoyalGuest
+            Types.Identity.Enumerations.Roles.System,
+            Types.Identity.Enumerations.Roles.SuperManager,
+            Types.Identity.Enumerations.Roles.Manager,
+            Types.Identity.Enumerations.Roles.Operator,
+            Types.Identity.Enumerations.Roles.AccountsOperator,
+            Types.Identity.Enumerations.Roles.RoyalGuest
         ];
 
         return roles.Contains(rol);
@@ -77,14 +77,14 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de saltarse las directivas.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool UsePolicy(DirectoryRoles rol)
+    public static bool UsePolicy(Types.Identity.Enumerations.Roles rol)
     {
 
-        DirectoryRoles[] roles =
+        Types.Identity.Enumerations.Roles[] roles =
         [
-            DirectoryRoles.System,
-            DirectoryRoles.Guest,
-            DirectoryRoles.RoyalGuest
+            Types.Identity.Enumerations.Roles.System,
+            Types.Identity.Enumerations.Roles.Guest,
+            Types.Identity.Enumerations.Roles.RoyalGuest
         ];
 
         return roles.Contains(rol);
@@ -96,16 +96,16 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de crear directivas.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool CreatePolicy(DirectoryRoles rol)
+    public static bool CreatePolicy(Types.Identity.Enumerations.Roles rol)
     {
 
-        DirectoryRoles[] roles =
+        Types.Identity.Enumerations.Roles[] roles =
         [
-            DirectoryRoles.System,
-            DirectoryRoles.SuperManager,
-            DirectoryRoles.Manager,
-            DirectoryRoles.Operator,
-            DirectoryRoles.RoyalGuest
+            Types.Identity.Enumerations.Roles.System,
+            Types.Identity.Enumerations.Roles.SuperManager,
+            Types.Identity.Enumerations.Roles.Manager,
+            Types.Identity.Enumerations.Roles.Operator,
+            Types.Identity.Enumerations.Roles.RoyalGuest
         ];
 
         return roles.Contains(rol);
@@ -118,14 +118,14 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de alterar datos como nombres de la organización etc...
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool DataAlter(DirectoryRoles rol)
+    public static bool DataAlter(Types.Identity.Enumerations.Roles rol)
     {
 
-        DirectoryRoles[] roles =
+        Types.Identity.Enumerations.Roles[] roles =
         [
-            DirectoryRoles.System,
-            DirectoryRoles.SuperManager,
-            DirectoryRoles.Manager,
+            Types.Identity.Enumerations.Roles.System,
+            Types.Identity.Enumerations.Roles.SuperManager,
+            Types.Identity.Enumerations.Roles.Manager,
         ];
 
         return roles.Contains(rol);
@@ -137,18 +137,18 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de saltarse las directivas.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool ViewPolicy(DirectoryRoles rol)
+    public static bool ViewPolicy(Types.Identity.Enumerations.Roles rol)
     {
 
-        DirectoryRoles[] roles =
+        Types.Identity.Enumerations.Roles[] roles =
         [
-            DirectoryRoles.System,
-            DirectoryRoles.SuperManager,
-            DirectoryRoles.Manager,
-            DirectoryRoles.Operator,
-            DirectoryRoles.AccountsOperator,
-            DirectoryRoles.Regular,
-            DirectoryRoles.RoyalGuest
+            Types.Identity.Enumerations.Roles.System,
+            Types.Identity.Enumerations.Roles.SuperManager,
+            Types.Identity.Enumerations.Roles.Manager,
+            Types.Identity.Enumerations.Roles.Operator,
+            Types.Identity.Enumerations.Roles.AccountsOperator,
+            Types.Identity.Enumerations.Roles.Regular,
+            Types.Identity.Enumerations.Roles.RoyalGuest
         ];
 
         return roles.Contains(rol);
@@ -165,7 +165,7 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de ver el directorio.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool View(IEnumerable<DirectoryRoles> roles)
+    public static bool View(IEnumerable<Types.Identity.Enumerations.Roles> roles)
     {
 
         // Recorrer roles.
@@ -183,7 +183,7 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de ver los integrantes.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool ViewMembers(IEnumerable<DirectoryRoles> roles)
+    public static bool ViewMembers(IEnumerable<Types.Identity.Enumerations.Roles> roles)
     {
 
         // Recorrer roles.
@@ -201,7 +201,7 @@ public static class Roles
     /// Confirmar si un rol tiene permisos para alterar los integrantes.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool AlterMembers(IEnumerable<DirectoryRoles> roles)
+    public static bool AlterMembers(IEnumerable<Types.Identity.Enumerations.Roles> roles)
     {
         // Recorrer roles.
         foreach (var rol in roles)
@@ -218,7 +218,7 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de saltarse las directivas.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool UsePolicy(IEnumerable<DirectoryRoles> roles)
+    public static bool UsePolicy(IEnumerable<Types.Identity.Enumerations.Roles> roles)
     {
 
         // Recorrer roles.
@@ -236,7 +236,7 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de crear directivas.
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool CreatePolicy(IEnumerable<DirectoryRoles> roles)
+    public static bool CreatePolicy(IEnumerable<Types.Identity.Enumerations.Roles> roles)
     {
 
         // Recorrer roles.
@@ -255,7 +255,7 @@ public static class Roles
     /// Confirmar si un rol tiene permisos de alterar datos como nombres de la organización etc...
     /// </summary>
     /// <param name="rol">Rol a confirmar.</param>
-    public static bool DataAlter(IEnumerable<DirectoryRoles> roles)
+    public static bool DataAlter(IEnumerable<Types.Identity.Enumerations.Roles> roles)
     {
         // Recorrer roles.
         foreach (var rol in roles)
@@ -269,7 +269,7 @@ public static class Roles
 
 
 
-    public static bool ViewPolicy(IEnumerable<DirectoryRoles> roles)
+    public static bool ViewPolicy(IEnumerable<Types.Identity.Enumerations.Roles> roles)
     {
         // Recorrer roles.
         foreach (var rol in roles)

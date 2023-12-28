@@ -139,12 +139,12 @@ public class Identities
     public static IQueryable<AccountModel> Search(string pattern, Models.Account filters, Conexión context)
     {
 
-        // Query general
+        // Query general.
         IQueryable<AccountModel> accounts = from account in GetValidAccounts(context)
                                             where account.Identity.Unique.Contains(pattern)
                                             select account;
 
-        // Armar el modelo
+        // Armar el modelo.
         accounts = BuildModel(accounts, filters);
 
         // Retorno
@@ -158,7 +158,7 @@ public class Identities
     public static IQueryable<DirectoryMember> GetDirectory(int id, int identityContext, Conexión context)
     {
 
-        // Query general
+        // Query general.
         IQueryable<DirectoryMember> accounts;
 
 

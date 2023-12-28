@@ -121,10 +121,8 @@ public class Mails
         }
         catch (Exception ex)
         {
-
             if ((ex.InnerException?.Message.Contains("Violation of UNIQUE KEY constraint") ?? false) || (ex.InnerException?.Message.Contains("duplicate key") ?? false))
                 return new(Responses.Undefined);
-
         }
 
         return new();

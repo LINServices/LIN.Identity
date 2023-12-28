@@ -35,8 +35,8 @@ public class Identities
         {
 
             var ids = await (from identity in context.DataBase.Identities
-                                  where identity.Id == id   
-                                  select identity).FirstOrDefaultAsync();
+                             where identity.Id == id
+                             select identity).FirstOrDefaultAsync();
 
 
             if (ids == null)

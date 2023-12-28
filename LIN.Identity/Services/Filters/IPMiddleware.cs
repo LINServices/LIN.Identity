@@ -34,13 +34,9 @@ public class IPMiddleware : IMiddleware
 
 public static class IPMiddlewareExtensions
 {
-    public static IApplicationBuilder UseIP(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<IPMiddleware>();
-    }
 
-    public static IServiceCollection AddIP(this IServiceCollection builder)
-    {
-        return builder.AddSingleton<IPMiddleware>();
-    }
+    public static IApplicationBuilder UseIP(this IApplicationBuilder builder) => builder.UseMiddleware<IPMiddleware>();
+
+    public static IServiceCollection AddIP(this IServiceCollection builder) => builder.AddSingleton<IPMiddleware>();
+
 }
