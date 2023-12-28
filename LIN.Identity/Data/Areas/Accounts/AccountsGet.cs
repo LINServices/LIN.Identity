@@ -240,7 +240,6 @@ internal static partial class Accounts
 
 
 
-
     /// <summary>
     /// Buscar usuarios por patron de búsqueda.
     /// </summary>

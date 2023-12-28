@@ -132,7 +132,6 @@ public class Policies
 
 
 
-
     /// <summary>
     /// Valida el acceso a un permiso de una identidad.
     /// </summary>

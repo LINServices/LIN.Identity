@@ -26,7 +26,7 @@ public class Members
 
 
 
-    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int dir, DirectoryRoles rol)
+    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int dir, Types.Identity.Enumerations.Roles rol)
     {
 
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -46,7 +46,7 @@ public class Members
     /// <param name="data">Modelo</param>
     /// <param name="rol">Rol dentro de la organización</param>
     /// <param name="context">Contexto de conexión</param>
-    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int directory, DirectoryRoles rol, Conexión context)
+    public static async Task<ReadOneResponse<AccountModel>> Create(AccountModel data, int directory, Types.Identity.Enumerations.Roles rol, Conexión context)
     {
 
         data.ID = 0;

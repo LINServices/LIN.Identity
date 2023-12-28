@@ -5,20 +5,15 @@ public class Directories
 {
 
 
-
-
-
-
-
     /// <summary>
     /// Obtiene las identidades y directorios.
     /// </summary>
     /// <param name="identity">Identidad base</param>
-    public static async Task<(List<int> directories, List<int> identities, List<DirectoryRoles> roles)> Get(int identity)
+    public static async Task<(List<int> directories, List<int> identities, List<Types.Identity.Enumerations.Roles> roles)> Get(int identity)
     {
         List<int> identities = [identity];
         List<int> directories = [];
-        List<DirectoryRoles> roles = [];
+        List<Types.Identity.Enumerations.Roles> roles = [];
 
         var (context, contextKey) = Conexión.GetOneConnection();
 
@@ -30,25 +25,6 @@ public class Directories
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /// <summary>
     /// Obtiene las identidades y directorios.
     /// </summary>
@@ -57,17 +33,19 @@ public class Directories
     /// <param name="identities">Lista de identidades.</param>
     /// <param name="directories">Directorios</param>
     /// <param name="roles">Roles</param>
-    private static async Task Get(int identityBase, Conexión context, List<int> identities, List<int> directories, List<DirectoryRoles> roles)
+    private static async Task Get(int identityBase, Conexión context, List<int> identities, List<int> directories, List<Types.Identity.Enumerations.Roles> roles)
     {
         // Consulta.
-        var query = from DM in context.DataBase.DirectoryMembers
-                    where DM.IdentityId == identityBase
-                    && !identities.Contains(DM.Directory.IdentityId)
+        var query = from member in context.DataBase.DirectoryMembers
+                    where member.IdentityId == identityBase
+                    where member.Rol != Roles.Guest
+                    && member.Rol != Roles.RoyalGuest
+                    && !identities.Contains(member.Directory.IdentityId)
                     select new
                     {
-                        Identity = DM.Directory.Identity.Id,
-                        Directory = DM.Directory.ID,
-                        Roles = DM.Rol
+                        Identity = member.Directory.Identity.Id,
+                        Directory = member.Directory.ID,
+                        Roles = member.Rol
                     };
 
         // Si hay elementos.
@@ -80,10 +58,10 @@ public class Directories
 
             foreach (var id in local)
                 await Get(id.Identity, context, identities, directories, roles);
-
         }
 
     }
+
 
 
 }

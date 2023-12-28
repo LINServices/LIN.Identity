@@ -130,7 +130,7 @@ public class Organizations
                 {
                     Directory = data.Directory,
                     Identity = account.Identity,
-                    Rol = DirectoryRoles.SuperManager
+                    Rol = Types.Identity.Enumerations.Roles.SuperManager
                 });
 
                 // Guardar.
@@ -211,8 +211,8 @@ public class Organizations
                                on org.DirectoryId equals dir.ID
                                join mem in context.DataBase.DirectoryMembers
                                on dir.ID equals mem.DirectoryId
-                               where mem.Rol != DirectoryRoles.Guest
-                               && mem.Rol != DirectoryRoles.RoyalGuest
+                               where mem.Rol != Types.Identity.Enumerations.Roles.Guest
+                               && mem.Rol != Types.Identity.Enumerations.Roles.RoyalGuest
                                where identity == dir.IdentityId
                                select mem).FirstOrDefaultAsync();
 

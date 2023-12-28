@@ -1,4 +1,3 @@
-using LIN.Identity.Models;
 using LIN.Identity.Services.Login;
 
 namespace LIN.Identity.Areas.Authentication;
@@ -62,7 +61,6 @@ public class AuthenticationController : ControllerBase
         // Respuesta del login
         var loginResponse = await strategy.Login();
 
-
         // Respuesta
         if (loginResponse.Response != Responses.Success)
             return new ReadOneResponse<AccountModel>()
@@ -95,14 +93,14 @@ public class AuthenticationController : ControllerBase
         // Token.
         JwtModel tokenInfo = HttpContext.Items["token"] as JwtModel ?? new();
 
-        // Obtiene el usuario
+        // Obtiene el usuario.
         var response = await Data.Accounts.Read(tokenInfo.AccountId, new Models.Account()
         {
             SensibleInfo = true,
             IsAdmin = true,
-            IncludeOrg = Models.IncludeOrg.Include,
-            OrgLevel = Models.IncludeOrgLevel.Advance,
-            FindOn = Models.FindOn.StableAccounts
+            IncludeOrg = IncludeOrg.Include,
+            OrgLevel = IncludeOrgLevel.Advance,
+            FindOn = FindOn.StableAccounts
         });
 
         if (response.Response != Responses.Success)
