@@ -186,6 +186,8 @@ public class Account
 
     }
 
+    private static readonly byte[] selector = [];
+
 
 
 
@@ -236,7 +238,7 @@ public class Account
                              },
                              Password = account.Password,
                              Visibility = account.Visibility,
-                             Profile = profile,
+                             Profile = filters.IncludePhoto ? profile : selector,
                              IdentityId = account.Identity.Id,
                              IdentityService = account.IdentityService
                          };
