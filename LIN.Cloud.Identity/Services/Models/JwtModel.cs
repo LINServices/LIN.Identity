@@ -29,12 +29,6 @@ public class JwtModel
 
 
     /// <summary>
-    /// Id de la organización.
-    /// </summary>
-    public int OrganizationId { get; set; }
-
-
-    /// <summary>
     /// Id de la aplicación.
     /// </summary>
     public int ApplicationId { get; set; }
