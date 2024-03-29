@@ -43,11 +43,6 @@ app.UseIP();
 app.UseCors("AllowAnyOrigin");
 
 
-
-
-
-
-
 // Swagger.
 app.UseSwagger();
 app.UseSwaggerUI();

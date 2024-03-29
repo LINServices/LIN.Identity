@@ -6,9 +6,6 @@ global using LIN.Cloud.Identity.Services.Models;
 global using Microsoft.AspNetCore.SignalR;
 global using LIN.Cloud.Identity.Services.Iam;
 
-
-
-
 // Framework.
 global using System.Text;
 global using System.IO;
@@ -38,5 +35,3 @@ global using Http.ResponsesList;
 
 // Módulos.
 global using LIN.Modules;
-
-
