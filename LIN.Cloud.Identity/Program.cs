@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
 string sql = "";
 
 #if DEBUG
-sql = builder.Configuration["ConnectionStrings:local"] ?? string.Empty;
+sql = builder.Configuration["ConnectionStrings:cloud"] ?? string.Empty;
 #elif RELEASE
 sql = builder.Configuration["ConnectionStrings:cloud"] ?? string.Empty;
 #endif
