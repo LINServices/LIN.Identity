@@ -7,6 +7,7 @@ namespace LIN.Cloud.Identity.Areas.Authentication;
 public class IntentsController : ControllerBase
 {
 
+
     /// <summary>
     /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
@@ -37,6 +38,38 @@ public class IntentsController : ControllerBase
 
             // Retorna
             return new(Responses.Success, intentos);
+        }
+        catch
+        {
+            return new(Responses.Undefined)
+            {
+                Message = "Hubo un error al obtener los intentos de passkey"
+            };
+        }
+    }
+
+
+
+
+    /// <summary>
+    /// Obtiene la lista de intentos de llaves de paso están activos.
+    /// </summary>
+    /// <param name="token">Token de acceso</param>
+    [HttpGet("count")]
+    [IdentityToken]
+    public async Task<HttpReadOneResponse<int>> Count([FromHeader] string token)
+    {
+        try
+        {
+
+            // Token.
+            JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
+
+          
+            var x = await Data.PassKeys.Count(tokenInfo.AccountId);
+
+            // Retorna
+            return new(Responses.Success, x.Model);
         }
         catch
         {

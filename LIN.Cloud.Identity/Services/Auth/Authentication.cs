@@ -109,9 +109,8 @@ public class Authentication
         if (Account == null)
             return false;
 
-        var ss = EncryptClass.Encrypt(Password);
         // Validar la contraseña.
-        if (EncryptClass.Encrypt(Password) != Account.Password)
+        if (Global.Utilities.Cryptography.Encrypt(Password) != Account.Password)
             return false;
 
         // Correcto.

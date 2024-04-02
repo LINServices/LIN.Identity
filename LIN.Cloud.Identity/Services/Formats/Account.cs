@@ -58,7 +58,7 @@ public class Account
             Creation = DateTime.Now,
             Name = baseAccount.Name.Trim(),
             Profile = baseAccount.Profile,
-            Password = EncryptClass.Encrypt(baseAccount.Password),
+            Password = Global.Utilities.Cryptography.Encrypt(baseAccount.Password),
             Visibility = baseAccount.Visibility,
             IdentityId = 0,
             Identity = new()

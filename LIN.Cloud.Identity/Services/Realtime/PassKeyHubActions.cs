@@ -16,9 +16,9 @@ public partial class PassKeyHub
         var tokenInformation = JwtService.Validate(token);
 
         // Validar.
-        if (!tokenInformation.IsAuthenticated) 
+        if (!tokenInformation.IsAuthenticated)
             return;
-        
+
         // Grupo de la cuenta.
         await Groups.AddToGroupAsync(Context.ConnectionId, BuildGroupName(tokenInformation.Unique));
 
@@ -63,6 +63,9 @@ public partial class PassKeyHub
 
         else
             Attempts[attempt.User.ToLower()].Add(attempt);
+
+
+
 
         // Yo
         await Groups.AddToGroupAsync(Context.ConnectionId, $"dbo.{Context.ConnectionId}");

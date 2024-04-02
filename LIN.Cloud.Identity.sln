@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Cloud.Identity", "LIN.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Types.Cloud.Identity", "..\..\Tipos\LIN.Types.Cloud.Identity\LIN.Types.Cloud.Identity.csproj", "{EA3955F9-EF0C-48E4-A428-02739EF322E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Modules", "..\..\Tipos\LIN.Modules\LIN.Modules.csproj", "{B784D380-1A0F-40C2-9F31-E1A7641DD3B5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Http", "..\..\Tipos\Http\Http.csproj", "{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Types", "..\..\Tipos\LIN.Types\LIN.Types.csproj", "{E3EC1B54-10F8-4395-AE5B-0F1A4270E4DD}"
@@ -27,10 +25,6 @@ Global
 		{EA3955F9-EF0C-48E4-A428-02739EF322E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA3955F9-EF0C-48E4-A428-02739EF322E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA3955F9-EF0C-48E4-A428-02739EF322E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B784D380-1A0F-40C2-9F31-E1A7641DD3B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B784D380-1A0F-40C2-9F31-E1A7641DD3B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B784D380-1A0F-40C2-9F31-E1A7641DD3B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B784D380-1A0F-40C2-9F31-E1A7641DD3B5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}.Release|Any CPU.ActiveCfg = Release|Any CPU
