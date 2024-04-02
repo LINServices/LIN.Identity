@@ -53,17 +53,16 @@ public static class DataService
             lock (cache)
             {
                 cache.SetOnUse();
-                string key = KeyGen.Generate(10, "db.");
+                string key = Global.Utilities.KeyGenerator. Generate(10, "db.");
                 cache.Key = key;
                 return (cache, key);
             }
         }
 
-
         // Generar estancia forzosa.
         var newDB = new DataBase()
         {
-            Key = KeyGen.Generate(10, "db.")
+            Key = Global.Utilities.KeyGenerator.Generate(10, "db.")
         };
 
         newDB.SetOnUse();

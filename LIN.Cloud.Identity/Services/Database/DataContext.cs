@@ -23,7 +23,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<OrganizationModel> Organizations { get; set; }
 
 
-
     /// <summary>
     /// Grupos.
     /// </summary>
@@ -40,6 +39,12 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// RolesIam de grupos.
     /// </summary>
     public DbSet<IdentityRolesModel> IdentityRoles { get; set; }
+
+
+    /// <summary>
+    /// PassKeys.
+    /// </summary>
+    public DbSet<PassKeyDBModel> PassKeys { get; set; }
 
 
 
@@ -97,9 +102,22 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         }
 
+
+        // Modelo: PassKey.
+        {
+
+            modelBuilder.Entity<PassKeyDBModel>()
+                              .HasOne(t => t.Account)
+                              .WithMany()
+                              .HasForeignKey(y => y.AccountId)
+                              .OnDelete(DeleteBehavior.NoAction);
+        }
+
+
+
         // Modelo: GroupModel.
         {
-           
+
             modelBuilder.Entity<GroupModel>()
                 .HasOne(t => t.Identity)
                 .WithMany()
@@ -170,6 +188,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<IdentityRolesModel>().ToTable("IDENTITY_ROLES");
         modelBuilder.Entity<GroupMember>().ToTable("GROUPS_MEMBERS");
         modelBuilder.Entity<OrganizationModel>().ToTable("ORGANIZATIONS");
+        modelBuilder.Entity<PassKeyDBModel>().ToTable("PASSKEYS");
 
         // Base.
         base.OnModelCreating(modelBuilder);

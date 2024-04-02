@@ -32,6 +32,3 @@ global using System.Security.Claims;
 global using LIN.Types.Responses;
 global using LIN.Types.Enumerations;
 global using Http.ResponsesList;
-
-// Módulos.
-global using LIN.Modules;

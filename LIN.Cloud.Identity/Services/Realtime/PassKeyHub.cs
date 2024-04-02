@@ -195,6 +195,14 @@ public partial class PassKeyHub : Hub
             //_ = Data.Logins.Create(loginLog);
 
 
+
+            _ = Data.PassKeys.Create(new PassKeyDBModel
+            {
+                AccountId = info.AccountId,
+                Id = 0,
+                Time = DateTime.Now,
+            });
+
             //// Nuevo token 
             var newToken = JwtService.Generate(new AccountModel()
             {
