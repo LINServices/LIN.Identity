@@ -31,15 +31,3 @@ Este es un proyecto desarrollado en C# y .NET 8 que proporciona funcionalidades 
 3. Configura la conexión a la base de datos en el archivo `appsettings.json`, proporcionando la cadena de conexión correcta.
 
 4. Compila y ejecuta la aplicación.
-
-## Contribución
-
-Si deseas contribuir a este proyecto, ¡serás bienvenido! Puedes contribuir de las siguientes formas:
-
-- Reportando problemas y errores.
-- Proponiendo nuevas características.
-- Enviando solicitudes de extracción para solucionar problemas o agregar características.
-
-## Licencia
-
-Este proyecto se distribuye bajo la Licencia MIT. Siéntete libre de utilizar, modificar y distribuir este proyecto de acuerdo con los términos de la licencia.
