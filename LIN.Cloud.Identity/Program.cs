@@ -1,4 +1,5 @@
 using LIN.Cloud.Identity.Services.Realtime;
+using Http.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

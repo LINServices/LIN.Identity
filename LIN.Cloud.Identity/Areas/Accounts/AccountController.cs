@@ -218,7 +218,7 @@ public class AccountController : ControllerBase
         {
             AccountContext = tokenInfo.AccountId,
             FindOn = FindOn.StableAccounts,
-            IsAdmin =false,
+            IsAdmin = false,
             IdentityContext = tokenInfo.IdentityId,
         });
 
@@ -252,8 +252,6 @@ public class AccountController : ControllerBase
         return response;
 
     }
-
-
 
 
 }

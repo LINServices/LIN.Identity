@@ -25,7 +25,7 @@ public class IntentsController : ControllerBase
             // Cuenta
             var account = (from a in PassKeyHub.Attempts
                            where a.Key.Equals(tokenInfo.Unique, StringComparison.CurrentCultureIgnoreCase)
-                           select a).FirstOrDefault().Value ?? new();
+                           select a).FirstOrDefault().Value ?? [];
 
             // Hora actual
             var timeNow = DateTime.Now;
