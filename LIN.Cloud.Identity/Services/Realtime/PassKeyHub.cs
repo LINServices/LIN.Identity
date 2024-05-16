@@ -13,7 +13,6 @@ public partial class PassKeyHub : Hub
     public readonly static Dictionary<string, List<PassKeyModel>> Attempts = [];
 
 
-
     /// <summary>
     /// Canal de intentos.
     /// </summary>

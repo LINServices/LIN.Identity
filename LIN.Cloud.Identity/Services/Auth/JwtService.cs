@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using LIN.Cloud.Identity.Services.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-
-namespace LIN.Cloud.Identity.Services.Auth;
+﻿namespace LIN.Cloud.Identity.Services.Auth;
 
 
 public class JwtService
@@ -23,7 +18,7 @@ public class JwtService
     /// </summary>
     public static void Open()
     {
-        JwtKey = Configuration.GetConfiguration("jwt:key");
+        JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key");
     }
 
 
