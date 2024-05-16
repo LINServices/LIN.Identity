@@ -1,28 +1,27 @@
 ﻿namespace LIN.Cloud.Identity.Services.Auth;
 
 
-public class Authentication
+public class Authentication : Interfaces.IAuthentication
 {
 
 
     /// <summary>
     /// Usuario.
     /// </summary>
-    private string User { get; set; }
-
+    private string User { get; set; } = string.Empty;
 
 
     /// <summary>
     /// Usuario.
     /// </summary>
-    private string Password { get; set; }
+    private string Password { get; set; } = string.Empty;
 
 
 
     /// <summary>
     /// Código de la aplicación.
     /// </summary>
-    private string AppCode { get; set; }
+    private string AppCode { get; set; } = string.Empty;
 
 
 
@@ -35,19 +34,17 @@ public class Authentication
 
 
     /// <summary>
-    /// Generar nuevo servicio de autenticación.
+    /// Establecer credenciales.
     /// </summary>
-    /// <param name="user">Usuario.</param>
-    /// <param name="password">Contraseña</param>
-    /// <param name="appCode">Código de aplicación</param>
-    public Authentication(string user, string password, string appCode)
+    /// <param name="username">Usuario.</param>
+    /// <param name="password">Contraseña.</param>
+    /// <param name="appCode">Código de app.</param>
+    public void SetCredentials(string username, string password, string appCode)
     {
-        this.User = user;
+        this.User = username;
         this.Password = password;
         this.AppCode = appCode;
     }
-
-
 
 
 
@@ -67,7 +64,7 @@ public class Authentication
         // Validar contraseña.
         bool password = ValidatePassword();
 
-        if(!password)
+        if (!password)
             return Responses.InvalidPassword;
 
 
@@ -118,5 +115,18 @@ public class Authentication
 
     }
 
+
+
+    /// <summary>
+    /// Obtener el token.
+    /// </summary>
+    public string GenerateToken() => JwtService.Generate(Account!, 0);
+
+
+
+    /// <summary>
+    /// Obtener el token.
+    /// </summary>
+    public AccountModel GetData() => Account!;
 
 }

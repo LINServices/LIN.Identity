@@ -50,7 +50,6 @@ public class IntentsController : ControllerBase
 
 
 
-
     /// <summary>
     /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
@@ -65,7 +64,6 @@ public class IntentsController : ControllerBase
             // Token.
             JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-          
             var x = await Data.PassKeys.Count(tokenInfo.AccountId);
 
             // Retorna

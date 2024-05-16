@@ -1,8 +1,10 @@
+using LIN.Cloud.Identity.Services.Auth.Interfaces;
+
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 
 [Route("authentication")]
-public class AuthenticationController : ControllerBase
+public class AuthenticationController(IAuthentication authentication) : ControllerBase
 {
 
 
@@ -24,11 +26,11 @@ public class AuthenticationController : ControllerBase
             };
 
 
-        // Generar el servicio.
-        var service = new Services.Auth.Authentication(user, password, application);
+        // Establecer credenciales.
+        authentication.SetCredentials(user, password, application);
 
         // Respuesta.
-        var response = await service.Start();
+        var response = await authentication.Start();
 
         // Validación al obtener el usuario
         switch (response)
@@ -63,12 +65,12 @@ public class AuthenticationController : ControllerBase
         }
 
         // Genera el token
-        var token = JwtService.Generate(service.Account!, 0);
+        var token = authentication.GenerateToken();
 
         // Respuesta.
         var http = new ReadOneResponse<AccountModel>
         {
-            Model = service.Account!,
+            Model = authentication.GetData(),
             Response = Responses.Success,
             Token = token
         };
