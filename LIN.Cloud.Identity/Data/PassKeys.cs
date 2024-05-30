@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Data;
+﻿using LIN.Cloud.Identity.Persistence.Models;
+
+namespace LIN.Cloud.Identity.Data;
 
 
 public static class PassKeys

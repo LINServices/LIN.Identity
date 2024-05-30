@@ -3,7 +3,7 @@ using LIN.Cloud.Identity.Services.Realtime;
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 
-[Route("Intents")]
+[Route("[controller]")]
 public class IntentsController : ControllerBase
 {
 

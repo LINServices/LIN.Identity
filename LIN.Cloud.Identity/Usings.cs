@@ -17,7 +17,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 
 // Tipos locales.
-global using LIN.Cloud.Identity.Services.Database;
+global using LIN.Cloud.Identity.Persistence.Contexts;
 global using LIN.Cloud.Identity.Services.Middlewares;
 global using LIN.Types.Cloud.Identity.Models;
 global using LIN.Types.Cloud.Identity.Enumerations;

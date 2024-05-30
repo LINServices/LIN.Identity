@@ -1,4 +1,8 @@
-﻿namespace LIN.Cloud.Identity.Services.Database;
+﻿using LIN.Cloud.Identity.Persistence.Models;
+using LIN.Types.Cloud.Identity.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace LIN.Cloud.Identity.Persistence.Contexts;
 
 
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
@@ -49,14 +53,13 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
 
-
+    /// <summary>
+    /// Configuring database.
+    /// </summary>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-
         optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         base.OnConfiguring(optionsBuilder);
-
-
     }
 
 
@@ -124,7 +127,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                 .HasForeignKey(t => t.IdentityId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-           
+
         }
 
 
@@ -133,7 +136,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
             modelBuilder.Entity<GroupMember>()
-
                               .HasKey(t => new
                               {
                                   t.IdentityId,
@@ -177,9 +179,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                     });
 
         }
-
-      
-
 
         // Nombres de las tablas.
         modelBuilder.Entity<IdentityModel>().ToTable("IDENTITIES");

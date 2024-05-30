@@ -26,7 +26,6 @@ public class IPMiddleware : IMiddleware
             return;
         }
 
-
         // Item de IP.
         context.Items.Add("IP", ip);
         await next(context);

@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Groups;
 
 
-[Route("groups")]
+[Route("[controller]")]
 public class GroupsController : ControllerBase
 {
 
@@ -58,7 +58,6 @@ public class GroupsController : ControllerBase
 
 
 
-
     /// <summary>
     /// Obtener los grupos asociados a una organización.
     /// </summary>
@@ -100,7 +99,6 @@ public class GroupsController : ControllerBase
         return response;
 
     }
-
 
 
 
