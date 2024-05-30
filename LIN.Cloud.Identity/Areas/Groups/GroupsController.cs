@@ -2,7 +2,7 @@
 
 
 [Route("[controller]")]
-public class GroupsController : ControllerBase
+public class GroupsController(Data.Groups groupData) : ControllerBase
 {
 
 
@@ -38,7 +38,7 @@ public class GroupsController : ControllerBase
         Services.Formats.Identities.Process(group.Identity);
 
         // Obtener el modelo.
-        var response = await Data.Groups.Create(group);
+        var response = await groupData.Create(group);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -86,7 +86,7 @@ public class GroupsController : ControllerBase
             };
 
         // Obtener el modelo.
-        var response = await Data.Groups.ReadAll(organization);
+        var response = await groupData.ReadAll(organization);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -117,7 +117,7 @@ public class GroupsController : ControllerBase
 
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwner(id);
+        var orgId = await groupData.GetOwner(id);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -143,7 +143,7 @@ public class GroupsController : ControllerBase
             };
 
         // Obtener el modelo.
-        var response = await Data.Groups.Read(id);
+        var response = await groupData.Read(id);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -174,7 +174,7 @@ public class GroupsController : ControllerBase
 
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwnerByIdentity(id);
+        var orgId = await groupData.GetOwnerByIdentity(id);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -200,7 +200,7 @@ public class GroupsController : ControllerBase
             };
 
         // Obtener el modelo.
-        var response = await Data.Groups.ReadByIdentity(id);
+        var response = await groupData.ReadByIdentity(id);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

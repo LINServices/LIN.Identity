@@ -3,145 +3,8 @@
 namespace LIN.Cloud.Identity.Data;
 
 
-public static class DirectoryMembers
+public class DirectoryMembers(DataContext context)
 {
-
-
-
-    #region Abstracciones
-
-
-
-    /// <summary>
-    /// Obtener los directorios (Grupos de organización) donde una identidad pertenece.
-    /// </summary>
-    /// <param name="id">Id de la identidad</param>
-    public static async Task<ReadAllResponse<GroupMember>> Read(int id, int organization)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Read(id, organization, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Valida si una identidad es miembro de una organización.
-    /// </summary>
-    /// <param name="id">Identidad</param>
-    /// <param name="organization">Id de la organización</param>
-    public static async Task<ReadOneResponse<GroupMemberTypes>> IamIn(int id, int organization)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await IamIn(id, organization, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-
-
-
-
-    public static async Task<ReadAllResponse<int>> IamIn(List<int> id, int organization)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await IamIn(id, organization, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Valida si una identidad es miembro de una organización.
-    /// </summary>
-    /// <param name="id">Identidad</param>
-    /// <param name="directory">Id de la organización</param>
-    public static async Task<ReadOneResponse<GroupMemberTypes>> IamInByDir(int id, int directory)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await IamInByDir(id, directory, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="id">Id del directorio</param>
-    public static async Task<ReadAllResponse<GroupMember>> ReadMembers(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await ReadMembers(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    public static async Task<ReadAllResponse<SessionModel<GroupMember>>> ReadMembersByOrg(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await ReadMembersByOrg(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-
-    #endregion
-
-
-
-
 
 
     /// <summary>
@@ -150,7 +13,7 @@ public static class DirectoryMembers
     /// <param name="id">Identidad</param>
     /// <param name="organization">Organización de contexto.</param>
     /// <param name="context">Contexto.</param>
-    public static async Task<ReadAllResponse<GroupMember>> Read(int id, int organization, DataContext context)
+    public async Task<ReadAllResponse<GroupMember>> Read(int id, int organization)
     {
 
         try
@@ -198,19 +61,13 @@ public static class DirectoryMembers
 
 
 
-
-
-
-
-
-
     /// <summary>
     /// Valida si una identidad es miembro de una organización.
     /// </summary>
     /// <param name="id">Identidad</param>
     /// <param name="organization">Id de la organización</param>
     /// <param name="context">Contexto</param>
-    public static async Task<ReadOneResponse<GroupMemberTypes>> IamIn(int id, int organization, DataContext context)
+    public async Task<ReadOneResponse<GroupMemberTypes>> IamIn(int id, int organization)
     {
 
         try
@@ -255,14 +112,13 @@ public static class DirectoryMembers
 
 
 
-
     /// <summary>
     /// Valida si una lista de identidades son miembro de una organización.
     /// </summary>
     /// <param name="ids">Identidades</param>
     /// <param name="organization">Id de la organización</param>
     /// <param name="context">Contexto</param>
-    public static async Task<ReadAllResponse<int>> IamIn(List<int> ids, int organization, DataContext context)
+    public async Task<ReadAllResponse<int>> IamIn(List<int> ids, int organization)
     {
 
         try
@@ -310,7 +166,7 @@ public static class DirectoryMembers
     /// <param name="id">Identidad</param>
     /// <param name="directory">Id del directorio</param>
     /// <param name="context">Contexto</param>
-    public static async Task<ReadOneResponse<GroupMemberTypes>> IamInByDir(int id, int directory, DataContext context)
+    public async Task<ReadOneResponse<GroupMemberTypes>> IamInByDir(int id, int directory)
     {
 
         try
@@ -360,7 +216,7 @@ public static class DirectoryMembers
     /// </summary>
     /// <param name="id">Directorio</param>
     /// <param name="context">Contexto</param>
-    public static async Task<ReadAllResponse<GroupMember>> ReadMembers(int id, DataContext context)
+    public async Task<ReadAllResponse<GroupMember>> ReadMembers(int id)
     {
 
         try
@@ -412,7 +268,7 @@ public static class DirectoryMembers
     /// </summary>
     /// <param name="id">Directorio</param>
     /// <param name="context">Contexto</param>
-    public static async Task<ReadAllResponse<SessionModel<GroupMember>>> ReadMembersByOrg(int id, DataContext context)
+    public async Task<ReadAllResponse<SessionModel<GroupMember>>> ReadMembersByOrg(int id)
     {
 
         try
@@ -426,19 +282,19 @@ public static class DirectoryMembers
                                  on gm.IdentityId equals a.IdentityId
                                  select new SessionModel<GroupMember>
                                  {
-                                      Account = new()
-                                      {
-                                          Id = a.Id,
-                                          Name = a.Name,
-                                          Visibility = a.Visibility,
-                                          IdentityService = a.IdentityService,
-                                          Identity = new()
-                                          {
-                                              Id = a.Identity.Id,
-                                              Unique = a.Identity.Unique
-                                          }
-                                      },
-                                      Profile = gm
+                                     Account = new()
+                                     {
+                                         Id = a.Id,
+                                         Name = a.Name,
+                                         Visibility = a.Visibility,
+                                         IdentityService = a.IdentityService,
+                                         Identity = new()
+                                         {
+                                             Id = a.Identity.Id,
+                                             Unique = a.Identity.Unique
+                                         }
+                                     },
+                                     Profile = gm
                                  }).ToListAsync();
 
 
@@ -466,8 +322,6 @@ public static class DirectoryMembers
         }
 
     }
-
-
 
 
 }

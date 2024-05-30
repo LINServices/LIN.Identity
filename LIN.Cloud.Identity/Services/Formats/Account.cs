@@ -26,7 +26,7 @@ public class Account
 
 
         if (!ValidarCadena(baseAccount.Identity.Unique))
-            return (false, "La identidad de la cuenta no puede contener simbolos NO alfanumericos.");
+            return (false, "La identidad de la cuenta no puede contener símbolos NO alfanuméricos.");
 
 
         return (true, "");

@@ -2,7 +2,7 @@
 
 
 [Route("[controller]")]
-public class IdentityController : ControllerBase
+public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData) : ControllerBase
 {
 
 
@@ -46,7 +46,7 @@ public class IdentityController : ControllerBase
         };
 
         // Obtener el modelo.
-        var response = await Data.IdentityRoles.Create(rolModel);
+        var response = await identityRolesData.Create(rolModel);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -96,7 +96,7 @@ public class IdentityController : ControllerBase
 
 
 
-        var isIn = await Data.DirectoryMembers.IamIn(identity, organization);
+        var isIn = await directoryMembersData.IamIn(identity, organization);
 
 
         if (isIn.Response != Responses.Success)
@@ -108,7 +108,7 @@ public class IdentityController : ControllerBase
 
 
         // Obtener el modelo.
-        var response = await Data.IdentityRoles.ReadAll(identity, organization);
+        var response = await identityRolesData.ReadAll(identity, organization);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -156,7 +156,7 @@ public class IdentityController : ControllerBase
 
 
 
-        var isIn = await Data.DirectoryMembers.IamIn(identity, organization);
+        var isIn = await directoryMembersData.IamIn(identity, organization);
 
 
         if (isIn.Response != Responses.Success)
@@ -168,7 +168,7 @@ public class IdentityController : ControllerBase
 
 
         // Obtener el modelo.
-        var response = await Data.IdentityRoles.Remove(identity, rol, organization);
+        var response = await identityRolesData.Remove(identity, rol, organization);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

@@ -2,6 +2,7 @@ using LIN.Cloud.Identity.Services.Realtime;
 using Http.Extensions;
 using LIN.Cloud.Identity.Services.Auth.Interfaces;
 using LIN.Cloud.Identity.Persistence.Extensions;
+using LIN.Cloud.Identity.Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +21,9 @@ sql = builder.Configuration["ConnectionStrings:cloud"] ?? string.Empty;
 
 // Servicios propios.
 builder.Services.AddIP();
+builder.Services.AddLocalServices();
 
 // Servicio de autenticación.
-builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddPersistence(builder.Configuration);
 

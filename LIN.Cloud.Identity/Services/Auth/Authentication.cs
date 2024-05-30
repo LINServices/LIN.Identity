@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Services.Auth;
 
 
-public class Authentication : Interfaces.IAuthentication
+public class Authentication (Data.Accounts accountData) : Interfaces.IAuthentication
 {
 
 
@@ -80,7 +80,7 @@ public class Authentication : Interfaces.IAuthentication
     {
 
         // Obtener la cuenta.
-        var account = await Data.Accounts.Read(User, new()
+        var account = await accountData.Read(User, new()
         {
             FindOn = FindOn.StableAccounts,
             IsAdmin = true

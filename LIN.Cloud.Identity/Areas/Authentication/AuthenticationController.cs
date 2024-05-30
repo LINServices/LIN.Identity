@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Authentication;
 
 
 [Route("[controller]")]
-public class AuthenticationController(IAuthentication authentication) : ControllerBase
+public class AuthenticationController(IAuthentication authentication, Data.Accounts accountData) : ControllerBase
 {
 
 
@@ -93,7 +93,7 @@ public class AuthenticationController(IAuthentication authentication) : Controll
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene el usuario.
-        var response = await Data.Accounts.Read(tokenInfo.AccountId, new QueryAccountFilter()
+        var response = await accountData.Read(tokenInfo.AccountId, new QueryAccountFilter()
         {
             IsAdmin = true,
             FindOn = FindOn.StableAccounts

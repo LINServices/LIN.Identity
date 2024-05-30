@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Authentication;
 
 
 [Route("[controller]")]
-public class IntentsController : ControllerBase
+public class IntentsController (Data.PassKeys passkeyData) : ControllerBase
 {
 
 
@@ -64,7 +64,7 @@ public class IntentsController : ControllerBase
             // Token.
             JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-            var x = await Data.PassKeys.Count(tokenInfo.AccountId);
+            var x = await passkeyData.Count(tokenInfo.AccountId);
 
             // Retorna
             return new(Responses.Success, x.Model);

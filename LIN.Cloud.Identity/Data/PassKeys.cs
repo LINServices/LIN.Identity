@@ -3,66 +3,13 @@
 namespace LIN.Cloud.Identity.Data;
 
 
-public static class PassKeys
+public  class PassKeys(DataContext context)
 {
 
 
 
-    #region Abstracciones
-
-
-
-    /// <summary>
-    /// Crear nueva identidad.
-    /// </summary>
-    /// <param name="modelo">Modelo.</param>
-    public static async Task<ResponseBase> Create(PassKeyDBModel modelo)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Create(modelo, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener una identidad según el Id.
-    /// </summary>
-    /// <param name="id">Id.</param>
-    /// <param name="filters">Filtros de búsqueda.</param>
-    public static async Task<ReadOneResponse<int>> Count(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Count(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-
-
-    #endregion
-
-
-
     
-    public static async Task<ResponseBase> Create(PassKeyDBModel modelo, DataContext context)
+    public  async Task<ResponseBase> Create(PassKeyDBModel modelo)
     {
         // Pre.
         modelo.Id = 0;
@@ -93,7 +40,7 @@ public static class PassKeys
 
 
     
-    public static async Task<ReadOneResponse<int>> Count(int id, DataContext context)
+    public  async Task<ReadOneResponse<int>> Count(int id)
     {
 
         try

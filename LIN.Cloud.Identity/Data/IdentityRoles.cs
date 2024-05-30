@@ -1,83 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
 
-public static class IdentityRoles
+public class IdentityRoles(DataContext context)
 {
-
-
-
-    #region Abstracciones
-
-
-
-    /// <summary>
-    /// Crear nuevo rol.
-    /// </summary>
-    /// <param name="modelo">Modelo.</param>
-    public static async Task<ResponseBase> Create(IdentityRolesModel modelo)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Create(modelo, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener los roles asociados a una identidad en una organización determinada.
-    /// </summary>
-    /// <param name="identity">Identidad.</param>
-    /// <param name="organization">Organización.</param>
-    public static async Task<ReadAllResponse<IdentityRolesModel>> ReadAll(int identity, int organization)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await ReadAll(identity, organization, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Eliminar el rol de una identidad en una organización.
-    /// </summary>
-    /// <param name="identity">Identidad.</param>
-    /// <param name="rol">Rol.</param>
-    /// <param name="organization">Organización.</param>
-    public static async Task<ResponseBase> Remove(int identity, Roles rol, int organization)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Remove(identity, rol, organization, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    #endregion
-
 
 
     /// <summary>
@@ -85,7 +10,7 @@ public static class IdentityRoles
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ResponseBase> Create(IdentityRolesModel modelo, DataContext context)
+    public async Task<ResponseBase> Create(IdentityRolesModel modelo)
     {
 
         try
@@ -124,7 +49,7 @@ public static class IdentityRoles
     /// <param name="identity">Identidad.</param>
     /// <param name="organization">Organización.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadAllResponse<IdentityRolesModel>> ReadAll(int identity, int organization, DataContext context)
+    public async Task<ReadAllResponse<IdentityRolesModel>> ReadAll(int identity, int organization)
     {
 
         try
@@ -132,7 +57,7 @@ public static class IdentityRoles
 
             List<IdentityRolesModel> Roles = [];
 
-            await RolesOn(identity, organization, context, [], Roles);
+            await RolesOn(identity, organization, [], Roles);
 
             return new()
             {
@@ -161,7 +86,7 @@ public static class IdentityRoles
     /// <param name="rol">Rol.</param>
     /// <param name="organization">Organización.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ResponseBase> Remove(int identity, Roles rol, int organization, DataContext context)
+    public async Task<ResponseBase> Remove(int identity, Roles rol, int organization)
     {
 
         try
@@ -203,7 +128,7 @@ public static class IdentityRoles
 
 
 
-    private static async Task RolesOn(int identity, int organization, DataContext context, List<int> ids, List<IdentityRolesModel> roles)
+    private async Task RolesOn(int identity, int organization, List<int> ids, List<IdentityRolesModel> roles)
     {
 
         var query = from id in context.Identities
@@ -253,7 +178,7 @@ public static class IdentityRoles
 
             // Recorrer.
             foreach (var @base in bases)
-                await RolesOn(@base, organization, context, ids, roles);
+                await RolesOn(@base, organization, ids, roles);
 
         }
 
