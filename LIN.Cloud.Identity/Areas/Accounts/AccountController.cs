@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 
-[Route("account")]
+[Route("[controller]")]
 public class AccountController : ControllerBase
 {
 
@@ -10,7 +10,7 @@ public class AccountController : ControllerBase
     /// Crear una cuenta LIN.
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta.</param>
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel? modelo)
     {
 
@@ -186,6 +186,34 @@ public class AccountController : ControllerBase
             };
 
         // Retorna el resultado
+        return response;
+
+    }
+
+
+
+    /// <summary>
+    /// Obtener una cuenta según Id de identidad.
+    /// </summary>
+    /// <param name="id">Id de la identidad.</param>
+    /// <param name="token">Token de acceso.</param>
+    [HttpPost("read/identity")]
+    [IdentityToken]
+    public async Task<HttpReadAllResponse<AccountModel>> ReadByIdentity([FromBody] List<int> ids, [FromHeader] string token)
+    {
+
+        // Token.
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
+
+        // Obtiene el usuario
+        var response = await Data.Accounts.FindAll(ids, new()
+        {
+            AccountContext = tokenInfo.AccountId,
+            FindOn = FindOn.StableAccounts,
+            IsAdmin = false,
+            IdentityContext = tokenInfo.IdentityId,
+        });
+
         return response;
 
     }

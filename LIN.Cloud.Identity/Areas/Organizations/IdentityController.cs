@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Organizations;
 
 
-[Route("identity")]
+[Route("[controller]")]
 public class IdentityController : ControllerBase
 {
 

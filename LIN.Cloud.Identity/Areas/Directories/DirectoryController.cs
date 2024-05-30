@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Directories;
 
 
-[Route("directory")]
+[Route("[controller]")]
 public class DirectoryController : ControllerBase
 {
 

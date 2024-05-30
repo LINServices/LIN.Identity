@@ -3,7 +3,7 @@ using LIN.Cloud.Identity.Services.Auth.Interfaces;
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 
-[Route("authentication")]
+[Route("[controller]")]
 public class AuthenticationController(IAuthentication authentication) : ControllerBase
 {
 
@@ -24,7 +24,6 @@ public class AuthenticationController(IAuthentication authentication) : Controll
             {
                 Message = "Uno o varios parámetros son invalido."
             };
-
 
         // Establecer credenciales.
         authentication.SetCredentials(user, password, application);
