@@ -1,16 +1,14 @@
 ﻿namespace LIN.Cloud.Identity.Services.Iam;
 
 
-public class RolesIam
+public class RolesIam(DataContext context)
 {
 
 
 
 
-    public static async Task<(List<int> identities, List<Types.Cloud.Identity.Enumerations.Roles> roles)> RolesOnByDir(int identity, int directory)
+    public async Task<(List<int> identities, List<Types.Cloud.Identity.Enumerations.Roles> roles)> RolesOnByDir(int identity, int directory)
     {
-
-        var (context, contextKey) = DataService.GetConnection();
 
         var query = await (from org in context.Organizations
                            where org.DirectoryId == directory
@@ -27,28 +25,24 @@ public class RolesIam
 
         await RolesOn(identity, query, context, identities, roles);
 
-        context.Close(contextKey);
         return (identities, roles);
     }
 
 
 
 
-    public static async Task<(List<int> identities, List<Types.Cloud.Identity.Enumerations.Roles> roles)> RolesOn(int identity, int organization)
+    public async Task<(List<int> identities, List<Types.Cloud.Identity.Enumerations.Roles> roles)> RolesOn(int identity, int organization)
     {
         List<int> identities = [identity];
         List<Types.Cloud.Identity.Enumerations.Roles> roles = [];
 
-        var (context, contextKey) = DataService.GetConnection();
-
         await RolesOn(identity, organization, context, identities, roles);
 
-        context.Close(contextKey);
         return (identities, roles);
     }
 
 
-    private static async Task RolesOn(int identity, int organization, DataContext context, List<int> ids, List<Types.Cloud.Identity.Enumerations.Roles> roles)
+    private async Task RolesOn(int identity, int organization, DataContext context, List<int> ids, List<Types.Cloud.Identity.Enumerations.Roles> roles)
     {
 
 

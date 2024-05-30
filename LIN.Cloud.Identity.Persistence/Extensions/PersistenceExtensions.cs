@@ -24,8 +24,8 @@ public static class PersistenceExtensions
             options.UseSqlServer(configuration.GetConnectionString("cloud"));
         });
 
-        services.AddSingleton<AccountFindable, AccountFindable>();
-        services.AddSingleton<IdentityFindable, IdentityFindable>();
+        services.AddScoped<AccountFindable, AccountFindable>();
+        services.AddScoped<IdentityFindable, IdentityFindable>();
 
         return services;
     }
