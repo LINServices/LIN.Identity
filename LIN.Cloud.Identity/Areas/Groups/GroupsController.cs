@@ -2,7 +2,7 @@
 
 
 [Route("[controller]")]
-public class GroupsController(Data.Groups groupData) : ControllerBase
+public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : ControllerBase
 {
 
 
@@ -20,7 +20,7 @@ public class GroupsController(Data.Groups groupData) : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Confirmar el rol.
-        var (_, roles) = await RolesIam.RolesOn(tokenInfo.IdentityId, group.OwnerId ?? 0);
+        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, group.OwnerId ?? 0);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -72,7 +72,7 @@ public class GroupsController(Data.Groups groupData) : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Confirmar el rol.
-        var (_, roles) = await RolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -129,7 +129,7 @@ public class GroupsController(Data.Groups groupData) : ControllerBase
 
 
         // Confirmar el rol.
-        var (_, roles) = await RolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
+        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -186,7 +186,7 @@ public class GroupsController(Data.Groups groupData) : ControllerBase
 
 
         // Confirmar el rol.
-        var (_, roles) = await RolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
+        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

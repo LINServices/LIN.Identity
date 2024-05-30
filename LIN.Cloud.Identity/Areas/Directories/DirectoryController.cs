@@ -2,7 +2,7 @@
 
 
 [Route("[controller]")]
-public class DirectoryController (Data.DirectoryMembers directoryMembersData, Data.Groups groupsData) : ControllerBase
+public class DirectoryController (Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, RolesIam rolesIam) : ControllerBase
 {
 
 
@@ -69,7 +69,7 @@ public class DirectoryController (Data.DirectoryMembers directoryMembersData, Da
 
 
         // Confirmar el rol.
-        var (_, roles) = await RolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
+        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

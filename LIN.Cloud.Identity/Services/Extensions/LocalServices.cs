@@ -13,14 +13,16 @@ public static class LocalServices
     public static IServiceCollection AddLocalServices(this IServiceCollection services)
     {
 
-        services.AddSingleton<Data.Accounts, Data.Accounts>();  
-        services.AddSingleton<Data.DirectoryMembers, Data.DirectoryMembers>();  
-        services.AddSingleton<Data.GroupMembers, Data.GroupMembers>();  
-        services.AddSingleton<Data.Groups, Data.Groups>();  
-        services.AddSingleton<Data.Identities, Data.Identities>();  
-        services.AddSingleton<Data.IdentityRoles, Data.IdentityRoles>();  
-        services.AddSingleton<Data.Organizations, Data.Organizations>();  
-        services.AddSingleton<Data.PassKeys, Data.PassKeys>();  
+        services.AddScoped<Data.Accounts, Data.Accounts>();  
+        services.AddScoped<Data.DirectoryMembers, Data.DirectoryMembers>();  
+        services.AddScoped<Data.GroupMembers, Data.GroupMembers>();  
+        services.AddScoped<Data.Groups, Data.Groups>();  
+        services.AddScoped<Data.Identities, Data.Identities>();  
+        services.AddScoped<Data.IdentityRoles, Data.IdentityRoles>();  
+        services.AddScoped<Data.Organizations, Data.Organizations>();  
+        services.AddScoped<Data.PassKeys, Data.PassKeys>();  
+
+        services.AddScoped<RolesIam, RolesIam>();  
 
         return services;
 

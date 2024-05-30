@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 
 
 [Route("orgs/members")]
-public class MemberController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData) : ControllerBase
+public class MemberController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, RolesIam rolesIam) : ControllerBase
 {
 
 
@@ -61,7 +61,7 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
         modelo.Identity.Unique = $"{modelo.Identity.Unique}@{orgIdentity.Model.Unique}";
 
         // Confirmar el rol.
-        var (_, roles) = await RolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -109,7 +109,7 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
 
 
         // Confirmar el rol.
-        var (_, roles) = await RolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

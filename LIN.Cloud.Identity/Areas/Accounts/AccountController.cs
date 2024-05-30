@@ -123,8 +123,6 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
         // Token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-
-
         // Obtiene el usuario.
         var response = await accountData.Read(user, new()
         {

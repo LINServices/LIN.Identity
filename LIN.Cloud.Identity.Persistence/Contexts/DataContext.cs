@@ -53,14 +53,14 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
 
-    /// <summary>
-    /// Configuring database.
-    /// </summary>
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-        base.OnConfiguring(optionsBuilder);
-    }
+    ///// <summary>
+    ///// Configuring database.
+    ///// </summary>
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    //    base.OnConfiguring(optionsBuilder);
+    //}
 
 
 

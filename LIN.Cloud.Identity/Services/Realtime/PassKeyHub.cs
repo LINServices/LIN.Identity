@@ -3,7 +3,7 @@
 namespace LIN.Cloud.Identity.Services.Realtime;
 
 
-public partial class PassKeyHub : Hub
+public partial class PassKeyHub (Data.PassKeys passKeysData) : Hub
 {
 
 
@@ -197,7 +197,7 @@ public partial class PassKeyHub : Hub
 
 
 
-            _ = Data.PassKeys.Create(new PassKeyDBModel
+            _ = passKeysData.Create(new PassKeyDBModel
             {
                 AccountId = info.AccountId,
                 Id = 0,
