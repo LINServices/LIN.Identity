@@ -2,7 +2,7 @@
 
 
 [Route("Groups/members")]
-public class GroupsMembersController : Controller
+public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers) : Controller
 {
 
 
@@ -20,7 +20,7 @@ public class GroupsMembersController : Controller
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwner(model.GroupId);
+        var orgId = await groupsData.GetOwner(model.GroupId);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -46,7 +46,7 @@ public class GroupsMembersController : Controller
             };
 
         // Valida si el usuario pertenece a la organización.
-        var idIsIn = await Data.DirectoryMembers.IamIn(model.IdentityId, orgId.Model);
+        var idIsIn = await directoryMembersData.IamIn(model.IdentityId, orgId.Model);
 
         // Si no existe.
         if (idIsIn.Response != Responses.Success)
@@ -58,7 +58,7 @@ public class GroupsMembersController : Controller
 
 
         // Crear el usuario.
-        var response = await Data.GroupMembers.Create(model);
+        var response = await groupMembers.Create(model);
 
         // Retorna el resultado
         return response;
@@ -82,7 +82,7 @@ public class GroupsMembersController : Controller
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwner(group);
+        var orgId = await groupsData.GetOwner(group);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -112,7 +112,7 @@ public class GroupsMembersController : Controller
         ids = ids.Distinct().ToList();
 
         // Valida si el usuario pertenece a la organización.
-        var idIsIn = await Data.DirectoryMembers.IamIn(ids, orgId.Model);
+        var idIsIn = await directoryMembersData.IamIn(ids, orgId.Model);
 
         // Si no existe.
         if (idIsIn.Response != Responses.Success)
@@ -124,7 +124,7 @@ public class GroupsMembersController : Controller
 
 
         // Crear el usuario.
-        var response = await Data.GroupMembers.Create(ids.Select(id => new GroupMember
+        var response = await groupMembers.Create(ids.Select(id => new GroupMember
         {
             Group = new()
             {
@@ -157,7 +157,7 @@ public class GroupsMembersController : Controller
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwner(group);
+        var orgId = await groupsData.GetOwner(group);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -184,7 +184,7 @@ public class GroupsMembersController : Controller
 
 
         // Obtiene el usuario.
-        var response = await Data.GroupMembers.ReadAll(group);
+        var response = await groupMembers.ReadAll(group);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -215,7 +215,7 @@ public class GroupsMembersController : Controller
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwner(group);
+        var orgId = await groupsData.GetOwner(group);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -242,7 +242,7 @@ public class GroupsMembersController : Controller
 
 
         // Obtiene los miembros.
-        var members = await Data.GroupMembers.Search(pattern, group);
+        var members = await groupMembers.Search(pattern, group);
 
         // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
@@ -275,7 +275,7 @@ public class GroupsMembersController : Controller
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwner(group);
+        var orgId = await groupsData.GetOwner(group);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -302,7 +302,7 @@ public class GroupsMembersController : Controller
 
 
         // Obtiene los miembros.
-        var members = await Data.GroupMembers.SearchGroups(pattern, group);
+        var members = await groupMembers.SearchGroups(pattern, group);
 
         // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
@@ -333,7 +333,7 @@ public class GroupsMembersController : Controller
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwner(group);
+        var orgId = await groupsData.GetOwner(group);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -360,7 +360,7 @@ public class GroupsMembersController : Controller
 
 
         // Obtiene el usuario.
-        var response = await Data.GroupMembers.Delete(identity, group);
+        var response = await groupMembers.Delete(identity, group);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -406,7 +406,7 @@ public class GroupsMembersController : Controller
 
 
         // Obtiene el usuario.
-        var response = await Data.GroupMembers.OnMembers(organization, identity);
+        var response = await groupMembers.OnMembers(organization, identity);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

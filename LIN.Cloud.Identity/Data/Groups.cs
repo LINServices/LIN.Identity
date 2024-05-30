@@ -1,144 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
 
-public static class Groups
+public class Groups (DataContext context)
 {
-
-
-
-    #region Abstracciones
-
-
-
-    /// <summary>
-    /// Crear un nuevo grupo.
-    /// </summary>
-    /// <param name="modelo">Modelo.</param>
-    public static async Task<ReadOneResponse<GroupModel>> Create(GroupModel modelo)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Create(modelo, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener un grupo según el Id.
-    /// </summary>
-    /// <param name="id">Id.</param>
-    public static async Task<ReadOneResponse<GroupModel>> Read(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Read(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-
-    /// <summary>
-    /// Obtener un grupo según el Id de la identidad.
-    /// </summary>
-    /// <param name="id">Id.</param>
-    public static async Task<ReadOneResponse<GroupModel>> ReadByIdentity(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await ReadByIdentity(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener los grupos asociados a una organización.
-    /// </summary>
-    /// <param name="organization">Id de la organización.</param>
-    public static async Task<ReadAllResponse<GroupModel>> ReadAll(int organization)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await ReadAll(organization, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener la organización propietaria de un grupo.
-    /// </summary>
-    /// <param name="group">Id del grupo.</param>
-    public static async Task<ReadOneResponse<int>> GetOwner(int group)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await GetOwner(group, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener la organización propietaria de un grupo.
-    /// </summary>
-    /// <param name="identity">Id de la identidad del grupo.</param>
-    public static async Task<ReadOneResponse<int>> GetOwnerByIdentity(int identity)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await GetOwnerByIdentity(identity, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    #endregion
-
 
 
     /// <summary>
@@ -146,7 +10,7 @@ public static class Groups
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ReadOneResponse<GroupModel>> Create(GroupModel modelo, DataContext context)
+    public async Task<ReadOneResponse<GroupModel>> Create(GroupModel modelo)
     {
         // Pre.
         modelo.Id = 0;
@@ -244,7 +108,7 @@ public static class Groups
     /// </summary>
     /// <param name="id">Id.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadOneResponse<GroupModel>> Read(int id, DataContext context)
+    public async Task<ReadOneResponse<GroupModel>> Read(int id)
     {
 
         try
@@ -293,7 +157,7 @@ public static class Groups
     /// </summary>
     /// <param name="id">Identidad.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadOneResponse<GroupModel>> ReadByIdentity(int id, DataContext context)
+    public async Task<ReadOneResponse<GroupModel>> ReadByIdentity(int id)
     {
 
         try
@@ -342,7 +206,7 @@ public static class Groups
     /// </summary>
     /// <param name="organization">Organización.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadAllResponse<GroupModel>> ReadAll(int organization, DataContext context)
+    public async Task<ReadAllResponse<GroupModel>> ReadAll(int organization)
     {
 
         try
@@ -391,7 +255,7 @@ public static class Groups
     /// </summary>
     /// <param name="id">Id del grupo.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadOneResponse<int>> GetOwner(int id, DataContext context)
+    public async Task<ReadOneResponse<int>> GetOwner(int id)
     {
 
         try
@@ -434,7 +298,7 @@ public static class Groups
     /// </summary>
     /// <param name="id">Id de la identidad.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadOneResponse<int>> GetOwnerByIdentity(int id, DataContext context)
+    public async Task<ReadOneResponse<int>> GetOwnerByIdentity(int id)
     {
 
         try

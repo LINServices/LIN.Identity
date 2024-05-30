@@ -2,7 +2,7 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 
 
 [Route("[controller]")]
-public class OrganizationsController : ControllerBase
+public class OrganizationsController(Data.Organizations organizationsData, Data.DirectoryMembers directoryMembersData) : ControllerBase
 {
 
 
@@ -38,7 +38,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Creación de la organización.
-        var response = await Data.Organizations.Create(modelo);
+        var response = await organizationsData.Create(modelo);
 
         // Evaluación.
         if (response.Response != Responses.Success)
@@ -75,7 +75,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Obtiene la organización
-        var response = await Data.Organizations.Read(id);
+        var response = await organizationsData.Read(id);
 
         // Organización no encontrada.
         if (response.Response != Responses.Success)
@@ -89,7 +89,7 @@ public class OrganizationsController : ControllerBase
         if (!response.Model.IsPublic)
         {
 
-            var iamIn = await Data.DirectoryMembers.IamIn(tokenInfo.IdentityId, response.Model.Id);
+            var iamIn = await directoryMembersData.IamIn(tokenInfo.IdentityId, response.Model.Id);
 
             if (iamIn.Response != Responses.Success)
                 return new ReadOneResponse<OrganizationModel>()
@@ -134,7 +134,7 @@ public class OrganizationsController : ControllerBase
 
 
         // Obtiene la organización
-        var response = await Data.Organizations.ReadAll(tokenInfo.IdentityId);
+        var response = await organizationsData.ReadAll(tokenInfo.IdentityId);
 
 
         return response;

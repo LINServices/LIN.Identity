@@ -1,101 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
 
-public static class Organizations
+public  class Organizations(DataContext context)
 {
-
-
-
-    #region Abstracciones
-
-
-
-    /// <summary>
-    /// Crear nueva organización.
-    /// </summary>
-    /// <param name="modelo">Modelo.</param>
-    public static async Task<CreateResponse> Create(OrganizationModel modelo)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Create(modelo, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener una organización según el Id.
-    /// </summary>
-    /// <param name="id">Id de la identidad</param>
-    public static async Task<ReadOneResponse<OrganizationModel>> Read(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Read(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener las organizaciones donde un usuario es miembro.
-    /// </summary>
-    /// <param name="id">Id de la identidad</param>
-    public static async Task<ReadAllResponse<OrganizationModel>> ReadAll(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await ReadAll(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener el dominio de la organización.
-    /// </summary>
-    /// <param name="id">Id de la organización.</param>
-    public static async Task<ReadOneResponse<IdentityModel>> GetDomain(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await GetDomain(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    #endregion
-
 
 
     /// <summary>
@@ -103,7 +10,7 @@ public static class Organizations
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<CreateResponse> Create(OrganizationModel modelo, DataContext context)
+    public  async Task<CreateResponse> Create(OrganizationModel modelo)
     {
 
         using var transaction = context.Database.BeginTransaction();
@@ -214,7 +121,7 @@ public static class Organizations
     /// </summary>
     /// <param name="id">Id.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadOneResponse<OrganizationModel>> Read(int id, DataContext context)
+    public  async Task<ReadOneResponse<OrganizationModel>> Read(int id)
     {
 
         try
@@ -256,7 +163,7 @@ public static class Organizations
     /// </summary>
     /// <param name="id">Identidad</param>
     /// <param name="context">Contexto</param>
-    public static async Task<ReadAllResponse<OrganizationModel>> ReadAll(int id, DataContext context)
+    public  async Task<ReadAllResponse<OrganizationModel>> ReadAll(int id)
     {
 
         try
@@ -302,7 +209,7 @@ public static class Organizations
     /// </summary>
     /// <param name="id">Id de la organización.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadOneResponse<IdentityModel>> GetDomain(int id, DataContext context)
+    public  async Task<ReadOneResponse<IdentityModel>> GetDomain(int id)
     {
 
         try

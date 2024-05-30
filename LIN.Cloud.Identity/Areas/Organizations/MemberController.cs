@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 
 
 [Route("orgs/members")]
-public class MemberController : ControllerBase
+public class MemberController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData) : ControllerBase
 {
 
 
@@ -38,7 +38,7 @@ public class MemberController : ControllerBase
         modelo = Services.Formats.Account.Process(modelo); 
         
         // Organización.
-        var orgIdentity = await Data.Organizations.GetDomain(organization);
+        var orgIdentity = await organizationsData.GetDomain(organization);
 
         // Validar.
         if (orgIdentity.Response != Responses.Success)
@@ -76,7 +76,7 @@ public class MemberController : ControllerBase
 
 
         // Creación del usuario
-        var response = await Data.Accounts.Create(modelo, organization);
+        var response = await accountsData.Create(modelo, organization);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -124,7 +124,7 @@ public class MemberController : ControllerBase
 
 
         // Obtiene los miembros.
-        var members = await Data.DirectoryMembers.ReadMembersByOrg(organization);
+        var members = await directoryMembersData.ReadMembersByOrg(organization);
 
         // Error al obtener los integrantes.
         if (members.Response != Responses.Success)

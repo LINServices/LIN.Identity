@@ -2,7 +2,7 @@
 
 
 [Route("[controller]")]
-public class DirectoryController : ControllerBase
+public class DirectoryController (Data.DirectoryMembers directoryMembersData, Data.Groups groupsData) : ControllerBase
 {
 
 
@@ -27,7 +27,7 @@ public class DirectoryController : ControllerBase
             };
 
         // Obtiene el usuario.
-        var response = await Data.DirectoryMembers.Read(tokenInfo.IdentityId, organization);
+        var response = await directoryMembersData.Read(tokenInfo.IdentityId, organization);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -57,7 +57,7 @@ public class DirectoryController : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
-        var orgId = await Data.Groups.GetOwner(directory);
+        var orgId = await groupsData.GetOwner(directory);
 
         // Si hubo un error.
         if (orgId.Response != Responses.Success)
@@ -84,7 +84,7 @@ public class DirectoryController : ControllerBase
 
 
         // Obtiene el usuario.
-        var response = await Data.DirectoryMembers.ReadMembers(directory);
+        var response = await directoryMembersData.ReadMembers(directory);
 
         // Si es erróneo
         if (response.Response != Responses.Success)

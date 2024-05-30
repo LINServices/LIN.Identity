@@ -1,167 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
 
-public static class GroupMembers
+public class GroupMembers(DataContext context)
 {
-
-
-
-    #region Abstracciones
-
-
-
-    /// <summary>
-    /// Crear nuevo integrante en un grupo.
-    /// </summary>
-    /// <param name="modelo">Modelo.</param>
-    public static async Task<CreateResponse> Create(GroupMember modelo)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnectionForce();
-
-        // Función.
-        var response = await Create(modelo, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Crear nuevos integrantes en un grupo.
-    /// </summary>
-    /// <param name="modelos">Modelos.</param>
-    public static async Task<CreateResponse> Create(IEnumerable<GroupMember> modelos)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Create(modelos, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener los miembros de un grupo.
-    /// </summary>
-    /// <param name="id">Id del grupo</param>
-    public static async Task<ReadAllResponse<GroupMember>> ReadAll(int id)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await ReadAll(id, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Buscar en los integrantes de un grupo.
-    /// </summary>
-    /// <param name="pattern">Patron de búsqueda.</param>
-    /// <param name="group">Id del grupo.</param>
-    public static async Task<ReadAllResponse<IdentityModel>> Search(string pattern, int group)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Search(pattern, group, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-
-    /// <summary>
-    /// Buscar en los integrantes de un grupo.
-    /// </summary>
-    /// <param name="pattern">Patron de búsqueda.</param>
-    /// <param name="group">Id del grupo.</param>
-    public static async Task<ReadAllResponse<IdentityModel>> SearchGroups(string pattern, int group)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await SearchGroups(pattern, group, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Eliminar un integrante de un grupo.
-    /// </summary>
-    /// <param name="identity">Identidad.</param>
-    /// <param name="group">Id del grupo.</param>
-    public static async Task<ResponseBase> Delete(int identity, int group)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Delete(identity, group, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-
-    /// <summary>
-    /// Obtener los grupos donde una identidad esta de integrante
-    /// </summary>
-    /// <param name="id">Id del grupo</param>
-    public static async Task<ReadAllResponse<GroupModel>> OnMembers(int organization, int identity)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await OnMembers(organization, identity, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-    #endregion
-
 
 
     /// <summary>
@@ -169,7 +10,7 @@ public static class GroupMembers
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<CreateResponse> Create(GroupMember modelo, DataContext context)
+    public async Task<CreateResponse> Create(GroupMember modelo)
     {
         try
         {
@@ -205,7 +46,7 @@ public static class GroupMembers
     /// </summary>
     /// <param name="modelos">Modelos.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<CreateResponse> Create(IEnumerable<GroupMember> modelos, DataContext context)
+    public async Task<CreateResponse> Create(IEnumerable<GroupMember> modelos)
     {
         try
         {
@@ -258,7 +99,7 @@ public static class GroupMembers
     /// </summary>
     /// <param name="id">Id del grupo.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadAllResponse<GroupMember>> ReadAll(int id, DataContext context)
+    public async Task<ReadAllResponse<GroupMember>> ReadAll(int id)
     {
 
         try
@@ -309,7 +150,7 @@ public static class GroupMembers
     /// <param name="pattern">Patron de búsqueda.</param>
     /// <param name="group">Id del grupo.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadAllResponse<IdentityModel>> Search(string pattern, int group, DataContext context)
+    public async Task<ReadAllResponse<IdentityModel>> Search(string pattern, int group)
     {
 
         try
@@ -355,7 +196,7 @@ public static class GroupMembers
     /// <param name="pattern">Patron de búsqueda.</param>
     /// <param name="group">Id del grupo.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadAllResponse<IdentityModel>> SearchGroups(string pattern, int group, DataContext context)
+    public async Task<ReadAllResponse<IdentityModel>> SearchGroups(string pattern, int group)
     {
 
         try
@@ -402,7 +243,7 @@ public static class GroupMembers
     /// <param name="identity">Identidad.</param>
     /// <param name="group">Id del grupo.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ResponseBase> Delete(int identity, int group, DataContext context)
+    public async Task<ResponseBase> Delete(int identity, int group)
     {
 
         try
@@ -440,7 +281,7 @@ public static class GroupMembers
     /// <param name="organization"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public static async Task<ReadAllResponse<GroupModel>> OnMembers(int organization, int identity, DataContext context)
+    public async Task<ReadAllResponse<GroupModel>> OnMembers(int organization, int identity)
     {
 
         try

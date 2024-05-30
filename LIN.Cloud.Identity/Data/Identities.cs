@@ -1,82 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
 
-public static class Identities
+public  class Identities(DataContext context)
 {
-
-
-
-    #region Abstracciones
-
-
-
-    /// <summary>
-    /// Crear nueva identidad.
-    /// </summary>
-    /// <param name="modelo">Modelo.</param>
-    public static async Task<ReadOneResponse<IdentityModel>> Create(IdentityModel modelo)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Create(modelo, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener una identidad según el Id.
-    /// </summary>
-    /// <param name="id">Id.</param>
-    /// <param name="filters">Filtros de búsqueda.</param>
-    public static async Task<ReadOneResponse<IdentityModel>> Read(int id, Services.Models.QueryIdentityFilter filters)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Read(id, filters, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    /// <summary>
-    /// Obtener una identidad según el Unique.
-    /// </summary>
-    /// <param name="unique">Unique.</param>
-    /// <param name="filters">Filtros de búsqueda.</param>
-    public static async Task<ReadOneResponse<IdentityModel>> Read(string unique, Services.Models.QueryIdentityFilter filters)
-    {
-
-        // Obtener conexión.
-        var (context, contextKey) = DataService.GetConnection();
-
-        // Función.
-        var response = await Read(unique, filters, context);
-
-        // Retornar.
-        context.Close(contextKey);
-        return response;
-
-    }
-
-
-
-    #endregion
-
 
 
     /// <summary>
@@ -84,7 +10,7 @@ public static class Identities
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ReadOneResponse<IdentityModel>> Create(IdentityModel modelo, DataContext context)
+    public  async Task<ReadOneResponse<IdentityModel>> Create(IdentityModel modelo)
     {
         // Pre.
         modelo.Id = 0;
@@ -124,7 +50,7 @@ public static class Identities
     /// <param name="id">Id de la identidad.</param>
     /// <param name="filters">Filtros de búsqueda.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadOneResponse<IdentityModel>> Read(int id, QueryIdentityFilter filters, DataContext context)
+    public  async Task<ReadOneResponse<IdentityModel>> Read(int id, QueryIdentityFilter filters)
     {
 
         try
@@ -166,7 +92,7 @@ public static class Identities
     /// <param name="unique">Unique.</param>
     /// <param name="filters">Filtros de búsqueda.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public static async Task<ReadOneResponse<IdentityModel>> Read(string unique, QueryIdentityFilter filters, DataContext context)
+    public  async Task<ReadOneResponse<IdentityModel>> Read(string unique, QueryIdentityFilter filters)
     {
 
         try

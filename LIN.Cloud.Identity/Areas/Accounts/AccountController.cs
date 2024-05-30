@@ -2,7 +2,7 @@ namespace LIN.Cloud.Identity.Areas.Accounts;
 
 
 [Route("[controller]")]
-public class AccountController : ControllerBase
+public class AccountController(Data.Accounts accountData) : ControllerBase
 {
 
 
@@ -35,7 +35,7 @@ public class AccountController : ControllerBase
         modelo = Services.Formats.Account.Process(modelo);
 
         // Creación del usuario
-        var response = await Data.Accounts.Create(modelo, 0);
+        var response = await accountData.Create(modelo, 0);
 
         // Evaluación
         if (response.Response != Responses.Success)
@@ -81,7 +81,7 @@ public class AccountController : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene el usuario.
-        var response = await Data.Accounts.Read(id, new()
+        var response = await accountData.Read(id, new()
         {
             AccountContext = tokenInfo.AccountId,
             FindOn = FindOn.StableAccounts,
@@ -126,7 +126,7 @@ public class AccountController : ControllerBase
 
 
         // Obtiene el usuario.
-        var response = await Data.Accounts.Read(user, new()
+        var response = await accountData.Read(user, new()
         {
             AccountContext = tokenInfo.AccountId,
             FindOn = FindOn.StableAccounts,
@@ -170,7 +170,7 @@ public class AccountController : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene el usuario.
-        var response = await Data.Accounts.ReadByIdentity(id, new()
+        var response = await accountData.ReadByIdentity(id, new()
         {
             AccountContext = tokenInfo.AccountId,
             FindOn = FindOn.StableAccounts,
@@ -206,7 +206,7 @@ public class AccountController : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene el usuario
-        var response = await Data.Accounts.FindAll(ids, new()
+        var response = await accountData.FindAll(ids, new()
         {
             AccountContext = tokenInfo.AccountId,
             FindOn = FindOn.StableAccounts,
@@ -242,7 +242,7 @@ public class AccountController : ControllerBase
 
 
         // Obtiene el usuario
-        var response = await Data.Accounts.Search(pattern, new()
+        var response = await accountData.Search(pattern, new()
         {
             AccountContext = tokenInfo.AccountId,
             FindOn = FindOn.StableAccounts,
@@ -269,7 +269,7 @@ public class AccountController : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene el usuario
-        var response = await Data.Accounts.FindAll(ids, new()
+        var response = await accountData.FindAll(ids, new()
         {
             AccountContext = tokenInfo.AccountId,
             FindOn = FindOn.StableAccounts,
