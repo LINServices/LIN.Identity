@@ -46,6 +46,18 @@ public class Account
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     /// <summary>
     /// Obtener cuentas.
     /// </summary>
@@ -174,6 +186,37 @@ public class Account
         {
             accounts = from account in OnAll(context)
                        where ids.Contains(account.Id)
+                       select account;
+        }
+
+
+        // Armar el modelo.
+        accounts = BuildModel(accounts, filters, context);
+
+        // Retorno
+        return accounts;
+
+    }
+
+
+
+
+
+
+    public static IQueryable<AccountModel> FindAllByIdentities(IEnumerable<int> ids, QueryAccountFilter filters, DataContext context)
+    {
+        IQueryable<AccountModel> accounts;
+
+        if (filters.FindOn == FindOn.StableAccounts)
+        {
+            accounts = from account in OnStable(context)
+                       where ids.Contains(account.IdentityId)
+                       select account;
+        }
+        else
+        {
+            accounts = from account in OnAll(context)
+                       where ids.Contains(account.IdentityId)
                        select account;
         }
 
