@@ -106,7 +106,7 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     /// <summary>
     /// Obtener una cuenta.
     /// </summary>
-    /// <param name="user">Identidad.</param>
+    /// <param name="user">Identidad única.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/user")]
     [IdentityToken]
@@ -204,7 +204,7 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene el usuario
-        var response = await accountData.FindAll(ids, new()
+        var response = await accountData.FindAllByIdentities(ids, new()
         {
             AccountContext = tokenInfo.AccountId,
             FindOn = FindOn.StableAccounts,

@@ -265,4 +265,38 @@ public class Accounts(DataContext context)
 
 
 
+
+
+
+    /// <summary>
+    /// Obtiene los usuarios con IDs coincidentes
+    /// </summary>
+    /// <param name="ids">Lista de IDs</param>
+    public async Task<ReadAllResponse<AccountModel>> FindAllByIdentities(List<int> ids, QueryAccountFilter filters)
+    {
+
+        // Ejecución
+        try
+        {
+
+            var query = Builders.Account.FindAllByIdentities(ids, filters, context);
+
+            // Ejecuta
+            var result = await query.ToListAsync();
+
+            // Si no existe el modelo
+            if (result == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, result);
+        }
+        catch (Exception)
+        {
+        }
+
+        return new();
+    }
+
+
+
 }
