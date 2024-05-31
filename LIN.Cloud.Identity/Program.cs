@@ -40,7 +40,6 @@ app.UseDataBase();
 // Hub.
 app.MapHub<PassKeyHub>("/realTime/auth/passkey");
 
-app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
