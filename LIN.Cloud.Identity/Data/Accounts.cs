@@ -265,9 +265,6 @@ public class Accounts(DataContext context)
 
 
 
-
-
-
     /// <summary>
     /// Obtiene los usuarios con IDs coincidentes
     /// </summary>

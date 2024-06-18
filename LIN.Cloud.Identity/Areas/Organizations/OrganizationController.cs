@@ -22,7 +22,6 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
                 Message = "Parámetros inválidos."
             };
 
-
         // Ordenar el modelo.
         {
             modelo.Id = 0;

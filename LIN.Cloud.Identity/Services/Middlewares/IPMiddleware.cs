@@ -29,6 +29,10 @@ public class IPMiddleware : IMiddleware
         // Item de IP.
         context.Items.Add("IP", ip);
         await next(context);
+
+        // Headers.
+      //  context.Response.Headers.Append("client-ip", ip.MapToIPv4().ToString());
+
     }
 
 
