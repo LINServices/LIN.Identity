@@ -27,7 +27,6 @@ public  class Organizations(DataContext context)
 
             await context.Organizations.AddAsync(modelo);
 
-
             context.SaveChanges();
 
 

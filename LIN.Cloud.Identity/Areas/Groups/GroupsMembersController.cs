@@ -30,7 +30,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Response = Responses.Unauthorized
             };
 
-
         // Confirmar el rol.
         var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
 
