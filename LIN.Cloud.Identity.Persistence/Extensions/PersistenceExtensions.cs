@@ -40,8 +40,9 @@ public static class PersistenceExtensions
         try
         {
 
-            // Obtener servicio.
-            var context = app.ApplicationServices.GetService<DataContext>();
+           var scope = app.ApplicationServices.CreateScope();
+
+            var context = scope.ServiceProvider.GetService<DataContext>();
 
             context?.Database.EnsureCreated() ;
         }

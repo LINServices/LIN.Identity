@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
 
-public  class Organizations(DataContext context)
+public class Organizations(DataContext context)
 {
 
 
@@ -10,7 +10,7 @@ public  class Organizations(DataContext context)
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public  async Task<CreateResponse> Create(OrganizationModel modelo)
+    public async Task<CreateResponse> Create(OrganizationModel modelo)
     {
 
         using var transaction = context.Database.BeginTransaction();
@@ -120,7 +120,7 @@ public  class Organizations(DataContext context)
     /// </summary>
     /// <param name="id">Id.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public  async Task<ReadOneResponse<OrganizationModel>> Read(int id)
+    public async Task<ReadOneResponse<OrganizationModel>> Read(int id)
     {
 
         try
@@ -162,7 +162,7 @@ public  class Organizations(DataContext context)
     /// </summary>
     /// <param name="id">Identidad</param>
     /// <param name="context">Contexto</param>
-    public  async Task<ReadAllResponse<OrganizationModel>> ReadAll(int id)
+    public async Task<ReadAllResponse<OrganizationModel>> ReadAll(int id)
     {
 
         try
@@ -208,7 +208,7 @@ public  class Organizations(DataContext context)
     /// </summary>
     /// <param name="id">Id de la organización.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public  async Task<ReadOneResponse<IdentityModel>> GetDomain(int id)
+    public async Task<ReadOneResponse<IdentityModel>> GetDomain(int id)
     {
 
         try

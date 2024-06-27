@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Services.Auth;
 
 
-public class Authentication (Data.Accounts accountData) : Interfaces.IAuthentication
+public class Authentication(Data.Accounts accountData) : Interfaces.IAuthentication
 {
 
 

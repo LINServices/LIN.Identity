@@ -20,7 +20,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Confirmar el rol.
-        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, group.OwnerId ?? 0);
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, group.OwnerId ?? 0);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -72,7 +72,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Confirmar el rol.
-        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -129,7 +129,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
 
 
         // Confirmar el rol.
-        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -186,7 +186,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
 
 
         // Confirmar el rol.
-        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

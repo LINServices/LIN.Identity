@@ -20,7 +20,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Confirmar el rol.
-        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, rolModel.OrganizationId);
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, rolModel.OrganizationId);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -80,7 +80,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Confirmar el rol.
-        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -139,7 +139,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Confirmar el rol.
-        var (_, roles) = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);

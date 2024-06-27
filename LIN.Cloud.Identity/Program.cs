@@ -1,8 +1,8 @@
-using LIN.Cloud.Identity.Services.Realtime;
 using Http.Extensions;
-using LIN.Cloud.Identity.Services.Auth.Interfaces;
 using LIN.Cloud.Identity.Persistence.Extensions;
+using LIN.Cloud.Identity.Services.Auth.Interfaces;
 using LIN.Cloud.Identity.Services.Extensions;
+using LIN.Cloud.Identity.Services.Realtime;
 
 var builder = WebApplication.CreateBuilder(args);
 
