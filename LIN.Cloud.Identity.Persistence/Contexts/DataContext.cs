@@ -51,6 +51,19 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<PassKeyDBModel> PassKeys { get; set; }
 
 
+    /// <summary>
+    /// Aplicaciones.
+    /// </summary>
+    public DbSet<ApplicationModel> Applications { get; set; }
+
+
+
+    /// <summary>
+    /// Allow apps.
+    /// </summary>
+    public DbSet<AllowApp> AllowApps { get; set; }
+
+
 
 
     ///// <summary>
@@ -180,6 +193,50 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         }
 
+
+        // Modelo: Application.
+        {
+            modelBuilder.Entity<ApplicationModel>()
+                      .HasOne(t => t.Identity)
+                      .WithMany()
+                      .HasForeignKey(t=>t.IdentityId);
+
+
+            modelBuilder.Entity<ApplicationModel>()
+                  .HasIndex(t => t.IdentityId)
+                  .IsUnique();
+
+            modelBuilder.Entity<ApplicationModel>()
+                      .HasOne(t => t.Owner)
+                      .WithMany()
+                      .HasForeignKey(t => t.OwnerId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+        }
+
+        // Modelo: Allow Apps.
+        {
+            modelBuilder.Entity<AllowApp>()
+                      .HasOne(t => t.Application)
+                      .WithMany()
+                      .HasForeignKey(t => t.ApplicationId);
+         
+            modelBuilder.Entity<AllowApp>()
+                      .HasOne(t => t.Identity)
+                      .WithMany()
+                      .HasForeignKey(t => t.IdentityId);
+
+            modelBuilder.Entity<AllowApp>()
+                           .HasKey(t => new
+                           {
+                               t.ApplicationId,
+                               t.IdentityId
+                           });
+
+        }
+
+
+
         // Nombres de las tablas.
         modelBuilder.Entity<IdentityModel>().ToTable("IDENTITIES");
         modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
@@ -188,6 +245,8 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<GroupMember>().ToTable("GROUPS_MEMBERS");
         modelBuilder.Entity<OrganizationModel>().ToTable("ORGANIZATIONS");
         modelBuilder.Entity<PassKeyDBModel>().ToTable("PASSKEYS");
+        modelBuilder.Entity<AllowApp>().ToTable("ALLOW_APPS");
+        modelBuilder.Entity<ApplicationModel>().ToTable("APPLICATIONS");
 
         // Base.
         base.OnModelCreating(modelBuilder);

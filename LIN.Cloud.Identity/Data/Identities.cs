@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
 
-public  class Identities(DataContext context)
+public class Identities(DataContext context)
 {
 
 
@@ -10,7 +10,7 @@ public  class Identities(DataContext context)
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public  async Task<ReadOneResponse<IdentityModel>> Create(IdentityModel modelo)
+    public async Task<ReadOneResponse<IdentityModel>> Create(IdentityModel modelo)
     {
         // Pre.
         modelo.Id = 0;
@@ -50,7 +50,7 @@ public  class Identities(DataContext context)
     /// <param name="id">Id de la identidad.</param>
     /// <param name="filters">Filtros de búsqueda.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public  async Task<ReadOneResponse<IdentityModel>> Read(int id, QueryIdentityFilter filters)
+    public async Task<ReadOneResponse<IdentityModel>> Read(int id, QueryIdentityFilter filters)
     {
 
         try
@@ -92,7 +92,7 @@ public  class Identities(DataContext context)
     /// <param name="unique">Unique.</param>
     /// <param name="filters">Filtros de búsqueda.</param>
     /// <param name="context">Contexto de base de datos.</param>
-    public  async Task<ReadOneResponse<IdentityModel>> Read(string unique, QueryIdentityFilter filters)
+    public async Task<ReadOneResponse<IdentityModel>> Read(string unique, QueryIdentityFilter filters)
     {
 
         try

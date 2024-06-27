@@ -3,13 +3,13 @@
 namespace LIN.Cloud.Identity.Data;
 
 
-public  class PassKeys(DataContext context)
+public class PassKeys(DataContext context)
 {
 
 
 
-    
-    public  async Task<ResponseBase> Create(PassKeyDBModel modelo)
+
+    public async Task<ResponseBase> Create(PassKeyDBModel modelo)
     {
         // Pre.
         modelo.Id = 0;
@@ -39,8 +39,8 @@ public  class PassKeys(DataContext context)
 
 
 
-    
-    public  async Task<ReadOneResponse<int>> Count(int id)
+
+    public async Task<ReadOneResponse<int>> Count(int id)
     {
 
         try

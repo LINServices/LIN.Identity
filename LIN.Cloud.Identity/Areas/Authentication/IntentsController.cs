@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Authentication;
 
 
 [Route("[controller]")]
-public class IntentsController (Data.PassKeys passkeyData) : ControllerBase
+public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
 {
 
 
@@ -21,7 +21,7 @@ public class IntentsController (Data.PassKeys passkeyData) : ControllerBase
 
             // Token.
             JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-           
+
             // Cuenta
             var account = (from a in PassKeyHub.Attempts
                            where a.Key.Equals(tokenInfo.Unique, StringComparison.CurrentCultureIgnoreCase)
