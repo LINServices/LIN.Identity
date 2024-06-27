@@ -56,7 +56,7 @@ public class GroupMembers(DataContext context)
             {
                 try
                 {
-                    context.Database.ExecuteSqlRaw("""
+                    await context.Database.ExecuteSqlRawAsync("""
                  INSERT INTO [dbo].[GROUPS_MEMBERS]
                       ([IdentityId]
                       ,[GroupId]
@@ -68,12 +68,9 @@ public class GroupMembers(DataContext context)
                 """, member.Identity.Id, member.Group.Id, (int)GroupMemberTypes.User);
                 }
 
-                catch (Exception ex)
+                catch (Exception)
                 {
-
                 }
-
-
             }
 
             return new()
@@ -159,7 +156,7 @@ public class GroupMembers(DataContext context)
             // Consulta.
             var members = await (from g in context.GroupMembers
                                  where g.GroupId == @group
-                                 && g.Identity.Unique.ToLower().Contains(pattern.ToLower())
+                                 && g.Identity.Unique.Contains(pattern, StringComparison.CurrentCultureIgnoreCase)
                                  select g.Identity).ToListAsync();
 
 
@@ -205,7 +202,7 @@ public class GroupMembers(DataContext context)
             // Consulta.
             var members = await (from g in context.GroupMembers
                                  where g.GroupId == @group
-                                 && g.Identity.Unique.ToLower().Contains(pattern.ToLower())
+                                 && g.Identity.Unique.Contains(pattern, StringComparison.CurrentCultureIgnoreCase)
                                  && g.Identity.Type == IdentityType.Group
                                  select g.Identity).ToListAsync();
 

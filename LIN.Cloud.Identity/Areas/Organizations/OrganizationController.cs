@@ -131,10 +131,8 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
         // Token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-
         // Obtiene la organización
         var response = await organizationsData.ReadAll(tokenInfo.IdentityId);
-
 
         return response;
 

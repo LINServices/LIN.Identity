@@ -30,8 +30,6 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
         // Token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-       
-
         // Ajustar el modelo.
         modelo.Visibility = Visibility.Hidden;
         modelo.Password = $"pwd@{DateTime.Now.Year}";

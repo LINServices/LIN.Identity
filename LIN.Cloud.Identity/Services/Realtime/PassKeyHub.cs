@@ -35,7 +35,6 @@ public partial class PassKeyHub (Data.PassKeys passKeysData) : Hub
 
         var e = Attempts.Values.Where(T => T.Where(T => T.HubKey == Context.ConnectionId).Any()).FirstOrDefault() ?? new();
 
-
         _ = e.Where(T =>
         {
             if (T.HubKey == Context.ConnectionId && T.Status == PassKeyStatus.Undefined)
@@ -107,7 +106,7 @@ public partial class PassKeyHub (Data.PassKeys passKeysData) : Hub
                 return;
             }
 
-            // Obtiene el attempt
+            // Obtiene el attempt.
             List<PassKeyModel> attempts = Attempts[modelo.User.ToLower()].Where(A => A.HubKey == modelo.HubKey).ToList();
 
             // Elemento

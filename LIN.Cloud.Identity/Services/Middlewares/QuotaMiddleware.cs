@@ -27,20 +27,20 @@ public class QuotaMiddleware : IMiddleware
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
 
-        //// Comprobar el limite de cuota.
-        //if (ActualQuote >= MaxQuote)
-        //{
-        //    context.Response.StatusCode = 503;
-        //    await context.Response.WriteAsJsonAsync(new ResponseBase
-        //    {
-        //        Message = $"Actualmente estamos al limite de solicitudes.",
-        //        Response = Responses.UnavailableService
-        //    });
-        //    return;
-        //}
+        // Comprobar el limite de cuota.
+        if (ActualQuote >= MaxQuote)
+        {
+            context.Response.StatusCode = 503;
+            await context.Response.WriteAsJsonAsync(new ResponseBase
+            {
+                Message = $"Actualmente estamos al limite de solicitudes.",
+                Response = Responses.UnavailableService
+            });
+            return;
+        }
 
-        //// Incrementar.
-        //ActualQuote++;
+        // Incrementar.
+        ActualQuote++;
 
         // Ejecución del flujo (Pipeline).
         await next(context);

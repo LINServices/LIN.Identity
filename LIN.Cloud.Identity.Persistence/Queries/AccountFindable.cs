@@ -66,7 +66,7 @@ public class AccountFindable(Contexts.DataContext context) : IFindable<AccountMo
                        select account;
 
         // Armar el modelo
-        accounts = null;// BuildModel(accounts, filters, context);
+        accounts = null!;// BuildModel(accounts, filters, context);
 
         // Retorno
         return accounts;

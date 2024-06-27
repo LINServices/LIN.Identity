@@ -65,7 +65,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
 
 
 
-
     /// <summary>
     /// Obtener los roles asociados a una identidad.
     /// </summary>
@@ -121,7 +120,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         return response;
 
     }
-
 
 
 
@@ -181,7 +179,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         return response;
 
     }
-
 
 
 
