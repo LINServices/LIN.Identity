@@ -26,7 +26,6 @@ public partial class PassKeyHub
 
 
 
-
     /// <summary>
     /// Nuevo intento de inicio.
     /// </summary>
@@ -73,7 +72,6 @@ public partial class PassKeyHub
         await SendRequest(attempt);
 
     }
-
 
 
 }

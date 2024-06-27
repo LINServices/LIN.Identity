@@ -16,14 +16,11 @@ public class Account
     {
 
 
-        if (baseAccount.Name == null || baseAccount.Name.Trim().Length <= 0)
+        if (string.IsNullOrWhiteSpace(baseAccount.Name))
             return (false, "La cuenta debe de tener un nombre valido.");
 
-
-        if (baseAccount.Identity == null || baseAccount.Identity.Unique == null|| baseAccount.Identity.Unique.Trim().Length <= 0)
+        if (baseAccount.Identity == null || string.IsNullOrWhiteSpace(baseAccount.Identity.Unique))
             return (false, "La cuenta debe de tener una identidad unica valida.");
-
-
 
         if (!ValidarCadena(baseAccount.Identity.Unique))
             return (false, "La identidad de la cuenta no puede contener símbolos NO alfanuméricos.");

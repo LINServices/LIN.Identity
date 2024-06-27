@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Http", "..\..\Tipos\Http\Ht
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Types", "..\..\Tipos\LIN.Types\LIN.Types.csproj", "{E3EC1B54-10F8-4395-AE5B-0F1A4270E4DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIN.Cloud.Identity.Persistence", "LIN.Cloud.Identity.Persistence\LIN.Cloud.Identity.Persistence.csproj", "{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Cloud.Identity.Persistence", "LIN.Cloud.Identity.Persistence\LIN.Cloud.Identity.Persistence.csproj", "{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIN.Identity.Tests", "LIN.Identity.Tests\LIN.Identity.Tests.csproj", "{157863A4-209B-42A0-AE80-F6C403692480}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{157863A4-209B-42A0-AE80-F6C403692480}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{157863A4-209B-42A0-AE80-F6C403692480}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{157863A4-209B-42A0-AE80-F6C403692480}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{157863A4-209B-42A0-AE80-F6C403692480}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

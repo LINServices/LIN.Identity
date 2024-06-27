@@ -7,7 +7,7 @@ public class RolesIam(DataContext context)
 
 
 
-    public async Task<(List<int> identities, List<Types.Cloud.Identity.Enumerations.Roles> roles)> RolesOnByDir(int identity, int directory)
+    public async Task<(List<int> identities, List<Roles> roles)> RolesOnByDir(int identity, int directory)
     {
 
         var query = await (from org in context.Organizations
@@ -23,38 +23,52 @@ public class RolesIam(DataContext context)
         List<int> identities = [identity];
         List<Types.Cloud.Identity.Enumerations.Roles> roles = [];
 
-        await RolesOn(identity, query, context, identities, roles);
+        await RolesOn(identity, query, identities, roles);
 
         return (identities, roles);
     }
 
 
 
-
-    public async Task<(List<int> identities, List<Types.Cloud.Identity.Enumerations.Roles> roles)> RolesOn(int identity, int organization)
+    /// <summary>
+    /// Obtener los roles directos y heredades de una identidad en una organización.
+    /// </summary>
+    /// <param name="identity">Id de la identidad.</param>
+    /// <param name="organization">Id de la organización.</param>
+    public async Task<(List<int> identities, List<Roles> roles)> RolesOn(int identity, int organization)
     {
         List<int> identities = [identity];
         List<Types.Cloud.Identity.Enumerations.Roles> roles = [];
 
-        await RolesOn(identity, organization, context, identities, roles);
+        await RolesOn(identity, organization, identities, roles);
 
         return (identities, roles);
     }
 
 
-    private async Task RolesOn(int identity, int organization, DataContext context, List<int> ids, List<Types.Cloud.Identity.Enumerations.Roles> roles)
+
+    /// <summary>
+    /// Obtener los roles.
+    /// </summary>
+    /// <param name="identity">Id de la identidad.</param>
+    /// <param name="organization">Id de la organización.</param>
+    /// <param name="ids">Lista de Ids de identidades asociadas.</param>
+    /// <param name="roles">Lista de roles asociados.</param>
+    private async Task RolesOn(int identity, int organization, List<int> ids, List<Roles> roles)
     {
 
-
+        // Consulta.
         var query = from id in context.Identities
                     where id.Id == identity
                     select new
                     {
+                        // Encontrar grupos donde la identidad pertenece.
                         In = (from member in context.GroupMembers
                               where !ids.Contains(member.Group.IdentityId)
                               && member.IdentityId == identity
                               select member.Group.IdentityId).ToList(),
 
+                        // Obtener roles.
                         Roles = (from IR in context.IdentityRoles
                                  where IR.IdentityId == identity
                                  && IR.OrganizationId == organization
@@ -79,22 +93,13 @@ public class RolesIam(DataContext context)
             roles.AddRange(localRoles);
             ids.AddRange(bases);
 
-
-
             // Recorrer.
             foreach (var @base in bases)
-                await RolesOn(@base, organization, context, ids, roles);
+                await RolesOn(@base, organization, ids, roles);
 
         }
 
     }
-
-
-
-
-
-
-
 
 
 }
@@ -138,7 +143,6 @@ public static class ValidateRoles
                         Roles.Manager,
                         Roles.AccountOperator
                     ];
-
 
         var sets = availed.Intersect(roles);
 
