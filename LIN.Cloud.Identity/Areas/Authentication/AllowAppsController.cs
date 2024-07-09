@@ -1,6 +1,19 @@
-﻿namespace LIN.Cloud.Identity.Areas.Authentication
+﻿namespace LIN.Cloud.Identity.Areas.Authentication;
+
+
+[Route("applications/allow")]
+public class AllowAppsController : ControllerBase
 {
-    public class AllowAppsController
+
+
+
+    public async void GetAll([FromHeader] string token, [FromQuery] int identity)
     {
+
     }
+
+
+
+
+
 }
