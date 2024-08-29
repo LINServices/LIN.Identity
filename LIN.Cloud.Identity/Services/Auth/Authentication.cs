@@ -17,12 +17,10 @@ public class Authentication(Data.Accounts accountData) : Interfaces.IAuthenticat
     private string Password { get; set; } = string.Empty;
 
 
-
     /// <summary>
     /// Código de la aplicación.
     /// </summary>
     private string AppCode { get; set; } = string.Empty;
-
 
 
     /// <summary>
@@ -64,6 +62,7 @@ public class Authentication(Data.Accounts accountData) : Interfaces.IAuthenticat
         // Validar contraseña.
         bool password = ValidatePassword();
 
+// Si la contraseña es invalida.
         if (!password)
             return Responses.InvalidPassword;
 
