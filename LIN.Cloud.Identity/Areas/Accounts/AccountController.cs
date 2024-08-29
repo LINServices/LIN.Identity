@@ -31,23 +31,23 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
                 Message = message
             };
 
-        // Organización del modelo
+        // Organización del modelo.
         modelo = Services.Formats.Account.Process(modelo);
 
-        // Creación del usuario
+        // Creación del usuario.
         var response = await accountData.Create(modelo, 0);
 
-        // Evaluación
+        // Evaluación.
         if (response.Response != Responses.Success)
             return new(response.Response)
             {
                 Message = "Hubo un error al crear la cuenta."
             };
 
-        // Obtiene el usuario
+        // Obtiene el usuario.
         var token = JwtService.Generate(response.Model, 0);
 
-        // Retorna el resultado
+        // Retorna el resultado.
         return new CreateResponse()
         {
             LastID = response.Model.Identity.Id,
