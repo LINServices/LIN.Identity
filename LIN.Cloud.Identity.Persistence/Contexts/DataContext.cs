@@ -219,12 +219,14 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             modelBuilder.Entity<AllowApp>()
                       .HasOne(t => t.Application)
                       .WithMany()
-                      .HasForeignKey(t => t.ApplicationId);
-         
+                      .HasForeignKey(t => t.ApplicationId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<AllowApp>()
                       .HasOne(t => t.Identity)
                       .WithMany()
-                      .HasForeignKey(t => t.IdentityId);
+                      .HasForeignKey(t => t.IdentityId)
+                      .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<AllowApp>()
                            .HasKey(t => new
