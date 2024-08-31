@@ -10,15 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 builder.Services.AddLINHttp();
 
-// Servicios personalizados
-string sql = "";
-
-#if DEBUG
-sql = builder.Configuration["ConnectionStrings:cloud"] ?? string.Empty;
-#elif RELEASE
-sql = builder.Configuration["ConnectionStrings:cloud"] ?? string.Empty;
-#endif
-
 // Servicios propios.
 builder.Services.AddIP();
 builder.Services.AddLocalServices();
