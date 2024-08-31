@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Types", "..\..\Tipos\LI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Cloud.Identity.Persistence", "LIN.Cloud.Identity.Persistence\LIN.Cloud.Identity.Persistence.csproj", "{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIN.Identity.Tests", "LIN.Identity.Tests\LIN.Identity.Tests.csproj", "{157863A4-209B-42A0-AE80-F6C403692480}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Identity.Tests", "LIN.Identity.Tests\LIN.Identity.Tests.csproj", "{157863A4-209B-42A0-AE80-F6C403692480}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
