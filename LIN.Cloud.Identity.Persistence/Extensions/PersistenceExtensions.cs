@@ -17,7 +17,6 @@ public static class PersistenceExtensions
     /// <param name="services">Services.</param>
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfigurationManager configuration)
     {
-
         services.AddDbContextPool<DataContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("cloud"));
