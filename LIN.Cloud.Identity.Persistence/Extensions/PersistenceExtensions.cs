@@ -18,7 +18,6 @@ public static class PersistenceExtensions
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfigurationManager configuration)
     {
 
-
         services.AddDbContextPool<DataContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("cloud"));
@@ -40,11 +39,9 @@ public static class PersistenceExtensions
         try
         {
 
-           var scope = app.ApplicationServices.CreateScope();
-
+            var scope = app.ApplicationServices.CreateScope();
             var context = scope.ServiceProvider.GetService<DataContext>();
-
-            context?.Database.EnsureCreated() ;
+            context?.Database.EnsureCreated();
         }
         catch (Exception ex)
         {
