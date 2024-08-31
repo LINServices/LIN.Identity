@@ -46,18 +46,6 @@ public class Account
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     /// <summary>
     /// Obtener cuentas.
     /// </summary>

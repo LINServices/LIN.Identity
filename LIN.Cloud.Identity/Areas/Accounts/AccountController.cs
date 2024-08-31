@@ -32,6 +32,8 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
             };
 
         // Organización del modelo.
+        modelo.Identity.EffectiveTime = default;
+        modelo.Identity.ExpirationTime = default;
         modelo = Services.Formats.Account.Process(modelo);
 
         // Creación del usuario.
