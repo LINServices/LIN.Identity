@@ -5,7 +5,6 @@
 public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, RolesIam rolesIam) : ControllerBase
 {
 
-
     /// <summary>
     /// Obtener los directorios asociados.
     /// </summary>
@@ -40,7 +39,6 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
         return response;
 
     }
-
 
 
     /// <summary>
@@ -97,7 +95,5 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
         return response;
 
     }
-
-
 
 }
