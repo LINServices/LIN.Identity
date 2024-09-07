@@ -121,7 +121,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Response = Responses.Unauthorized
             };
 
-
         // Crear el usuario.
         var response = await groupMembers.Create(ids.Select(id => new GroupMember
         {

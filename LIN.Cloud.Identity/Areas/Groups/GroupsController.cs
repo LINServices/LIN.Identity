@@ -5,7 +5,6 @@
 public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : ControllerBase
 {
 
-
     /// <summary>
     /// Crear nuevo grupo.
     /// </summary>
@@ -57,7 +56,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
     }
 
 
-
     /// <summary>
     /// Obtener los grupos asociados a una organización.
     /// </summary>
@@ -99,7 +97,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
         return response;
 
     }
-
 
 
     /// <summary>
@@ -158,7 +155,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
     }
 
 
-
     /// <summary>
     /// Obtener un grupo según el Id.
     /// </summary>
@@ -213,7 +209,5 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
         return response;
 
     }
-
-
 
 }
