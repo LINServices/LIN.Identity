@@ -2,5 +2,5 @@
 
 public interface IIdentityService
 {
-    Task<List<int>> GetIdenties(int identity);
+    Task<List<int>> GetIdentities(int identity);
 }

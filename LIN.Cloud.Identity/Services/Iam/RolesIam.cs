@@ -16,7 +16,7 @@ public class RolesIam(DataContext context, IIdentityService identityService)
     {
 
         // Identidades.
-        var identities = await identityService.GetIdenties(identity);
+        var identities = await identityService.GetIdentities(identity);
 
         // Obtener roles.
         var roles = await (from rol in context.IdentityRoles
