@@ -1,6 +1,5 @@
 ﻿namespace LIN.Cloud.Identity.Services.Models;
 
-
 public class QueryAccountFilter
 {
     public int AccountContext { get; set; }
@@ -11,7 +10,6 @@ public class QueryAccountFilter
     public FindOn FindOn { get; set; }
 
 }
-
 
 public enum FindOn
 {

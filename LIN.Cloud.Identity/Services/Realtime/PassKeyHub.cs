@@ -2,10 +2,8 @@
 
 namespace LIN.Cloud.Identity.Services.Realtime;
 
-
 public partial class PassKeyHub(Data.PassKeys passKeysData) : Hub
 {
-
 
     /// <summary>
     /// Lista de intentos Passkey.
@@ -27,15 +25,17 @@ public partial class PassKeyHub(Data.PassKeys passKeysData) : Hub
     public static readonly string ResponseChannel = "#responses";
 
 
-
-
+    /// <summary>
+    /// Evento cuando se desconecta.
+    /// </summary>
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
 
-        var e = Attempts.Values.Where(T => T.Where(T => T.HubKey == Context.ConnectionId).Any()).FirstOrDefault() ?? new();
+        // Obtener el intento.
+        var attempt = Attempts.Values.Where(T => T.Where(T => T.HubKey == Context.ConnectionId).Any()).FirstOrDefault() ?? new();
 
-        _ = e.Where(T =>
+        _ = attempt.Where(T =>
         {
             if (T.HubKey == Context.ConnectionId && T.Status == PassKeyStatus.Undefined)
                 T.Status = PassKeyStatus.Failed;
@@ -43,17 +43,8 @@ public partial class PassKeyHub(Data.PassKeys passKeysData) : Hub
             return false;
         });
 
-
         return base.OnDisconnectedAsync(exception);
     }
-
-
-
-
-
-
-
-
 
 
     //=========== Dispositivos ===========//
@@ -76,8 +67,6 @@ public partial class PassKeyHub(Data.PassKeys passKeysData) : Hub
 
         await Clients.Group(BuildGroupName(modelo.User)).SendAsync(AttemptsChannel, pass);
     }
-
-
 
 
     /// <summary>
@@ -236,9 +225,5 @@ public partial class PassKeyHub(Data.PassKeys passKeysData) : Hub
         }
 
     }
-
-
-
-
 
 }

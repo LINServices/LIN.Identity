@@ -6,7 +6,6 @@ namespace LIN.Cloud.Identity.Services.Iam;
 public class RolesIam(DataContext context, IIdentityService identityService)
 {
 
-
     /// <summary>
     /// Obtener los roles de una identidad en una organización.
     /// </summary>
@@ -27,20 +26,11 @@ public class RolesIam(DataContext context, IIdentityService identityService)
         return roles;
 
     }
-
-
 }
-
-
 
 
 public static class ValidateRoles
 {
-
-
-
-
-
 
     public static bool ValidateRead(IEnumerable<Roles> roles)
     {
@@ -76,11 +66,4 @@ public static class ValidateRoles
         return sets.Any();
 
     }
-
-
-
-
-
-
-
 }

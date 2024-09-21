@@ -1,6 +1,5 @@
 ﻿namespace LIN.Cloud.Identity.Services.Models;
 
-
 public class JwtModel
 {
 
@@ -32,6 +31,5 @@ public class JwtModel
     /// Id de la aplicación.
     /// </summary>
     public int ApplicationId { get; set; }
-
 
 }
