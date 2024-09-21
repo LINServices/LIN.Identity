@@ -214,7 +214,7 @@ public class Accounts(DataContext context)
             List<AccountModel> accountModels = await Builders.Account.Search(pattern, filters, context).Take(10).ToListAsync();
 
             // Si no existe el modelo
-            if (accountModels == null ||!accountModels.Any())
+            if (accountModels == null || !accountModels.Any())
                 return new(Responses.NotRows);
 
             return new(Responses.Success, accountModels);

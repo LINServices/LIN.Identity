@@ -2,6 +2,7 @@
 global using Http.ResponsesList;
 // Tipos locales.
 global using LIN.Cloud.Identity.Persistence.Contexts;
+global using LIN.Cloud.Identity.Persistence.Extensions;
 global using LIN.Cloud.Identity.Services.Auth;
 global using LIN.Cloud.Identity.Services.Filters;
 global using LIN.Cloud.Identity.Services.Iam;
@@ -23,4 +24,3 @@ global using System.IO;
 global using System.Security.Claims;
 // Framework.
 global using System.Text;
-global using LIN.Cloud.Identity.Persistence.Extensions;

@@ -177,7 +177,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             modelBuilder.Entity<ApplicationModel>()
                       .HasOne(t => t.Identity)
                       .WithMany()
-                      .HasForeignKey(t=>t.IdentityId);
+                      .HasForeignKey(t => t.IdentityId);
 
 
             modelBuilder.Entity<ApplicationModel>()

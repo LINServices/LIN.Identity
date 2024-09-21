@@ -1,5 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Contexts;
-using LIN.Cloud.Identity.Persistence.Queries.Interfaces;
+﻿using LIN.Cloud.Identity.Persistence.Queries.Interfaces;
 using LIN.Types.Cloud.Identity.Enumerations;
 using LIN.Types.Cloud.Identity.Models;
 
