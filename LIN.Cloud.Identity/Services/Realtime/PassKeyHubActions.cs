@@ -1,9 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Services.Realtime;
 
-
 public partial class PassKeyHub
 {
-
 
     /// <summary>
     /// Agregar un dispositivo administrador.
@@ -23,7 +21,6 @@ public partial class PassKeyHub
         await Groups.AddToGroupAsync(Context.ConnectionId, BuildGroupName(tokenInformation.Unique));
 
     }
-
 
 
     /// <summary>
@@ -63,15 +60,11 @@ public partial class PassKeyHub
         else
             Attempts[attempt.User.ToLower()].Add(attempt);
 
-
-
-
         // Yo
         await Groups.AddToGroupAsync(Context.ConnectionId, $"dbo.{Context.ConnectionId}");
 
         await SendRequest(attempt);
 
     }
-
 
 }

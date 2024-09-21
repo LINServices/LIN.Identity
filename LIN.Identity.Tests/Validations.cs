@@ -18,11 +18,11 @@ public class AccountTests
         };
 
         // Act
-        var result = Account.Validate(account);
+        var (pass, message) = Account.Validate(account);
 
         // Assert
-        Assert.False(result.pass);
-        Assert.Equal("La cuenta debe de tener un nombre valido.", result.message);
+        Assert.False(pass);
+        Assert.Equal("La cuenta debe de tener un nombre valido.", message);
     }
 
     [Fact]
@@ -90,11 +90,11 @@ public class AccountTests
         };
 
         // Act
-        var result = Account.Validate(account);
+        var (pass, message) = Account.Validate(account);
 
         // Assert
-        Assert.True(result.pass);
-        Assert.Equal("", result.message);
+        Assert.True(pass);
+        Assert.Equal("", message);
     }
 
     [Fact]
