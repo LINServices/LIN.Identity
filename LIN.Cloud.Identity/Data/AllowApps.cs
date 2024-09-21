@@ -59,7 +59,7 @@ public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.II
         try
         {
 
-            var identities = await identityService.GetIdenties(id);
+            var identities = await identityService.GetIdentities(id);
 
             var query = await (from allow in context.AllowApps
                                where identities.Contains(allow.IdentityId)

@@ -4,16 +4,14 @@
 public class IdentityService(DataContext context) : IIdentityService
 {
 
-
-
-    public async Task<List<int>> GetIdenties(int identity)
+    public async Task<List<int>> GetIdentities(int identity)
     {
         List<int> result = [identity];
-        await GetIdenties(identity, result);
+        await GetIdentities(identity, result);
         return result;
     }
 
-    private async Task GetIdenties(int identity, List<int> ids)
+    private async Task GetIdentities(int identity, List<int> ids)
     {
         // Consulta.
         var query = from id in context.Identities
@@ -42,17 +40,9 @@ public class IdentityService(DataContext context) : IIdentityService
 
             // Recorrer.
             foreach (var @base in bases)
-                await GetIdenties(@base, ids);
+                await GetIdentities(@base, ids);
 
         }
     }
-
-
-
-
-
-
-
-
 
 }

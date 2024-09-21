@@ -22,7 +22,7 @@ public class JwtService
     /// Genera un JSON Web Token
     /// </summary>
     /// <param name="user">Modelo de usuario</param>
-    internal static string Generate(AccountModel user, int appID)
+    public static string Generate(AccountModel user, int appID)
     {
 
         if (JwtKey == string.Empty)
@@ -58,7 +58,7 @@ public class JwtService
     /// Valida un JSON Web token
     /// </summary>
     /// <param name="token">Token a validar</param>
-    internal static JwtModel Validate(string token)
+    public static JwtModel Validate(string token)
     {
         try
         {
