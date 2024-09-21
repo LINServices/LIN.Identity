@@ -9,6 +9,10 @@ namespace LIN.Identity.Tests.Data;
 public class Accounts
 {
 
+    /// <summary>
+    /// Obtener base de datos en memoria.
+    /// </summary>
+    /// <returns></returns>
     private static DataContext GetInMemoryDbContext()
     {
         var options = new DbContextOptionsBuilder<DataContext>()
@@ -209,7 +213,7 @@ public class Accounts
         await context.SaveChangesAsync();
 
         // Act
-        var response = await accounts.FindAll(new List<int> { accountModel.Id }, new QueryAccountFilter());
+        var response = await accounts.FindAll([accountModel.Id], new QueryAccountFilter());
 
         // Assert
         Assert.Equal(Responses.Success, response.Response);
@@ -224,7 +228,7 @@ public class Accounts
         var accounts = new Cloud.Identity.Data.Accounts(context);
 
         // Act
-        var response = await accounts.FindAll(new List<int> { 999 }, new QueryAccountFilter());
+        var response = await accounts.FindAll([999], new QueryAccountFilter());
 
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
@@ -250,7 +254,7 @@ public class Accounts
         await context.SaveChangesAsync();
 
         // Act
-        var response = await accounts.FindAllByIdentities(new List<int> { 1 }, new QueryAccountFilter());
+        var response = await accounts.FindAllByIdentities([1], new QueryAccountFilter());
 
         // Assert
         Assert.Equal(Responses.Success, response.Response);
@@ -265,7 +269,7 @@ public class Accounts
         var accounts = new Cloud.Identity.Data.Accounts(context);
 
         // Act
-        var response = await accounts.FindAllByIdentities(new List<int> { 999 }, new QueryAccountFilter());
+        var response = await accounts.FindAllByIdentities([999], new QueryAccountFilter());
 
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
