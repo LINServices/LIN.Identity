@@ -1,6 +1,5 @@
 ﻿namespace LIN.Cloud.Identity.Services.Auth;
 
-
 public class Authentication(Data.Accounts accountData) : Interfaces.IAuthentication
 {
 
@@ -27,8 +26,6 @@ public class Authentication(Data.Accounts accountData) : Interfaces.IAuthenticat
     /// Modelo obtenido.
     /// </summary>
     public AccountModel? Account { get; set; } = null;
-
-
 
 
     /// <summary>
@@ -62,7 +59,7 @@ public class Authentication(Data.Accounts accountData) : Interfaces.IAuthenticat
         // Validar contraseña.
         bool password = ValidatePassword();
 
-// Si la contraseña es invalida.
+        // Si la contraseña es invalida.
         if (!password)
             return Responses.InvalidPassword;
 

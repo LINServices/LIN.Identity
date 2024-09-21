@@ -5,7 +5,6 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 public class OrganizationsController(Data.Organizations organizationsData, Data.DirectoryMembers directoryMembersData) : ControllerBase
 {
 
-
     /// <summary>
     /// Crea una nueva organización.
     /// </summary>
@@ -35,7 +34,6 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
             modelo.Directory.Identity.Status = IdentityStatus.Enable;
         }
 
-
         // Creación de la organización.
         var response = await organizationsData.Create(modelo);
 
@@ -54,7 +52,6 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     }
 
 
-
     /// <summary>
     /// Obtiene una organización por medio del Id.
     /// </summary>
@@ -71,7 +68,6 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
 
         // Token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
 
         // Obtiene la organización
         var response = await organizationsData.Read(id);
@@ -102,11 +98,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
                         Name = "Organización privada"
                     }
                 };
-
-
-
         }
-
 
         return new ReadOneResponse<OrganizationModel>()
         {
@@ -115,8 +107,6 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
         };
 
     }
-
-
 
 
     /// <summary>
@@ -137,7 +127,5 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
         return response;
 
     }
-
-
 
 }

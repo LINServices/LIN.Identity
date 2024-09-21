@@ -2,10 +2,8 @@
 
 namespace LIN.Cloud.Identity.Services.Auth;
 
-
 public class AllowService(DataContext context) : IAllowService
 {
-
 
     /// <summary>
     /// Validar si una lista de identidades puede acceder a una aplicación.
@@ -24,6 +22,5 @@ public class AllowService(DataContext context) : IAllowService
         return isAllow.Contains(true);
 
     }
-
 
 }

@@ -12,7 +12,7 @@ public partial class PassKeyHub(Data.PassKeys passKeysData) : Hub
     /// String: Usuario.
     /// PasskeyModels: Lista de intentos. 
     /// </summary>
-    public readonly static Dictionary<string, List<PassKeyModel>> Attempts = [];
+    public static readonly Dictionary<string, List<PassKeyModel>> Attempts = [];
 
 
     /// <summary>

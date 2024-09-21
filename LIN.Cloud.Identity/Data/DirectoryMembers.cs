@@ -234,8 +234,6 @@ public class DirectoryMembers(DataContext context)
                                      IdentityId = gm.IdentityId
                                  }).ToListAsync();
 
-
-
             // Si la cuenta no existe.
             if (members == null)
                 return new()

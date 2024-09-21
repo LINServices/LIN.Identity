@@ -10,7 +10,6 @@ namespace LIN.Cloud.Identity.Persistence.Extensions;
 public static class PersistenceExtensions
 {
 
-
     /// <summary>
     /// Agregar servicios de persistence.
     /// </summary>
@@ -27,7 +26,6 @@ public static class PersistenceExtensions
 
         return services;
     }
-
 
 
     /// <summary>
@@ -48,7 +46,5 @@ public static class PersistenceExtensions
         }
         return app;
     }
-
-
 
 }

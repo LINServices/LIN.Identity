@@ -7,11 +7,10 @@ namespace LIN.Cloud.Identity.Areas.Authentication;
 public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
 {
 
-
     /// <summary>
     /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
-    /// <param name="token">Token de acceso</param>
+    /// <param name="token">Token de acceso.</param>
     [HttpGet]
     [IdentityToken]
     public HttpReadAllResponse<PassKeyModel> GetAll([FromHeader] string token)
@@ -39,7 +38,7 @@ public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
             // Retorna
             return new(Responses.Success, intentos);
         }
-        catch
+        catch (Exception)
         {
             return new(Responses.Undefined)
             {
@@ -49,18 +48,16 @@ public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
     }
 
 
-
     /// <summary>
     /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
-    /// <param name="token">Token de acceso</param>
+    /// <param name="token">Token de acceso.</param>
     [HttpGet("count")]
     [IdentityToken]
     public async Task<HttpReadOneResponse<int>> Count([FromHeader] string token)
     {
         try
         {
-
             // Token.
             JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
@@ -69,7 +66,7 @@ public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
             // Retorna
             return new(Responses.Success, x.Model);
         }
-        catch
+        catch (Exception)
         {
             return new(Responses.Undefined)
             {
@@ -77,7 +74,5 @@ public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
             };
         }
     }
-
-
 
 }

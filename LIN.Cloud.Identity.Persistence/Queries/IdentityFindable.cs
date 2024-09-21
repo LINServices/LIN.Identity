@@ -3,7 +3,6 @@ using LIN.Types.Cloud.Identity.Models;
 
 namespace LIN.Cloud.Identity.Persistence.Queries;
 
-
 public class IdentityFindable : IFindable<AccountModel>
 {
     public IQueryable<AccountModel> GetAccounts(int id, Models.QueryObjectFilter filter)

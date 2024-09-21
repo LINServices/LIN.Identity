@@ -1,6 +1,5 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Groups;
 
-
 [Route("[controller]")]
 public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : ControllerBase
 {
@@ -112,7 +111,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
         // Token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-
         // Obtener la organización.
         var orgId = await groupData.GetOwner(id);
 
@@ -123,7 +121,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
                 Message = "Hubo un error al encontrar la organización dueña de este grupo.",
                 Response = Responses.Unauthorized
             };
-
 
         // Confirmar el rol.
         var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
@@ -168,7 +165,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
         // Token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-
         // Obtener la organización.
         var orgId = await groupData.GetOwnerByIdentity(id);
 
@@ -179,7 +175,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
                 Message = "Hubo un error al encontrar la organización dueña de este grupo.",
                 Response = Responses.Unauthorized
             };
-
 
         // Confirmar el rol.
         var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);

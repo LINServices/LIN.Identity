@@ -1,10 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Organizations;
 
-
 [Route("[controller]")]
 public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData, RolesIam rolesIam) : ControllerBase
 {
-
 
     /// <summary>
     /// Crear nuevo grupo.
@@ -64,7 +62,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     }
 
 
-
     /// <summary>
     /// Obtener los roles asociados a una identidad.
     /// </summary>
@@ -93,10 +90,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
                 Response = Responses.Unauthorized
             };
 
-
-
         var isIn = await directoryMembersData.IamIn(identity, organization);
-
 
         if (isIn.Response != Responses.Success)
             return new()
@@ -104,7 +98,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
                 Message = $"La identidad {identity} no pertenece a la organización de contexto.",
                 Response = Responses.NotFoundDirectory
             };
-
 
         // Obtener el modelo.
         var response = await identityRolesData.ReadAll(identity, organization);
@@ -120,7 +113,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         return response;
 
     }
-
 
 
     /// <summary>
@@ -152,10 +144,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
                 Response = Responses.Unauthorized
             };
 
-
-
         var isIn = await directoryMembersData.IamIn(identity, organization);
-
 
         if (isIn.Response != Responses.Success)
             return new()
@@ -163,7 +152,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
                 Message = $"La identidad {identity} no pertenece a la organización de contexto.",
                 Response = Responses.NotFoundDirectory
             };
-
 
         // Obtener el modelo.
         var response = await identityRolesData.Remove(identity, rol, organization);
@@ -179,7 +167,5 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         return response;
 
     }
-
-
 
 }

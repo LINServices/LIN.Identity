@@ -7,7 +7,6 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 public class MemberController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, RolesIam rolesIam) : ControllerBase
 {
 
-
     /// <summary>
     /// Crea un nuevo miembro en una organización.
     /// </summary>
@@ -72,14 +71,12 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
                 Response = Responses.Unauthorized
             };
 
-
         // Creación del usuario
         var response = await accountsData.Create(modelo, organization);
 
         // Evaluación
         if (response.Response != Responses.Success)
             return new(response.Response);
-
 
         // Retorna el resultado
         return new CreateResponse()
@@ -90,7 +87,6 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
         };
 
     }
-
 
 
     /// <summary>
@@ -105,7 +101,6 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new(); ;
 
-
         // Confirmar el rol.
         var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
 
@@ -119,7 +114,6 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
                 Message = "No tienes acceso a la información este directorio.",
                 Response = Responses.Unauthorized
             };
-
 
         // Obtiene los miembros.
         var members = await directoryMembersData.ReadMembersByOrg(organization);
@@ -136,6 +130,5 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
         return members;
 
     }
-
 
 }

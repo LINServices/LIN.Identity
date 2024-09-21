@@ -61,8 +61,6 @@ public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.II
 
             var identities = await identityService.GetIdenties(id);
 
-
-
             var query = await (from allow in context.AllowApps
                                where identities.Contains(allow.IdentityId)
                                select new AllowApp
@@ -85,7 +83,6 @@ public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.II
         catch (Exception)
         {
         }
-
         return new();
     }
 

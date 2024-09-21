@@ -8,14 +8,14 @@ public class RolesIam(DataContext context, IIdentityService identityService)
 
 
     /// <summary>
-    /// Obtener los roles de una identitdad en una organización.
+    /// Obtener los roles de una identidad en una organización.
     /// </summary>
     /// <param name="identity">Id de la identidad.</param>
     /// <param name="organization">Id de la organización.</param>
     public async Task<List<Roles>> RolesOn(int identity, int organization)
     {
 
-        // Identitades
+        // Identidades.
         var identities = await identityService.GetIdenties(identity);
 
         // Obtener roles.

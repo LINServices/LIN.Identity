@@ -5,7 +5,6 @@ namespace LIN.Cloud.Identity.Areas.Accounts;
 public class AccountController(Data.Accounts accountData) : ControllerBase
 {
 
-
     /// <summary>
     /// Crear una cuenta LIN.
     /// </summary>
@@ -61,7 +60,6 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     }
 
 
-
     /// <summary>
     /// Obtener una cuenta.
     /// </summary>
@@ -102,7 +100,6 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
         return response;
 
     }
-
 
 
     /// <summary>
@@ -148,7 +145,6 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     }
 
 
-
     /// <summary>
     /// Obtener una cuenta según Id de identidad.
     /// </summary>
@@ -191,7 +187,6 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     }
 
 
-
     /// <summary>
     /// Obtener una cuenta según Id de identidad.
     /// </summary>
@@ -217,7 +212,6 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
         return response;
 
     }
-
 
 
     /// <summary>
@@ -254,7 +248,6 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     }
 
 
-
     /// <summary>
     /// Obtiene una lista cuentas.
     /// </summary>
@@ -280,6 +273,5 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
         return response;
 
     }
-
 
 }
