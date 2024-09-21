@@ -7,13 +7,12 @@ namespace LIN.Cloud.Identity.Areas.Authentication;
 public class AuthenticationController(IAuthentication authentication, Data.Accounts accountData) : ControllerBase
 {
 
-
     /// <summary>
-    /// Inicia una sesión de usuario
+    /// Inicia una sesión de usuario.
     /// </summary>
-    /// <param name="user">Usuario único</param>
-    /// <param name="password">Contraseña del usuario</param>
-    /// <param name="application">Key de aplicación</param>
+    /// <param name="user">Usuario único.</param>
+    /// <param name="password">Contraseña del usuario.</param>
+    /// <param name="application">Key de aplicación.</param>
     [HttpGet("login")]
     public async Task<HttpReadOneResponse<AccountModel>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string application)
     {
@@ -75,15 +74,13 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
         };
 
         return http;
-
     }
 
 
-
     /// <summary>
-    /// Inicia una sesión de usuario por medio del token
+    /// Inicia una sesión de usuario por medio del token.
     /// </summary>
-    /// <param name="token">Token de acceso</param>
+    /// <param name="token">Token de acceso.</param>
     [HttpGet("LoginWithToken")]
     [IdentityToken]
     public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token)
@@ -106,7 +103,5 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
         return response;
 
     }
-
-
 
 }

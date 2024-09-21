@@ -23,3 +23,4 @@ global using System.IO;
 global using System.Security.Claims;
 // Framework.
 global using System.Text;
+global using LIN.Cloud.Identity.Persistence.Extensions;

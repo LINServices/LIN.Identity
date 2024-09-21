@@ -7,8 +7,6 @@ namespace LIN.Cloud.Identity.Services.Extensions;
 public static class LocalServices
 {
 
-
-
     /// <summary>
     /// Agregar servicios locales.
     /// </summary>
@@ -35,6 +33,5 @@ public static class LocalServices
         return services;
 
     }
-
 
 }

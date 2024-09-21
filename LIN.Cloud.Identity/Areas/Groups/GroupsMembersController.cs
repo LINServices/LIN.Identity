@@ -1,10 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Groups;
 
-
 [Route("Groups/members")]
 public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : Controller
 {
-
 
     /// <summary>
     /// Crear nuevo integrante.
@@ -55,7 +53,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Response = Responses.Unauthorized
             };
 
-
         // Crear el usuario.
         var response = await groupMembers.Create(model);
 
@@ -63,7 +60,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
         return response;
 
     }
-
 
 
     /// <summary>
@@ -106,7 +102,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Response = Responses.Unauthorized
             };
 
-
         // Solo elementos distintos.
         ids = ids.Distinct().ToList();
 
@@ -140,7 +135,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     }
 
 
-
     /// <summary>
     /// Obtener los integrantes asociados a un grupo.
     /// </summary>
@@ -164,7 +158,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Message = "Hubo un error al encontrar la organización dueña de este grupo.",
                 Response = Responses.Unauthorized
             };
-
 
         // Confirmar el rol.
         var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
@@ -197,7 +190,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     }
 
 
-
     /// <summary>
     /// Buscar en los integrantes de un grupo.
     /// </summary>
@@ -222,7 +214,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Message = "Hubo un error al encontrar la organización dueña de este grupo.",
                 Response = Responses.Unauthorized
             };
-
 
         // Confirmar el rol.
         var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
@@ -254,7 +245,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
         return members;
 
     }
-
 
 
     /// <summary>
@@ -297,7 +287,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Response = Responses.Unauthorized
             };
 
-
         // Obtiene los miembros.
         var members = await groupMembers.SearchGroups(pattern, group);
 
@@ -313,7 +302,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
         return members;
 
     }
-
 
 
     /// <summary>
@@ -340,7 +328,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Response = Responses.Unauthorized
             };
 
-
         // Confirmar el rol.
         var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
 
@@ -354,7 +341,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Message = "No tienes acceso a la información este directorio.",
                 Response = Responses.Unauthorized
             };
-
 
         // Obtiene el usuario.
         var response = await groupMembers.Delete(identity, group);
@@ -372,7 +358,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     }
 
 
-
     /// <summary>
     /// Obtener los grupos a los que una identidad pertenece.
     /// </summary>
@@ -385,7 +370,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
 
         // Token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
 
         // Confirmar el rol.
         var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
@@ -416,7 +400,5 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
         return response;
 
     }
-
-
 
 }

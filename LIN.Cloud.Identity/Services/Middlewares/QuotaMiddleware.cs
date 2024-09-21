@@ -14,7 +14,7 @@ public class QuotaMiddleware : IMiddleware
     /// <summary>
     /// Solicitudes que se están procesando actualmente.
     /// </summary>
-    private volatile static int ActualQuote = 0;
+    private static volatile int ActualQuote = 0;
 
 
 

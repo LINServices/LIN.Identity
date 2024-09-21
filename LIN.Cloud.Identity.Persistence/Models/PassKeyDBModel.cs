@@ -2,7 +2,6 @@
 
 namespace LIN.Cloud.Identity.Persistence.Models;
 
-
 public class PassKeyDBModel
 {
 

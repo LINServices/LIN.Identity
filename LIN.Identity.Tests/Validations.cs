@@ -6,7 +6,6 @@ namespace LIN.Identity.Tests;
 public class Validations
 {
 
-
     /// <summary>
     /// Validar cuentas.
     /// </summary>
@@ -71,7 +70,5 @@ public class Validations
         }
 
     }
-
-
 
 }

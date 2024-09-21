@@ -1,16 +1,12 @@
 ﻿namespace LIN.Cloud.Identity.Services.Auth;
 
-
 public class JwtService
 {
-
-
 
     /// <summary>
     /// Llave del token
     /// </summary>
     private static string JwtKey { get; set; } = string.Empty;
-
 
 
     /// <summary>
@@ -20,8 +16,6 @@ public class JwtService
     {
         JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key");
     }
-
-
 
 
     /// <summary>
@@ -58,7 +52,6 @@ public class JwtService
         // Genera el token
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
 
 
     /// <summary>
@@ -133,7 +126,6 @@ public class JwtService
         };
 
     }
-
 
 
 }

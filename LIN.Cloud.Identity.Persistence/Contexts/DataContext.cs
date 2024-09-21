@@ -64,19 +64,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<AllowApp> AllowApps { get; set; }
 
 
-
-
-    ///// <summary>
-    ///// Configuring database.
-    ///// </summary>
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //    optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    //    base.OnConfiguring(optionsBuilder);
-    //}
-
-
-
     /// <summary>
     /// Generación del modelo de base de datos.
     /// </summary>
@@ -97,8 +84,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                       .IsUnique();
         }
 
-
-
         // Modelo: Account.
         {
 
@@ -118,7 +103,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         }
 
-
         // Modelo: PassKey.
         {
 
@@ -128,8 +112,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                               .HasForeignKey(y => y.AccountId)
                               .OnDelete(DeleteBehavior.NoAction);
         }
-
-
 
         // Modelo: GroupModel.
         {
@@ -143,10 +125,8 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         }
 
-
         // Modelo: GroupMemberModel.
         {
-
 
             modelBuilder.Entity<GroupMember>()
                               .HasKey(t => new
@@ -170,7 +150,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         }
 
-
         // Modelo: IdentityRolesModel.
         {
             modelBuilder.Entity<IdentityRolesModel>()
@@ -192,7 +171,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                     });
 
         }
-
 
         // Modelo: Application.
         {
@@ -237,18 +215,16 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         }
 
-
-
         // Nombres de las tablas.
-        modelBuilder.Entity<IdentityModel>().ToTable("IDENTITIES");
-        modelBuilder.Entity<AccountModel>().ToTable("ACCOUNTS");
-        modelBuilder.Entity<GroupModel>().ToTable("GROUPS");
-        modelBuilder.Entity<IdentityRolesModel>().ToTable("IDENTITY_ROLES");
-        modelBuilder.Entity<GroupMember>().ToTable("GROUPS_MEMBERS");
-        modelBuilder.Entity<OrganizationModel>().ToTable("ORGANIZATIONS");
-        modelBuilder.Entity<PassKeyDBModel>().ToTable("PASSKEYS");
-        modelBuilder.Entity<AllowApp>().ToTable("ALLOW_APPS");
-        modelBuilder.Entity<ApplicationModel>().ToTable("APPLICATIONS");
+        modelBuilder.Entity<IdentityModel>().ToTable("identities");
+        modelBuilder.Entity<AccountModel>().ToTable("accounts");
+        modelBuilder.Entity<GroupModel>().ToTable("groups");
+        modelBuilder.Entity<IdentityRolesModel>().ToTable("identity_roles");
+        modelBuilder.Entity<GroupMember>().ToTable("group_members");
+        modelBuilder.Entity<OrganizationModel>().ToTable("organizations");
+        modelBuilder.Entity<PassKeyDBModel>().ToTable("access_keys");
+        modelBuilder.Entity<AllowApp>().ToTable("allow_apps");
+        modelBuilder.Entity<ApplicationModel>().ToTable("applications");
 
         // Base.
         base.OnModelCreating(modelBuilder);

@@ -1,9 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
-
 public class Accounts(DataContext context)
 {
-
 
     /// <summary>
     /// Crear nueva cuenta. [Transacción]
@@ -18,7 +16,7 @@ public class Accounts(DataContext context)
         modelo.IdentityId = 0;
 
         // Transacción.
-        using var transaction = context.Database.BeginTransaction();
+        using var transaction = context.Database.GetTransaction();
 
         try
         {
@@ -60,7 +58,7 @@ public class Accounts(DataContext context)
 
 
             // Confirmar los cambios.
-            transaction.Commit();
+            transaction?.Commit();
 
             return new()
             {
@@ -71,7 +69,7 @@ public class Accounts(DataContext context)
         }
         catch (Exception)
         {
-            transaction.Rollback();
+            transaction?.Rollback();
             return new()
             {
                 Response = Responses.ExistAccount
@@ -79,7 +77,6 @@ public class Accounts(DataContext context)
         }
 
     }
-
 
 
     /// <summary>
@@ -122,7 +119,6 @@ public class Accounts(DataContext context)
     }
 
 
-
     /// <summary>
     /// Obtener una cuenta según el identificador único.
     /// </summary>
@@ -161,7 +157,6 @@ public class Accounts(DataContext context)
         }
 
     }
-
 
 
     /// <summary>
@@ -204,7 +199,6 @@ public class Accounts(DataContext context)
     }
 
 
-
     /// <summary>
     /// Buscar por patron.
     /// </summary>
@@ -220,7 +214,7 @@ public class Accounts(DataContext context)
             List<AccountModel> accountModels = await Builders.Account.Search(pattern, filters, context).Take(10).ToListAsync();
 
             // Si no existe el modelo
-            if (accountModels == null)
+            if (accountModels == null ||!accountModels.Any())
                 return new(Responses.NotRows);
 
             return new(Responses.Success, accountModels);
@@ -231,7 +225,6 @@ public class Accounts(DataContext context)
 
         return new();
     }
-
 
 
     /// <summary>
@@ -251,7 +244,7 @@ public class Accounts(DataContext context)
             var result = await query.ToListAsync();
 
             // Si no existe el modelo
-            if (result == null)
+            if (result == null || !result.Any())
                 return new(Responses.NotRows);
 
             return new(Responses.Success, result);
@@ -262,7 +255,6 @@ public class Accounts(DataContext context)
 
         return new();
     }
-
 
 
     /// <summary>
@@ -282,7 +274,7 @@ public class Accounts(DataContext context)
             var result = await query.ToListAsync();
 
             // Si no existe el modelo
-            if (result == null)
+            if (result == null || !result.Any())
                 return new(Responses.NotRows);
 
             return new(Responses.Success, result);
@@ -293,7 +285,6 @@ public class Accounts(DataContext context)
 
         return new();
     }
-
 
 
 }
