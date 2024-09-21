@@ -192,7 +192,7 @@ public class Accounts
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
     }
-    
+
     [Fact]
     public async Task FindAll_ShouldReturnSuccessResponse_WhenAccountsExist()
     {
@@ -233,7 +233,7 @@ public class Accounts
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
     }
-    
+
     [Fact]
     public async Task FindAllByIdentities_ShouldReturnSuccessResponse_WhenAccountsExist()
     {
