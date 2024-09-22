@@ -156,7 +156,7 @@ public class GroupMembers(DataContext context)
             // Consulta.
             var members = await (from g in context.GroupMembers
                                  where g.GroupId == @group
-                                 && g.Identity.Unique.Contains(pattern, StringComparison.CurrentCultureIgnoreCase)
+                                 && g.Identity.Unique.Contains(pattern.ToLower())
                                  select g.Identity).ToListAsync();
 
 
