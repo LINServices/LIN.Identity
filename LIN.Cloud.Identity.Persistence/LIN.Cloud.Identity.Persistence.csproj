@@ -8,13 +8,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Global.Utilities" Version="1.0.0" />
+		<PackageReference Include="LIN.Types.Cloud.Identity" Version="1.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Tipos\LIN.Types.Cloud.Identity\LIN.Types.Cloud.Identity.csproj" />
-	  <ProjectReference Include="..\..\..\Tipos\LIN.Types\LIN.Types.csproj" />
 	</ItemGroup>
 
 </Project>
