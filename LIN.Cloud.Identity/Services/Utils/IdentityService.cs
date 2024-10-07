@@ -1,9 +1,12 @@
 ﻿namespace LIN.Cloud.Identity.Services.Utils;
 
-
 public class IdentityService(DataContext context) : IIdentityService
 {
 
+    /// <summary>
+    /// Obtener la identidades asociadas a una identidad base.
+    /// </summary>
+    /// <param name="identity">Identidad base.</param>
     public async Task<List<int>> GetIdentities(int identity)
     {
         List<int> result = [identity];
@@ -11,6 +14,12 @@ public class IdentityService(DataContext context) : IIdentityService
         return result;
     }
 
+
+    /// <summary>
+    /// Obtener la identidades asociadas a una identidad base.
+    /// </summary>
+    /// <param name="identity">Identidad base.</param>
+    /// <param name="ids">Identidades encontradas.</param>
     private async Task GetIdentities(int identity, List<int> ids)
     {
         // Consulta.
