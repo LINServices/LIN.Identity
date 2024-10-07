@@ -1,6 +1,5 @@
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
-
 [Route("[controller]")]
 public class AccountController(Data.Accounts accountData) : ControllerBase
 {

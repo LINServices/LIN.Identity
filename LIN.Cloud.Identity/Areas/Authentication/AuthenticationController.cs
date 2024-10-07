@@ -2,7 +2,6 @@ using LIN.Cloud.Identity.Services.Auth.Interfaces;
 
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
-
 [Route("[controller]")]
 public class AuthenticationController(IAuthentication authentication, Data.Accounts accountData) : ControllerBase
 {

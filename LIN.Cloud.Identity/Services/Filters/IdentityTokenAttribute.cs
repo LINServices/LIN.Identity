@@ -1,10 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Services.Filters;
 
-
 public class IdentityTokenAttribute : ActionFilterAttribute
 {
-
-
 
     /// <summary>
     /// Filtro del token.
@@ -40,6 +37,5 @@ public class IdentityTokenAttribute : ActionFilterAttribute
         await base.OnActionExecutionAsync(context, next);
 
     }
-
 
 }

@@ -1,9 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Services.Middlewares;
 
-
 public class QuotaMiddleware : IMiddleware
 {
-
 
     /// <summary>
     /// Solicites máximas permitidas al momento.
@@ -15,8 +13,6 @@ public class QuotaMiddleware : IMiddleware
     /// Solicitudes que se están procesando actualmente.
     /// </summary>
     private static volatile int ActualQuote = 0;
-
-
 
 
     /// <summary>
