@@ -5,8 +5,6 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Cloud.Identity", "LIN.Cloud.Identity\LIN.Cloud.Identity.csproj", "{D7EF6814-1C64-44BC-BEAF-87835D44EEF8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Http", "..\..\Tipos\Http\Http.csproj", "{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Cloud.Identity.Persistence", "LIN.Cloud.Identity.Persistence\LIN.Cloud.Identity.Persistence.csproj", "{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Identity.Tests", "LIN.Identity.Tests\LIN.Identity.Tests.csproj", "{157863A4-209B-42A0-AE80-F6C403692480}"
@@ -21,10 +19,6 @@ Global
 		{D7EF6814-1C64-44BC-BEAF-87835D44EEF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7EF6814-1C64-44BC-BEAF-87835D44EEF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7EF6814-1C64-44BC-BEAF-87835D44EEF8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26F7A8CA-FFE7-4F03-B311-2A1C4EC3A158}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E05CD1C-E4F0-4BCB-9BDE-CEB9278C6EB4}.Release|Any CPU.ActiveCfg = Release|Any CPU

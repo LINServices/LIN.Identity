@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.12.1" />
     <PackageReference Include="Global.Utilities" Version="1.0.0" />
+    <PackageReference Include="Http.Utils" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Tipos\Http\Http.csproj" />
     <ProjectReference Include="..\LIN.Cloud.Identity.Persistence\LIN.Cloud.Identity.Persistence.csproj" />
   </ItemGroup>
 
