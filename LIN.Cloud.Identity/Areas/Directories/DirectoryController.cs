@@ -1,13 +1,17 @@
-﻿namespace LIN.Cloud.Identity.Areas.Directories;
+﻿using LIN.Cloud.Identity.Data;
+
+namespace LIN.Cloud.Identity.Areas.Directories;
 
 [Route("[controller]")]
 public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, RolesIam rolesIam) : ControllerBase
 {
 
     /// <summary>
-    /// Obtener los directorios asociados.
+    /// Obtener los integrantes del directorio general de la organización.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
+    /// <param name="organization">Id de la organización.</param>
+    /// <returns>Retorna la lista de integrantes./returns>
     [HttpGet("read/all")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<GroupMember>> ReadAll([FromHeader] string token, [FromHeader] int organization)
@@ -41,10 +45,11 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
 
 
     /// <summary>
-    /// Obtener los integrantes asociados a un directorio.
+    /// Obtener los integrantes de un grupo.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
-    /// <param name="directory">ID del directorio.</param>
+    /// <param name="directory">Id del directorio.</param>
+    /// <returns>Retorna la lista de integrantes del directorio.</returns>
     [HttpGet("read/members")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<GroupMember>> ReadMembers([FromHeader] string token, [FromQuery] int directory)

@@ -5,9 +5,10 @@ public class AccountLogsController(Data.AccountLogs accountData) : ControllerBas
 {
 
     /// <summary>
-    /// Obtiene los logs de una cuenta. 
+    /// Obtener los logs asociados a una cuenta.
     /// </summary>
-    /// <param name="token">Token.</param>
+    /// <param name="token">Token de acceso.</param>
+    /// <returns>Lista de logs.</returns>
     [HttpGet]
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountLog>> ReadAll([FromHeader] string token)
