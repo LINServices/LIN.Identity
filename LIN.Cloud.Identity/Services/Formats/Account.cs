@@ -52,7 +52,6 @@ public class Account
         {
             Id = 0,
             IdentityService = IdentityService.LIN,
-            Creation = DateTime.Now,
             Name = baseAccount.Name.Trim(),
             Profile = baseAccount.Profile,
             Password = Global.Utilities.Cryptography.Encrypt(baseAccount.Password),
