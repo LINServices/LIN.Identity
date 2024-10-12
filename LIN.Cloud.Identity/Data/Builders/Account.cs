@@ -252,12 +252,6 @@ public class Account
                                     )
                                     ? account.Name
                                     : "Usuario privado",
-                             Creation = (filters.IsAdmin
-                                        || account.Visibility == Visibility.Visible
-                                        || filters.AccountContext == account.Id)
-                                        || (context.GroupMembers.FirstOrDefault(t => t.Group.Members.Any(t => t.IdentityId == filters.IdentityContext)) != null)
-                                        ? account.Creation
-                                        : default,
                              Identity = new()
                              {
                                  Id = account.Identity.Id,

@@ -34,7 +34,6 @@ public class Organizations(DataContext context)
             var account = new AccountModel()
             {
                 Id = 0,
-                Creation = DateTime.Now,
                 Visibility = Visibility.Hidden,
                 Name = "Admin",
                 Password = $"pwd@{DateTime.Now.Year}",

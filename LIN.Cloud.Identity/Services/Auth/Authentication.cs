@@ -1,8 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Services.Auth;
 
-public class Authentication(Data.Accounts accountData) : Interfaces.IAuthentication
+public class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs) : Interfaces.IAuthentication
 {
-
 
     /// <summary>
     /// Usuario.
@@ -59,10 +58,10 @@ public class Authentication(Data.Accounts accountData) : Interfaces.IAuthenticat
         // Validar contraseña.
         bool password = ValidatePassword();
 
-        // Si la contraseña es invalida.
         if (!password)
             return Responses.InvalidPassword;
 
+        await SaveLog();
 
         return Responses.Success;
     }
@@ -114,10 +113,24 @@ public class Authentication(Data.Accounts accountData) : Interfaces.IAuthenticat
 
 
     /// <summary>
+    /// Guardar log.
+    /// </summary>
+    private async Task SaveLog()
+    {
+        await accountLogs.Create(new()
+        {
+            AccountId = Account!.Id,
+            AuthenticationMethod = AuthenticationMethods.Password,
+            Time = DateTime.Now,
+        });
+    }
+
+
+
+    /// <summary>
     /// Obtener el token.
     /// </summary>
     public string GenerateToken() => JwtService.Generate(Account!, 0);
-
 
 
     /// <summary>
