@@ -5,9 +5,10 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
 {
 
     /// <summary>
-    /// Crear una cuenta LIN.
+    /// Crear cuenta de enlace LIN.
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta.</param>
+    /// <returns>Retorna el Id asignado a la cuenta.</returns>
     [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel? modelo)
     {
@@ -64,6 +65,7 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     /// </summary>
     /// <param name="id">Id de la cuenta.</param>
     /// <param name="token">Token de acceso.</param>
+    /// <returns>Retorna el modelo de la cuenta.</returns>
     [HttpGet("read/id")]
     [IdentityToken]
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id, [FromHeader] string token)
@@ -104,8 +106,9 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     /// <summary>
     /// Obtener una cuenta.
     /// </summary>
-    /// <param name="user">Identidad única.</param>
+    /// <param name="user">Unique de la identidad de la cuenta.</param>
     /// <param name="token">Token de acceso.</param>
+    /// <returns>Retorna el modelo de la cuenta.</returns>
     [HttpGet("read/user")]
     [IdentityToken]
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user, [FromHeader] string token)
@@ -145,10 +148,11 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
 
 
     /// <summary>
-    /// Obtener una cuenta según Id de identidad.
+    /// Obtener una cuenta.
     /// </summary>
     /// <param name="id">Id de la identidad.</param>
     /// <param name="token">Token de acceso.</param>
+    /// <returns>Retorna el modelo de la cuenta.</returns>
     [HttpGet("read/identity")]
     [IdentityToken]
     public async Task<HttpReadOneResponse<AccountModel>> ReadByIdentity([FromQuery] int id, [FromHeader] string token)
@@ -187,10 +191,11 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
 
 
     /// <summary>
-    /// Obtener una cuenta según Id de identidad.
+    /// Obtener una lista de cuentas según las id de las identidades.
     /// </summary>
-    /// <param name="id">Id de la identidad.</param>
+    /// <param name="ids">Id de las identidades</param>
     /// <param name="token">Token de acceso.</param>
+    /// <returns>Retorna la lista de cuentas.</returns>
     [HttpPost("read/identity")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> ReadByIdentity([FromBody] List<int> ids, [FromHeader] string token)
@@ -214,10 +219,11 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
 
 
     /// <summary>
-    /// Obtiene una lista de diez (10) usuarios que coincidan con un patron.
+    /// Buscar cuentas por medio de un patrón de búsqueda.
     /// </summary>
-    /// <param name="pattern">Patron</param>
-    /// <param name="token">Token de acceso</param>
+    /// <param name="pattern">Patron de búsqueda.</param>
+    /// <param name="token">Token de acceso.</param>
+    /// <returns>Retorna las cuentas encontradas.</returns>
     [HttpGet("search")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> Search([FromQuery] string pattern, [FromHeader] string token)
@@ -248,10 +254,11 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
 
 
     /// <summary>
-    /// Obtiene una lista cuentas.
+    /// Obtener la lista de cuentas.
     /// </summary>
-    /// <param name="ids">IDs de las cuentas</param>
-    /// <param name="token">Token de acceso</param>
+    /// <param name="ids">Lista de ids de las cuentas.</param>
+    /// <param name="token">Token de acceso.</param>
+    /// <returns>Retorna una lista de las cuentas encontradas.</returns>
     [HttpPost("findAll")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids, [FromHeader] string token)

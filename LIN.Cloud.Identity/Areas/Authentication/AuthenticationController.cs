@@ -7,11 +7,12 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
 {
 
     /// <summary>
-    /// Inicia una sesión de usuario.
+    /// Iniciar sesión en una cuenta de usuario.
     /// </summary>
-    /// <param name="user">Usuario único.</param>
-    /// <param name="password">Contraseña del usuario.</param>
-    /// <param name="application">Key de aplicación.</param>
+    /// <param name="user">Unique.</param>
+    /// <param name="password">Contraseña.</param>
+    /// <param name="application">Id de la aplicación.</param>
+    /// <returns>Retorna el modelo de la cuenta y el token de acceso.</returns>
     [HttpGet("login")]
     public async Task<HttpReadOneResponse<AccountModel>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string application)
     {
@@ -77,9 +78,10 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
 
 
     /// <summary>
-    /// Inicia una sesión de usuario por medio del token.
+    /// Refrescar sesión en una cuenta de usuario.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
+    /// <returns>Retorna el modelo de la cuenta.</returns>
     [HttpGet("LoginWithToken")]
     [IdentityToken]
     public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token)

@@ -118,7 +118,7 @@ public class DirectoryMembers(DataContext context)
     /// <param name="ids">Identidades</param>
     /// <param name="organization">Id de la organización</param>
     /// <param name="context">Contexto</param>
-    public async Task<ReadAllResponse<int>> IamIn(List<int> ids, int organization)
+    public async Task<(List<int> success, List<int> failure)> IamIn(List<int> ids, int organization)
     {
 
         try
@@ -132,30 +132,16 @@ public class DirectoryMembers(DataContext context)
                                where ids.Contains(gm.IdentityId)
                                select gm.IdentityId).ToListAsync();
 
+            // Lista.
+            List<int> success = [.. query];
+            List<int> failure = [.. ids.Except(success)];
 
-            // Si la cuenta no existe.
-            if (query == null)
-                return new()
-                {
-                    Response = Responses.NotRows
-                };
-
-            // Success.
-            return new()
-            {
-                Response = Responses.Success,
-                Models = query
-            };
-
+            return (success, failure);
         }
         catch (Exception)
         {
-            return new()
-            {
-                Response = Responses.NotRows
-            };
         }
-
+        return ([], []);
     }
 
 
