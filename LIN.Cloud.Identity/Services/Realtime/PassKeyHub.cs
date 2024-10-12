@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Models;
-
-namespace LIN.Cloud.Identity.Services.Realtime;
+﻿namespace LIN.Cloud.Identity.Services.Realtime;
 
 public partial class PassKeyHub(Data.PassKeys passKeysData, Data.AccountLogs accountLogs) : Hub
 {
@@ -77,11 +75,11 @@ public partial class PassKeyHub(Data.PassKeys passKeysData, Data.AccountLogs acc
         try
         {
 
-            // Validación del token recibido
-            var info = JwtService.Validate(modelo.Token);
+            // Obtener información del token.
+            JwtModel accountJwt = JwtService.Validate(modelo.Token);
 
-            // No es valido el token
-            if (!info.IsAuthenticated || modelo.Status != PassKeyStatus.Success)
+            // Validar el token.
+            if (!accountJwt.IsAuthenticated || modelo.Status != PassKeyStatus.Success)
             {
                 // Modelo de falla
                 PassKeyModel badPass = new()
@@ -90,25 +88,21 @@ public partial class PassKeyHub(Data.PassKeys passKeysData, Data.AccountLogs acc
                     User = modelo.User
                 };
 
-                // comunica la respuesta
+                // Enviar respuesta.
                 await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync(ResponseChannel, badPass);
                 return;
             }
 
-            // Obtiene el attempt.
-            List<PassKeyModel> attempts = Attempts[modelo.User.ToLower()].Where(A => A.HubKey == modelo.HubKey).ToList();
+            // Obtiene los intentos.
+            var attempt = (from intento in Attempts[modelo.User.ToLower()].Where(A => A.HubKey == modelo.HubKey)
+                           where intento.HubKey == modelo.HubKey
+                           select intento).FirstOrDefault();
 
-            // Elemento
-            var attempt = attempts.Where(A => A.HubKey == modelo.HubKey).FirstOrDefault();
-
-            // Validación del intento
-            if (attempt == null)
+            // No se encontró.
+            if (attempt is null)
                 return;
 
-            // Eliminar el attempt de la lista
-            attempts.Remove(attempt);
-
-            // Cambiar el estado del intento
+            // Cambiar el estado del intento.
             attempt.Status = modelo.Status;
 
             // Si el tiempo de expiración ya paso
@@ -117,121 +111,49 @@ public partial class PassKeyHub(Data.PassKeys passKeysData, Data.AccountLogs acc
                 attempt.Status = PassKeyStatus.Expired;
                 attempt.Token = string.Empty;
             }
-
-            //// Validación de la organización
-            //if (orgID > 0)
-            //{
-            //    // Obtiene la organización
-            //    var organization = await Data.Organizations.Organizations.Read(orgID);
-
-            //    // Si tiene lista blanca
-            //    //if (organization.Model.HaveWhiteList)
-            //    //{
-            //    //    //// Validación de la app
-            //    //    //var applicationOnOrg = await Data.Organizations.Applications.AppOnOrg(attempt.Application.Key, orgID);
-
-            //    //    //// Si la app no existe o no esta activa
-            //    //    //if (applicationOnOrg.Response != Responses.Success)
-            //    //    //{
-            //    //    //    // Modelo de falla
-            //    //    //    PassKeyModel badPass = new()
-            //    //    //    {
-            //    //    //        Status = PassKeyStatus.BlockedByOrg,
-            //    //    //        User = modelo.User
-            //    //    //    };
-
-            //    //    //    // comunica la respuesta
-            //    //    //    await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", badPass);
-            //    //    //    return;
-
-            //    //    //}
-            //    //}
-
-
-            //}
-
-            //// Aplicación
-            //var app = await Data.Applications.Read(attempt.Application.Key);
-
-            //// Si la app no existe
-            //if (app.Response != Responses.Success)
-            //{
-            //    // Modelo de falla
-            //    PassKeyModel badPass = new()
-            //    {
-            //        Status = PassKeyStatus.Failed,
-            //        User = modelo.User
-            //    };
-
-            //    // comunica la respuesta
-            //    await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync("#response", badPass);
-            //    return;
-            //}
-
-            //// Guarda el acceso.
-            //LoginLogModel loginLog = new()
-            //{
-            //    AccountID = userID,
-            //    Application = new()
-            //    {
-            //        ID = app.Model.ID
-            //    },
-            //    Date = DateTime.Now,
-            //    Type = LoginTypes.Passkey,
-            //    ID = 0
-            //};
-
-            //_ = Data.Logins.Create(loginLog);
-
-
-
-            _ = passKeysData.Create(new PassKeyDBModel
+            else
             {
-                AccountId = info.AccountId,
-                Id = 0,
-                Time = DateTime.Now,
-            });
-
-            //// Nuevo token 
-            var newToken = JwtService.Generate(new AccountModel()
-            {
-                Id = info.AccountId,
-                Identity = new()
+                // Generar nuevo token.
+                string token = JwtService.Generate(new()
                 {
-                    Id = info.IdentityId,
-                    Unique = info.Unique
-                },
-                IdentityId = info.IdentityId
-            }, 0);
+                    Id = accountJwt.AccountId,
+                    IdentityId = accountJwt.IdentityId,
+                    Identity = new()
+                    {
+                        Id = accountJwt.IdentityId,
+                        Unique = accountJwt.Unique
+                    },
+                }, 0);
 
-            // nuevo pass
-            var pass = new PassKeyModel()
+                attempt.Token = token;
+            }
+
+            // Respuesta passkey.
+            var responsePasskey = new PassKeyModel()
             {
                 Expiración = modelo.Expiración,
-                Status = modelo.Status,
-                User = modelo.User,
-                Token = newToken,
-                Hora = modelo.Hora,
-                HubKey = "",
-                Key = ""
+                Status = attempt.Status,
+                User = attempt.User,
+                Token = attempt.Token,
+                Hora = DateTime.Now,
+                HubKey = string.Empty,
+                Key = string.Empty
             };
 
-            /// <summary>
+            // Crear log.
             await accountLogs.Create(new()
             {
-                AccountId = info.AccountId,
+                AccountId = accountJwt.AccountId,
                 AuthenticationMethod = AuthenticationMethods.Authenticator,
                 Time = DateTime.Now,
             });
 
-            // Respuesta al cliente
-            await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync(ResponseChannel, pass);
+            // Respuesta al cliente.
+            await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync(ResponseChannel, responsePasskey);
 
         }
-        catch
+        catch (Exception)
         {
         }
-
     }
-
 }
