@@ -5,10 +5,11 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
 {
 
     /// <summary>
-    /// Crear nuevo integrante.
+    /// Agregar un integrante a un grupo.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
-    /// <param name="model">Modelo.</param>
+    /// <param name="model">Modelo del integrante.</param>
+    /// <returns>Retorna el id del nuevo integrante.</returns>
     [HttpPost]
     [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromHeader] string token, [FromBody] GroupMember model)
@@ -63,11 +64,12 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
 
 
     /// <summary>
-    /// Crear nuevos integrantes en un grupo.
+    /// Agregar integrantes a un grupo.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
     /// <param name="group">Id del grupo.</param>
-    /// <param name="ids">Identidades.</param>
+    /// <param name="ids">Lista de las identidades.</param>
+    /// <returns>Retorna la respuesta del proceso.</returns>
     [HttpPost("list")]
     [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromHeader] string token, [FromHeader] int group, [FromBody] List<int> ids)
@@ -106,18 +108,10 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
         ids = ids.Distinct().ToList();
 
         // Valida si el usuario pertenece a la organización.
-        var idIsIn = await directoryMembersData.IamIn(ids, orgId.Model);
-
-        // Si no existe.
-        if (idIsIn.Response != Responses.Success)
-            return new()
-            {
-                Message = $"Errores encontrados al validar si las identidades pertenecen a la organización {orgId.Model}.",
-                Response = Responses.Unauthorized
-            };
+        var (successIds, failureIds) = await directoryMembersData.IamIn(ids, orgId.Model);
 
         // Crear el usuario.
-        var response = await groupMembers.Create(ids.Select(id => new GroupMember
+        var response = await groupMembers.Create(successIds.Select(id => new GroupMember
         {
             Group = new()
             {
@@ -128,6 +122,8 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
                 Id = id
             }
         }));
+
+        response.Message = $"Se agregaron {successIds.Count} integrantes y se omitieron {failureIds.Count} debido a que no pertenecen a esta organización.";
 
         // Retorna el resultado
         return response;

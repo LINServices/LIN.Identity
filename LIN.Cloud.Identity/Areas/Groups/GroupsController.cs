@@ -56,10 +56,11 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
 
 
     /// <summary>
-    /// Obtener los grupos asociados a una organización.
+    /// Obtener todos los grupos de una organización.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
     /// <param name="organization">Id de la organización.</param>
+    /// <returns>Retorna la lista de grupos.</returns>
     [HttpGet("all")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<GroupModel>> ReadAll([FromHeader] string token, [FromHeader] int organization)
@@ -99,10 +100,11 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
 
 
     /// <summary>
-    /// Obtener un grupo según el Id.
+    /// Obtener un grupo.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
     /// <param name="id">Id del grupo.</param>
+    /// <returns>Retorna el modelo del grupo.</returns>
     [HttpGet]
     [IdentityToken]
     public async Task<HttpReadOneResponse<GroupModel>> ReadOne([FromHeader] string token, [FromHeader] int id)
@@ -153,10 +155,11 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
 
 
     /// <summary>
-    /// Obtener un grupo según el Id.
+    /// Obtener un grupo.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
-    /// <param name="id">Id del grupo.</param>
+    /// <param name="id">Id de la identidad del grupo.</param>
+    /// <returns>Retorna el modelo del grupo.</returns>
     [HttpGet("identity")]
     [IdentityToken]
     public async Task<HttpReadOneResponse<GroupModel>> ReadIdentity([FromHeader] string token, [FromHeader] int id)
