@@ -189,4 +189,48 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
 
     }
 
+
+    /// <summary>
+    /// Agregar una identidad externa a la organización.
+    /// </summary>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="organization">Id de la organización.</param>
+    /// <param name="ids">Lista de ids a agregar.</param>
+    /// <returns>Retorna el resultado del proceso.</returns>
+    [HttpPost("expulse")]
+    [IdentityToken]
+    public async Task<HttpResponseBase> Expulse([FromHeader] string token, [FromQuery] int organization, [FromBody] List<int> ids)
+    {
+
+        // Token.
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
+
+        // Confirmar el rol.
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+
+        // Iam.
+        bool iam = ValidateRoles.ValidateDelete(roles);
+
+        // Si no tiene permisos.
+        if (!iam)
+            return new()
+            {
+                Message = "No tienes autorización para eliminar entidades externas en esta organización.",
+                Response = Responses.Unauthorized
+            };
+
+        // Solo elementos distintos.
+        ids = ids.Distinct().ToList();
+
+        // Valida si el usuario pertenece a la organización.
+        var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
+
+
+        var response = await directoryMembersData.Expulse(existentes, organization);
+
+        // Retorna el resultado
+        return response;
+
+    }
+
 }
