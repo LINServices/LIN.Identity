@@ -80,4 +80,18 @@ public static class ValidateRoles
         return sets.Any();
 
     }
+
+    public static bool ValidateDelete(IEnumerable<Roles> roles)
+    {
+        List<Roles> availed =
+                    [
+                        Roles.Administrator,
+                        Roles.Manager
+                    ];
+
+        var sets = availed.Intersect(roles);
+
+        return sets.Any();
+
+    }
 }

@@ -65,7 +65,7 @@ public class GroupMembers(DataContext context)
                       ({0}
                       ,{1}
                       ,{2}) 
-                """, member.Identity.Id, member.Group.Id, (int)GroupMemberTypes.User);
+                """, member.Identity.Id, member.Group.Id, (int)member.Type);
                 }
 
                 catch (Exception)
