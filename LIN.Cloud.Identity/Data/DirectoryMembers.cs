@@ -308,4 +308,51 @@ public class DirectoryMembers(DataContext context)
     }
 
 
+    /// <summary>
+    /// Expulsar identidades de la organización.
+    /// </summary>
+    /// <param name="ids">Lista de identidades.</param>
+    /// <param name="organization">Id de la organización.</param>
+    /// <returns>Respuesta del proceso.</returns>
+    public async Task<ResponseBase> Expulse(List<int> ids, int organization)
+    {
+
+        try
+        {
+
+            // Desactivar identidades (Solo creadas dentro de la propia organización).
+            var baseQuery = (from member in context.GroupMembers
+                             where ids.Contains(member.IdentityId)
+                             where member.Group.OwnerId == organization
+                             select member);
+
+            // Desactivar identidades (Solo creadas dentro de la propia organización).
+            await baseQuery.Where(m => m.Type != GroupMemberTypes.Guest).Select(m => m.Identity).ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, IdentityStatus.Disable));
+
+            // Eliminar accesos (Tanto propios de la organización como los externos).
+            await baseQuery.ExecuteDeleteAsync();
+
+            // Eliminar roles asociados.
+            await (from rol in context.IdentityRoles
+                   where ids.Contains(rol.IdentityId)
+                   && rol.OrganizationId == organization
+                   select rol).ExecuteDeleteAsync();
+
+            // Success.
+            return new()
+            {
+                Response = Responses.Success
+            };
+
+        }
+        catch (Exception)
+        {
+            return new()
+            {
+                Response = Responses.Undefined
+            };
+        }
+
+    }
+
 }
