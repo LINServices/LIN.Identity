@@ -16,9 +16,13 @@ public static class PersistenceExtensions
     /// <param name="services">Services.</param>
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfigurationManager configuration)
     {
+        string? connectionName = "cloud";
+#if LOCAL
+        connectionName = "local";
+#endif
         services.AddDbContextPool<DataContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("cloud"));
+            options.UseSqlServer(configuration.GetConnectionString(connectionName));
         });
 
         services.AddScoped<AccountFindable, AccountFindable>();
@@ -35,7 +39,6 @@ public static class PersistenceExtensions
     {
         try
         {
-
             var scope = app.ApplicationServices.CreateScope();
             var context = scope.ServiceProvider.GetService<DataContext>();
             context?.Database.EnsureCreated();
