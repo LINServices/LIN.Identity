@@ -3,7 +3,7 @@ using LIN.Types.Cloud.Identity.Abstracts;
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [Route("orgs/members")]
-public class MemberController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : ControllerBase
+public class OrganizationMembersController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : ControllerBase
 {
 
     /// <summary>
@@ -15,7 +15,7 @@ public class MemberController(Data.Organizations organizationsData, Data.Account
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("invite")]
     [IdentityToken]
-    public async Task<HttpCreateResponse> Create([FromHeader] string token, [FromQuery] int organization, [FromBody] List<int> ids)
+    public async Task<HttpCreateResponse> AddExternalMembers([FromHeader] string token, [FromQuery] int organization, [FromBody] List<int> ids)
     {
 
         // Token.
