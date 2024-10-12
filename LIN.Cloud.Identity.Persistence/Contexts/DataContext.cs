@@ -4,10 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LIN.Cloud.Identity.Persistence.Contexts;
 
-
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {
-
 
     /// <summary>
     /// Tabla de identidades.
@@ -57,11 +55,16 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<ApplicationModel> Applications { get; set; }
 
 
-
     /// <summary>
     /// Allow apps.
     /// </summary>
     public DbSet<AllowApp> AllowApps { get; set; }
+
+
+    /// <summary>
+    /// Logs de accounts.
+    /// </summary>
+    public DbSet<AccountLog> AccountLogs { get; set; }
 
 
     /// <summary>
@@ -215,6 +218,21 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         }
 
+        // Modelo: Account Logs.
+        {
+            modelBuilder.Entity<AccountLog>()
+                      .HasOne(t => t.Application)
+                      .WithMany()
+                      .HasForeignKey(t => t.ApplicationId)
+                      .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<AccountLog>()
+                      .HasOne(t => t.Account)
+                      .WithMany()
+                      .HasForeignKey(t => t.AccountId)
+                      .OnDelete(DeleteBehavior.NoAction);
+        }
+
         // Nombres de las tablas.
         modelBuilder.Entity<IdentityModel>().ToTable("identities");
         modelBuilder.Entity<AccountModel>().ToTable("accounts");
@@ -225,6 +243,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<PassKeyDBModel>().ToTable("access_keys");
         modelBuilder.Entity<AllowApp>().ToTable("allow_apps");
         modelBuilder.Entity<ApplicationModel>().ToTable("applications");
+        modelBuilder.Entity<AccountLog>().ToTable("account_logs");
 
         // Base.
         base.OnModelCreating(modelBuilder);

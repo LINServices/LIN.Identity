@@ -2,7 +2,7 @@
 
 namespace LIN.Cloud.Identity.Services.Realtime;
 
-public partial class PassKeyHub(Data.PassKeys passKeysData) : Hub
+public partial class PassKeyHub(Data.PassKeys passKeysData, Data.AccountLogs accountLogs) : Hub
 {
 
     /// <summary>
@@ -215,6 +215,14 @@ public partial class PassKeyHub(Data.PassKeys passKeysData) : Hub
                 HubKey = "",
                 Key = ""
             };
+
+            /// <summary>
+            await accountLogs.Create(new()
+            {
+                AccountId = info.AccountId,
+                AuthenticationMethod = AuthenticationMethods.Authenticator,
+                Time = DateTime.Now,
+            });
 
             // Respuesta al cliente
             await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync(ResponseChannel, pass);
