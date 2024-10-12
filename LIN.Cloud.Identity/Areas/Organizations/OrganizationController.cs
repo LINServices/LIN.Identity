@@ -1,6 +1,5 @@
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
-
 [Route("[controller]")]
 public class OrganizationsController(Data.Organizations organizationsData, Data.DirectoryMembers directoryMembersData) : ControllerBase
 {

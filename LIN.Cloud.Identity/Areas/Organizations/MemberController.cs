@@ -2,10 +2,68 @@ using LIN.Types.Cloud.Identity.Abstracts;
 
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
-
 [Route("orgs/members")]
-public class MemberController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, RolesIam rolesIam) : ControllerBase
+public class MemberController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : ControllerBase
 {
+
+    /// <summary>
+    /// Agregar una identidad externa a la organización.
+    /// </summary>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="organization">Id de la organización.</param>
+    /// <param name="ids">Lista de ids a agregar.</param>
+    /// <returns>Retorna el resultado del proceso.</returns>
+    [HttpPost("invite")]
+    [IdentityToken]
+    public async Task<HttpCreateResponse> Create([FromHeader] string token, [FromQuery] int organization, [FromBody] List<int> ids)
+    {
+
+        // Token.
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
+
+        // Confirmar el rol.
+        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+
+        // Iam.
+        bool iam = ValidateRoles.ValidateInviteMembers(roles);
+
+        // Si no tiene permisos.
+        if (!iam)
+            return new()
+            {
+                Message = "No tienes autorización para invitar entidades externas en esta organización.",
+                Response = Responses.Unauthorized
+            };
+
+        // Solo elementos distintos.
+        ids = ids.Distinct().ToList();
+
+        // Valida si el usuario pertenece a la organización.
+        var (existentes, noUpdated) = await directoryMembersData.IamIn(ids, organization);
+
+        var directoryId = await organizationsData.ReadDirectory(organization);
+
+        // Crear el usuario.
+        var response = await groupMembers.Create(noUpdated.Select(id => new GroupMember
+        {
+            Group = new()
+            {
+                Id = directoryId.Model,
+            },
+            Identity = new()
+            {
+                Id = id
+            },
+            Type = GroupMemberTypes.Guest
+        }));
+
+        response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count} debido a que ya pertenecen a esta organización.";
+
+        // Retorna el resultado
+        return response;
+
+    }
+
 
     /// <summary>
     /// Crea un nuevo miembro en una organización.

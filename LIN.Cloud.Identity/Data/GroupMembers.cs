@@ -57,7 +57,7 @@ public class GroupMembers(DataContext context)
                 try
                 {
                     await context.Database.ExecuteSqlRawAsync("""
-                 INSERT INTO [dbo].[GROUPS_MEMBERS]
+                 INSERT INTO [dbo].[group_members]
                       ([IdentityId]
                       ,[GroupId]
                       ,[Type])
