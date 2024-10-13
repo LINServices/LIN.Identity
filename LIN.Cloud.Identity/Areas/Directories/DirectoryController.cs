@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Data;
-
-namespace LIN.Cloud.Identity.Areas.Directories;
+﻿namespace LIN.Cloud.Identity.Areas.Directories;
 
 [Route("[controller]")]
 public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, RolesIam rolesIam) : ControllerBase
