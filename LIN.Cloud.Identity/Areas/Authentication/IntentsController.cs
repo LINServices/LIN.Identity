@@ -2,7 +2,6 @@ using LIN.Cloud.Identity.Services.Realtime;
 
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
-
 [Route("[controller]")]
 public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
 {

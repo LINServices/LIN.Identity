@@ -6,9 +6,6 @@ namespace LIN.Cloud.Identity.Data;
 public class PassKeys(DataContext context)
 {
 
-
-
-
     public async Task<ResponseBase> Create(PassKeyDBModel modelo)
     {
         // Pre.
