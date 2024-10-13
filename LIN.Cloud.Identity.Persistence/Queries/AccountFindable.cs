@@ -4,11 +4,8 @@ using LIN.Types.Cloud.Identity.Models;
 
 namespace LIN.Cloud.Identity.Persistence.Queries;
 
-
 public class AccountFindable(Contexts.DataContext context) : IFindable<AccountModel>
 {
-
-
 
     /// <summary>
     /// Buscar en la cuentas estables.
