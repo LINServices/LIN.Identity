@@ -1,9 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Services.Middlewares;
 
-
 public class IPMiddleware : IMiddleware
 {
-
 
     /// <summary>
     /// Invocación del Middleware.
@@ -37,6 +35,5 @@ public class IPMiddleware : IMiddleware
         await next(context);
 
     }
-
 
 }
