@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("account/logs")]
-public class AccountLogsController(Data.AccountLogs accountData) : ControllerBase
+public class AccountLogsController(Data.AccountLogs accountData) : AuthenticationController
 {
 
     /// <summary>
@@ -14,11 +14,8 @@ public class AccountLogsController(Data.AccountLogs accountData) : ControllerBas
     public async Task<HttpReadAllResponse<AccountLog>> ReadAll([FromHeader] string token)
     {
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Obtiene el usuario
-        var response = await accountData.ReadAll(tokenInfo.AccountId);
+        var response = await accountData.ReadAll(AuthenticationInformation.AccountId);
 
         return response;
 

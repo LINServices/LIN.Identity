@@ -34,6 +34,7 @@ public class IdentityTokenAttribute : ActionFilterAttribute
 
         // Agrega la información del token.
         context.HttpContext.Items.Add(value.ToString(), tokenInfo);
+        context.HttpContext.Items.Add("authentication", tokenInfo);
         await base.OnActionExecutionAsync(context, next);
 
     }

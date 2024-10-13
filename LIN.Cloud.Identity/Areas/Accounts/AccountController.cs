@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("[controller]")]
-public class AccountController(Data.Accounts accountData) : ControllerBase
+public class AccountController(Data.Accounts accountData) : AuthenticationController
 {
 
     /// <summary>
@@ -78,15 +78,12 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Obtiene el usuario.
         var response = await accountData.Read(id, new()
         {
-            AccountContext = tokenInfo.AccountId,
+            AccountContext = AuthenticationInformation.AccountId,
             FindOn = FindOn.StableAccounts,
-            IdentityContext = tokenInfo.IdentityId,
+            IdentityContext = AuthenticationInformation.IdentityId,
             IsAdmin = false
         });
 
@@ -121,15 +118,12 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Obtiene el usuario.
         var response = await accountData.Read(user, new()
         {
-            AccountContext = tokenInfo.AccountId,
+            AccountContext = AuthenticationInformation.AccountId,
             FindOn = FindOn.StableAccounts,
-            IdentityContext = tokenInfo.IdentityId,
+            IdentityContext = AuthenticationInformation.IdentityId,
             IsAdmin = false
         });
 
@@ -165,15 +159,12 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Obtiene el usuario.
         var response = await accountData.ReadByIdentity(id, new()
         {
-            AccountContext = tokenInfo.AccountId,
+            AccountContext = AuthenticationInformation.AccountId,
             FindOn = FindOn.StableAccounts,
-            IdentityContext = tokenInfo.IdentityId,
+            IdentityContext = AuthenticationInformation.IdentityId,
             IsAdmin = false
         });
 
@@ -200,17 +191,13 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> ReadByIdentity([FromBody] List<int> ids, [FromHeader] string token)
     {
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Obtiene el usuario
         var response = await accountData.FindAllByIdentities(ids, new()
         {
-            AccountContext = tokenInfo.AccountId,
+            AccountContext = AuthenticationInformation.AccountId,
             FindOn = FindOn.StableAccounts,
             IsAdmin = false,
-            IdentityContext = tokenInfo.IdentityId,
+            IdentityContext = AuthenticationInformation.IdentityId,
         });
 
         return response;
@@ -236,17 +223,13 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
-
         // Obtiene el usuario
         var response = await accountData.Search(pattern, new()
         {
-            AccountContext = tokenInfo.AccountId,
+            AccountContext = AuthenticationInformation.AccountId,
             FindOn = FindOn.StableAccounts,
             IsAdmin = false,
-            IdentityContext = tokenInfo.IdentityId,
+            IdentityContext = AuthenticationInformation.IdentityId,
         });
 
         return response;
@@ -263,17 +246,13 @@ public class AccountController(Data.Accounts accountData) : ControllerBase
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids, [FromHeader] string token)
     {
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Obtiene el usuario
         var response = await accountData.FindAll(ids, new()
         {
-            AccountContext = tokenInfo.AccountId,
+            AccountContext = AuthenticationInformation.AccountId,
             FindOn = FindOn.StableAccounts,
             IsAdmin = false,
-            IdentityContext = tokenInfo.IdentityId,
+            IdentityContext = AuthenticationInformation.IdentityId,
         });
 
         return response;
