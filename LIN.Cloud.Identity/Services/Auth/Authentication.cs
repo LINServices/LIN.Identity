@@ -41,7 +41,6 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     }
 
 
-
     /// <summary>
     /// Iniciar el proceso.
     /// </summary>
@@ -67,7 +66,6 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     }
 
 
-
     /// <summary>
     /// Iniciar el proceso.
     /// </summary>
@@ -90,7 +88,6 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     }
 
 
-
     /// <summary>
     /// Validar la contraseña.
     /// </summary>
@@ -111,7 +108,6 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     }
 
 
-
     /// <summary>
     /// Guardar log.
     /// </summary>
@@ -124,7 +120,6 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
             Time = DateTime.Now,
         });
     }
-
 
 
     /// <summary>
