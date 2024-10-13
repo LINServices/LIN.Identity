@@ -223,18 +223,11 @@ public class Groups(DataContext context)
                                     OwnerId = g.OwnerId
                                 }).ToListAsync();
 
-            // Si la cuenta no existe.
-            if (groups == null)
-                return new()
-                {
-                    Response = Responses.NotRows
-                };
-
             // Success.
             return new()
             {
                 Response = Responses.Success,
-                Models = groups
+                Models = groups ?? []
             };
 
         }

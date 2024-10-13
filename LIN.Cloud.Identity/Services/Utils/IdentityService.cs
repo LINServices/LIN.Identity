@@ -34,7 +34,6 @@ public class IdentityService(DataContext context) : IIdentityService
                               select member.Group.IdentityId).ToList(),
                     };
 
-
         // Si hay elementos.
         if (query.Any())
         {
