@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Services.Realtime;
 
-public partial class PassKeyHub(Data.PassKeys passKeysData, Data.AccountLogs accountLogs) : Hub
+public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
 {
 
     /// <summary>

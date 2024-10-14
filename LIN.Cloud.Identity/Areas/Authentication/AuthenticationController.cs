@@ -28,7 +28,11 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
         authentication.SetCredentials(user, password, application);
 
         // Respuesta.
-        var response = await authentication.Start();
+        var response = await authentication.Start(new()
+        {
+            ValidateApp = true,
+            Log = true
+        });
 
         // Validación al obtener el usuario
         switch (response)

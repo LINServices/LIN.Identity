@@ -2,6 +2,7 @@ using LIN.Types.Cloud.Identity.Abstracts;
 
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
+[IdentityToken]
 [Route("orgs/members")]
 public class OrganizationMembersController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : AuthenticationBaseController
 {
@@ -13,7 +14,6 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <param name="ids">Lista de ids a agregar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("invite")]
-    [IdentityToken]
     public async Task<HttpCreateResponse> AddExternalMembers([FromQuery] int organization, [FromBody] List<int> ids)
     {
 
@@ -65,10 +65,8 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// Crea un nuevo miembro en una organización.
     /// </summary>
     /// <param name="modelo">Modelo de la cuenta.</param>
-    /// <param name="token">Token de acceso de un administrador.</param>
     /// <param name="organization">Id de la organización.</param>
     [HttpPost]
-    [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] int organization)
     {
 
@@ -143,9 +141,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <summary>
     /// Obtiene la lista de integrantes asociados a una organización.
     /// </summary>
-    /// <param name="token">Token de acceso</param>
     [HttpGet]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<SessionModel<GroupMember>>> ReadAll([FromHeader] int organization)
     {
 
@@ -187,7 +183,6 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <param name="ids">Lista de ids a agregar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("expulse")]
-    [IdentityToken]
     public async Task<HttpResponseBase> Expulse([FromQuery] int organization, [FromBody] List<int> ids)
     {
 
