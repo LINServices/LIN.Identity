@@ -44,12 +44,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
     /// <summary>
-    /// PassKeys.
-    /// </summary>
-    public DbSet<PassKeyDBModel> PassKeys { get; set; }
-
-
-    /// <summary>
     /// Aplicaciones.
     /// </summary>
     public DbSet<ApplicationModel> Applications { get; set; }
@@ -115,16 +109,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-        }
-
-        // Modelo: PassKey.
-        {
-
-            modelBuilder.Entity<PassKeyDBModel>()
-                              .HasOne(t => t.Account)
-                              .WithMany()
-                              .HasForeignKey(y => y.AccountId)
-                              .OnDelete(DeleteBehavior.NoAction);
         }
 
         // Modelo: GroupModel.
@@ -262,7 +246,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<IdentityRolesModel>().ToTable("identity_roles");
         modelBuilder.Entity<GroupMember>().ToTable("group_members");
         modelBuilder.Entity<OrganizationModel>().ToTable("organizations");
-        modelBuilder.Entity<PassKeyDBModel>().ToTable("access_keys");
         modelBuilder.Entity<AllowApp>().ToTable("allow_apps");
         modelBuilder.Entity<ApplicationModel>().ToTable("applications");
         modelBuilder.Entity<AccountLog>().ToTable("account_logs");
