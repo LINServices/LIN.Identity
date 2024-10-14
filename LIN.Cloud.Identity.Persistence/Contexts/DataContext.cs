@@ -68,10 +68,21 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
     /// <summary>
+    /// Políticas.
+    /// </summary>
+    public DbSet<PolicyModel> Policies { get; set; }
+
+
+    /// <summary>
     /// Generación del modelo de base de datos.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        // Modelo: Políticas.
+        {
+           
+        }
 
         // Modelo: Identity.
         {
@@ -233,6 +244,17 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                       .OnDelete(DeleteBehavior.NoAction);
         }
 
+
+        modelBuilder.Entity<PolicyModel>()
+                     .HasOne(t => t.OwnerIdentity)
+                     .WithMany()
+                     .HasForeignKey(t => t.OwnerIdentityId)
+                     .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<PolicyModel>()
+            .HasMany(t => t.ApplyFor)
+            .WithMany();
+
         // Nombres de las tablas.
         modelBuilder.Entity<IdentityModel>().ToTable("identities");
         modelBuilder.Entity<AccountModel>().ToTable("accounts");
@@ -244,6 +266,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<AllowApp>().ToTable("allow_apps");
         modelBuilder.Entity<ApplicationModel>().ToTable("applications");
         modelBuilder.Entity<AccountLog>().ToTable("account_logs");
+        modelBuilder.Entity<PolicyModel>().ToTable("policies");
 
         // Base.
         base.OnModelCreating(modelBuilder);

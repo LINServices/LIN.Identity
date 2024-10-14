@@ -1,17 +1,16 @@
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("account/logs")]
-public class AccountLogsController(Data.AccountLogs accountData) : AuthenticationController
+public class AccountLogsController(Data.AccountLogs accountData) : AuthenticationBaseController
 {
 
     /// <summary>
     /// Obtener los logs asociados a una cuenta.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <returns>Lista de logs.</returns>
     [HttpGet]
     [IdentityToken]
-    public async Task<HttpReadAllResponse<AccountLog>> ReadAll([FromHeader] string token)
+    public async Task<HttpReadAllResponse<AccountLog>> ReadAll()
     {
 
         // Obtiene el usuario

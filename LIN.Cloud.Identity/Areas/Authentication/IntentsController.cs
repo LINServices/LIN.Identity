@@ -3,26 +3,21 @@ using LIN.Cloud.Identity.Services.Realtime;
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
+public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseController
 {
 
     /// <summary>
     /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     [HttpGet]
     [IdentityToken]
-    public HttpReadAllResponse<PassKeyModel> GetAll([FromHeader] string token)
+    public HttpReadAllResponse<PassKeyModel> GetAll()
     {
         try
         {
-
-            // Token.
-            JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
             // Cuenta
             var account = (from a in PassKeyHub.Attempts
-                           where a.Key.Equals(tokenInfo.Unique, StringComparison.CurrentCultureIgnoreCase)
+                           where a.Key.Equals(AuthenticationInformation.Unique, StringComparison.CurrentCultureIgnoreCase)
                            select a).FirstOrDefault().Value ?? [];
 
             // Hora actual
@@ -50,17 +45,13 @@ public class IntentsController(Data.PassKeys passkeyData) : ControllerBase
     /// <summary>
     /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     [HttpGet("count")]
     [IdentityToken]
-    public async Task<HttpReadOneResponse<int>> Count([FromHeader] string token)
+    public async Task<HttpReadOneResponse<int>> Count()
     {
         try
         {
-            // Token.
-            JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
-            var x = await passkeyData.Count(tokenInfo.AccountId);
+            var x = await passkeyData.Count(AuthenticationInformation.AccountId);
 
             // Retorna
             return new(Responses.Success, x.Model);

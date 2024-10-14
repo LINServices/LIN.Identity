@@ -1,14 +1,14 @@
-﻿namespace LIN.Cloud.Identity.Services.Auth.Interfaces;
+﻿using LIN.Cloud.Identity.Services.Auth.Models;
+
+namespace LIN.Cloud.Identity.Services.Auth.Interfaces;
 
 public interface IAuthentication
 {
 
-
     /// <summary>
     /// Iniciar el proceso.
     /// </summary>
-    public Task<Responses> Start();
-
+    public Task<Responses> Start(AuthenticationSettings? settings = null);
 
 
     /// <summary>
@@ -20,12 +20,10 @@ public interface IAuthentication
     public void SetCredentials(string username, string password, string appCode);
 
 
-
     /// <summary>
     /// Obtener el token.
     /// </summary>
     public string GenerateToken();
-
 
 
     /// <summary>

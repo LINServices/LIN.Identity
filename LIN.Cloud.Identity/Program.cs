@@ -7,7 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Servicios de contenedor.
 builder.Services.AddSignalR();
-builder.Services.AddLINHttp();
+builder.Services.AddLINHttp(true, (options) =>
+{
+    options.OperationFilter<CustomOperationFilter<IdentityTokenAttribute>>("token");
+});
 
 builder.Services.AddLocalServices();
 

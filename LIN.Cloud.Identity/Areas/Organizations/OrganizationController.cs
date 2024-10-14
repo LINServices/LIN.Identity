@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [Route("[controller]")]
-public class OrganizationsController(Data.Organizations organizationsData, Data.DirectoryMembers directoryMembersData) : ControllerBase
+public class OrganizationsController(Data.Organizations organizationsData, Data.DirectoryMembers directoryMembersData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -58,15 +58,12 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     /// <param name="token">Token de acceso</param>
     [HttpGet("read/id")]
     [IdentityToken]
-    public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id, [FromHeader] string token)
+    public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id)
     {
 
         // Parámetros
         if (id <= 0)
             return new(Responses.InvalidParam);
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene la organización
         var response = await organizationsData.Read(id);
@@ -83,7 +80,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
         if (!response.Model.IsPublic)
         {
 
-            var iamIn = await directoryMembersData.IamIn(tokenInfo.IdentityId, response.Model.Id);
+            var iamIn = await directoryMembersData.IamIn(AuthenticationInformation.IdentityId, response.Model.Id);
 
             if (iamIn.Response != Responses.Success)
                 return new ReadOneResponse<OrganizationModel>()
@@ -114,14 +111,11 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     /// <param name="token">Token de acceso</param>
     [HttpGet("read/all")]
     [IdentityToken]
-    public async Task<HttpReadAllResponse<OrganizationModel>> ReadAll([FromHeader] string token)
+    public async Task<HttpReadAllResponse<OrganizationModel>> ReadAll()
     {
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Obtiene la organización
-        var response = await organizationsData.ReadAll(tokenInfo.IdentityId);
+        var response = await organizationsData.ReadAll(AuthenticationInformation.IdentityId);
 
         return response;
 

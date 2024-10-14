@@ -2,7 +2,6 @@
 
 namespace LIN.Cloud.Identity.Services.Iam;
 
-
 public class RolesIam(DataContext context, IIdentityService identityService)
 {
 

@@ -23,6 +23,7 @@ public static class LocalServices
         services.AddScoped<Data.Organizations, Data.Organizations>();
         services.AddScoped<Data.PassKeys, Data.PassKeys>();
         services.AddScoped<Data.AccountLogs, Data.AccountLogs>();
+        services.AddScoped<Data.Policies, Data.Policies>();
 
         // Iam.
         services.AddScoped<RolesIam, RolesIam>();
