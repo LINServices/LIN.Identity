@@ -44,12 +44,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
     /// <summary>
-    /// PassKeys.
-    /// </summary>
-    public DbSet<PassKeyDBModel> PassKeys { get; set; }
-
-
-    /// <summary>
     /// Aplicaciones.
     /// </summary>
     public DbSet<ApplicationModel> Applications { get; set; }
@@ -68,10 +62,27 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
     /// <summary>
+    /// Políticas.
+    /// </summary>
+    public DbSet<PolicyModel> Policies { get; set; }
+
+
+    /// <summary>
+    /// Identidades en Políticas.
+    /// </summary>
+    public DbSet<IdentityAllowedOnPolicyModel> IdentityOnPolicies { get; set; }
+
+
+    /// <summary>
     /// Generación del modelo de base de datos.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        // Modelo: Políticas.
+        {
+           
+        }
 
         // Modelo: Identity.
         {
@@ -104,16 +115,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-        }
-
-        // Modelo: PassKey.
-        {
-
-            modelBuilder.Entity<PassKeyDBModel>()
-                              .HasOne(t => t.Account)
-                              .WithMany()
-                              .HasForeignKey(y => y.AccountId)
-                              .OnDelete(DeleteBehavior.NoAction);
         }
 
         // Modelo: GroupModel.
@@ -233,6 +234,36 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                       .OnDelete(DeleteBehavior.NoAction);
         }
 
+
+        modelBuilder.Entity<PolicyModel>()
+                     .HasOne(t => t.OwnerIdentity)
+                     .WithMany()
+                     .HasForeignKey(t => t.OwnerIdentityId)
+                     .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<PolicyModel>()
+            .HasMany(t => t.ApplyFor)
+            .WithOne()
+            .HasForeignKey(t=>t.PolicyId);
+
+
+        modelBuilder.Entity<PolicyModel>()
+               .Property(e => e.Id)
+               .IsRequired();
+
+
+        modelBuilder.Entity<IdentityAllowedOnPolicyModel>()
+           .HasOne(t => t.Policy)
+           .WithMany(t=>t.ApplyFor)
+           .HasForeignKey(t => t.PolicyId);
+
+        modelBuilder.Entity<IdentityAllowedOnPolicyModel>()
+         .HasOne(t => t.Identity)
+         .WithMany()
+         .HasForeignKey(t => t.IdentityId);
+
+        modelBuilder.Entity<IdentityAllowedOnPolicyModel>().HasKey(t => new { t.PolicyId, t.IdentityId });
+
         // Nombres de las tablas.
         modelBuilder.Entity<IdentityModel>().ToTable("identities");
         modelBuilder.Entity<AccountModel>().ToTable("accounts");
@@ -240,10 +271,10 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<IdentityRolesModel>().ToTable("identity_roles");
         modelBuilder.Entity<GroupMember>().ToTable("group_members");
         modelBuilder.Entity<OrganizationModel>().ToTable("organizations");
-        modelBuilder.Entity<PassKeyDBModel>().ToTable("access_keys");
         modelBuilder.Entity<AllowApp>().ToTable("allow_apps");
         modelBuilder.Entity<ApplicationModel>().ToTable("applications");
         modelBuilder.Entity<AccountLog>().ToTable("account_logs");
+        modelBuilder.Entity<PolicyModel>().ToTable("policies");
 
         // Base.
         base.OnModelCreating(modelBuilder);

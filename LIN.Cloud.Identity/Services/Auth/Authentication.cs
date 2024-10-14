@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Services.Auth;
+﻿using LIN.Cloud.Identity.Services.Auth.Models;
+
+namespace LIN.Cloud.Identity.Services.Auth;
 
 public class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs) : Interfaces.IAuthentication
 {
@@ -28,6 +30,12 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
 
 
     /// <summary>
+    /// Ajustes.
+    /// </summary>
+    private AuthenticationSettings Settings { get; set; } = new();
+
+
+    /// <summary>
     /// Establecer credenciales.
     /// </summary>
     /// <param name="username">Usuario.</param>
@@ -44,8 +52,11 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     /// <summary>
     /// Iniciar el proceso.
     /// </summary>
-    public async Task<Responses> Start()
+    public async Task<Responses> Start(AuthenticationSettings? settings = null)
     {
+
+        // Validar.
+        Settings = settings ?? new();
 
         // Obtener la cuenta.
         var account = await GetAccount();
@@ -60,7 +71,8 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
         if (!password)
             return Responses.InvalidPassword;
 
-        await SaveLog();
+        if (Settings.Log)
+            await SaveLog();
 
         return Responses.Success;
     }
