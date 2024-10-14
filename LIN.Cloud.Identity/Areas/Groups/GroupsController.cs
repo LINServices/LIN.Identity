@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("[controller]")]
-public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : AuthenticationBaseController
+public class GroupsController(Data.Groups groupData, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -14,7 +14,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Authen
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, group.OwnerId ?? 0);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, group.OwnerId ?? 0);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -60,7 +60,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Authen
     public async Task<HttpReadAllResponse<GroupModel>> ReadAll([FromHeader] int organization)
     {
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -110,7 +110,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Authen
             };
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -160,7 +160,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Authen
             };
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

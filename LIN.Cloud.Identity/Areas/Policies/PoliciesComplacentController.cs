@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("policies/complacent")]
-public class PoliciesComplacentController(Data.Policies policiesData, RolesIam iam) : AuthenticationBaseController
+public class PoliciesComplacentController(Data.Policies policiesData, IamRoles iam, IamPolicy iamPolicy) : AuthenticationBaseController
 {
 
 
@@ -35,7 +35,7 @@ public class PoliciesComplacentController(Data.Policies policiesData, RolesIam i
     {
 
         // Validar Iam.
-        var iamResult = await iam.IamPolicy(AuthenticationInformation.IdentityId, policy);
+        var iamResult = await iamPolicy.Validate(AuthenticationInformation.IdentityId, policy);
 
         if (iamResult != Types.Enumerations.IamLevels.Privileged)
             return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para agregar integrantes a la política." };
@@ -57,7 +57,7 @@ public class PoliciesComplacentController(Data.Policies policiesData, RolesIam i
     {
 
         // Validar Iam.
-        var iamResult = await iam.IamPolicy(AuthenticationInformation.IdentityId, policy);
+        var iamResult = await iamPolicy.Validate(AuthenticationInformation.IdentityId, policy);
 
         if (iamResult != Types.Enumerations.IamLevels.Privileged)
             return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para eliminar integrantes de la política." };

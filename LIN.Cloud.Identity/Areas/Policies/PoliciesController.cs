@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("[controller]")]
-public class PoliciesController(Data.Policies policiesData, Data.Groups groups, RolesIam iam, Data.Organizations organizations) : AuthenticationBaseController
+public class PoliciesController(Data.Policies policiesData, Data.Groups groups, IamRoles iam, Data.Organizations organizations, IamPolicy iamPolicy) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -23,7 +23,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
                 return new(Responses.NotRows) { Message = $"No se encontró la organización del grupo con identidad {modelo.OwnerIdentityId}" };
 
             // Validar roles.
-            var roles = await iam.RolesOn(AuthenticationInformation.IdentityId, owner.Model);
+            var roles = await iam.Validate(AuthenticationInformation.IdentityId, owner.Model);
 
             bool hasPermission = ValidateRoles.ValidateAlterMembers(roles);
 
@@ -34,7 +34,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
         else if (organization is not null && organization > 0)
         {
             // Validar roles.
-            var roles = await iam.RolesOn(AuthenticationInformation.IdentityId, organization.Value);
+            var roles = await iam.Validate(AuthenticationInformation.IdentityId, organization.Value);
 
             bool hasPermission = ValidateRoles.ValidateAlterMembers(roles);
 
@@ -101,7 +101,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
     {
 
         // Validar Iam.
-        var iamResult = await iam.IamPolicy(AuthenticationInformation.IdentityId, policy);
+        var iamResult = await iamPolicy.Validate(AuthenticationInformation.IdentityId, policy);
 
         if (iamResult != Types.Enumerations.IamLevels.Privileged)
             return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para eliminar la política." };
