@@ -9,8 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 builder.Services.AddLINHttp();
 
-// Servicios propios.
-builder.Services.AddIP();
 builder.Services.AddLocalServices();
 
 // Servicio de autenticación.
@@ -18,9 +16,6 @@ builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddPersistence(builder.Configuration);
 
 var app = builder.Build();
-
-// Middlewares personalizados.
-app.UseIP();
 
 app.UseLINHttp();
 

@@ -6,7 +6,6 @@ global using LIN.Cloud.Identity.Persistence.Extensions;
 global using LIN.Cloud.Identity.Services.Auth;
 global using LIN.Cloud.Identity.Services.Filters;
 global using LIN.Cloud.Identity.Services.Iam;
-global using LIN.Cloud.Identity.Services.Middlewares;
 global using LIN.Cloud.Identity.Services.Models;
 global using LIN.Types.Cloud.Identity.Enumerations;
 global using LIN.Types.Cloud.Identity.Models;

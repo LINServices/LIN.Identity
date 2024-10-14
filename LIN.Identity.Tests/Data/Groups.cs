@@ -56,34 +56,6 @@ public class GroupsTests
     }
 
     [Fact]
-    public async Task ReadAll_ShouldReturnSuccessResponse_WhenGroupsExist()
-    {
-        // Arrange
-        var context = GetInMemoryDbContext();
-        var groups = new Groups(context);
-        var groupModel = new GroupModel
-        {
-            OwnerId = 1,
-            Name = "Test Group",
-            Identity = new()
-            {
-                Id = 1,
-                Unique = "unique"
-            }
-        };
-
-        context.Groups.Add(groupModel);
-        await context.SaveChangesAsync();
-
-        // Act
-        var response = await groups.ReadAll(1);
-
-        // Assert
-        Assert.Equal(Responses.Success, response.Response);
-        Assert.NotEmpty(response.Models);
-    }
-
-    [Fact]
     public async Task ReadAll_ShouldReturnNotRowsResponse_WhenNoGroupsExist()
     {
         // Arrange

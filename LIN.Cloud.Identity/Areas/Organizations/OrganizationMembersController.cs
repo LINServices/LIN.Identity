@@ -225,7 +225,6 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
         // Valida si el usuario pertenece a la organización.
         var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
 
-
         var response = await directoryMembersData.Expulse(existentes, organization);
 
         // Retorna el resultado
