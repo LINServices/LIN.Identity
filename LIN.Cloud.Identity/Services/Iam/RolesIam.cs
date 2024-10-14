@@ -56,6 +56,45 @@ public class RolesIam(DataContext context, Data.Groups groups, IIdentityService 
         return IamLevels.NotAccess;
 
     }
+
+
+
+
+
+    public async Task<IamLevels> IamIdentity(int identity1, int identity2)
+    {
+
+        var organizations = await (from z in context.Groups
+                                   where z.Members.Any(x => x.IdentityId == identity1)
+                                   && z.Members.Any(x => x.IdentityId == identity2)
+                                   select z.Owner!.Id).Distinct().ToListAsync();
+
+        // Si es un grupo.
+        var organization = await groups.GetOwnerByIdentity(identity2);
+
+        if (organization.Response == Responses.Success)
+        {
+            organizations.Add(organization.Model);
+            organizations = organizations.Distinct().ToList();
+        }
+
+        bool have = false;
+
+        foreach (var e in organizations)
+        {
+            var x = await RolesOn(identity1, e);
+
+            if (ValidateRoles.ValidateReadSecure(x))
+            {
+                have = true;
+                break;
+            }
+        }
+
+
+        return have ? IamLevels.Privileged : IamLevels.NotAccess;
+    }
+
 }
 
 
@@ -71,6 +110,24 @@ public static class ValidateRoles
                         Roles.AccountOperator,
                         Roles.Regular,
                         Roles.Viewer,
+                        Roles.SecurityViewer
+                    ];
+
+
+        var sets = availed.Intersect(roles);
+
+        return sets.Any();
+
+    }
+
+    public static bool ValidateReadSecure(IEnumerable<Roles> roles)
+    {
+        List<Roles> availed =
+                    [
+                        Roles.Administrator,
+                        Roles.Manager,
+                        Roles.AccountOperator,
+                        Roles.Regular,
                         Roles.SecurityViewer
                     ];
 
@@ -117,6 +174,23 @@ public static class ValidateRoles
                     [
                         Roles.Administrator,
                         Roles.Manager
+                    ];
+
+        var sets = availed.Intersect(roles);
+
+        return sets.Any();
+
+    }
+
+
+    public static bool ValidateReadPolicies(IEnumerable<Roles> roles)
+    {
+        List<Roles> availed =
+                    [
+                        Roles.Administrator,
+                        Roles.Manager,
+                        Roles.AccountOperator,
+                        Roles.SecurityViewer,
                     ];
 
         var sets = availed.Intersect(roles);

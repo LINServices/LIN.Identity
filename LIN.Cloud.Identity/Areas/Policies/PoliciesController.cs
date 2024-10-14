@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("[controller]")]
-public class PoliciesController(Data.Policies policiesData, Data.Groups groups, RolesIam iam) : AuthenticationBaseController
+public class PoliciesController(Data.Policies policiesData, Data.Groups groups, RolesIam iam, Data.Organizations organizations) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -10,11 +10,11 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
     /// </summary>
     /// <param name="modelo">Modelo de la identidad.</param>
     [HttpPost]
-    public async Task<HttpCreateResponse> Create([FromBody] PolicyModel modelo)
+    public async Task<HttpCreateResponse> Create([FromBody] PolicyModel modelo, [FromHeader] int? organization, [FromHeader] bool assign)
     {
 
         // Si ya tiene una identidad.
-        if (modelo.OwnerIdentityId > 0)
+        if (modelo.OwnerIdentityId > 0 && (organization is null || organization <= 0))
         {
             // Obtener detalles.
             var owner = await groups.GetOwnerByIdentity(modelo.OwnerIdentityId);
@@ -31,6 +31,20 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
                 return new(Responses.Unauthorized) { Message = $"No tienes permisos para crear políticas a titulo de la organización #{owner.Model}." };
 
         }
+        else if (organization is not null && organization > 0)
+        {
+            // Validar roles.
+            var roles = await iam.RolesOn(AuthenticationInformation.IdentityId, organization.Value);
+
+            bool hasPermission = ValidateRoles.ValidateAlterMembers(roles);
+
+            if (!hasPermission)
+                return new(Responses.Unauthorized) { Message = $"No tienes permisos para crear políticas a titulo de la organización #{organization}." };
+
+            // 
+            var directoryIdentity = await organizations.ReadDirectoryIdentity(organization.Value);
+            modelo.OwnerIdentityId = directoryIdentity.Model;
+        }
         else
         {
             // Establecer propietario al usuario que realiza la solicitud.
@@ -44,6 +58,12 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
         };
 
         modelo.ApplyFor = [];
+        if (assign)
+            modelo.ApplyFor = [new() {
+                Identity = new(){
+                    Id = modelo.OwnerIdentityId
+                }
+            }];
 
         var response = await policiesData.Create(modelo);
         return response;
@@ -81,7 +101,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
     {
 
         // Validar Iam.
-       var iamResult = await iam.IamPolicy(AuthenticationInformation.IdentityId, policy);
+        var iamResult = await iam.IamPolicy(AuthenticationInformation.IdentityId, policy);
 
         if (iamResult != Types.Enumerations.IamLevels.Privileged)
             return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para eliminar la política." };

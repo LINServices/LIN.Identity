@@ -10,7 +10,6 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
     /// <returns>Retorna el id.</returns>
     public async Task<CreateResponse> Create(PolicyModel modelo)
     {
-
         try
         {
 
@@ -18,6 +17,12 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
 
             // Attach.
             context.Attach(modelo.OwnerIdentity);
+
+            foreach (var e in modelo.ApplyFor)
+            {
+                e.Identity = context.AttachOrUpdate(e.Identity);
+                e.Policy = modelo;
+            }
 
             // Guardar la cuenta.
             await context.Policies.AddAsync(modelo);
@@ -85,6 +90,35 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
                                   on id equals gr.OwnerId
                                   where policy.OwnerIdentityId == gr.IdentityId
                                   select policy).Distinct().ToListAsync();
+
+            return new(Responses.Success, policies);
+
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
+    /// Obtener las políticas aplicables a una identidad.
+    /// </summary>
+    /// <param name="id">Id de la identidad.</param>
+    public async Task<ReadAllResponse<PolicyModel>> ApplicablePolicies(int id)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Obtener las identidades
+            var identities = await identityService.GetIdentities(id);
+
+            // Políticas.
+            var policies = await (from policy in context.IdentityOnPolicies
+                                  where identities.Contains(policy.IdentityId)
+                                  select policy.Policy).Distinct().ToListAsync();
 
             return new(Responses.Success, policies);
 

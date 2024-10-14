@@ -5,6 +5,26 @@
 public class PoliciesComplacentController(Data.Policies policiesData, RolesIam iam) : AuthenticationBaseController
 {
 
+
+    [HttpGet("applicable")]
+    public async Task<HttpResponseBase> Applicants([FromHeader] int identity)
+    {
+
+        if (identity != AuthenticationInformation.IdentityId)
+        {
+            var iamResult = await iam.IamIdentity(AuthenticationInformation.IdentityId, identity);
+            if (iamResult != Types.Enumerations.IamLevels.Privileged)
+                return new ResponseBase(Responses.Unauthorized)
+                {
+                    Message = "No tienes permisos para ver los solicitantes de la política."
+                };
+        }
+
+        var response = await policiesData.ApplicablePolicies(identity);
+        return response;
+    }
+
+
     /// <summary>
     /// Agregar integrantes a una política.
     /// </summary>
