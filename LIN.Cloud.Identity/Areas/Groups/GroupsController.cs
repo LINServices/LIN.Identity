@@ -1,5 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Groups;
 
+[IdentityToken]
 [Route("[controller]")]
 public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : AuthenticationBaseController
 {
@@ -9,7 +10,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Authen
     /// </summary>
     /// <param name="group">Modelo del grupo.</param>
     [HttpPost]
-    [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromBody] GroupModel group)
     {
 
@@ -57,7 +57,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Authen
     /// <param name="organization">Id de la organización.</param>
     /// <returns>Retorna la lista de grupos.</returns>
     [HttpGet("all")]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<GroupModel>> ReadAll([FromHeader] int organization)
     {
         // Confirmar el rol.
@@ -96,7 +95,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Authen
     /// <param name="id">Id del grupo.</param>
     /// <returns>Retorna el modelo del grupo.</returns>
     [HttpGet]
-    [IdentityToken]
     public async Task<HttpReadOneResponse<GroupModel>> ReadOne([FromHeader] int id)
     {
 
@@ -147,7 +145,6 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Authen
     /// <param name="id">Id de la identidad del grupo.</param>
     /// <returns>Retorna el modelo del grupo.</returns>
     [HttpGet("identity")]
-    [IdentityToken]
     public async Task<HttpReadOneResponse<GroupModel>> ReadIdentity([FromHeader] int id)
     {
 

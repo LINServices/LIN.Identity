@@ -68,6 +68,12 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
     /// <summary>
+    /// Identidades en Políticas.
+    /// </summary>
+    public DbSet<IdentityAllowedOnPolicyModel> IdentityOnPolicies { get; set; }
+
+
+    /// <summary>
     /// Generación del modelo de base de datos.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -237,7 +243,26 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         modelBuilder.Entity<PolicyModel>()
             .HasMany(t => t.ApplyFor)
-            .WithMany();
+            .WithOne()
+            .HasForeignKey(t=>t.PolicyId);
+
+
+        modelBuilder.Entity<PolicyModel>()
+               .Property(e => e.Id)
+               .IsRequired();
+
+
+        modelBuilder.Entity<IdentityAllowedOnPolicyModel>()
+           .HasOne(t => t.Policy)
+           .WithMany(t=>t.ApplyFor)
+           .HasForeignKey(t => t.PolicyId);
+
+        modelBuilder.Entity<IdentityAllowedOnPolicyModel>()
+         .HasOne(t => t.Identity)
+         .WithMany()
+         .HasForeignKey(t => t.IdentityId);
+
+        modelBuilder.Entity<IdentityAllowedOnPolicyModel>().HasKey(t => new { t.PolicyId, t.IdentityId });
 
         // Nombres de las tablas.
         modelBuilder.Entity<IdentityModel>().ToTable("identities");

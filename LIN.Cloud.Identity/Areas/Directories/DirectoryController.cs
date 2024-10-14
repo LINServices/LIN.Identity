@@ -1,5 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Directories;
 
+[IdentityToken]
 [Route("[controller]")]
 public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, RolesIam rolesIam) : AuthenticationBaseController
 {
@@ -10,7 +11,6 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
     /// <param name="organization">Id de la organización.</param>
     /// <returns>Retorna la lista de integrantes./returns>
     [HttpGet("read/all")]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<GroupMember>> ReadAll([FromHeader] int organization)
     {
         // Validar organización.
@@ -33,7 +33,6 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
 
         // Retorna el resultado
         return response;
-
     }
 
 
@@ -43,7 +42,6 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
     /// <param name="directory">Id del directorio.</param>
     /// <returns>Retorna la lista de integrantes del directorio.</returns>
     [HttpGet("read/members")]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<GroupMember>> ReadMembers([FromQuery] int directory)
     {
 

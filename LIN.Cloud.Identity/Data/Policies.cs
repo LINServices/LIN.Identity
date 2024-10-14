@@ -121,7 +121,7 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
             // Políticas.
             var have = await (from policy in context.Policies
                               where policy.Id == result
-                              && policy.ApplyFor.Any(t => ids.Contains(t.Id))
+                              && policy.ApplyFor.Any(t => ids.Contains(t.IdentityId))
                               select policy).AnyAsync();
 
             // Respuesta.
@@ -153,9 +153,99 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
             if (!policyResult)
                 return new(Responses.InvalidParam);
 
+            // Eliminar vinculos a políticas.
+            var deleted = await (from policy in context.IdentityOnPolicies
+                                 where policy.PolicyId == result
+                                 select policy).ExecuteDeleteAsync();
+
             // Políticas.
-            var deleted = await (from policy in context.Policies
-                                 where policy.Id == result
+            deleted = await (from policy in context.Policies
+                             where policy.Id == result
+                             select policy).ExecuteDeleteAsync();
+
+            // Respuesta.
+            return new(Responses.Success);
+
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
+    /// Agregar una identidad a una política.
+    /// </summary>
+    /// <param name="id">Id de la identidad base.</param>
+    /// <param name="policyId">Id de la política.</param>
+    public async Task<ResponseBase> AddMember(int id, string policyId)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Convertir el id.
+            var policyResult = Guid.TryParse(policyId, out Guid result);
+
+            // Si hubo un error.
+            if (!policyResult)
+                return new(Responses.InvalidParam);
+
+            IdentityAllowedOnPolicyModel allow = new()
+            {
+                Policy = new()
+                {
+                    Id = result
+                },
+                Identity = new()
+                {
+                    Id = id
+                }
+            };
+
+            context.Attach(allow.Policy);
+            context.Attach(allow.Identity);
+
+            await context.IdentityOnPolicies.AddAsync(allow);
+
+            context.SaveChanges();
+
+            // Respuesta.
+            return new(Responses.Success);
+
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
+    /// Eliminar una identidad a una política.
+    /// </summary>
+    /// <param name="id">Id de la identidad base.</param>
+    /// <param name="policyId">Id de la política.</param>
+    public async Task<ResponseBase> RemoveMember(int id, string policyId)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Convertir el id.
+            var policyResult = Guid.TryParse(policyId, out Guid result);
+
+            // Si hubo un error.
+            if (!policyResult)
+                return new(Responses.InvalidParam);
+
+            // Eliminar vínculos a políticas.
+            var deleted = await (from policy in context.IdentityOnPolicies
+                                 where policy.PolicyId == result
+                                 && policy.IdentityId == id
                                  select policy).ExecuteDeleteAsync();
 
             // Respuesta.

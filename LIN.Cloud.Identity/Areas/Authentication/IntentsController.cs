@@ -2,6 +2,7 @@ using LIN.Cloud.Identity.Services.Realtime;
 
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
+[IdentityToken]
 [Route("[controller]")]
 public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseController
 {
@@ -10,7 +11,6 @@ public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseCo
     /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
     [HttpGet]
-    [IdentityToken]
     public HttpReadAllResponse<PassKeyModel> GetAll()
     {
         try
@@ -46,23 +46,13 @@ public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseCo
     /// Obtiene la lista de intentos de llaves de paso están activos.
     /// </summary>
     [HttpGet("count")]
-    [IdentityToken]
     public async Task<HttpReadOneResponse<int>> Count()
     {
-        try
-        {
-            var x = await passkeyData.Count(AuthenticationInformation.AccountId);
+        // Contar.
+        var countResponse = await passkeyData.Count(AuthenticationInformation.AccountId);
 
-            // Retorna
-            return new(Responses.Success, x.Model);
-        }
-        catch (Exception)
-        {
-            return new(Responses.Undefined)
-            {
-                Message = "Hubo un error al obtener los intentos de passkey"
-            };
-        }
+        // Retorna
+        return countResponse;
     }
 
 }

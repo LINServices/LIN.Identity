@@ -1,5 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Groups;
 
+[IdentityToken]
 [Route("Groups/members")]
 public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : AuthenticationBaseController
 {
@@ -10,7 +11,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     /// <param name="model">Modelo del integrante.</param>
     /// <returns>Retorna el id del nuevo integrante.</returns>
     [HttpPost]
-    [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromBody] GroupMember model)
     {
 
@@ -66,7 +66,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     /// <param name="ids">Lista de las identidades.</param>
     /// <returns>Retorna la respuesta del proceso.</returns>
     [HttpPost("list")]
-    [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromHeader] int group, [FromBody] List<int> ids)
     {
 
@@ -128,7 +127,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     /// </summary>
     /// <param name="group">ID del grupo.</param>
     [HttpGet("read/all")]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<GroupMember>> ReadMembers([FromQuery] int group)
     {
 
@@ -180,7 +178,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     /// <param name="group">Grupo.</param>
     /// <param name="pattern">Patron de búsqueda.</param>
     [HttpGet("search")]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<IdentityModel>> Search([FromHeader] int group, [FromQuery] string pattern)
     {
         // Obtener la organización.
@@ -232,7 +229,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     /// <param name="group">Grupo.</param>
     /// <param name="pattern">Patron de búsqueda.</param>
     [HttpGet("search/groups")]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<IdentityModel>> SearchOnGroups([FromHeader] int group, [FromQuery] string pattern)
     {
 
@@ -284,7 +280,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     /// </summary>
     /// <param name="group">ID del grupo.</param>
     [HttpDelete("remove")]
-    [IdentityToken]
     public async Task<HttpResponseBase> DeleteMembers([FromQuery] int identity, [FromQuery] int group)
     {
 
@@ -334,7 +329,6 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     /// </summary>
     /// <param name="group">ID del grupo.</param>
     [HttpGet("read/on/all")]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<GroupModel>> OnMembers([FromQuery] int organization, [FromQuery] int identity)
     {
 

@@ -1,5 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Organizations;
 
+[IdentityToken]
 [Route("[controller]")]
 public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData, RolesIam rolesIam) : AuthenticationBaseController
 {
@@ -9,7 +10,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     /// </summary>
     /// <param name="rolModel">Modelo del grupo.</param>
     [HttpPost]
-    [IdentityToken]
     public async Task<HttpResponseBase> Create([FromBody] IdentityRolesModel rolModel)
     {
 
@@ -64,7 +64,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     /// <param name="identity">Identidad</param>
     /// <param name="organization">Id de la organización.</param>
     [HttpGet("roles/all")]
-    [IdentityToken]
     public async Task<HttpReadAllResponse<IdentityRolesModel>> ReadAll([FromHeader] int identity, [FromHeader] int organization)
     {
 
@@ -114,7 +113,6 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     /// <param name="organization">Id de la organización.</param>
     /// <param name="rol">Rol.</param>
     [HttpDelete("roles")]
-    [IdentityToken]
     public async Task<HttpResponseBase> ReadAll([FromHeader] int identity, [FromHeader] int organization, [FromHeader] Roles rol)
     {
 

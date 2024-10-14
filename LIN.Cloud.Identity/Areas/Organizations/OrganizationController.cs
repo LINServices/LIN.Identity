@@ -55,7 +55,6 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     /// Obtiene una organización por medio del Id.
     /// </summary>
     /// <param name="id">ID de la organización</param>
-    /// <param name="token">Token de acceso</param>
     [HttpGet("read/id")]
     [IdentityToken]
     public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id)
@@ -108,7 +107,6 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     /// <summary>
     /// Obtiene las organizaciones donde un usuario es miembro.
     /// </summary>
-    /// <param name="token">Token de acceso</param>
     [HttpGet("read/all")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<OrganizationModel>> ReadAll()
