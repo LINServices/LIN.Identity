@@ -1,23 +1,18 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Directories;
 
+[IdentityToken]
 [Route("[controller]")]
-public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, RolesIam rolesIam) : ControllerBase
+public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
     /// Obtener los integrantes del directorio general de la organización.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="organization">Id de la organización.</param>
     /// <returns>Retorna la lista de integrantes./returns>
     [HttpGet("read/all")]
-    [IdentityToken]
-    public async Task<HttpReadAllResponse<GroupMember>> ReadAll([FromHeader] string token, [FromHeader] int organization)
+    public async Task<HttpReadAllResponse<GroupMember>> ReadAll([FromHeader] int organization)
     {
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Validar organización.
         if (organization <= 0)
             return new()
@@ -27,7 +22,7 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
             };
 
         // Obtiene el usuario.
-        var response = await directoryMembersData.Read(tokenInfo.IdentityId, organization);
+        var response = await directoryMembersData.Read(AuthenticationInformation.IdentityId, organization);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -38,23 +33,17 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
 
         // Retorna el resultado
         return response;
-
     }
 
 
     /// <summary>
     /// Obtener los integrantes de un grupo.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="directory">Id del directorio.</param>
     /// <returns>Retorna la lista de integrantes del directorio.</returns>
     [HttpGet("read/members")]
-    [IdentityToken]
-    public async Task<HttpReadAllResponse<GroupMember>> ReadMembers([FromHeader] string token, [FromQuery] int directory)
+    public async Task<HttpReadAllResponse<GroupMember>> ReadMembers([FromQuery] int directory)
     {
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
         var orgId = await groupsData.GetOwner(directory);
@@ -69,7 +58,7 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
 
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

@@ -1,24 +1,20 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Organizations;
 
+[IdentityToken]
 [Route("[controller]")]
-public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData, RolesIam rolesIam) : ControllerBase
+public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
     /// Crear nuevo grupo.
     /// </summary>
     /// <param name="rolModel">Modelo del grupo.</param>
-    /// <param name="token">Token de acceso.</param>
     [HttpPost]
-    [IdentityToken]
-    public async Task<HttpResponseBase> Create([FromBody] IdentityRolesModel rolModel, [FromHeader] string token)
+    public async Task<HttpResponseBase> Create([FromBody] IdentityRolesModel rolModel)
     {
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, rolModel.OrganizationId);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, rolModel.OrganizationId);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -65,19 +61,14 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     /// <summary>
     /// Obtener los roles asociados a una identidad.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="identity">Identidad</param>
     /// <param name="organization">Id de la organización.</param>
     [HttpGet("roles/all")]
-    [IdentityToken]
-    public async Task<HttpReadAllResponse<IdentityRolesModel>> ReadAll([FromHeader] string token, [FromHeader] int identity, [FromHeader] int organization)
+    public async Task<HttpReadAllResponse<IdentityRolesModel>> ReadAll([FromHeader] int identity, [FromHeader] int organization)
     {
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -118,20 +109,15 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     /// <summary>
     /// Eliminar los roles asociados a una identidad.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="identity">Identidad</param>
     /// <param name="organization">Id de la organización.</param>
     /// <param name="rol">Rol.</param>
     [HttpDelete("roles")]
-    [IdentityToken]
-    public async Task<HttpResponseBase> ReadAll([FromHeader] string token, [FromHeader] int identity, [FromHeader] int organization, [FromHeader] Roles rol)
+    public async Task<HttpResponseBase> ReadAll([FromHeader] int identity, [FromHeader] int organization, [FromHeader] Roles rol)
     {
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
