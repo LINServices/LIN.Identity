@@ -1,24 +1,20 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Groups;
 
 [Route("[controller]")]
-public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : ControllerBase
+public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
     /// Crear nuevo grupo.
     /// </summary>
     /// <param name="group">Modelo del grupo.</param>
-    /// <param name="token">Token de acceso.</param>
     [HttpPost]
     [IdentityToken]
-    public async Task<HttpCreateResponse> Create([FromBody] GroupModel group, [FromHeader] string token)
+    public async Task<HttpCreateResponse> Create([FromBody] GroupModel group)
     {
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, group.OwnerId ?? 0);
+        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, group.OwnerId ?? 0);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -58,19 +54,14 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
     /// <summary>
     /// Obtener todos los grupos de una organización.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="organization">Id de la organización.</param>
     /// <returns>Retorna la lista de grupos.</returns>
     [HttpGet("all")]
     [IdentityToken]
-    public async Task<HttpReadAllResponse<GroupModel>> ReadAll([FromHeader] string token, [FromHeader] int organization)
+    public async Task<HttpReadAllResponse<GroupModel>> ReadAll([FromHeader] int organization)
     {
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -102,16 +93,12 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
     /// <summary>
     /// Obtener un grupo.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="id">Id del grupo.</param>
     /// <returns>Retorna el modelo del grupo.</returns>
     [HttpGet]
     [IdentityToken]
-    public async Task<HttpReadOneResponse<GroupModel>> ReadOne([FromHeader] string token, [FromHeader] int id)
+    public async Task<HttpReadOneResponse<GroupModel>> ReadOne([FromHeader] int id)
     {
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
         var orgId = await groupData.GetOwner(id);
@@ -125,7 +112,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
             };
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
+        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -157,16 +144,12 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
     /// <summary>
     /// Obtener un grupo.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="id">Id de la identidad del grupo.</param>
     /// <returns>Retorna el modelo del grupo.</returns>
     [HttpGet("identity")]
     [IdentityToken]
-    public async Task<HttpReadOneResponse<GroupModel>> ReadIdentity([FromHeader] string token, [FromHeader] int id)
+    public async Task<HttpReadOneResponse<GroupModel>> ReadIdentity([FromHeader] int id)
     {
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtener la organización.
         var orgId = await groupData.GetOwnerByIdentity(id);
@@ -180,7 +163,7 @@ public class GroupsController(Data.Groups groupData, RolesIam rolesIam) : Contro
             };
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, orgId.Model);
+        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

@@ -3,26 +3,22 @@ using LIN.Types.Cloud.Identity.Abstracts;
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [Route("orgs/members")]
-public class OrganizationMembersController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : ControllerBase
+public class OrganizationMembersController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
     /// Agregar una identidad externa a la organización.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="organization">Id de la organización.</param>
     /// <param name="ids">Lista de ids a agregar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("invite")]
     [IdentityToken]
-    public async Task<HttpCreateResponse> AddExternalMembers([FromHeader] string token, [FromQuery] int organization, [FromBody] List<int> ids)
+    public async Task<HttpCreateResponse> AddExternalMembers([FromQuery] int organization, [FromBody] List<int> ids)
     {
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateInviteMembers(roles);
@@ -73,7 +69,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <param name="organization">Id de la organización.</param>
     [HttpPost]
     [IdentityToken]
-    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] string token, [FromHeader] int organization)
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel modelo, [FromHeader] int organization)
     {
 
         // Validar el modelo.
@@ -83,9 +79,6 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
                 Response = Responses.InvalidParam,
                 Message = "Uno o varios parámetros inválidos."
             };
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Ajustar el modelo.
         modelo.Visibility = Visibility.Hidden;
@@ -116,7 +109,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
         modelo.Identity.Unique = $"{modelo.Identity.Unique}@{orgIdentity.Model.Unique}";
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -153,14 +146,11 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <param name="token">Token de acceso</param>
     [HttpGet]
     [IdentityToken]
-    public async Task<HttpReadAllResponse<SessionModel<GroupMember>>> ReadAll([FromHeader] string token, [FromHeader] int organization)
+    public async Task<HttpReadAllResponse<SessionModel<GroupMember>>> ReadAll([FromHeader] int organization)
     {
 
-        // Información del token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new(); ;
-
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -193,20 +183,16 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <summary>
     /// Agregar una identidad externa a la organización.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <param name="organization">Id de la organización.</param>
     /// <param name="ids">Lista de ids a agregar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("expulse")]
     [IdentityToken]
-    public async Task<HttpResponseBase> Expulse([FromHeader] string token, [FromQuery] int organization, [FromBody] List<int> ids)
+    public async Task<HttpResponseBase> Expulse([FromQuery] int organization, [FromBody] List<int> ids)
     {
 
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(tokenInfo.IdentityId, organization);
+        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateDelete(roles);

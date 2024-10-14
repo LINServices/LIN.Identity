@@ -6,7 +6,7 @@ public partial class PassKeyHub
     /// <summary>
     /// Agregar un dispositivo administrador.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
+    
     public async Task JoinAdmin(string token)
     {
 

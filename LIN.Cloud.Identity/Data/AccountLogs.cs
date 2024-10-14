@@ -1,8 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
-public class AccountLogs (DataContext context)
+public class AccountLogs(DataContext context)
 {
-  
+
     /// <summary>
     /// Crear nuevo log.
     /// </summary>
@@ -45,7 +45,7 @@ public class AccountLogs (DataContext context)
     }
 
 
- 
+
     public async Task<ReadAllResponse<AccountLog>> ReadAll(int accountId)
     {
 

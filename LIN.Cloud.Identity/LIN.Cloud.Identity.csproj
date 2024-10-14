@@ -12,11 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.12.1" />
     <PackageReference Include="Global.Utilities" Version="1.0.0" />
-    <PackageReference Include="Http.Utils" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Policies\" />
+    <PackageReference Include="Http.Utils" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>

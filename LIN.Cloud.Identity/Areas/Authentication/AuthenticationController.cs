@@ -3,7 +3,7 @@ using LIN.Cloud.Identity.Services.Auth.Interfaces;
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class AuthenticationController(IAuthentication authentication, Data.Accounts accountData) : ControllerBase
+public class AuthenticationController(IAuthentication authentication, Data.Accounts accountData, Data.Policies policyData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -80,18 +80,13 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
     /// <summary>
     /// Refrescar sesión en una cuenta de usuario.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
     /// <returns>Retorna el modelo de la cuenta.</returns>
     [HttpGet("LoginWithToken")]
     [IdentityToken]
-    public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken([FromHeader] string token)
+    public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken()
     {
-
-        // Token.
-        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
         // Obtiene el usuario.
-        var response = await accountData.Read(tokenInfo.AccountId, new QueryAccountFilter()
+        var response = await accountData.Read(AuthenticationInformation.AccountId, new QueryAccountFilter()
         {
             IsAdmin = true,
             FindOn = FindOn.StableAccounts
@@ -100,9 +95,80 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-        response.Token = token;
+        response.Token = Token;
         return response;
 
+    }
+
+
+    /// <summary>
+    /// Iniciar sesión y validar una política.
+    /// </summary>
+    /// <param name="user">Usuario.</param>
+    /// <param name="password">Contraseña.</param>
+    /// <param name="policy">Id de la política.</param>
+    [HttpGet("validate/policy")]
+    public async Task<HttpResponseBase> ValidatePolicy([FromQuery] string user, [FromQuery] string password, [FromHeader] string policy)
+    {
+
+        // Validación de parámetros.
+        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(policy))
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son invalido."
+            };
+
+        // Establecer credenciales.
+        authentication.SetCredentials(user, password, string.Empty);
+
+        // Respuesta.
+        var response = await authentication.Start(new()
+        {
+            Log = false
+        });
+
+        // Validación al obtener el usuario
+        switch (response)
+        {
+            // Correcto
+            case Responses.Success:
+                break;
+
+            // No existe esta cuenta.
+            case Responses.NotExistAccount:
+                return new()
+                {
+                    Response = Responses.Unauthorized,
+                    Message = "No existe esta cuenta."
+                };
+
+            // Contraseña invalida.
+            case Responses.InvalidPassword:
+                return new()
+                {
+                    Response = Responses.Unauthorized,
+                    Message = "Contraseña incorrecta."
+                };
+
+            // Incorrecto
+            default:
+                return new()
+                {
+                    Response = Responses.Unauthorized,
+                    Message = "Hubo un error grave."
+                };
+        }
+
+        // Validar política.
+        var isAllow = await policyData.HasFor(authentication.GetData().IdentityId, policy);
+
+        // Respuesta.
+        var http = new ResponseBase
+        {
+            Response = isAllow.Response
+        };
+
+        return http;
     }
 
 }
