@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("[controller]")]
-public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData, RolesIam rolesIam) : AuthenticationBaseController
+public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -14,7 +14,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, rolModel.OrganizationId);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, rolModel.OrganizationId);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -68,7 +68,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -117,7 +117,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);

@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
 
-public class Organizations(DataContext context, RolesIam iam)
+public class Organizations(DataContext context, IamRoles iam)
 {
 
 
@@ -64,7 +64,7 @@ public class Organizations(DataContext context, RolesIam iam)
 
             context.SaveChanges();
 
-            // RolesIam.
+            // IamRoles.
             var rol = new IdentityRolesModel
             {
                 Identity = account.Identity,

@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("[controller]")]
-public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, RolesIam rolesIam) : AuthenticationBaseController
+public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -58,7 +58,7 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
 
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

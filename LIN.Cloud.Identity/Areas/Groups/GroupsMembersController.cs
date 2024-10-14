@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("Groups/members")]
-public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : AuthenticationBaseController
+public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -26,7 +26,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
             };
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -82,7 +82,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
 
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -142,7 +142,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
             };
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -192,7 +192,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
             };
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -245,7 +245,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
 
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -295,7 +295,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
             };
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -333,7 +333,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [IdentityToken]
 [Route("orgs/members")]
-public class OrganizationMembersController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, RolesIam rolesIam) : AuthenticationBaseController
+public class OrganizationMembersController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -18,7 +18,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateInviteMembers(roles);
@@ -107,7 +107,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
         modelo.Identity.Unique = $"{modelo.Identity.Unique}@{orgIdentity.Model.Unique}";
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -146,7 +146,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -187,7 +187,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.RolesOn(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateDelete(roles);
