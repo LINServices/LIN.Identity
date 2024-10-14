@@ -1,7 +1,8 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Policies;
 
+[IdentityToken]
 [Route("[controller]")]
-public class PoliciesController(Data.Policies policiesData, Data.Groups groups, RolesIam iam) : AuthenticationBaseController
+public class PoliciesController(Data.Policies policiesData, Data.Groups groups, Data.Organizations organizations, RolesIam iam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -9,7 +10,6 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
     /// </summary>
     /// <param name="modelo">Modelo de la identidad.</param>
     [HttpPost]
-    [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromBody] PolicyModel modelo)
     {
 
@@ -29,6 +29,9 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
 
             if (!hasPermission)
                 return new(Responses.Unauthorized) { Message = $"No tienes permisos para crear políticas a titulo de la organización #{owner.Model}." };
+
+            var identityDirectory = await organizations.ReadDirectoryIdentity(owner.Model);
+
 
         }
         else
@@ -51,12 +54,33 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
 
 
     /// <summary>
+    /// Obtener políticas asociadas a una cuenta.
+    /// </summary>
+    [HttpGet("all")]
+    public async Task<HttpReadAllResponse<PolicyModel>> All()
+    {
+        var response = await policiesData.ReadAllOwn(AuthenticationInformation.IdentityId);
+        return response;
+    }
+
+
+    /// <summary>
+    /// Obtener políticas asociadas a una organización.
+    /// </summary>
+    [HttpGet("organization/all")]
+    public async Task<HttpReadAllResponse<PolicyModel>> OrganizationAll([FromHeader] int organization)
+    {
+        var response = await policiesData.ReadAll(organization);
+        return response;
+    }
+
+
+    /// <summary>
     /// Validar si tiene autorización.
     /// </summary>
     /// <param name="policy">Id de la política.</param>
     [HttpGet("isAllow")]
-    [IdentityToken]
-    public async Task<ResponseBase> IsAllow([FromQuery] string policy)
+    public async Task<HttpResponseBase> IsAllow([FromQuery] string policy)
     {
         var response = await policiesData.HasFor(AuthenticationInformation.IdentityId, policy);
         return response;
@@ -69,8 +93,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
     /// <param name="policy">Id de la política.</param>
     /// <param name="identity">Id de la identidad.</param>
     [HttpGet("isAllow/identity")]
-    [IdentityToken]
-    public async Task<ResponseBase> IsAllow([FromQuery] string policy, [FromHeader] int identity)
+    public async Task<HttpResponseBase> IsAllow([FromQuery] string policy, [FromHeader] int identity)
     {
         var response = await policiesData.HasFor(identity, policy);
         return response;

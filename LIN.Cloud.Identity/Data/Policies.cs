@@ -69,6 +69,34 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
 
 
     /// <summary>
+    /// Obtener las políticas asociadas a una organización.
+    /// </summary>
+    /// <param name="id">Id de la organización.</param>
+    public async Task<ReadAllResponse<PolicyModel>> ReadAll(int id)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Políticas.
+            var policies = await (from policy in context.Policies
+                                  join gr in context.Groups
+                                  on id equals gr.OwnerId
+                                  where policy.OwnerIdentityId == gr.IdentityId
+                                  select policy).Distinct().ToListAsync();
+
+            return new(Responses.Success, policies);
+
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
     /// Validar si una identidad y sus padres tienen acceso a una política.
     /// </summary>
     /// <param name="id">Id de la identidad base.</param>
@@ -98,6 +126,40 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
 
             // Respuesta.
             return new(have ? Responses.Success : Responses.Unauthorized);
+
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
+    /// Eliminar una política.
+    /// </summary>
+    /// <param name="policyId">Id de la política.</param>
+    public async Task<ResponseBase> Remove(string policyId)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Convertir el id.
+            var policyResult = Guid.TryParse(policyId, out Guid result);
+
+            // Si hubo un error.
+            if (!policyResult)
+                return new(Responses.InvalidParam);
+
+            // Políticas.
+            var deleted = await (from policy in context.Policies
+                                 where policy.Id == result
+                                 select policy).ExecuteDeleteAsync();
+
+            // Respuesta.
+            return new(Responses.Success);
 
         }
         catch (Exception)

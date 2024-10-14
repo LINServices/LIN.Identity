@@ -279,4 +279,39 @@ public class Organizations(DataContext context)
 
     }
 
+    public async Task<ReadOneResponse<int>> ReadDirectoryIdentity(int id)
+    {
+
+        try
+        {
+
+            var org = await (from g in context.Organizations
+                             where g.Id == id
+                             select g.Directory.IdentityId).FirstOrDefaultAsync();
+
+            // Si la cuenta no existe.
+            if (org <= 0)
+                return new()
+                {
+                    Response = Responses.NotRows
+                };
+
+            // Success.
+            return new()
+            {
+                Response = Responses.Success,
+                Model = org
+            };
+
+        }
+        catch (Exception)
+        {
+            return new()
+            {
+                Response = Responses.ExistAccount
+            };
+        }
+
+    }
+
 }
