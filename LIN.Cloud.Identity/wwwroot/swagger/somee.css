@@ -1,0 +1,19 @@
+﻿a[href*="http://somee.com"] {
+    visibility: hidden !important;
+    display: none !important;
+}
+
+div[style="opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; bottom: 0px; height: 65px; right: 0px; display: block; width: 100%; background-color: #202020; margin: 0px; padding: 0px;"] {
+    visibility: hidden !important;
+    display: none !important;
+}
+
+div[style="height: 65px;"] {
+    visibility: hidden !important;
+    display: none !important;
+}
+
+div[onmouseover="S_ssac();"][onmouseout="D_ssac();"] {
+    visibility: hidden !important;
+     display: none !important;
+ }

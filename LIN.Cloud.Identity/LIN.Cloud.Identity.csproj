@@ -6,12 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>false</InvariantGlobalization>
     <Configurations>Debug;Release;Local</Configurations>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.12.1" />
     <PackageReference Include="Global.Utilities" Version="1.0.0" />
-    <PackageReference Include="Http.Utils" Version="1.1.0" />
+    <PackageReference Include="Http.Utils" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
