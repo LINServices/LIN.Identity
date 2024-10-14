@@ -99,4 +99,43 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
         return response;
     }
 
+
+    /// <summary>
+    /// Eliminar política.
+    /// </summary>
+    /// <param name="policy">Id de la política.</param>
+    [HttpDelete]
+    public async Task<HttpResponseBase> Delete([FromQuery] string policy)
+    {
+
+        // Validar Iam.
+       var iamResult = await iam.IamPolicy(AuthenticationInformation.IdentityId, policy);
+
+        if (iamResult != Types.Enumerations.IamLevels.Privileged)
+            return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para eliminar la política." };
+
+        var response = await policiesData.Remove(policy);
+        return response;
+    }
+
+
+    /// <summary>
+    /// Agregar integrantes a una política.
+    /// </summary>
+    /// <param name="policy">Id de la política.</param>
+    /// <param name="identity">Id de la identidad a agregar.</param>
+    [HttpPost("complacent")]
+    public async Task<HttpResponseBase> Put([FromQuery] string policy, [FromHeader] int identity)
+    {
+
+        // Validar Iam.
+        var iamResult = await iam.IamPolicy(AuthenticationInformation.IdentityId, policy);
+
+        if (iamResult != Types.Enumerations.IamLevels.Privileged)
+            return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para agregar integrantes a la política." };
+
+        throw new Exception("Not implemented yet");
+    }
+
+
 }

@@ -1,8 +1,9 @@
 ﻿using LIN.Cloud.Identity.Services.Utils;
+using LIN.Types.Enumerations;
 
 namespace LIN.Cloud.Identity.Services.Iam;
 
-public class RolesIam(DataContext context, IIdentityService identityService)
+public class RolesIam(DataContext context, Data.Groups groups, IIdentityService identityService)
 {
 
     /// <summary>
@@ -23,6 +24,36 @@ public class RolesIam(DataContext context, IIdentityService identityService)
                            select rol.Rol).ToListAsync();
 
         return roles;
+
+    }
+
+
+    public async Task<IamLevels> IamPolicy(int identity, string policy)
+    {
+
+        // Is manager.
+        var isOwner = await (from pol in context.Policies
+                             where pol.OwnerIdentityId == identity
+                             && pol.Id == Guid.Parse(policy)
+                             select pol).AnyAsync();
+
+        if (isOwner)
+            return IamLevels.Privileged;
+
+        // Validar en la organización.
+        var olk = await (from pol in context.Policies
+                         where pol.Id == Guid.Parse(policy)
+                         select pol.OwnerIdentityId).FirstOrDefaultAsync();
+
+        // Owner.
+        var organizationId = await groups.GetOwnerByIdentity(olk);
+
+        var roles = await RolesOn(identity, organizationId.Model);
+
+        if (ValidateRoles.ValidateAlterMembers(roles))
+            return IamLevels.Privileged;
+
+        return IamLevels.NotAccess;
 
     }
 }
