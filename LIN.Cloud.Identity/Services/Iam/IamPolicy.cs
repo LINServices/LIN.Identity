@@ -22,12 +22,12 @@ public class IamPolicy(DataContext context, Data.Groups groups, IamRoles rolesIa
             return IamLevels.Privileged;
 
         // Obtener la identidad del dueño de la política.
-        var olk = await (from pol in context.Policies
-                         where pol.Id == Guid.Parse(policy)
-                         select pol.OwnerIdentityId).FirstOrDefaultAsync();
+        var ownerPolicy = await (from pol in context.Policies
+                                 where pol.Id == Guid.Parse(policy)
+                                 select pol.OwnerIdentityId).FirstOrDefaultAsync();
 
         // Obtener la organización.
-        var organizationId = await groups.GetOwnerByIdentity(olk);
+        var organizationId = await groups.GetOwnerByIdentity(ownerPolicy);
 
         // Obtener roles de la identidad sobre la organización.
         var roles = await rolesIam.Validate(identity, organizationId.Model);

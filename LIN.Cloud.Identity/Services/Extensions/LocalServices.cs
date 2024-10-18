@@ -27,6 +27,7 @@ public static class LocalServices
 
         // Iam.
         services.AddScoped<IamRoles, IamRoles>();
+        services.AddScoped<IamPolicy, IamPolicy>();
 
         // Allow.
         services.AddScoped<IAllowService, AllowService>();
