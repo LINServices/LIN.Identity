@@ -22,8 +22,6 @@ builder.Services.AddPersistence(builder.Configuration);
 
 var app = builder.Build();
 
-
-
 app.UseLINHttp();
 
 // Base de datos.
