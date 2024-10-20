@@ -14,6 +14,7 @@ public static class LocalServices
     public static IServiceCollection AddLocalServices(this IServiceCollection services)
     {
 
+        // Servicios de datos.
         services.AddScoped<Data.Accounts, Data.Accounts>();
         services.AddScoped<Data.DirectoryMembers, Data.DirectoryMembers>();
         services.AddScoped<Data.GroupMembers, Data.GroupMembers>();
@@ -24,6 +25,7 @@ public static class LocalServices
         services.AddScoped<Data.PassKeys, Data.PassKeys>();
         services.AddScoped<Data.AccountLogs, Data.AccountLogs>();
         services.AddScoped<Data.Policies, Data.Policies>();
+        services.AddScoped<Data.PoliciesRequirement, Data.PoliciesRequirement>();
 
         // Iam.
         services.AddScoped<IamRoles, IamRoles>();

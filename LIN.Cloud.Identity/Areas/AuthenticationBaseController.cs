@@ -6,12 +6,12 @@ public class AuthenticationBaseController : ControllerBase
     /// <summary>
     /// Información de autenticación.
     /// </summary>
-    public JwtModel AuthenticationInformation => base.HttpContext.Items["authentication"] as JwtModel ?? new();
+    public JwtModel AuthenticationInformation => HttpContext.Items["authentication"] as JwtModel ?? new();
 
 
     /// <summary>
     /// Obtener el token desde el header.
     /// </summary>
-    public string Token => base.HttpContext.Request.Headers["token"].ToString() ?? string.Empty;
+    public string Token => HttpContext.Request.Headers["token"].ToString() ?? string.Empty;
 
 }
