@@ -19,7 +19,12 @@ public static class PersistenceExtensions
         string? connectionName = "cloud";
 #if LOCAL
         connectionName = "local";
+#elif DEBUG_DEV
+        connectionName = "cloud-dev";
+#elif RELEASE_DEV
+        connectionName = "cloud-dev";
 #endif
+
         services.AddDbContextPool<DataContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString(connectionName));

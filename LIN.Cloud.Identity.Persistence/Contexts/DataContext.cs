@@ -1,5 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Models;
-using LIN.Types.Cloud.Identity.Models;
+﻿using LIN.Types.Cloud.Identity.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LIN.Cloud.Identity.Persistence.Contexts;
@@ -74,211 +73,175 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
     /// <summary>
-    /// Generación del modelo de base de datos.
+    /// Requerimientos de políticas.    
+    /// </summary>
+    public DbSet<PolicyRequirementModel> PolicyRequirements { get; set; }
+
+
+    /// <summary>
+    /// Crear el modelo en BD.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
-        // Modelo: Políticas.
+        // Identity Model
+        modelBuilder.Entity<IdentityModel>(entity =>
         {
-           
-        }
+            entity.ToTable("identities");
+            entity.HasIndex(t => t.Unique).IsUnique();
+        });
 
-        // Modelo: Identity.
+        // Account Model
+        modelBuilder.Entity<AccountModel>(entity =>
         {
-            modelBuilder.Entity<IdentityModel>()
-                      .HasIndex(t => t.Unique)
-                      .IsUnique();
-        }
+            entity.ToTable("accounts");
+            entity.HasIndex(t => t.IdentityId).IsUnique();
+        });
 
-        // Modelo: Account.
+        // Organization Model
+        modelBuilder.Entity<OrganizationModel>(entity =>
         {
-            modelBuilder.Entity<AccountModel>()
-                      .HasIndex(t => t.IdentityId)
-                      .IsUnique();
-        }
+            entity.ToTable("organizations");
+            entity.HasOne(o => o.Directory)
+                  .WithOne()
+                  .HasForeignKey<OrganizationModel>(o => o.DirectoryId)
+                  .OnDelete(DeleteBehavior.NoAction);
+        });
 
-        // Modelo: Account.
+        // Group Model
+        modelBuilder.Entity<GroupModel>(entity =>
         {
+            entity.ToTable("groups");
+            entity.HasOne(g => g.Owner)
+                  .WithMany(o => o.OwnedGroups)
+                  .HasForeignKey(g => g.OwnerId)
+                  .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<OrganizationModel>()
-                .HasOne(o => o.Directory)
-                .WithOne()
-                .HasForeignKey<OrganizationModel>(o => o.DirectoryId)
-                .OnDelete(DeleteBehavior.NoAction);
+            entity.HasOne(t => t.Identity)
+                  .WithMany()
+                  .HasForeignKey(t => t.IdentityId)
+                  .OnDelete(DeleteBehavior.NoAction);
+        });
 
-
-            modelBuilder.Entity<GroupModel>()
-                .HasOne(g => g.Owner)
-                .WithMany(o => o.OwnedGroups)
-                .HasForeignKey(g => g.OwnerId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-
-        }
-
-        // Modelo: GroupModel.
+        // Group Member Model
+        modelBuilder.Entity<GroupMember>(entity =>
         {
+            entity.ToTable("group_members");
+            entity.HasKey(t => new { t.IdentityId, t.GroupId });
 
-            modelBuilder.Entity<GroupModel>()
-                .HasOne(t => t.Identity)
-                .WithMany()
-                .HasForeignKey(t => t.IdentityId)
-                .OnDelete(DeleteBehavior.NoAction);
+            entity.HasOne(t => t.Identity)
+                  .WithMany()
+                  .HasForeignKey(t => t.IdentityId)
+                  .OnDelete(DeleteBehavior.NoAction);
 
+            entity.HasOne(t => t.Group)
+                  .WithMany(t => t.Members)
+                  .HasForeignKey(t => t.GroupId);
+        });
 
-        }
-
-        // Modelo: GroupMemberModel.
+        // Identity Roles Model
+        modelBuilder.Entity<IdentityRolesModel>(entity =>
         {
+            entity.ToTable("identity_roles");
+            entity.HasKey(t => new { t.Rol, t.IdentityId, t.OrganizationId });
 
-            modelBuilder.Entity<GroupMember>()
-                              .HasKey(t => new
-                              {
-                                  t.IdentityId,
-                                  t.GroupId
-                              });
+            entity.HasOne(t => t.Identity)
+                  .WithMany(t => t.Roles)
+                  .HasForeignKey(t => t.IdentityId);
 
-            modelBuilder.Entity<GroupMember>()
-                               .HasOne(t => t.Identity)
-                               .WithMany()
-                               .HasForeignKey(y => y.IdentityId)
-                               .OnDelete(DeleteBehavior.NoAction);
+            entity.HasOne(t => t.Organization)
+                  .WithMany()
+                  .HasForeignKey(t => t.OrganizationId);
+        });
 
-            modelBuilder.Entity<GroupMember>()
-                      .HasOne(t => t.Group)
-                      .WithMany(t => t.Members)
-                      .HasForeignKey(y => y.GroupId);
-
-
-
-        }
-
-        // Modelo: IdentityRolesModel.
+        // Application Model
+        modelBuilder.Entity<ApplicationModel>(entity =>
         {
-            modelBuilder.Entity<IdentityRolesModel>()
-                      .HasOne(t => t.Identity)
-                      .WithMany(t => t.Roles)
-                      .HasForeignKey(y => y.IdentityId);
+            entity.ToTable("applications");
+            entity.HasIndex(t => t.IdentityId).IsUnique();
 
-            modelBuilder.Entity<IdentityRolesModel>()
-                     .HasOne(t => t.Organization)
-                     .WithMany()
-                     .HasForeignKey(y => y.OrganizationId);
+            entity.HasOne(t => t.Identity)
+                  .WithMany()
+                  .HasForeignKey(t => t.IdentityId);
 
-            modelBuilder.Entity<IdentityRolesModel>()
-                    .HasKey(t => new
-                    {
-                        t.Rol,
-                        t.IdentityId,
-                        t.OrganizationId
-                    });
+            entity.HasOne(t => t.Owner)
+                  .WithMany()
+                  .HasForeignKey(t => t.OwnerId)
+                  .OnDelete(DeleteBehavior.NoAction);
+        });
 
-        }
-
-        // Modelo: Application.
+        // Allow Apps Model
+        modelBuilder.Entity<AllowApp>(entity =>
         {
-            modelBuilder.Entity<ApplicationModel>()
-                      .HasOne(t => t.Identity)
-                      .WithMany()
-                      .HasForeignKey(t => t.IdentityId);
+            entity.ToTable("allow_apps");
+            entity.HasKey(t => new { t.ApplicationId, t.IdentityId });
 
+            entity.HasOne(t => t.Application)
+                  .WithMany()
+                  .HasForeignKey(t => t.ApplicationId)
+                  .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<ApplicationModel>()
-                  .HasIndex(t => t.IdentityId)
-                  .IsUnique();
+            entity.HasOne(t => t.Identity)
+                  .WithMany()
+                  .HasForeignKey(t => t.IdentityId)
+                  .OnDelete(DeleteBehavior.NoAction);
+        });
 
-            modelBuilder.Entity<ApplicationModel>()
-                      .HasOne(t => t.Owner)
-                      .WithMany()
-                      .HasForeignKey(t => t.OwnerId)
-                      .OnDelete(DeleteBehavior.NoAction);
-
-        }
-
-        // Modelo: Allow Apps.
+        // Account Logs Model
+        modelBuilder.Entity<AccountLog>(entity =>
         {
-            modelBuilder.Entity<AllowApp>()
-                      .HasOne(t => t.Application)
-                      .WithMany()
-                      .HasForeignKey(t => t.ApplicationId)
-                      .OnDelete(DeleteBehavior.NoAction);
+            entity.ToTable("account_logs");
+            entity.HasOne(t => t.Application)
+                  .WithMany()
+                  .HasForeignKey(t => t.ApplicationId)
+                  .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<AllowApp>()
-                      .HasOne(t => t.Identity)
-                      .WithMany()
-                      .HasForeignKey(t => t.IdentityId)
-                      .OnDelete(DeleteBehavior.NoAction);
+            entity.HasOne(t => t.Account)
+                  .WithMany()
+                  .HasForeignKey(t => t.AccountId)
+                  .OnDelete(DeleteBehavior.NoAction);
+        });
 
-            modelBuilder.Entity<AllowApp>()
-                           .HasKey(t => new
-                           {
-                               t.ApplicationId,
-                               t.IdentityId
-                           });
-
-        }
-
-        // Modelo: Account Logs.
+        // Policy Model
+        modelBuilder.Entity<PolicyModel>(entity =>
         {
-            modelBuilder.Entity<AccountLog>()
-                      .HasOne(t => t.Application)
-                      .WithMany()
-                      .HasForeignKey(t => t.ApplicationId)
-                      .OnDelete(DeleteBehavior.NoAction);
+            entity.ToTable("policies");
+            entity.HasOne(t => t.OwnerIdentity)
+                  .WithMany()
+                  .HasForeignKey(t => t.OwnerIdentityId)
+                  .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<AccountLog>()
-                      .HasOne(t => t.Account)
-                      .WithMany()
-                      .HasForeignKey(t => t.AccountId)
-                      .OnDelete(DeleteBehavior.NoAction);
-        }
+            entity.HasMany(t => t.ApplyFor)
+                  .WithOne()
+                  .HasForeignKey(t => t.PolicyId);
 
+            entity.Property(e => e.Id).IsRequired();
+        });
 
-        modelBuilder.Entity<PolicyModel>()
-                     .HasOne(t => t.OwnerIdentity)
-                     .WithMany()
-                     .HasForeignKey(t => t.OwnerIdentityId)
-                     .OnDelete(DeleteBehavior.NoAction);
+        // Identity Allowed on Policy Model
+        modelBuilder.Entity<IdentityAllowedOnPolicyModel>(entity =>
+        {
+            entity.HasKey(t => new { t.PolicyId, t.IdentityId });
 
-        modelBuilder.Entity<PolicyModel>()
-            .HasMany(t => t.ApplyFor)
-            .WithOne()
-            .HasForeignKey(t=>t.PolicyId);
+            entity.HasOne(t => t.Policy)
+                  .WithMany(t => t.ApplyFor)
+                  .HasForeignKey(t => t.PolicyId);
 
+            entity.HasOne(t => t.Identity)
+                  .WithMany()
+                  .HasForeignKey(t => t.IdentityId);
+        });
 
-        modelBuilder.Entity<PolicyModel>()
-               .Property(e => e.Id)
-               .IsRequired();
-
-
-        modelBuilder.Entity<IdentityAllowedOnPolicyModel>()
-           .HasOne(t => t.Policy)
-           .WithMany(t=>t.ApplyFor)
-           .HasForeignKey(t => t.PolicyId);
-
-        modelBuilder.Entity<IdentityAllowedOnPolicyModel>()
-         .HasOne(t => t.Identity)
-         .WithMany()
-         .HasForeignKey(t => t.IdentityId);
-
-        modelBuilder.Entity<IdentityAllowedOnPolicyModel>().HasKey(t => new { t.PolicyId, t.IdentityId });
-
-        // Nombres de las tablas.
-        modelBuilder.Entity<IdentityModel>().ToTable("identities");
-        modelBuilder.Entity<AccountModel>().ToTable("accounts");
-        modelBuilder.Entity<GroupModel>().ToTable("groups");
-        modelBuilder.Entity<IdentityRolesModel>().ToTable("identity_roles");
-        modelBuilder.Entity<GroupMember>().ToTable("group_members");
-        modelBuilder.Entity<OrganizationModel>().ToTable("organizations");
-        modelBuilder.Entity<AllowApp>().ToTable("allow_apps");
-        modelBuilder.Entity<ApplicationModel>().ToTable("applications");
-        modelBuilder.Entity<AccountLog>().ToTable("account_logs");
-        modelBuilder.Entity<PolicyModel>().ToTable("policies");
+        // Policy Requirement Model
+        modelBuilder.Entity<PolicyRequirementModel>(entity =>
+        {
+            entity.ToTable("policy_requirements");
+            entity.HasOne(t => t.Policy)
+                  .WithMany()
+                  .HasForeignKey(t => t.PolicyId);
+        });
 
         // Base.
         base.OnModelCreating(modelBuilder);
     }
-
 
 }

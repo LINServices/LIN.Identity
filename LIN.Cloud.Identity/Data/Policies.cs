@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
-public class Policies(DataContext context, Services.Utils.IIdentityService identityService)
+public class Policies(DataContext context, Data.PoliciesRequirement policiesRequirement, Services.Utils.IIdentityService identityService, IamPolicy iamPolicy)
 {
 
     /// <summary>
@@ -72,6 +72,46 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
         return new();
     }
 
+  
+    /// <summary>
+    /// Obtener una política.
+    /// </summary>
+    /// <param name="guid">Id.</param>
+    public async Task<ReadOneResponse<PolicyModel>> Read(Guid guid)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Políticas.
+            var policie = await (from policy in context.Policies
+                                  where policy.Id == guid
+                                  select new PolicyModel
+                                  {
+                                      Description = policy.Description,
+                                      Id = policy.Id,
+                                      Name = policy.Name,
+                                      OwnerIdentity = new()
+                                      {
+                                          Id = policy.OwnerIdentityId,
+                                          Unique = policy.OwnerIdentity.Unique,
+                                          Type = policy.OwnerIdentity.Type
+                                      }
+                                  }).FirstOrDefaultAsync();
+
+            if (policie == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, policie);
+
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
 
     /// <summary>
     /// Obtener las políticas asociadas a una organización.
@@ -89,7 +129,18 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
                                   join gr in context.Groups
                                   on id equals gr.OwnerId
                                   where policy.OwnerIdentityId == gr.IdentityId
-                                  select policy).Distinct().ToListAsync();
+                                  select new PolicyModel
+                                  {
+                                      Description = policy.Description,
+                                      Id = policy.Id,
+                                      Name = policy.Name,
+                                      OwnerIdentity = new()
+                                      {
+                                          Id = policy.OwnerIdentityId,
+                                          Unique = policy.OwnerIdentity.Unique,
+                                          Type = policy.OwnerIdentity.Type
+                                      }
+                                  }).Distinct().ToListAsync();
 
             return new(Responses.Success, policies);
 
@@ -157,6 +208,40 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
                               where policy.Id == result
                               && policy.ApplyFor.Any(t => ids.Contains(t.IdentityId))
                               select policy).AnyAsync();
+
+            if (!have)
+                return new(Responses.Unauthorized);
+
+            // Validar requerimientos.
+            var requirements = await policiesRequirement.ReadAll(result);
+
+            DateTime now = DateTime.Now;
+
+            foreach (var requirement in requirements.Models)
+            {
+                if (requirement.Type == PolicyRequirementTypes.Time)
+                {
+
+                    var x = System.Text.Json.JsonSerializer.Deserialize<dynamic>(requirement.Requirement ?? "");
+
+
+
+                    var start = TimeSpan.FromTicks(x.start);
+                    var end = TimeSpan.FromTicks(x.end);
+                    //var days = TimeSpan.FromTicks((requirement.Requirement as dynamic).days);
+
+                    bool valid = iamPolicy.PolicyRequirement(start, end);
+                }
+                else if (requirement.Type == PolicyRequirementTypes.TFA)
+                {
+
+                }
+                else if (requirement.Type == PolicyRequirementTypes.PasswordTime)
+                {
+
+                }
+            }
+
 
             // Respuesta.
             return new(have ? Responses.Success : Responses.Unauthorized);
