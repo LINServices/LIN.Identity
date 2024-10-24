@@ -34,6 +34,7 @@ public static class LocalServices
         // Allow.
         services.AddScoped<IAllowService, AllowService>();
         services.AddScoped<IIdentityService, Utils.IdentityService>();
+        services.AddScoped<Utils.PolicyService, Utils.PolicyService>();
 
         return services;
 

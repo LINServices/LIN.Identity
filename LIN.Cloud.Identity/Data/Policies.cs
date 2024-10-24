@@ -1,6 +1,8 @@
-﻿namespace LIN.Cloud.Identity.Data;
+﻿using LIN.Cloud.Identity.Services.Utils;
 
-public class Policies(DataContext context, Data.PoliciesRequirement policiesRequirement, Services.Utils.IIdentityService identityService, IamPolicy iamPolicy)
+namespace LIN.Cloud.Identity.Data;
+
+public class Policies(DataContext context, Data.PoliciesRequirement policiesRequirement, Services.Utils.IIdentityService identityService, PolicyService policyService)
 {
 
     /// <summary>
@@ -72,7 +74,7 @@ public class Policies(DataContext context, Data.PoliciesRequirement policiesRequ
         return new();
     }
 
-  
+
     /// <summary>
     /// Obtener una política.
     /// </summary>
@@ -86,19 +88,19 @@ public class Policies(DataContext context, Data.PoliciesRequirement policiesRequ
 
             // Políticas.
             var policie = await (from policy in context.Policies
-                                  where policy.Id == guid
-                                  select new PolicyModel
-                                  {
-                                      Description = policy.Description,
-                                      Id = policy.Id,
-                                      Name = policy.Name,
-                                      OwnerIdentity = new()
-                                      {
-                                          Id = policy.OwnerIdentityId,
-                                          Unique = policy.OwnerIdentity.Unique,
-                                          Type = policy.OwnerIdentity.Type
-                                      }
-                                  }).FirstOrDefaultAsync();
+                                 where policy.Id == guid
+                                 select new PolicyModel
+                                 {
+                                     Description = policy.Description,
+                                     Id = policy.Id,
+                                     Name = policy.Name,
+                                     OwnerIdentity = new()
+                                     {
+                                         Id = policy.OwnerIdentityId,
+                                         Unique = policy.OwnerIdentity.Unique,
+                                         Type = policy.OwnerIdentity.Type
+                                     }
+                                 }).FirstOrDefaultAsync();
 
             if (policie == null)
                 return new(Responses.NotRows);
@@ -209,42 +211,21 @@ public class Policies(DataContext context, Data.PoliciesRequirement policiesRequ
                               && policy.ApplyFor.Any(t => ids.Contains(t.IdentityId))
                               select policy).AnyAsync();
 
+            // No tiene acceso.
             if (!have)
                 return new(Responses.Unauthorized);
 
-            // Validar requerimientos.
+            // Obtener requerimientos.
             var requirements = await policiesRequirement.ReadAll(result);
 
-            DateTime now = DateTime.Now;
-
-            foreach (var requirement in requirements.Models)
-            {
-                if (requirement.Type == PolicyRequirementTypes.Time)
-                {
-
-                    var x = System.Text.Json.JsonSerializer.Deserialize<dynamic>(requirement.Requirement ?? "");
-
-
-
-                    var start = TimeSpan.FromTicks(x.start);
-                    var end = TimeSpan.FromTicks(x.end);
-                    //var days = TimeSpan.FromTicks((requirement.Requirement as dynamic).days);
-
-                    bool valid = iamPolicy.PolicyRequirement(start, end);
-                }
-                else if (requirement.Type == PolicyRequirementTypes.TFA)
-                {
-
-                }
-                else if (requirement.Type == PolicyRequirementTypes.PasswordTime)
-                {
-
-                }
-            }
-
+            // Validar.
+            (bool isValid, string message) = policyService.Validate(requirements.Models);
 
             // Respuesta.
-            return new(have ? Responses.Success : Responses.Unauthorized);
+            return new(isValid ? Responses.Success : Responses.Unauthorized)
+            {
+                Message = message
+            };
 
         }
         catch (Exception)
