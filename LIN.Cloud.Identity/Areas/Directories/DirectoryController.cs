@@ -22,7 +22,7 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
             };
 
         // Obtiene el usuario.
-        var response = await directoryMembersData.Read(AuthenticationInformation.IdentityId, organization);
+        var response = await directoryMembersData.Read(UserInformation.IdentityId, organization);
 
         // Si es erróneo
         if (response.Response != Responses.Success)
@@ -58,7 +58,7 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
 
 
         // Confirmar el rol.
-        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, orgId.Model);
+        var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);

@@ -16,8 +16,7 @@ public class PoliciesRequirement(DataContext context)
             // Attach.
             context.Attach(modelo.Policy);
 
-            if (modelo.Requirement is not string)
-                modelo.Requirement = System.Text.Json.JsonSerializer.Serialize(modelo.Requirement);
+            modelo.Requirement ??= System.Text.Json.JsonSerializer.Serialize(modelo.Requirement);
 
             // Guardar la cuenta.
             await context.PolicyRequirements.AddAsync(modelo);

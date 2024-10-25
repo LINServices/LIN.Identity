@@ -10,9 +10,9 @@ public class PoliciesComplacentController(Data.Policies policiesData, IamRoles i
     public async Task<HttpResponseBase> Applicants([FromHeader] int identity)
     {
 
-        if (identity != AuthenticationInformation.IdentityId)
+        if (identity != UserInformation.IdentityId)
         {
-            var iamResult = await iam.IamIdentity(AuthenticationInformation.IdentityId, identity);
+            var iamResult = await iam.IamIdentity(UserInformation.IdentityId, identity);
             if (iamResult != Types.Enumerations.IamLevels.Privileged)
                 return new ResponseBase(Responses.Unauthorized)
                 {
@@ -35,7 +35,7 @@ public class PoliciesComplacentController(Data.Policies policiesData, IamRoles i
     {
 
         // Validar Iam.
-        var iamResult = await iamPolicy.Validate(AuthenticationInformation.IdentityId, policy);
+        var iamResult = await iamPolicy.Validate(UserInformation.IdentityId, policy);
 
         if (iamResult != Types.Enumerations.IamLevels.Privileged)
             return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para agregar integrantes a la política." };
@@ -57,7 +57,7 @@ public class PoliciesComplacentController(Data.Policies policiesData, IamRoles i
     {
 
         // Validar Iam.
-        var iamResult = await iamPolicy.Validate(AuthenticationInformation.IdentityId, policy);
+        var iamResult = await iamPolicy.Validate(UserInformation.IdentityId, policy);
 
         if (iamResult != Types.Enumerations.IamLevels.Privileged)
             return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para eliminar integrantes de la política." };
@@ -76,7 +76,7 @@ public class PoliciesComplacentController(Data.Policies policiesData, IamRoles i
     [HttpGet]
     public async Task<HttpResponseBase> IsAllow([FromQuery] string policy)
     {
-        var response = await policiesData.HasFor(AuthenticationInformation.IdentityId, policy);
+        var response = await policiesData.HasFor(UserInformation.IdentityId, policy);
         return response;
     }
 
