@@ -24,14 +24,14 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
         // Obtiene el usuario.
         var response = await directoryMembersData.Read(UserInformation.IdentityId, organization);
 
-        // Si es erróneo
+        // Si es erróneo.
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
+        // Retorna el resultado.
         return response;
     }
 
@@ -56,7 +56,6 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
                 Response = Responses.Unauthorized
             };
 
-
         // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
@@ -70,7 +69,6 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
                 Message = "No tienes acceso a la información este directorio.",
                 Response = Responses.Unauthorized
             };
-
 
         // Obtiene el usuario.
         var response = await directoryMembersData.ReadMembers(directory);

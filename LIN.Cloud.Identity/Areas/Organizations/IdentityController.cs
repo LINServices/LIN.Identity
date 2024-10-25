@@ -77,7 +77,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         if (!iam)
             return new()
             {
-                Message = "No tienes acceso para leer grupos.",
+                Message = "No tienes acceso para leer permisos.",
                 Response = Responses.Unauthorized
             };
 

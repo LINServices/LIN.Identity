@@ -48,9 +48,6 @@ public class PoliciesRequirement(DataContext context)
         {
 
             // Políticas.
-            var qw = (from policyRequirement in context.PolicyRequirements
-                      select policyRequirement).ToQueryString();
-
             var policies = await (from policyRequirement in context.PolicyRequirements
                                   where policyRequirement.PolicyId == policy
                                   select policyRequirement).Distinct().ToListAsync();
