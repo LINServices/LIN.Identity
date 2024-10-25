@@ -1,6 +1,8 @@
-﻿namespace LIN.Cloud.Identity.Data;
+﻿using LIN.Cloud.Identity.Services.Utils;
 
-public class Policies(DataContext context, Services.Utils.IIdentityService identityService)
+namespace LIN.Cloud.Identity.Data;
+
+public class Policies(DataContext context, Data.PoliciesRequirement policiesRequirement, Services.Utils.IIdentityService identityService, PolicyService policyService)
 {
 
     /// <summary>
@@ -74,6 +76,46 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
 
 
     /// <summary>
+    /// Obtener una política.
+    /// </summary>
+    /// <param name="guid">Id.</param>
+    public async Task<ReadOneResponse<PolicyModel>> Read(Guid guid)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Políticas.
+            var policie = await (from policy in context.Policies
+                                 where policy.Id == guid
+                                 select new PolicyModel
+                                 {
+                                     Description = policy.Description,
+                                     Id = policy.Id,
+                                     Name = policy.Name,
+                                     OwnerIdentity = new()
+                                     {
+                                         Id = policy.OwnerIdentityId,
+                                         Unique = policy.OwnerIdentity.Unique,
+                                         Type = policy.OwnerIdentity.Type
+                                     }
+                                 }).FirstOrDefaultAsync();
+
+            if (policie == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, policie);
+
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
     /// Obtener las políticas asociadas a una organización.
     /// </summary>
     /// <param name="id">Id de la organización.</param>
@@ -89,7 +131,18 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
                                   join gr in context.Groups
                                   on id equals gr.OwnerId
                                   where policy.OwnerIdentityId == gr.IdentityId
-                                  select policy).Distinct().ToListAsync();
+                                  select new PolicyModel
+                                  {
+                                      Description = policy.Description,
+                                      Id = policy.Id,
+                                      Name = policy.Name,
+                                      OwnerIdentity = new()
+                                      {
+                                          Id = policy.OwnerIdentityId,
+                                          Unique = policy.OwnerIdentity.Unique,
+                                          Type = policy.OwnerIdentity.Type
+                                      }
+                                  }).Distinct().ToListAsync();
 
             return new(Responses.Success, policies);
 
@@ -158,8 +211,21 @@ public class Policies(DataContext context, Services.Utils.IIdentityService ident
                               && policy.ApplyFor.Any(t => ids.Contains(t.IdentityId))
                               select policy).AnyAsync();
 
+            // No tiene acceso.
+            if (!have)
+                return new(Responses.Unauthorized);
+
+            // Obtener requerimientos.
+            var requirements = await policiesRequirement.ReadAll(result);
+
+            // Validar.
+            (bool isValid, string message) = policyService.Validate(requirements.Models);
+
             // Respuesta.
-            return new(have ? Responses.Success : Responses.Unauthorized);
+            return new(isValid ? Responses.Success : Responses.Unauthorized)
+            {
+                Message = message
+            };
 
         }
         catch (Exception)

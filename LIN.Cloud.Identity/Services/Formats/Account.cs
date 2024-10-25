@@ -2,11 +2,8 @@
 
 namespace LIN.Cloud.Identity.Services.Formats;
 
-
 public class Account
 {
-
-
 
     /// <summary>
     /// Procesar el modelo.

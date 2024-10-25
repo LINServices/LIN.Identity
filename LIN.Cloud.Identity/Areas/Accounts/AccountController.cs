@@ -80,9 +80,9 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
         // Obtiene el usuario.
         var response = await accountData.Read(id, new()
         {
-            AccountContext = AuthenticationInformation.AccountId,
+            AccountContext = UserInformation.AccountId,
             FindOn = FindOn.StableAccounts,
-            IdentityContext = AuthenticationInformation.IdentityId,
+            IdentityContext = UserInformation.IdentityId,
             IsAdmin = false
         });
 
@@ -119,9 +119,9 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
         // Obtiene el usuario.
         var response = await accountData.Read(user, new()
         {
-            AccountContext = AuthenticationInformation.AccountId,
+            AccountContext = UserInformation.AccountId,
             FindOn = FindOn.StableAccounts,
-            IdentityContext = AuthenticationInformation.IdentityId,
+            IdentityContext = UserInformation.IdentityId,
             IsAdmin = false
         });
 
@@ -159,9 +159,9 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
         // Obtiene el usuario.
         var response = await accountData.ReadByIdentity(id, new()
         {
-            AccountContext = AuthenticationInformation.AccountId,
+            AccountContext = UserInformation.AccountId,
             FindOn = FindOn.StableAccounts,
-            IdentityContext = AuthenticationInformation.IdentityId,
+            IdentityContext = UserInformation.IdentityId,
             IsAdmin = false
         });
 
@@ -190,10 +190,10 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
         // Obtiene el usuario
         var response = await accountData.FindAllByIdentities(ids, new()
         {
-            AccountContext = AuthenticationInformation.AccountId,
+            AccountContext = UserInformation.AccountId,
             FindOn = FindOn.StableAccounts,
             IsAdmin = false,
-            IdentityContext = AuthenticationInformation.IdentityId,
+            IdentityContext = UserInformation.IdentityId,
         });
 
         return response;
@@ -220,10 +220,10 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
         // Obtiene el usuario
         var response = await accountData.Search(pattern, new()
         {
-            AccountContext = AuthenticationInformation.AccountId,
+            AccountContext = UserInformation.AccountId,
             FindOn = FindOn.StableAccounts,
             IsAdmin = false,
-            IdentityContext = AuthenticationInformation.IdentityId,
+            IdentityContext = UserInformation.IdentityId,
         });
 
         return response;
@@ -242,10 +242,10 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
         // Obtiene el usuario
         var response = await accountData.FindAll(ids, new()
         {
-            AccountContext = AuthenticationInformation.AccountId,
+            AccountContext = UserInformation.AccountId,
             FindOn = FindOn.StableAccounts,
             IsAdmin = false,
-            IdentityContext = AuthenticationInformation.IdentityId,
+            IdentityContext = UserInformation.IdentityId,
         });
 
         return response;
