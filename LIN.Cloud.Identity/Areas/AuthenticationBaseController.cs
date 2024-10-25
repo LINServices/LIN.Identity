@@ -6,7 +6,7 @@ public class AuthenticationBaseController : ControllerBase
     /// <summary>
     /// Información de autenticación.
     /// </summary>
-    public JwtModel AuthenticationInformation => HttpContext.Items["authentication"] as JwtModel ?? new();
+    public JwtModel UserInformation => HttpContext.Items["authentication"] as JwtModel ?? new();
 
 
     /// <summary>

@@ -79,7 +79,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
         if (!response.Model.IsPublic)
         {
 
-            var iamIn = await directoryMembersData.IamIn(AuthenticationInformation.IdentityId, response.Model.Id);
+            var iamIn = await directoryMembersData.IamIn(UserInformation.IdentityId, response.Model.Id);
 
             if (iamIn.Response != Responses.Success)
                 return new ReadOneResponse<OrganizationModel>()
@@ -113,7 +113,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     {
 
         // Obtiene la organización
-        var response = await organizationsData.ReadAll(AuthenticationInformation.IdentityId);
+        var response = await organizationsData.ReadAll(UserInformation.IdentityId);
 
         return response;
 

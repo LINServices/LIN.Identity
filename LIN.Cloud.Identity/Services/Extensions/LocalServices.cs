@@ -3,7 +3,6 @@ using LIN.Cloud.Identity.Services.Utils;
 
 namespace LIN.Cloud.Identity.Services.Extensions;
 
-
 public static class LocalServices
 {
 

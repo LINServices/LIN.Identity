@@ -23,7 +23,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
                 return new(Responses.NotRows) { Message = $"No se encontró la organización del grupo con identidad {modelo.OwnerIdentityId}" };
 
             // Validar roles.
-            var roles = await iam.Validate(AuthenticationInformation.IdentityId, owner.Model);
+            var roles = await iam.Validate(UserInformation.IdentityId, owner.Model);
 
             bool hasPermission = ValidateRoles.ValidateAlterMembers(roles);
 
@@ -34,7 +34,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
         else if (organization is not null && organization > 0)
         {
             // Validar roles.
-            var roles = await iam.Validate(AuthenticationInformation.IdentityId, organization.Value);
+            var roles = await iam.Validate(UserInformation.IdentityId, organization.Value);
 
             bool hasPermission = ValidateRoles.ValidateAlterMembers(roles);
 
@@ -48,7 +48,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
         else
         {
             // Establecer propietario al usuario que realiza la solicitud.
-            modelo.OwnerIdentityId = AuthenticationInformation.IdentityId;
+            modelo.OwnerIdentityId = UserInformation.IdentityId;
         }
 
         // Formatear.
@@ -76,7 +76,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
     [HttpGet("all")]
     public async Task<HttpReadAllResponse<PolicyModel>> All()
     {
-        var response = await policiesData.ReadAllOwn(AuthenticationInformation.IdentityId);
+        var response = await policiesData.ReadAllOwn(UserInformation.IdentityId);
         return response;
     }
 
@@ -101,7 +101,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
     {
 
         // Validar Iam.
-        var iamResult = await iamPolicy.Validate(AuthenticationInformation.IdentityId, policy);
+        var iamResult = await iamPolicy.Validate(UserInformation.IdentityId, policy);
 
         if (iamResult != Types.Enumerations.IamLevels.Privileged)
             return new ResponseBase(Responses.Unauthorized) { Message = "No tienes permisos para eliminar la política." };
