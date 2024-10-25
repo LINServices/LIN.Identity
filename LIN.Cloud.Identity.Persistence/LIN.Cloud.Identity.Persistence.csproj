@@ -4,12 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Configurations>Debug;Release;Local</Configurations>
+    <Configurations>Debug;Release;Local;Release-dev;Debug-dev</Configurations>
   </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Global.Utilities" Version="1.0.0" />
-		<PackageReference Include="LIN.Types.Cloud.Identity" Version="1.4.3" />
+		<PackageReference Include="LIN.Types.Cloud.Identity" Version="1.5.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
 	</ItemGroup>

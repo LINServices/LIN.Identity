@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Services.Filters;
+﻿using LIN.Types.Models;
+
+namespace LIN.Cloud.Identity.Services.Filters;
 
 public class IdentityTokenAttribute : ActionFilterAttribute
 {
@@ -27,13 +29,19 @@ public class IdentityTokenAttribute : ActionFilterAttribute
             await httpContext.Response.WriteAsJsonAsync(new ResponseBase()
             {
                 Message = "Token invalido.",
+                Errors = [
+                    new ErrorModel()
+                    {
+                        Tittle = "Token invalido",
+                        Description = "El token proporcionado en el header <token> es invalido."
+                    }
+                ],
                 Response = Responses.Unauthorized
             });
             return;
         }
 
         // Agrega la información del token.
-        context.HttpContext.Items.Add(value.ToString(), tokenInfo);
         context.HttpContext.Items.Add("authentication", tokenInfo);
         await base.OnActionExecutionAsync(context, next);
 
