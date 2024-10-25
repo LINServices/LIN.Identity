@@ -83,21 +83,21 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Identity Model
+        // Identity Model.
         modelBuilder.Entity<IdentityModel>(entity =>
         {
             entity.ToTable("identities");
             entity.HasIndex(t => t.Unique).IsUnique();
         });
 
-        // Account Model
+        // Account Model.
         modelBuilder.Entity<AccountModel>(entity =>
         {
             entity.ToTable("accounts");
             entity.HasIndex(t => t.IdentityId).IsUnique();
         });
 
-        // Organization Model
+        // Organization Model.
         modelBuilder.Entity<OrganizationModel>(entity =>
         {
             entity.ToTable("organizations");
@@ -106,8 +106,8 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey<OrganizationModel>(o => o.DirectoryId)
                   .OnDelete(DeleteBehavior.NoAction);
         });
-
-        // Group Model
+        
+        // Group Model.
         modelBuilder.Entity<GroupModel>(entity =>
         {
             entity.ToTable("groups");

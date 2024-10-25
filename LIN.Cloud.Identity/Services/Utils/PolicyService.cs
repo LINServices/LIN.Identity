@@ -15,7 +15,7 @@ public class PolicyService(IamPolicy iamPolicy)
         if (!isValid)
             return (false, "No tienes acceso a la política por la hora actual.");
 
-        // Validar contaseña.
+        // Validar contraseña.
         isValid = PasswordTime(requirements);
 
         if (!isValid)
