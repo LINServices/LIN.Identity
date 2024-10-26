@@ -17,7 +17,7 @@ public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseCo
         {
             // Cuenta
             var account = (from a in PassKeyHub.Attempts
-                           where a.Key.Equals(AuthenticationInformation.Unique, StringComparison.CurrentCultureIgnoreCase)
+                           where a.Key.Equals(UserInformation.Unique, StringComparison.CurrentCultureIgnoreCase)
                            select a).FirstOrDefault().Value ?? [];
 
             // Hora actual
@@ -49,7 +49,7 @@ public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseCo
     public async Task<HttpReadOneResponse<int>> Count()
     {
         // Contar.
-        var countResponse = await passkeyData.Count(AuthenticationInformation.AccountId);
+        var countResponse = await passkeyData.Count(UserInformation.AccountId);
 
         // Retorna
         return countResponse;

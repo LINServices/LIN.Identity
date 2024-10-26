@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <Configurations>Debug;Release;Local</Configurations>
+    <Configurations>Debug;Release;Local;Release-dev;Debug-dev</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
