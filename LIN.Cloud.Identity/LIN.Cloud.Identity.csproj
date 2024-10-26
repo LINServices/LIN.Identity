@@ -9,7 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.13.0" />
+    <PackageReference Include="Azure.Identity" Version="1.13.1" />
+    <PackageReference Include="Global.Http" Version="2.4.0" />
     <PackageReference Include="Global.Utilities" Version="1.0.0" />
     <PackageReference Include="Http.Utils" Version="2.0.5" />
   </ItemGroup>

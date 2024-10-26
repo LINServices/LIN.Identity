@@ -76,6 +76,18 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// <summary>
     /// Generación del modelo de base de datos.
     /// </summary>
+    public DbSet<PolicyRequirementModel> PolicyRequirements { get; set; }
+
+
+   /// <summary>
+   /// Códigos OTPS.
+   /// </summary>
+    public DbSet<OtpDatabaseModel> OTPs { get; set; }
+
+
+    /// <summary>
+    /// Crear el modelo en BD.
+    /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
@@ -275,6 +287,15 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<ApplicationModel>().ToTable("applications");
         modelBuilder.Entity<AccountLog>().ToTable("account_logs");
         modelBuilder.Entity<PolicyModel>().ToTable("policies");
+
+        // Códigos OTPS.
+        modelBuilder.Entity<OtpDatabaseModel>(entity =>
+        {
+            entity.ToTable("otp_codes");
+            entity.HasOne(t => t.Account)
+                  .WithMany()
+                  .HasForeignKey(t => t.AccountId);
+        });
 
         // Base.
         base.OnModelCreating(modelBuilder);
