@@ -90,7 +90,7 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
     public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken()
     {
         // Obtiene el usuario.
-        var response = await accountData.Read(UserInformation.AccountId, new QueryAccountFilter()
+        var response = await accountData.Read(UserInformation.AccountId, new QueryObjectFilter()
         {
             IsAdmin = true,
             FindOn = FindOn.StableAccounts

@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using IdentityService = LIN.Types.Cloud.Identity.Enumerations.IdentityService;
 
 namespace LIN.Cloud.Identity.Services.Formats;
 

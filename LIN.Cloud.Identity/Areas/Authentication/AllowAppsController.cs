@@ -3,5 +3,4 @@
 [Route("applications/allow")]
 public class AllowAppsController : ControllerBase
 {
-
 }

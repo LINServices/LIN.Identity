@@ -1,4 +1,5 @@
-﻿using LIN.Cloud.Identity.Persistence.Queries.Interfaces;
+﻿using LIN.Cloud.Identity.Persistence.Models;
+using LIN.Cloud.Identity.Persistence.Queries.Interfaces;
 using LIN.Types.Cloud.Identity.Enumerations;
 using LIN.Types.Cloud.Identity.Models;
 
@@ -50,7 +51,7 @@ public class AccountFindable(Contexts.DataContext context) : IFindable<AccountMo
 
 
 
-    public IQueryable<AccountModel> GetAccounts(int id, Models.QueryObjectFilter filters)
+    public IQueryable<AccountModel> GetAccounts(int id, QueryObjectFilter filters)
     {
 
         // Query general

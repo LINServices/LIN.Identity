@@ -54,13 +54,13 @@ public class Identities
     /// <param name="id">Id</param>
     /// <param name="filters">Filtros</param>
     /// <param name="context">Contexto</param>
-    public static IQueryable<IdentityModel> GetIds(int id, Services.Models.QueryIdentityFilter filters, DataContext context)
+    public static IQueryable<IdentityModel> GetIds(int id, QueryIdentityFilter filters, DataContext context)
     {
 
         // Query general
         IQueryable<IdentityModel> ids;
 
-        if (filters.FindOn == Services.Models.FindOn.StableAccounts)
+        if (filters.FindOn == FindOn.StableAccounts)
             ids = from identity in OnStable(context)
                   where identity.Id == id
                   select identity;
@@ -91,7 +91,7 @@ public class Identities
         // Query general
         IQueryable<IdentityModel> ids;
 
-        if (filters.FindOn == Services.Models.FindOn.StableAccounts)
+        if (filters.FindOn == FindOn.StableAccounts)
             ids = from identity in OnStable(context)
                   where identity.Unique == unique
                   select identity;

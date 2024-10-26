@@ -2,7 +2,6 @@ using Http.Extensions;
 using LIN.Cloud.Identity.Services.Auth.Interfaces;
 using LIN.Cloud.Identity.Services.Extensions;
 using LIN.Cloud.Identity.Services.Realtime;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 

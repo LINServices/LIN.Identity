@@ -1,4 +1,5 @@
 ﻿using LIN.Cloud.Identity.Persistence.Contexts;
+using LIN.Cloud.Identity.Persistence.Models;
 using LIN.Cloud.Identity.Services.Models;
 using LIN.Types.Cloud.Identity.Models;
 using LIN.Types.Responses;
@@ -62,7 +63,7 @@ public class Accounts
         var accounts = new Cloud.Identity.Data.Accounts(context);
 
         // Act
-        var response = await accounts.Read(999, new QueryAccountFilter());
+        var response = await accounts.Read(999, new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
@@ -88,7 +89,7 @@ public class Accounts
         await context.SaveChangesAsync();
 
         // Act
-        var response = await accounts.Read("unique-id", new QueryAccountFilter());
+        var response = await accounts.Read("unique-id", new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.Success, response.Response);
@@ -104,7 +105,7 @@ public class Accounts
         var accounts = new Cloud.Identity.Data.Accounts(context);
 
         // Act
-        var response = await accounts.Read("non-existent-id", new QueryAccountFilter());
+        var response = await accounts.Read("non-existent-id", new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
@@ -130,7 +131,7 @@ public class Accounts
         await context.SaveChangesAsync();
 
         // Act
-        var response = await accounts.ReadByIdentity(1, new QueryAccountFilter());
+        var response = await accounts.ReadByIdentity(1, new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.Success, response.Response);
@@ -146,7 +147,7 @@ public class Accounts
         var accounts = new Cloud.Identity.Data.Accounts(context);
 
         // Act
-        var response = await accounts.ReadByIdentity(999, new QueryAccountFilter());
+        var response = await accounts.ReadByIdentity(999, new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
@@ -172,7 +173,7 @@ public class Accounts
         await context.SaveChangesAsync();
 
         // Act
-        var response = await accounts.Search("Test", new QueryAccountFilter());
+        var response = await accounts.Search("Test", new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.Success, response.Response);
@@ -187,7 +188,7 @@ public class Accounts
         var accounts = new Cloud.Identity.Data.Accounts(context);
 
         // Act
-        var response = await accounts.Search("NonExistentPattern", new QueryAccountFilter());
+        var response = await accounts.Search("NonExistentPattern", new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
@@ -213,7 +214,7 @@ public class Accounts
         await context.SaveChangesAsync();
 
         // Act
-        var response = await accounts.FindAll([accountModel.Id], new QueryAccountFilter());
+        var response = await accounts.FindAll([accountModel.Id], new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.Success, response.Response);
@@ -228,7 +229,7 @@ public class Accounts
         var accounts = new Cloud.Identity.Data.Accounts(context);
 
         // Act
-        var response = await accounts.FindAll([999], new QueryAccountFilter());
+        var response = await accounts.FindAll([999], new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);
@@ -254,7 +255,7 @@ public class Accounts
         await context.SaveChangesAsync();
 
         // Act
-        var response = await accounts.FindAllByIdentities([1], new QueryAccountFilter());
+        var response = await accounts.FindAllByIdentities([1], new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.Success, response.Response);
@@ -269,7 +270,7 @@ public class Accounts
         var accounts = new Cloud.Identity.Data.Accounts(context);
 
         // Act
-        var response = await accounts.FindAllByIdentities([999], new QueryAccountFilter());
+        var response = await accounts.FindAllByIdentities([999], new QueryObjectFilter());
 
         // Assert
         Assert.Equal(Responses.NotRows, response.Response);

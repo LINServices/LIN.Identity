@@ -8,7 +8,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     /// Crea una nueva organización.
     /// </summary>
     /// <param name="modelo">Modelo de la organización y el usuario administrador</param>
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo)
     {
 

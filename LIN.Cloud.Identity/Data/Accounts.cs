@@ -84,7 +84,7 @@ public class Accounts(DataContext context)
     /// </summary>
     /// <param name="id">Id de la cuenta.</param>
     /// <param name="filters">Filtros de búsqueda.</param>
-    public async Task<ReadOneResponse<AccountModel>> Read(int id, QueryAccountFilter filters)
+    public async Task<ReadOneResponse<AccountModel>> Read(int id, QueryObjectFilter filters)
     {
 
         try
@@ -124,7 +124,7 @@ public class Accounts(DataContext context)
     /// </summary>
     /// <param name="unique">Único.</param>
     /// <param name="filters">Filtros de búsqueda.</param>
-    public async Task<ReadOneResponse<AccountModel>> Read(string unique, QueryAccountFilter filters)
+    public async Task<ReadOneResponse<AccountModel>> Read(string unique, QueryObjectFilter filters)
     {
 
         try
@@ -164,7 +164,7 @@ public class Accounts(DataContext context)
     /// </summary>
     /// <param name="id">Id de la identidad.</param>
     /// <param name="filters">Filtros de búsqueda.</param>
-    public async Task<ReadOneResponse<AccountModel>> ReadByIdentity(int id, QueryAccountFilter filters)
+    public async Task<ReadOneResponse<AccountModel>> ReadByIdentity(int id, QueryObjectFilter filters)
     {
 
         try
@@ -204,7 +204,7 @@ public class Accounts(DataContext context)
     /// </summary>
     /// <param name="pattern">patron de búsqueda</param>
     /// <param name="filters">Filtros</param>
-    public async Task<ReadAllResponse<AccountModel>> Search(string pattern, QueryAccountFilter filters)
+    public async Task<ReadAllResponse<AccountModel>> Search(string pattern, QueryObjectFilter filters)
     {
 
         // Ejecución
@@ -231,7 +231,7 @@ public class Accounts(DataContext context)
     /// Obtiene los usuarios con IDs coincidentes
     /// </summary>
     /// <param name="ids">Lista de IDs</param>
-    public async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, QueryAccountFilter filters)
+    public async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, QueryObjectFilter filters)
     {
 
         // Ejecución
@@ -261,7 +261,7 @@ public class Accounts(DataContext context)
     /// Obtiene los usuarios con IDs coincidentes
     /// </summary>
     /// <param name="ids">Lista de IDs</param>
-    public async Task<ReadAllResponse<AccountModel>> FindAllByIdentities(List<int> ids, QueryAccountFilter filters)
+    public async Task<ReadAllResponse<AccountModel>> FindAllByIdentities(List<int> ids, QueryObjectFilter filters)
     {
 
         // Ejecución

@@ -28,13 +28,20 @@ public class Mails(DataContext context)
             };
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+
+
             return new()
             {
                 Response = Responses.ResourceExist
             };
         }
+
+        return new()
+        {
+            Response = Responses.Undefined
+        };
 
     }
 
