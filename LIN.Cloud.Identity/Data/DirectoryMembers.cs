@@ -66,7 +66,6 @@ public class DirectoryMembers(DataContext context)
     /// </summary>
     /// <param name="id">Identidad</param>
     /// <param name="organization">Id de la organización</param>
-    /// <param name="context">Contexto</param>
     public async Task<ReadOneResponse<GroupMemberTypes>> IamIn(int id, int organization)
     {
 
@@ -87,16 +86,28 @@ public class DirectoryMembers(DataContext context)
 
             // Si la cuenta no existe.
             if (query == null)
-                return new()
-                {
-                    Response = Responses.NotRows
-                };
+            {
+
+                var x = await (from A in context.Organizations
+                               where A.Directory.IdentityId == id
+                               && A.Id == organization
+                               select A).AnyAsync();
+
+
+                if (!x)
+                    return new()
+                    {
+                        Response = Responses.NotRows
+                    };
+
+            }
+
 
             // Success.
             return new()
             {
                 Response = Responses.Success,
-                Model = query.Type
+                Model = query?.Type ?? GroupMemberTypes.Group
             };
 
         }

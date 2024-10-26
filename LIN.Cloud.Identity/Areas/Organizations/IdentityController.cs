@@ -14,7 +14,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, rolModel.OrganizationId);
+        var roles = await rolesIam.Validate(UserInformation.IdentityId, rolModel.OrganizationId);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
@@ -68,7 +68,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
@@ -77,7 +77,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
         if (!iam)
             return new()
             {
-                Message = "No tienes acceso para leer grupos.",
+                Message = "No tienes acceso para leer permisos.",
                 Response = Responses.Unauthorized
             };
 
@@ -117,7 +117,7 @@ public class IdentityController(Data.DirectoryMembers directoryMembersData, Data
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.Validate(AuthenticationInformation.IdentityId, organization);
+        var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);

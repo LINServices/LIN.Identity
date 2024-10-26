@@ -3,7 +3,6 @@ using LIN.Cloud.Identity.Services.Utils;
 
 namespace LIN.Cloud.Identity.Services.Extensions;
 
-
 public static class LocalServices
 {
 
@@ -14,6 +13,7 @@ public static class LocalServices
     public static IServiceCollection AddLocalServices(this IServiceCollection services)
     {
 
+        // Servicios de datos.
         services.AddScoped<Data.Accounts, Data.Accounts>();
         services.AddScoped<Data.DirectoryMembers, Data.DirectoryMembers>();
         services.AddScoped<Data.GroupMembers, Data.GroupMembers>();
@@ -34,6 +34,7 @@ public static class LocalServices
         // Allow.
         services.AddScoped<IAllowService, AllowService>();
         services.AddScoped<IIdentityService, Utils.IdentityService>();
+        services.AddScoped<Utils.PolicyService, Utils.PolicyService>();
 
         return services;
 

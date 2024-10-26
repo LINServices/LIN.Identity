@@ -15,7 +15,6 @@ builder.Services.AddLINHttp(true, (options) =>
 
 builder.Services.AddLocalServices();
 
-
 // Servicio de autenticación.
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddPersistence(builder.Configuration);

@@ -70,7 +70,7 @@ public class JwtService
                     IsAuthenticated = false
                 };
 
-            // Configurar la clave secreta
+            // Configurar la clave secreta.
             var key = Encoding.ASCII.GetBytes(JwtKey);
 
             // Validar el token

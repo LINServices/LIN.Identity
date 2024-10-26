@@ -39,4 +39,35 @@ public class IamPolicy(DataContext context, Data.Groups groups, IamRoles rolesIa
         return IamLevels.NotAccess;
     }
 
+
+
+    public bool PolicyRequirement(TimeSpan start, TimeSpan end)
+    {
+        // Definir los días válidos (lunes = 1, domingo = 7)
+        DayOfWeek[] diasValidos = { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+                                    DayOfWeek.Thursday, DayOfWeek.Friday };
+
+        // Obtener la hora y día actuales
+        DateTime ahora = DateTime.Now;
+        TimeSpan horaActual = ahora.TimeOfDay;
+        DayOfWeek diaActual = ahora.DayOfWeek;
+
+        // Verificar si el día actual está en los días válidos
+        bool esDiaValido = Array.Exists(diasValidos, dia => dia == diaActual);
+
+        // Verificar si la hora actual está en el rango
+        bool estaEnRango = horaActual >= start && horaActual <= end;
+
+        // Resultado final
+        if (esDiaValido && estaEnRango)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
 }
