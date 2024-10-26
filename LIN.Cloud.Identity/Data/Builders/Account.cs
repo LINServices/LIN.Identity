@@ -52,13 +52,13 @@ public class Account
     /// <param name="id">Id de la cuenta</param>
     /// <param name="filters">Filtros</param>
     /// <param name="context">Contexto</param>
-    public static IQueryable<AccountModel> GetAccounts(int id, Services.Models.QueryAccountFilter filters, DataContext context)
+    public static IQueryable<AccountModel> GetAccounts(int id, QueryObjectFilter filters, DataContext context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts;
 
-        if (filters.FindOn == Services.Models.FindOn.StableAccounts)
+        if (filters.FindOn == FindOn.StableAccounts)
             accounts = from account in OnStable(context)
                        where account.Id == id
                        select account;
@@ -83,13 +83,13 @@ public class Account
     /// <param name="user">Identidad unica.</param>
     /// <param name="filters">Filtros</param>
     /// <param name="context">Contexto</param>
-    public static IQueryable<AccountModel> GetAccounts(string user, Services.Models.QueryAccountFilter filters, DataContext context)
+    public static IQueryable<AccountModel> GetAccounts(string user, QueryObjectFilter filters, DataContext context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts;
 
-        if (filters.FindOn == Services.Models.FindOn.StableAccounts)
+        if (filters.FindOn == FindOn.StableAccounts)
             accounts = from account in OnStable(context)
                        where account.Identity.Unique == user
                        select account;
@@ -114,13 +114,13 @@ public class Account
     /// <param name="id">Id de la Identidad.</param>
     /// <param name="filters">Filtros</param>
     /// <param name="context">Contexto</param>
-    public static IQueryable<AccountModel> GetAccountsByIdentity(int id, Services.Models.QueryAccountFilter filters, DataContext context)
+    public static IQueryable<AccountModel> GetAccountsByIdentity(int id, QueryObjectFilter filters, DataContext context)
     {
 
         // Query general
         IQueryable<AccountModel> accounts;
 
-        if (filters.FindOn == Services.Models.FindOn.StableAccounts)
+        if (filters.FindOn == FindOn.StableAccounts)
             accounts = from account in OnStable(context)
                        where account.Identity.Id == id
                        select account;
@@ -141,7 +141,7 @@ public class Account
 
 
 
-    public static IQueryable<AccountModel> Search(string pattern, QueryAccountFilter filters, DataContext context)
+    public static IQueryable<AccountModel> Search(string pattern, QueryObjectFilter filters, DataContext context)
     {
 
         // Query general.
@@ -160,7 +160,7 @@ public class Account
 
 
 
-    public static IQueryable<AccountModel> FindAll(IEnumerable<int> ids, QueryAccountFilter filters, DataContext context)
+    public static IQueryable<AccountModel> FindAll(IEnumerable<int> ids, QueryObjectFilter filters, DataContext context)
     {
         IQueryable<AccountModel> accounts;
 
@@ -191,7 +191,7 @@ public class Account
 
 
 
-    public static IQueryable<AccountModel> FindAllByIdentities(IEnumerable<int> ids, QueryAccountFilter filters, DataContext context)
+    public static IQueryable<AccountModel> FindAllByIdentities(IEnumerable<int> ids, QueryObjectFilter filters, DataContext context)
     {
         IQueryable<AccountModel> accounts;
 
@@ -230,7 +230,7 @@ public class Account
     /// </summary>
     /// <param name="query">Consulta base.</param>
     /// <param name="filters">Filtros.</param>
-    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, Services.Models.QueryAccountFilter filters, DataContext context)
+    private static IQueryable<AccountModel> BuildModel(IQueryable<AccountModel> query, QueryObjectFilter filters, DataContext context)
     {
 
         byte[] profile = [];

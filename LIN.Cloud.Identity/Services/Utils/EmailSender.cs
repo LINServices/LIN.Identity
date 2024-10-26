@@ -3,9 +3,17 @@
 public class EmailSender
 {
 
+    /// <summary>
+    /// Enviar correo.
+    /// </summary>
+    /// <param name="to">A.</param>
+    /// <param name="subject">Asunto.</param>
+    /// <param name="body">Cuerpo HTML.</param>
     public async Task<bool> Send(string to, string subject, string body)
     {
-        Global.Http.Services.Client client = new("https://hangfire.linplatform.com/api/mailsender")
+
+        // Servicio.
+        Global.Http.Services.Client client = new(Http.Services.Configuration.GetConfiguration("hangfire:mail"))
         {
             TimeOut = 10
         };

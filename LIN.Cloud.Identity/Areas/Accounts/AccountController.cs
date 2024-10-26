@@ -14,7 +14,7 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
     {
 
         // Validaciones del modelo.
-        if (modelo == null || modelo.Identity == null || modelo.Password.Length < 4 || modelo.Name.Length <= 0 || modelo.Identity.Unique.Length <= 0)
+        if (modelo is null || modelo.Identity is null || modelo.Password.Length < 4 || modelo.Name.Length <= 0 || modelo.Identity.Unique.Length <= 0)
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son inválidos."

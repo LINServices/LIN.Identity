@@ -23,4 +23,7 @@ global using System.IO;
 global using System.Security.Claims;
 // Framework.
 global using System.Text;
-global using LIN.Types.Enumerations; 
+global using LIN.Types.Enumerations;
+global using Http.Attributes;
+global using LIN.Cloud.Identity.Persistence.Models;
+global using LIN.Cloud.Identity.Services.Utils;

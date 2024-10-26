@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Data;
+﻿using IdentityService = LIN.Types.Cloud.Identity.Enumerations.IdentityService;
+
+namespace LIN.Cloud.Identity.Data;
 
 
 public class Organizations(DataContext context, IamRoles iam)
