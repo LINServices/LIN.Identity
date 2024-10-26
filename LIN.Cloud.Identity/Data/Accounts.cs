@@ -287,4 +287,34 @@ public class Accounts(DataContext context)
     }
 
 
+    /// <summary>
+    /// Actualizar contraseña de una cuenta.
+    /// </summary>
+    /// <param name="accountId">Id de la cuenta.</param>
+    /// <param name="password">Nueva contraseña.</param>
+    public async Task<ResponseBase> UpdatePassword(int accountId, string password)
+    {
+
+        try
+        {
+            var account = await (from a in context.Accounts
+                          where a.Id == accountId
+                          select a).ExecuteUpdateAsync(Accounts => Accounts.SetProperty(t=>t.Password, password));
+
+            if (account <= 0)
+                return new(Responses.NotExistAccount);
+
+            return new(Responses.Success);
+        }
+        catch (Exception)
+        {
+            return new()
+            {
+                Response = Responses.ExistAccount
+            };
+        }
+
+    }
+
+
 }

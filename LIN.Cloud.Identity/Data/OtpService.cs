@@ -10,6 +10,8 @@ public class OtpService(DataContext context)
 
         try
         {
+            model.Account = context.AttachOrUpdate(model.Account);
+
             // Guardar OTP.
             await context.OTPs.AddAsync(model);
             context.SaveChanges();
@@ -25,7 +27,7 @@ public class OtpService(DataContext context)
     }
 
 
-    public async Task<CreateResponse> ReadAndUpdate(int accountId, string code)
+    public async Task<ResponseBase> ReadAndUpdate(int accountId, string code)
     {
 
         try
@@ -43,6 +45,37 @@ public class OtpService(DataContext context)
             if (update <= 0)
                 return new(Responses.NotRows);
 
+
+            return new(Responses.Success);
+
+        }
+        catch (Exception)
+        {
+        }
+        return new(Responses.Undefined);
+
+    }
+
+
+
+    public async Task<CreateResponse> Create(MailOtpDatabaseModel model)
+    {
+
+        try
+        {
+
+            // A
+            model.OtpDatabaseModel.Account = context.AttachOrUpdate(model.OtpDatabaseModel.Account);
+
+            model.MailModel = new()
+            {
+                Id = model.MailModel.Id
+            };
+            model.MailModel = context.AttachOrUpdate(model.MailModel);
+
+            // Guardar OTP.
+            await context.MailOtp.AddAsync(model);
+            context.SaveChanges();
 
             return new(Responses.Success);
 

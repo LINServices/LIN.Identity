@@ -1,4 +1,5 @@
-﻿using LIN.Types.Cloud.Identity.Models;
+﻿using LIN.Cloud.Identity.Persistence.Models;
+using LIN.Types.Cloud.Identity.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LIN.Cloud.Identity.Persistence.Contexts;
@@ -79,15 +80,21 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
     /// <summary>
-    /// Crear el modelo en BD.
+    /// Códigos OTPS.
     /// </summary>
-    public DbSet<PolicyRequirementModel> PolicyRequirements { get; set; }
-
-
-   /// <summary>
-   /// Códigos OTPS.
-   /// </summary>
     public DbSet<OtpDatabaseModel> OTPs { get; set; }
+
+
+    /// <summary>
+    /// Correos asociados a las cuentas.
+    /// </summary>
+    public DbSet<MailModel> Mails { get; set; }
+
+
+    /// <summary>
+    /// Mail Otp.
+    /// </summary>
+    public DbSet<MailOtpDatabaseModel> MailOtp { get; set; }
 
 
     /// <summary>
@@ -118,7 +125,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey<OrganizationModel>(o => o.DirectoryId)
                   .OnDelete(DeleteBehavior.NoAction);
         });
-        
+
         // Group Model.
         modelBuilder.Entity<GroupModel>(entity =>
         {
@@ -259,6 +266,36 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.HasOne(t => t.Account)
                   .WithMany()
                   .HasForeignKey(t => t.AccountId);
+        });
+
+        // Correos.
+        modelBuilder.Entity<MailModel>(entity =>
+        {
+            entity.ToTable("mails");
+            entity.HasOne(t => t.Account)
+                  .WithMany()
+                  .HasForeignKey(t => t.AccountId);
+
+            entity.HasIndex(t => t.Mail).IsUnique();
+        });
+
+        // Mail OTP.
+        modelBuilder.Entity<MailOtpDatabaseModel>(entity =>
+        {
+            entity.ToTable("mail_otp");
+
+            entity.HasOne(t => t.MailModel)
+                  .WithMany()
+                  .HasForeignKey(t => t.MailId)
+                  .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(t => t.OtpDatabaseModel)
+                 .WithMany()
+                 .HasForeignKey(t => t.OtpId)
+                 .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasKey(t => new { t.MailId, t.OtpId });
+
         });
 
         // Base.

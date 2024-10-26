@@ -26,6 +26,10 @@ public static class LocalServices
         services.AddScoped<Data.Policies, Data.Policies>();
         services.AddScoped<Data.PoliciesRequirement, Data.PoliciesRequirement>();
         services.AddScoped<Data.OtpService, Data.OtpService>();
+        services.AddScoped<Data.Mails, Data.Mails>();
+
+        // Externos
+        services.AddSingleton<EmailSender, EmailSender>();
 
         // Iam.
         services.AddScoped<IamRoles, IamRoles>();
