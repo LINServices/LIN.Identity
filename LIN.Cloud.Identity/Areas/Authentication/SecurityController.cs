@@ -100,7 +100,6 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
     /// </summary>
     /// <param name="user">Usuario que olvido.</param>
     [HttpPost("forget/password")]
-    [RateLimit(requestLimit: 2, timeWindowSeconds: 60, blockDurationSeconds: 100)]
     public async Task<HttpResponseBase> ForgetPassword([FromQuery] string user)
     {
 
@@ -112,7 +111,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
         });
 
         if (account.Response != Responses.Success)
-            return new(account.Response)
+            return new(Responses.NotExistAccount)
             {
                 Message = "No se puede reestablecer la contraseña de esta cuenta debido a que no existe o esta inactiva."
             };
@@ -121,7 +120,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
         var mail = await mails.ReadPrincipal(user);
 
         if (mail.Response != Responses.Success)
-            return new(mail.Response)
+            return new(Responses.NotRows)
             {
                 Message = "Esta cuenta no tiene un correo principal establecido."
             };
@@ -183,7 +182,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
 
         // Si hubo un error al obtener la cuenta.
         if (account.Response != Responses.Success)
-            return new(account.Response)
+            return new(Responses.NotExistAccount)
             {
                 Message = "No se puede reestablecer la contraseña de esta cuenta debido a que no existe o esta inactiva."
             };
