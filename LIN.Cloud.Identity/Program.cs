@@ -1,4 +1,5 @@
 using Http.Extensions;
+using Http.Extensions.OpenApi;
 using LIN.Cloud.Identity.Services.Auth.Interfaces;
 using LIN.Cloud.Identity.Services.Extensions;
 using LIN.Cloud.Identity.Services.Realtime;
@@ -6,12 +7,12 @@ using LIN.Cloud.Identity.Services.Realtime;
 var builder = WebApplication.CreateBuilder(args);
 
 // Servicios de contenedor.
-builder.Services.AddSignalR();
 builder.Services.AddLINHttp(true, (options) =>
 {
-    options.OperationFilter<CustomOperationFilter<IdentityTokenAttribute>>("token");
+    options.OperationFilter<HeaderMapAttribute<IdentityTokenAttribute>>("token", "Token de acceso a LIN Cloud Identity");
 });
 
+builder.Services.AddSignalR();
 builder.Services.AddLocalServices();
 
 // Servicio de autenticación.
