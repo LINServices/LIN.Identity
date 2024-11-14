@@ -61,8 +61,8 @@ public class Account
                 Status = IdentityStatus.Enable,
                 Type = IdentityType.Account,
                 CreationTime = DateTime.Now,
-                EffectiveTime = baseAccount.Identity.EffectiveTime == default ? DateTime.Now : baseAccount.Identity.EffectiveTime,
-                ExpirationTime = baseAccount.Identity.ExpirationTime == default ? DateTime.Now.AddYears(5) : baseAccount.Identity.ExpirationTime,
+                EffectiveTime = DateTime.Now,
+                ExpirationTime = DateTime.Now.AddYears(5),
                 Roles = [],
                 Unique = baseAccount.Identity.Unique.Trim()
             }

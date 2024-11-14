@@ -23,7 +23,6 @@ public class EmailSender
 
         var aa = await client.Post(body);
 
-
         return true;
     }
 

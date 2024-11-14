@@ -19,7 +19,7 @@ public class PolicyService(IamPolicy iamPolicy)
         isValid = PasswordTime(requirements);
 
         if (!isValid)
-            return (false, "No tienes acceso a la política devido a que no has cambiado la contraseña en los últimos N dias.");
+            return (false, "No tienes acceso a la política debido a que no has cambiado la contraseña en los últimos N dias.");
 
         isValid = TFA(requirements);
 

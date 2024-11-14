@@ -3,10 +3,6 @@
 public class AccountLogs(DataContext context)
 {
 
-    /// <summary>
-    /// Crear nuevo log.
-    /// </summary>
-    /// <param name="log">Modelo.</param>
     public async Task<CreateResponse> Create(AccountLog log)
     {
 
@@ -43,7 +39,6 @@ public class AccountLogs(DataContext context)
         }
 
     }
-
 
 
     public async Task<ReadAllResponse<AccountLog>> ReadAll(int accountId)
