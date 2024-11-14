@@ -26,7 +26,6 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
     /// <summary>
     /// Evento cuando se desconecta.
     /// </summary>
-
     public override Task OnDisconnectedAsync(Exception? exception)
     {
 
@@ -156,4 +155,5 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
         {
         }
     }
+
 }
