@@ -31,12 +31,10 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
             };
 
         // Organización del modelo.
-        modelo.Identity.EffectiveTime = default;
-        modelo.Identity.ExpirationTime = default;
         modelo = Services.Formats.Account.Process(modelo);
 
         // Creación del usuario.
-        var response = await accountData.Create(modelo, 0);
+        var response = await accountData.Create(modelo);
 
         // Evaluación.
         if (response.Response != Responses.Success)
