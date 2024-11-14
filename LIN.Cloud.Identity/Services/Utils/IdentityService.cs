@@ -34,23 +34,23 @@ public class IdentityService(DataContext context) : IIdentityService
                               select member.Group.IdentityId).ToList(),
                     };
 
-        // Si hay elementos.
-        if (query.Any())
-        {
-            // Ejecuta la consulta.
-            var local = query.ToList();
+        // Si no hay elementos.
+        if (!query.Any())
+            return;
 
-            // Obtiene las bases.
-            var bases = local.SelectMany(t => t.In);
+        // Ejecuta la consulta.
+        var local = query.ToList();
 
-            // Agregar a los objetos.
-            ids.AddRange(bases);
+        // Obtiene las bases.
+        var bases = local.SelectMany(t => t.In);
 
-            // Recorrer.
-            foreach (var @base in bases)
-                await GetIdentities(@base, ids);
+        // Agregar a los objetos.
+        ids.AddRange(bases);
 
-        }
+        // Recorrer.
+        foreach (var @base in bases)
+            await GetIdentities(@base, ids);
+
     }
 
 }
