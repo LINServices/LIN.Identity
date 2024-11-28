@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using LIN.Types.Models;
+using System.Text.RegularExpressions;
 using IdentityService = LIN.Types.Cloud.Identity.Enumerations.IdentityService;
 
 namespace LIN.Cloud.Identity.Services.Formats;
@@ -10,21 +11,33 @@ public class Account
     /// Procesar el modelo.
     /// </summary>
     /// <param name="baseAccount">Modelo</param>
-    public static (bool pass, string message) Validate(AccountModel baseAccount)
+    public static List<ErrorModel> Validate(AccountModel baseAccount)
     {
 
+        List<ErrorModel> errors = [];
 
         if (string.IsNullOrWhiteSpace(baseAccount.Name))
-            return (false, "La cuenta debe de tener un nombre valido.");
+            errors.Add(new ErrorModel()
+            {
+                Tittle = "Nombre invalido",
+                Description = "El nombre del usuario no puede estar vacío.",
+            });
 
         if (baseAccount.Identity == null || string.IsNullOrWhiteSpace(baseAccount.Identity.Unique))
-            return (false, "La cuenta debe de tener una identidad unica valida.");
+            errors.Add(new ErrorModel()
+            {
+                Tittle = "Identidad no valida",
+                Description = "La cuenta debe tener un identificador único valido.",
+            });
 
         if (!ValidarCadena(baseAccount.Identity.Unique))
-            return (false, "La identidad de la cuenta no puede contener símbolos NO alfanuméricos.");
+            errors.Add(new ErrorModel()
+            {
+                Tittle = "Identidad no valida",
+                Description = "La identidad de la cuenta no puede contener símbolos NO alfanuméricos."
+            });
 
-
-        return (true, "");
+        return errors;
     }
 
 

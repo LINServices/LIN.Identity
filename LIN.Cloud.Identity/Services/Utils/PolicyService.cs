@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using LIN.Types.Models;
+using Newtonsoft.Json.Linq;
 
 namespace LIN.Cloud.Identity.Services.Utils;
 
@@ -7,26 +8,38 @@ public class PolicyService(IamPolicy iamPolicy)
 
 
 
-    public (bool valid, string message) Validate(IEnumerable<PolicyRequirementModel> requirements)
+    public ErrorModel? Validate(IEnumerable<PolicyRequirementModel> requirements)
     {
 
         bool isValid = Time(requirements);
 
         if (!isValid)
-            return (false, "No tienes acceso a la política por la hora actual.");
+            return new()
+            {
+                Tittle = "Política no complaciente",
+                Description = "No tienes acceso a la política por la hora actual."
+            };
 
         // Validar contraseña.
         isValid = PasswordTime(requirements);
 
         if (!isValid)
-            return (false, "No tienes acceso a la política debido a que no has cambiado la contraseña en los últimos N dias.");
+            return new()
+            {
+                Tittle = "Política no complaciente",
+                Description = "No tienes acceso a la política debido a que no has cambiado la contraseña en los últimos N dias."
+            };
 
         isValid = TFA(requirements);
 
         if (!isValid)
-            return (false, "No tienes acceso a la política debido a que no tienes el doble factor de autenticación");
+            return new()
+            {
+                Tittle = "Política no complaciente",
+                Description = "No tienes acceso a la política debido a que no tienes el doble factor de autenticación"
+            };
 
-        return (true, string.Empty);
+        return null;
 
     }
 
