@@ -129,7 +129,7 @@ public class DirectoryMembers(DataContext context)
     /// <param name="ids">Identidades</param>
     /// <param name="organization">Id de la organización</param>
     /// <param name="context">Contexto</param>
-    public async Task<(List<int> success, List<int> failure)> IamIn(List<int> ids, int organization)
+    public async Task<(IEnumerable<int> success, List<int> failure)> IamIn(IEnumerable<int> ids, int organization)
     {
 
         try
@@ -325,7 +325,7 @@ public class DirectoryMembers(DataContext context)
     /// <param name="ids">Lista de identidades.</param>
     /// <param name="organization">Id de la organización.</param>
     /// <returns>Respuesta del proceso.</returns>
-    public async Task<ResponseBase> Expulse(List<int> ids, int organization)
+    public async Task<ResponseBase> Expulse(IEnumerable<int> ids, int organization)
     {
 
         try

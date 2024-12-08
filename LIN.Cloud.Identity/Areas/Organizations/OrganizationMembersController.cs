@@ -184,7 +184,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <param name="ids">Lista de ids a agregar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("expulse")]
-    public async Task<HttpResponseBase> Expulse([FromQuery] int organization, [FromBody] List<int> ids)
+    public async Task<HttpResponseBase> Expulse([FromQuery] int organization, [FromBody] IEnumerable<int> ids)
     {
 
         // Confirmar el rol.
@@ -202,7 +202,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
             };
 
         // Solo elementos distintos.
-        ids = ids.Distinct().ToList();
+        ids = ids.Distinct();
 
         // Valida si el usuario pertenece a la organización.
         var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
