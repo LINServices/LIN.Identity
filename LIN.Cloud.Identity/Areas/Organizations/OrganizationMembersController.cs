@@ -53,7 +53,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
             Type = GroupMemberTypes.Guest
         }));
 
-        response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count} debido a que ya pertenecen a esta organización.";
+        response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count()} debido a que ya pertenecen a esta organización.";
 
         // Retorna el resultado
         return response;
