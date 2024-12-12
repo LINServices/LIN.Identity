@@ -22,7 +22,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// <summary>
     /// Organizaciones.
     /// </summary>
-    public DbSet<OrganizationModel> Organizations { get; set; }
+    public DbSet<OrganizationModel> Organizations { get; set; } 
 
 
     /// <summary>

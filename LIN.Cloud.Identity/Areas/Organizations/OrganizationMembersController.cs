@@ -53,7 +53,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
             Type = GroupMemberTypes.Guest
         }));
 
-        response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count} debido a que ya pertenecen a esta organización.";
+        response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count()} debido a que ya pertenecen a esta organización.";
 
         // Retorna el resultado
         return response;
@@ -94,13 +94,14 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
             };
 
         // Validar usuario y nombre.
-        var (pass, message) = Services.Formats.Account.Validate(modelo);
+        var errors = Services.Formats.Account.Validate(modelo);
 
         // Si no fue valido.
-        if (!pass)
+        if (errors.Count > 0)
             return new(Responses.InvalidParam)
             {
-                Message = message
+                Message = "Error al crear la cuenta",
+                Errors = errors
             };
 
         // Agregar la identidad.
@@ -183,7 +184,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <param name="ids">Lista de ids a agregar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("expulse")]
-    public async Task<HttpResponseBase> Expulse([FromQuery] int organization, [FromBody] List<int> ids)
+    public async Task<HttpResponseBase> Expulse([FromQuery] int organization, [FromBody] IEnumerable<int> ids)
     {
 
         // Confirmar el rol.
@@ -201,7 +202,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
             };
 
         // Solo elementos distintos.
-        ids = ids.Distinct().ToList();
+        ids = ids.Distinct();
 
         // Valida si el usuario pertenece a la organización.
         var (existentes, _) = await directoryMembersData.IamIn(ids, organization);

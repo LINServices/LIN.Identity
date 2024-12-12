@@ -21,13 +21,14 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
             };
 
         // Validar usuario y nombre.
-        var (pass, message) = Services.Formats.Account.Validate(modelo);
+        var errors = Services.Formats.Account.Validate(modelo);
 
         // Si no fue valido.
-        if (!pass)
+        if (errors.Count > 0)
             return new(Responses.InvalidParam)
             {
-                Message = message
+                Message = "Ocurrió un error al crear la cuenta",
+                Errors = errors
             };
 
         // Organización del modelo.
