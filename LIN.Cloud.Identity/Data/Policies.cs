@@ -219,12 +219,13 @@ public class Policies(DataContext context, Data.PoliciesRequirement policiesRequ
             var requirements = await policiesRequirement.ReadAll(result);
 
             // Validar.
-            (bool isValid, string message) = policyService.Validate(requirements.Models);
+            var validate = policyService.Validate(requirements.Models);
 
             // Respuesta.
-            return new(isValid ? Responses.Success : Responses.Unauthorized)
+            return new(validate is null ? Responses.Success : Responses.Unauthorized)
             {
-                Message = message
+                Message = "Error",
+                Errors = [validate]
             };
 
         }

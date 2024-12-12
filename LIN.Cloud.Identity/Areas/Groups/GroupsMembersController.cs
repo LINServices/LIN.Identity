@@ -114,7 +114,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
             }
         }));
 
-        response.Message = $"Se agregaron {successIds.Count} integrantes y se omitieron {failureIds.Count} debido a que no pertenecen a esta organización.";
+        response.Message = $"Se agregaron {successIds.Count()} integrantes y se omitieron {failureIds.Count} debido a que no pertenecen a esta organización.";
 
         // Retorna el resultado
         return response;
