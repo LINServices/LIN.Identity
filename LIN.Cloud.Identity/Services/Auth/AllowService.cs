@@ -20,7 +20,6 @@ public class AllowService(DataContext context) : IAllowService
                              select allow.IsAllow).ToListAsync();
 
         return isAllow.Contains(true);
-
     }
 
 }

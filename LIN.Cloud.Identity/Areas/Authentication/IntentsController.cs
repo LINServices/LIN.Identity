@@ -15,15 +15,15 @@ public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseCo
     {
         try
         {
-            // Cuenta
+            // Cuenta.
             var account = (from a in PassKeyHub.Attempts
                            where a.Key.Equals(UserInformation.Unique, StringComparison.CurrentCultureIgnoreCase)
                            select a).FirstOrDefault().Value ?? [];
 
-            // Hora actual
+            // Hora actual.
             var timeNow = DateTime.Now;
 
-            // Intentos
+            // Intentos.
             var intentos = (from I in account
                             where I.Status == PassKeyStatus.Undefined
                             where I.Expiración > timeNow

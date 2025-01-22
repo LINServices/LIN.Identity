@@ -94,7 +94,6 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
 
         // Retorna el resultado
         return response;
-
     }
 
 
@@ -173,7 +172,6 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
 
         // Retorna el resultado
         return response;
-
     }
 
 

@@ -31,7 +31,6 @@ public class Organizations(DataContext context, IamRoles iam)
 
             context.SaveChanges();
 
-
             // Cuenta de usuario
             var account = new AccountModel()
             {
