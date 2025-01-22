@@ -17,7 +17,7 @@ public class IamPolicy(DataContext context, Data.Groups groups, IamRoles rolesIa
                              && pol.Id == Guid.Parse(policy)
                              select pol).AnyAsync();
 
-        // Es privilegiado.
+        // Es el creador.
         if (isOwner)
             return IamLevels.Privileged;
 

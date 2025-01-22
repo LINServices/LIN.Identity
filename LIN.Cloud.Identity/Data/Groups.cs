@@ -1,6 +1,5 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
-
 public class Groups(DataContext context)
 {
 

@@ -1,9 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
-
 public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.IIdentityService identityService)
 {
-
 
     /// <summary>
     /// Crear acceso a app.
@@ -48,7 +46,6 @@ public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.II
     }
 
 
-
     /// <summary>
     /// Obtener las apps a las que una identidad tiene acceso o no.
     /// </summary>
@@ -85,6 +82,5 @@ public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.II
         }
         return new();
     }
-
 
 }

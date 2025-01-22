@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Utils;
-
-namespace LIN.Cloud.Identity.Data;
+﻿namespace LIN.Cloud.Identity.Data;
 
 public class Policies(DataContext context, Data.PoliciesRequirement policiesRequirement, Services.Utils.IIdentityService identityService, PolicyService policyService)
 {

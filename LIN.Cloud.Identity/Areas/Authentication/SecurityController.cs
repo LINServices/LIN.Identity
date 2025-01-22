@@ -53,7 +53,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
         // Generar Otp.
         var otpCode = Global.Utilities.KeyGenerator.GenerateOTP(5);
 
-        //Guardar OTP.
+        // Guardar OTP.
         var otpCreateResponse = await otpService.Create(new MailOtpDatabaseModel
         {
             MailModel = responseCreate.Model,

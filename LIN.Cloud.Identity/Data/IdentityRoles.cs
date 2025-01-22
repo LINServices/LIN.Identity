@@ -1,9 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
-
 public class IdentityRoles(DataContext context)
 {
-
 
     /// <summary>
     /// Crear nuevo rol en identidad.
@@ -19,7 +17,6 @@ public class IdentityRoles(DataContext context)
             // Attach.
             context.Attach(modelo.Identity);
             context.Attach(modelo.Organization);
-
 
             // Guardar la identidad.
             await context.IdentityRoles.AddAsync(modelo);
@@ -40,7 +37,6 @@ public class IdentityRoles(DataContext context)
         }
 
     }
-
 
 
     /// <summary>
