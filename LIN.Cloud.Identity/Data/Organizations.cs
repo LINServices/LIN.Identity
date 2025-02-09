@@ -161,7 +161,6 @@ public class Organizations(DataContext context, IamRoles iam)
     /// Obtener las organizaciones donde una identidad pertenece.
     /// </summary>
     /// <param name="id">Identidad</param>
-    /// <param name="context">Contexto</param>
     public async Task<ReadAllResponse<OrganizationModel>> ReadAll(int id)
     {
 

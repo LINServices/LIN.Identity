@@ -11,7 +11,7 @@ public class GroupsTests
     private static DataContext GetInMemoryDbContext()
     {
         var options = new DbContextOptionsBuilder<DataContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase")
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
         return new DataContext(options);
