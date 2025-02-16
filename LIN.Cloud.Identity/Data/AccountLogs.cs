@@ -16,8 +16,16 @@ public class AccountLogs(DataContext context)
                 Id = log.AccountId
             };
             context.Attach(log.Account);
-            log.Application = null;
-            log.ApplicationId = null;
+
+            if (log.Application is null)
+            {
+                log.Application = null;
+                log.ApplicationId = null;
+            }
+            else
+            {
+                log.Application = context.AttachOrUpdate(log.Application);
+            }
 
             // Guardar la cuenta.
             await context.AccountLogs.AddAsync(log);

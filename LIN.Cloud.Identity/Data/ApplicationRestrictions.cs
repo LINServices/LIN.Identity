@@ -121,6 +121,31 @@ public class ApplicationRestrictions(DataContext context)
     }
 
 
+
+    public async Task<ReadOneResponse<ApplicationModel>> Read(string id)
+    {
+
+        try
+        {
+
+            var restrictions = await (from ar in context.Applications
+                                      where ar.Key == Guid.Parse(id)
+                                      select ar).FirstOrDefaultAsync();
+
+            // Success.
+            return new(restrictions is null ? Responses.NotRows : Responses.Success, restrictions);
+
+        }
+        catch (Exception)
+        {
+            return new()
+            {
+                Response = Responses.ExistAccount
+            };
+        }
+    }
+
+
     public async Task<ReadOneResponse<bool>> ExistApp(string id)
     {
 

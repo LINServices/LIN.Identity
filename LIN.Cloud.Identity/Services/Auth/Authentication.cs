@@ -30,6 +30,12 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
 
 
     /// <summary>
+    /// Aplicación
+    /// </summary>
+    public ApplicationModel? Application { get; set; } = null;
+
+
+    /// <summary>
     /// Ajustes.
     /// </summary>
     private AuthenticationSettings Settings { get; set; } = new();
@@ -40,7 +46,7 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     /// </summary>
     /// <param name="username">Usuario.</param>
     /// <param name="password">Contraseña.</param>
-    /// <param name="appCode">Código de app.</param>
+    /// <param name="appCode">Código de restrictions.</param>
     public void SetCredentials(string username, string password, string appCode)
     {
         this.User = username;
@@ -111,23 +117,27 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     private async Task<bool> ValidateApp()
     {
 
-        if (Account.IsLINAdmin)
+        // Obtener la restrictions.
+        var appResponse = await applicationRestrictions.Read(AppCode);
+        Application = appResponse.Model;
+
+        // Si no se requiere validar la restrictions.
+        if (Account!.IsLINAdmin || !Settings.ValidateApp)
             return true;
 
-        // Validar si existe la app.
-        var appInfo = await applicationRestrictions.ExistApp(AppCode);
-
-        if (appInfo.Response != Responses.Success)
+        // Validar si la restrictions existe.
+        if (appResponse.Response != Responses.Success)
             return false;
 
-        var app = await applicationRestrictions.ReadAll(AppCode);
+        // Obtener las restricciones.
+        var restrictions = await applicationRestrictions.ReadAll(AppCode);
 
-        if (!app.Models.Any())
+        if (restrictions.Models.Count == 0)
             return true;
 
         bool isAuthorized = false;
 
-        foreach (var e in app.Models)
+        foreach (var e in restrictions.Models)
         {
 
             switch (Account.AccountType)
@@ -143,7 +153,7 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
                     break;
             }
 
-            // Si la app no permite que sea del tipo de la cuenta.
+            // Si la restrictions no permite que sea del tipo de la cuenta.
             if (!isAuthorized)
                 break;
 
@@ -189,6 +199,7 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
             AccountId = Account!.Id,
             AuthenticationMethod = AuthenticationMethods.Password,
             Time = DateTime.Now,
+            Application = Application
         });
     }
 
