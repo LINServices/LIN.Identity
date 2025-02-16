@@ -185,9 +185,8 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         {
             entity.ToTable("applications_restrictions");
             entity.HasOne(t => t.Application)
-                  .WithMany(t => t.Restrictions)
-                  .HasForeignKey(t => t.ApplicationId)
-                  .OnDelete(DeleteBehavior.NoAction);
+                  .WithOne(t => t.Restriction)
+                  .HasForeignKey<ApplicationModel>(t=>t.RestrictionId);
         });
 
         // Application Model
@@ -205,23 +204,39 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .WithMany()
                   .HasForeignKey(t => t.OwnerId)
                   .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(t => t.Restriction)
+               .WithOne(t => t.Application)
+               .HasForeignKey<ApplicationRestrictionModel>(t => t.ApplicationId);
         });
 
         // Allow Apps Model
         modelBuilder.Entity<AllowApp>(entity =>
         {
             entity.ToTable("allow_apps");
-            entity.HasKey(t => new { t.ApplicationId, t.IdentityId });
+            entity.HasKey(t => new { t.ApplicationRestrictionId, t.IdentityId });
 
             entity.HasOne(t => t.Application)
-                  .WithMany()
-                  .HasForeignKey(t => t.ApplicationId)
+                  .WithMany(t=>t.Allowed)
+                  .HasForeignKey(t => t.ApplicationRestrictionId)
                   .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(t => t.Identity)
                   .WithMany()
                   .HasForeignKey(t => t.IdentityId)
                   .OnDelete(DeleteBehavior.NoAction);
+        });
+
+        // Times.
+        modelBuilder.Entity<ApplicationRestrictionTime>(entity =>
+        {
+            entity.ToTable("restrict_times");
+          
+            entity.HasOne(t => t.ApplicationRestrictionModel)
+                  .WithMany(t => t.Times)
+                  .HasForeignKey(t => t.ApplicationRestrictionId)
+                  .OnDelete(DeleteBehavior.NoAction);
+
         });
 
         // Account Logs Model

@@ -169,6 +169,25 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     }
 
 
+
+    private bool ValidateRestrictions(List<ApplicationRestrictionModel> restrictions)
+    {
+
+        DateTime now = DateTime.Now;
+
+        foreach (var restriction in restrictions)
+        {
+
+          
+
+        }
+
+
+       
+        return true;
+    }
+
+
     /// <summary>
     /// Validar la contraseña.
     /// </summary>
