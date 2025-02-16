@@ -94,6 +94,12 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
 
     /// <summary>
+    /// Restricciones de tiempo.
+    /// </summary>
+    public DbSet<ApplicationRestrictionTime> TimeRestriction { get; set; }
+
+
+    /// <summary>
     /// Correos asociados a las cuentas.
     /// </summary>
     public DbSet<MailModel> Mails { get; set; }

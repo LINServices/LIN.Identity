@@ -14,7 +14,12 @@
       "roles": []
     },
     "ownerId": 1,
-    "restrictions": []
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": true,
+      "allowEducationsAccounts": true
+    }
   },
   {
     "id": 0,
@@ -31,7 +36,12 @@
       "roles": []
     },
     "ownerId": 1,
-    "restrictions": []
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": true,
+      "allowEducationsAccounts": true
+    }
   },
   {
     "id": 0,
@@ -48,7 +58,12 @@
       "roles": []
     },
     "ownerId": 1,
-    "restrictions": []
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": true,
+      "allowEducationsAccounts": true
+    }
   },
   {
     "id": 0,
@@ -65,7 +80,12 @@
       "roles": []
     },
     "ownerId": 1,
-    "restrictions": []
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": true,
+      "allowEducationsAccounts": true
+    }
   },
   {
     "id": 0,
@@ -82,7 +102,12 @@
       "roles": []
     },
     "ownerId": 1,
-    "restrictions": []
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": false,
+      "allowEducationsAccounts": false
+    }
   },
   {
     "id": 0,
@@ -99,7 +124,12 @@
       "roles": []
     },
     "ownerId": 1,
-    "restrictions": []
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": true,
+      "allowEducationsAccounts": true
+    }
   },
   {
     "id": 0,
@@ -116,7 +146,12 @@
       "roles": []
     },
     "ownerId": 1,
-    "restrictions": []
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": true,
+      "allowEducationsAccounts": true
+    }
   },
   {
     "id": 0,
@@ -133,6 +168,11 @@
       "roles": []
     },
     "ownerId": 1,
-    "restrictions": []
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": true,
+      "allowEducationsAccounts": true
+    }
   }
 ]
