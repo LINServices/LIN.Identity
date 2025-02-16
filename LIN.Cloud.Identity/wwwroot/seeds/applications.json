@@ -117,5 +117,22 @@
     },
     "ownerId": 1,
     "restrictions": []
+  },
+  {
+    "id": 0,
+    "name": "LIN Contacts",
+    "key": "6101a3bd-b1fb-4815-afc2-1e9a625ba09d",
+    "identity": {
+      "id": 0,
+      "unique": "contacts#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restrictions": []
   }
 ]
