@@ -174,5 +174,27 @@
       "allowWorkAccounts": true,
       "allowEducationsAccounts": true
     }
+  },
+  {
+    "id": 0,
+    "name": "LIN Human Directory",
+    "key": "bc8dc14f-55cb-4f73-839b-95b5480ff774",: null,
+    "identity": {
+      "id": 0,
+      "unique": "humandirectory#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restriction": {
+      "id": 0,
+      "allowPersonalAccounts": true,
+      "allowWorkAccounts": true,
+      "allowEducationsAccounts": true
+    }
   }
 ]
