@@ -9,8 +9,8 @@ public class ApplicationRestrictionsController(Data.ApplicationRestrictions appl
     /// Crear restricción.
     /// </summary>
     /// <param name="app">Modelo.</param>
-    [HttpPost]
-    public async Task<HttpCreateResponse> Create([FromBody] ApplicationRestrictionModel app)
+    [HttpPut]
+    public async Task<HttpCreateResponse> UpdateOrCreate([FromBody] ApplicationRestrictionModel app)
     {
 
         // Si el modelo es nulo.
