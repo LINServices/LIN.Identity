@@ -6,7 +6,7 @@ public class ApplicationRestrictionsController(Data.ApplicationRestrictions appl
 {
 
     /// <summary>
-    /// Crear restriccion.
+    /// Crear restricción.
     /// </summary>
     /// <param name="app">Modelo.</param>
     [HttpPost]

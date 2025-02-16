@@ -17,7 +17,7 @@ public class PolicyRequirementsController(Data.PoliciesRequirement policiesData,
         var roles = await iamPolicy.Validate(UserInformation.IdentityId, modelo.PolicyId.ToString());
 
         if (roles != IamLevels.Privileged)
-            return new(Responses.Unauthorized) { Message = $"No tienes permisos c" };
+            return new(Responses.Unauthorized) { Message = $"No tienes permisos" };
 
         // Forma
         var response = await policiesData.Create(modelo);
