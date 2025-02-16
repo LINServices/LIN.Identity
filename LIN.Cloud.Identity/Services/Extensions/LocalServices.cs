@@ -27,6 +27,7 @@ public static class LocalServices
         services.AddScoped<Data.PoliciesRequirement, Data.PoliciesRequirement>();
         services.AddScoped<Data.OtpService, Data.OtpService>();
         services.AddScoped<Data.Mails, Data.Mails>();
+        services.AddScoped<Data.ApplicationRestrictions, Data.ApplicationRestrictions>();
 
         // Externos
         services.AddSingleton<EmailSender, EmailSender>();

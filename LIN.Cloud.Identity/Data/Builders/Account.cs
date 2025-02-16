@@ -265,7 +265,9 @@ public class Account
                              Visibility = account.Visibility,
                              Profile = filters.IncludePhoto ? string.Empty : selector,
                              IdentityId = account.Identity.Id,
-                             IdentityService = account.IdentityService
+                             IdentityService = account.IdentityService,
+                             AccountType = account.AccountType,
+                             IsLINAdmin = account.IsLINAdmin
                          };
 
         var s = queryFinal.ToQueryString();

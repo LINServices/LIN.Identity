@@ -32,6 +32,7 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
             };
 
         // Organización del modelo.
+        modelo.AccountType = AccountTypes.Personal;
         modelo = Services.Formats.Account.Process(modelo);
 
         // Creación del usuario.

@@ -68,6 +68,7 @@ public class Account
             Password = Global.Utilities.Cryptography.Encrypt(baseAccount.Password),
             Visibility = baseAccount.Visibility,
             IdentityId = 0,
+            IsLINAdmin = false,
             Identity = new()
             {
                 Id = 0,

@@ -1,6 +1,8 @@
-﻿using LIN.Cloud.Identity.Persistence.Models;
+﻿using LIN.Cloud.Identity.Persistence.Extensions;
+using LIN.Cloud.Identity.Persistence.Models;
 using LIN.Types.Cloud.Identity.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace LIN.Cloud.Identity.Persistence.Contexts;
 
@@ -22,7 +24,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// <summary>
     /// Organizaciones.
     /// </summary>
-    public DbSet<OrganizationModel> Organizations { get; set; } 
+    public DbSet<OrganizationModel> Organizations { get; set; }
 
 
     /// <summary>
@@ -53,6 +55,12 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// Allow apps.
     /// </summary>
     public DbSet<AllowApp> AllowApps { get; set; }
+
+
+    /// <summary>
+    /// Restricciones de apps.
+    /// </summary>
+    public DbSet<ApplicationRestrictionModel> ApplicationRestrictions { get; set; }
 
 
     /// <summary>
@@ -172,11 +180,22 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.OrganizationId);
         });
 
+        // Application restrictions Model
+        modelBuilder.Entity<ApplicationRestrictionModel>(entity =>
+        {
+            entity.ToTable("applications_restrictions");
+            entity.HasOne(t => t.Application)
+                  .WithMany(t => t.Restrictions)
+                  .HasForeignKey(t => t.ApplicationId)
+                  .OnDelete(DeleteBehavior.NoAction);
+        });
+
         // Application Model
         modelBuilder.Entity<ApplicationModel>(entity =>
         {
             entity.ToTable("applications");
             entity.HasIndex(t => t.IdentityId).IsUnique();
+            entity.HasIndex(t => t.Key).IsUnique();
 
             entity.HasOne(t => t.Identity)
                   .WithMany()
@@ -302,4 +321,43 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         base.OnModelCreating(modelBuilder);
     }
 
+
+    public void Seed()
+    {
+        if (!Accounts.Any())
+        {
+            var jsonData = File.ReadAllText("wwwroot/seeds/users.json");
+            var users = JsonConvert.DeserializeObject<List<AccountModel>>(jsonData) ?? [];
+
+            foreach (var user in users)
+            {
+                user.Password = Global.Utilities.Cryptography.Encrypt(user.Password);
+            }
+
+            if (users != null && users.Count > 0)
+            {
+                Accounts.AddRange(users);
+                SaveChanges();
+            }
+        }
+
+        if (!Applications.Any())
+        {
+            var jsonData = File.ReadAllText("wwwroot/seeds/applications.json");
+            var apps = JsonConvert.DeserializeObject<List<ApplicationModel>>(jsonData) ?? [];
+
+            foreach (var app in apps)
+            {
+                app.Identity.Type = Types.Cloud.Identity.Enumerations.IdentityType.Application;
+                app.Owner = new() { Id = app.OwnerId };
+                app.Owner = EntityFramework.AttachOrUpdate(this, app.Owner);
+            }
+
+            if (apps != null && apps.Count > 0)
+            {
+                Applications.AddRange(apps);
+                SaveChanges();
+            }
+        }
+    }
 }

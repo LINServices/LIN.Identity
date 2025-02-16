@@ -1,0 +1,121 @@
+﻿[
+  {
+    "id": 0,
+    "name": "LIN Inventory",
+    "key": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "identity": {
+      "id": 0,
+      "unique": "inventory#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restrictions": []
+  },
+  {
+    "id": 0,
+    "name": "LIN Allo",
+    "key": "829fa4ce-7e74-4c62-8a1e-9ba04ee7433a",
+    "identity": {
+      "id": 0,
+      "unique": "allo#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restrictions": []
+  },
+  {
+    "id": 0,
+    "name": "LIN Calendar",
+    "key": "03fcf406-c931-4454-b935-1cd9563b277f",
+    "identity": {
+      "id": 0,
+      "unique": "calendar#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restrictions": []
+  },
+  {
+    "id": 0,
+    "name": "LIN Notes",
+    "key": "3d103901-f3c9-49fd-8b86-e6cf5f22b5d6",
+    "identity": {
+      "id": 0,
+      "unique": "notes#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restrictions": []
+  },
+  {
+    "id": 0,
+    "name": "LIN Mail",
+    "key": "30ba6fd1-dff3-4e72-91d3-fb4a46fcbf60",
+    "identity": {
+      "id": 0,
+      "unique": "mail#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restrictions": []
+  },
+  {
+    "id": 0,
+    "name": "LIN Vault",
+    "key": "de7c4f00-3ad0-4911-9c9b-b8a2fbe079bc",
+    "identity": {
+      "id": 0,
+      "unique": "vault#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restrictions": []
+  },
+  {
+    "id": 0,
+    "name": "LIN Console",
+    "key": "ce85a537-41a8-46ad-9ff0-86039850a343",
+    "identity": {
+      "id": 0,
+      "unique": "console#lin",
+      "creationTime": "2025-02-16T10:00:28.998Z",
+      "effectiveTime": "2025-02-16T10:00:28.998Z",
+      "expirationTime": "2045-02-16T15:41:28.998Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    },
+    "ownerId": 1,
+    "restrictions": []
+  }
+]

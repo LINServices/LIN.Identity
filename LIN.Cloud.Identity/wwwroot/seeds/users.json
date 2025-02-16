@@ -1,0 +1,21 @@
+[
+  {
+    "id": 0,
+    "name": "LIN General Admin",
+    "profile": "",
+    "password": "default",
+    "visibility": 0,
+    "identityService": 0,
+    "islinadmin": true,
+    "identity": {
+      "id": 0,
+      "unique": "linadmin",
+      "creationTime": "2025-02-16T10:00:37.735Z",
+      "effectiveTime": "2025-02-16T10:00:37.735Z",
+      "expirationTime": "2035-02-16T15:20:37.735Z",
+      "status": 0,
+      "type": 0,
+      "roles": []
+    }
+  }
+]

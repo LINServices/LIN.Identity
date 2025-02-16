@@ -57,6 +57,14 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
                     Message = "Contraseña incorrecta."
                 };
 
+            // Contraseña invalida.
+            case Responses.UnauthorizedByApp:
+                return new()
+                {
+                    Response = Responses.UnauthorizedByApp,
+                    Message = "La aplicación no existe o no permite que inicies sesion en este momento."
+                };
+
             // Incorrecto
             default:
                 return new()

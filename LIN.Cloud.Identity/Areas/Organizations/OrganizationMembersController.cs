@@ -82,6 +82,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
         modelo.Visibility = Visibility.Hidden;
         modelo.Password = $"pwd@{DateTime.Now.Year}";
         modelo = Services.Formats.Account.Process(modelo);
+        modelo.AccountType = AccountTypes.Work;
 
         // Organización.
         var orgIdentity = await organizationsData.GetDomain(organization);

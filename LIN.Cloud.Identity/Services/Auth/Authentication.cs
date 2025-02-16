@@ -2,7 +2,7 @@
 
 namespace LIN.Cloud.Identity.Services.Auth;
 
-public class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs) : Interfaces.IAuthentication
+public class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs, Data.ApplicationRestrictions applicationRestrictions) : Interfaces.IAuthentication
 {
 
     /// <summary>
@@ -71,6 +71,13 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
         if (!password)
             return Responses.InvalidPassword;
 
+        // Validar aplicación.
+        var valApp = await ValidateApp();
+
+        // Bloqueado por la aplicación.
+        if (!valApp)
+            return Responses.UnauthorizedByApp;
+
         if (Settings.Log)
             await SaveLog();
 
@@ -96,6 +103,58 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
 
         // Respuesta.
         return account.Response == Responses.Success;
+
+    }
+
+
+
+    private async Task<bool> ValidateApp()
+    {
+
+        if (Account.IsLINAdmin)
+            return true;
+
+        // Validar si existe la app.
+        var appInfo = await applicationRestrictions.ExistApp(AppCode);
+
+        if (appInfo.Response != Responses.Success)
+            return false;
+
+        var app = await applicationRestrictions.ReadAll(AppCode);
+
+        if (!app.Models.Any())
+            return true;
+
+        bool isAuthorized = false;
+
+        foreach (var e in app.Models)
+        {
+
+            switch (Account.AccountType)
+            {
+                case AccountTypes.Personal:
+                    if (e.AllowPersonalAccounts) isAuthorized = true;
+                    break;
+                case AccountTypes.Work:
+                    if (e.AllowWorkAccounts) isAuthorized = true;
+                    break;
+                case AccountTypes.Education:
+                    if (e.AllowEducationsAccounts) isAuthorized = true;
+                    break;
+            }
+
+            // Si la app no permite que sea del tipo de la cuenta.
+            if (!isAuthorized)
+                break;
+
+            // Validar horas.
+
+            // Validar identidades.
+
+        }
+
+        // Respuesta.
+        return isAuthorized;
 
     }
 

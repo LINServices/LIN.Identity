@@ -47,6 +47,9 @@ public static class PersistenceExtensions
             var scope = app.ApplicationServices.CreateScope();
             var context = scope.ServiceProvider.GetService<DataContext>();
             context?.Database.EnsureCreated();
+
+            // Data seed.
+            context?.Seed();
         }
         catch (Exception ex)
         {
