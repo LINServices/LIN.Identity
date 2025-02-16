@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("applications")]
-public class ApplicationsController(Data.ApplicationRestrictions applicationRestrictions) : AuthenticationBaseController
+public class ApplicationsController(Data.Applications application) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -53,7 +53,7 @@ public class ApplicationsController(Data.ApplicationRestrictions applicationRest
 
         Services.Formats.Identities.Process(app.Identity);
 
-        var create = await applicationRestrictions.Create(app);
+        var create = await application.Create(app);
 
         return create;
     }

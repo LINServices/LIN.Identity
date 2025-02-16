@@ -3,6 +3,10 @@
 public class Mails(DataContext context)
 {
 
+    /// <summary>
+    /// Crear modelo de resultado de mail.
+    /// </summary>
+    /// <param name="modelo">Modelo.</param>
     public async Task<ReadOneResponse<MailModel>> Create(MailModel modelo)
     {
         try
@@ -28,24 +32,17 @@ public class Mails(DataContext context)
             };
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-
-
-            return new()
-            {
-                Response = Responses.ResourceExist
-            };
+            return new(Responses.ResourceExist);
         }
-
-        return new()
-        {
-            Response = Responses.Undefined
-        };
-
     }
 
 
+    /// <summary>
+    /// Obtener el correo principal.
+    /// </summary>
+    /// <param name="unique">Usuario unico.</param>
     public async Task<ReadOneResponse<MailModel>> ReadPrincipal(string unique)
     {
         try
@@ -84,6 +81,13 @@ public class Mails(DataContext context)
     }
 
 
+    /// <summary>
+    /// Validar otp para un correo.
+    /// </summary>
+    /// <param name="email">Correo.</param>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    [Obsolete("Revisar el metodo.")]
     public async Task<ResponseBase> ValidateOtpFormail(string email, string code)
     {
         try
@@ -137,7 +141,5 @@ public class Mails(DataContext context)
         }
 
     }
-
-
 
 }
