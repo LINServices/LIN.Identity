@@ -111,7 +111,7 @@ public class PoliciesController(Data.Policies policiesData, Data.Groups groups, 
     }
 
 
-    
+
     [HttpGet]
     public async Task<HttpReadOneResponse<PolicyModel>> Read([FromQuery] string policy)
     {

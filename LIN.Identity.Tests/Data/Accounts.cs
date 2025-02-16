@@ -1,6 +1,5 @@
 ﻿using LIN.Cloud.Identity.Persistence.Contexts;
 using LIN.Cloud.Identity.Persistence.Models;
-using LIN.Cloud.Identity.Services.Models;
 using LIN.Types.Cloud.Identity.Models;
 using LIN.Types.Responses;
 using Microsoft.EntityFrameworkCore;

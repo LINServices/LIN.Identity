@@ -1,5 +1,4 @@
 ﻿using LIN.Cloud.Identity.Services.Auth.Interfaces;
-using LIN.Cloud.Identity.Services.Utils;
 
 namespace LIN.Cloud.Identity.Services.Extensions;
 

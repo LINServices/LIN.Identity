@@ -298,8 +298,8 @@ public class Accounts(DataContext context)
         try
         {
             var account = await (from a in context.Accounts
-                          where a.Id == accountId
-                          select a).ExecuteUpdateAsync(Accounts => Accounts.SetProperty(t=>t.Password, password));
+                                 where a.Id == accountId
+                                 select a).ExecuteUpdateAsync(Accounts => Accounts.SetProperty(t => t.Password, password));
 
             if (account <= 0)
                 return new(Responses.NotExistAccount);

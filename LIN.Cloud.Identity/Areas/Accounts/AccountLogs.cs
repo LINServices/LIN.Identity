@@ -17,6 +17,7 @@ public class AccountLogsController(Data.AccountLogs accountData) : Authenticatio
         start ??= DateTime.MinValue;
         end ??= DateTime.MaxValue;
 
+        // Validar el rango de fecha.
         if (end < start)
             return new(Responses.InvalidParam)
             {

@@ -90,7 +90,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
     public async Task<HttpResponseBase> Validate([FromQuery] string mail, [FromQuery] string code)
     {
         // Validar OTP. 
-        var response = await mails.ValidateOtpFormail(mail, code);
+        var response = await mails.ValidateOtpForMail(mail, code);
         return response;
     }
 
