@@ -62,15 +62,12 @@ public class AllowApps(DataContext context, IIdentityService identityService)
                                where identities.Contains(allow.IdentityId)
                                select new AllowApp
                                {
-                                   ApplicationId = allow.ApplicationId,
+                                   ApplicationRestrictionId = allow.ApplicationRestrictionId,
                                    IdentityId = allow.IdentityId,
                                    IsAllow = allow.IsAllow,
                                    Application = new()
                                    {
-                                       Id = allow.Application.Id,
-                                       IdentityId = allow.Application.IdentityId,
-                                       Name = allow.Application.Name,
-                                       OwnerId = allow.Application.OwnerId,
+                                       Id = allow.Application.Id
                                    }
                                }).ToListAsync();
 

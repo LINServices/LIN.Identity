@@ -15,7 +15,7 @@ public class AllowService(DataContext context) : IAllowService
 
         // Consulta.
         var isAllow = await (from allow in context.AllowApps
-                             where allow.ApplicationId == appId
+                             where allow.Application.ApplicationId == appId
                              && identities.Contains(allow.Identity.Id)
                              select allow.IsAllow).ToListAsync();
 

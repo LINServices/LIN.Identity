@@ -42,7 +42,7 @@ public class ApplicationsController(Data.Applications application) : Authenticat
 
         // Formatear app.
         app.Key = Guid.NewGuid();
-        app.Restrictions = [];
+        app.Restriction = new();
         app.Identity.Type = IdentityType.Application;
         app.Identity.Roles = [];
 
