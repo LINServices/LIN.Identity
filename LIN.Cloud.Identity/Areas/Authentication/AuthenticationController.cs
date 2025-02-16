@@ -62,7 +62,7 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
                 return new()
                 {
                     Response = Responses.UnauthorizedByApp,
-                    Message = "La aplicación no existe o no permite que inicies sesion en este momento."
+                    Message = "La aplicación no existe o no permite que inicies sesión en este momento."
                 };
 
             // Incorrecto

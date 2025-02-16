@@ -39,7 +39,7 @@ public class Applications(DataContext context)
         try
         {
 
-            // Obetener el modelo.
+            // Obtener el modelo.
             var application = await (from ar in context.Applications
                                      where ar.Key == Guid.Parse(key)
                                      select ar).FirstOrDefaultAsync();
@@ -74,10 +74,7 @@ public class Applications(DataContext context)
         }
         catch (Exception)
         {
-            return new()
-            {
-                Response = Responses.Undefined
-            };
+            return new(Responses.Undefined);
         }
     }
 

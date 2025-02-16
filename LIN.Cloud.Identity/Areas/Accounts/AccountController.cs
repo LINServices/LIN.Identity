@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("[controller]")]
-public class AccountController(Data.Accounts accountData) : AuthenticationBaseController
+public class AccountController(Data.Accounts accountData, Data.Applications applications) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -10,7 +10,7 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
     /// <param name="modelo">Modelo de la cuenta.</param>
     /// <returns>Retorna el Id asignado a la cuenta.</returns>
     [HttpPost]
-    public async Task<HttpCreateResponse> Create([FromBody] AccountModel? modelo)
+    public async Task<HttpCreateResponse> Create([FromBody] AccountModel? modelo, [FromHeader] string app)
     {
 
         // Validaciones del modelo.
@@ -45,9 +45,16 @@ public class AccountController(Data.Accounts accountData) : AuthenticationBaseCo
                 Message = "Hubo un error al crear la cuenta."
             };
 
-        // Obtiene el usuario.
-        var token = JwtService.Generate(response.Model, 0);
+        // Obtener información de la app.
+        var application = await applications.Read(app);
 
+        // Obtiene el usuario.
+        string? token = null;
+
+        // Si la aplicación es valida, generamos un token.
+        if (application.Response == Responses.Success)
+            token = JwtService.Generate(response.Model, application.Model.Id);
+        
         // Retorna el resultado.
         return new CreateResponse()
         {

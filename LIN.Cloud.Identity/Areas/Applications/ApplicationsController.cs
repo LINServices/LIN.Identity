@@ -30,14 +30,14 @@ public class ApplicationsController(Data.Applications application) : Authenticat
         if (string.IsNullOrWhiteSpace(app.Identity.Unique))
             return new(Responses.InvalidParam)
             {
-                Errors = [new() { Tittle = "Unique invalido", Description = "La identidad unica es invalida (No puede ser vacio)." }]
+                Errors = [new() { Tittle = "Unique invalido", Description = "La identidad unica es invalida (No puede ser vacío)." }]
             };
 
-        // Validar otros parametros.
+        // Validar otros parámetros.
         if (string.IsNullOrWhiteSpace(app.Name))
             return new(Responses.InvalidParam)
             {
-                Errors = [new() { Tittle = "Nombre invalido", Description = "El nombre de la aplicación no puede estar vacio." }]
+                Errors = [new() { Tittle = "Nombre invalido", Description = "El nombre de la aplicación no puede estar vacío." }]
             };
 
         // Formatear app.

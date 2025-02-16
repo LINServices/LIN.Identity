@@ -4,7 +4,7 @@ public class ApplicationRestrictions(DataContext context)
 {
 
     /// <summary>
-    /// Crear nueva restriccion de aplicación.
+    /// Crear nueva restricción de aplicación.
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     public async Task<CreateResponse> Create(ApplicationRestrictionModel modelo)
@@ -30,7 +30,7 @@ public class ApplicationRestrictions(DataContext context)
 
 
     /// <summary>
-    /// Obtener las restricciones de aplicacion.
+    /// Obtener las restricciones de aplicación.
     /// </summary>
     /// <param name="id">Id de la aplicación.</param>
     public async Task<ReadOneResponse<ApplicationRestrictionModel>> Read(string id)
@@ -53,6 +53,10 @@ public class ApplicationRestrictions(DataContext context)
     }
 
 
+    /// <summary>
+    /// Obtener las restricciones de tiempo.
+    /// </summary>
+    /// <param name="id">Id de la aplicación.</param>
     public async Task<ReadAllResponse<ApplicationRestrictionTime>> ReadTimes(int id)
     {
         try
