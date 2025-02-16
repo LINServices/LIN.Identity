@@ -322,18 +322,23 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     }
 
 
+    /// <summary>
+    /// Data primaria.
+    /// </summary>
     public void Seed()
     {
+
+        // Si no hay cuentas.
         if (!Accounts.Any())
         {
+            // Obtener la data.
             var jsonData = File.ReadAllText("wwwroot/seeds/users.json");
             var users = JsonConvert.DeserializeObject<List<AccountModel>>(jsonData) ?? [];
 
             foreach (var user in users)
-            {
                 user.Password = Global.Utilities.Cryptography.Encrypt(user.Password);
-            }
 
+            // Agregar los modelos.
             if (users != null && users.Count > 0)
             {
                 Accounts.AddRange(users);
@@ -341,11 +346,14 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             }
         }
 
+        // Si no hay aplicaciones.
         if (!Applications.Any())
         {
+            // Obtener la data.
             var jsonData = File.ReadAllText("wwwroot/seeds/applications.json");
             var apps = JsonConvert.DeserializeObject<List<ApplicationModel>>(jsonData) ?? [];
 
+            // Formatear modelos.
             foreach (var app in apps)
             {
                 app.Identity.Type = Types.Cloud.Identity.Enumerations.IdentityType.Application;
@@ -353,6 +361,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                 app.Owner = EntityFramework.AttachOrUpdate(this, app.Owner);
             }
 
+            // Agregar aplicaciones.
             if (apps != null && apps.Count > 0)
             {
                 Applications.AddRange(apps);
