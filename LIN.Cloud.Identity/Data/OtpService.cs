@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Models;
-
-namespace LIN.Cloud.Identity.Data;
+﻿namespace LIN.Cloud.Identity.Data;
 
 public class OtpService(DataContext context)
 {

@@ -41,11 +41,11 @@ public class Applications(DataContext context)
 
             // Obetener el modelo.
             var application = await (from ar in context.Applications
-                                      where ar.Key == Guid.Parse(key)
-                                      select ar).FirstOrDefaultAsync();
+                                     where ar.Key == Guid.Parse(key)
+                                     select ar).FirstOrDefaultAsync();
 
             // Success.
-            return new(application is null ? Responses.NotRows : Responses.Success, application! );
+            return new(application is null ? Responses.NotRows : Responses.Success, application!);
 
         }
         catch (Exception)
@@ -65,8 +65,8 @@ public class Applications(DataContext context)
         {
 
             var exist = await (from ar in context.Applications
-                                      where ar.Key == Guid.Parse(key)
-                                      select ar).AnyAsync();
+                               where ar.Key == Guid.Parse(key)
+                               select ar).AnyAsync();
 
             // Success.
             return new(Responses.Success, exist);

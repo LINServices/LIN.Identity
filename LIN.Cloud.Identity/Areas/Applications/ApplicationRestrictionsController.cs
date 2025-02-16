@@ -5,6 +5,10 @@
 public class ApplicationRestrictionsController(Data.ApplicationRestrictions applicationRestrictions) : AuthenticationBaseController
 {
 
+    /// <summary>
+    /// Crear restriccion.
+    /// </summary>
+    /// <param name="app">Modelo.</param>
     [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] ApplicationRestrictionModel app)
     {
@@ -16,13 +20,14 @@ public class ApplicationRestrictionsController(Data.ApplicationRestrictions appl
                 Errors = [new() { Tittle = "Modelo invalido", Description = "El modelo json es invalido." }]
             };
 
+        // Modelo.
         app.Application = new()
         {
             Id = app.ApplicationId
         };
 
+        // Crear restricción.
         var create = await applicationRestrictions.Create(app);
-
         return create;
     }
 
