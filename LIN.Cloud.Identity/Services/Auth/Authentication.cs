@@ -2,7 +2,7 @@
 
 namespace LIN.Cloud.Identity.Services.Auth;
 
-public class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs, Data.ApplicationRestrictions applicationRestrictions) : Interfaces.IAuthentication
+public class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs, Data.ApplicationRestrictions applicationRestrictions, Data.Applications applications) : Interfaces.IAuthentication
 {
 
     /// <summary>
@@ -118,7 +118,7 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
     {
 
         // Obtener la restrictions.
-        var appResponse = await applicationRestrictions.Read(AppCode);
+        var appResponse = await applications.Read(AppCode);
         Application = appResponse.Model;
 
         // Si no se requiere validar la restrictions.

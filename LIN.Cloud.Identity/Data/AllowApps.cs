@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
-public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.IIdentityService identityService)
+public class AllowApps(DataContext context, IIdentityService identityService)
 {
 
     /// <summary>
@@ -15,7 +15,6 @@ public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.II
 
         try
         {
-
             // Attach.
             context.Attach(modelo.Application);
             context.Attach(modelo.Identity);
@@ -47,8 +46,9 @@ public class AllowApps(DataContext context, LIN.Cloud.Identity.Services.Utils.II
 
 
     /// <summary>
-    /// Obtener las apps a las que una identidad tiene acceso o no.
+    /// btener las apps a las que una identidad tiene acceso o no.
     /// </summary>
+    /// <param name="id">Id de la identidad.</param>
     public async Task<ReadAllResponse<AllowApp>> ReadAll(int id)
     {
 

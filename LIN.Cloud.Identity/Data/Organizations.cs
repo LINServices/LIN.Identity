@@ -2,7 +2,6 @@
 
 namespace LIN.Cloud.Identity.Data;
 
-
 public class Organizations(DataContext context, IamRoles iam)
 {
 

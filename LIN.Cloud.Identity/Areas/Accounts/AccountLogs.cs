@@ -10,10 +10,21 @@ public class AccountLogsController(Data.AccountLogs accountData) : Authenticatio
     /// </summary>
     /// <returns>Lista de logs.</returns>
     [HttpGet]
-    public async Task<HttpReadAllResponse<AccountLog>> ReadAll()
+    public async Task<HttpReadAllResponse<AccountLog>> ReadAll(DateTime? start, DateTime? end)
     {
+
+        // Fechas por defecto.
+        start ??= DateTime.MinValue;
+        end ??= DateTime.MaxValue;
+
+        if (end < start)
+            return new(Responses.InvalidParam)
+            {
+                Message = "La fecha de fin debe ser mayor a la fecha de inicio."
+            };
+
         // Obtiene el usuario
-        var response = await accountData.ReadAll(UserInformation.AccountId);
+        var response = await accountData.ReadAll(UserInformation.AccountId, start, end);
         return response;
     }
 

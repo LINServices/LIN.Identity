@@ -2,24 +2,18 @@
 
 namespace LIN.Cloud.Identity.Data;
 
-
 public class DirectoryMembers(DataContext context)
 {
-
 
     /// <summary>
     /// Obtener los directorios (Grupos de organización) donde una identidad pertenece.
     /// </summary>
     /// <param name="id">Identidad</param>
     /// <param name="organization">Organización de contexto.</param>
-    /// <param name="context">Contexto.</param>
     public async Task<ReadAllResponse<GroupMember>> Read(int id, int organization)
     {
-
         try
         {
-
-
             var members = await (from gm in context.GroupMembers
                                  where gm.IdentityId == id
                                  join o in context.Organizations
@@ -36,29 +30,17 @@ public class DirectoryMembers(DataContext context)
 
             // Si la cuenta no existe.
             if (members == null)
-                return new()
-                {
-                    Response = Responses.NotRows
-                };
+                return new(Responses.NotRows);
 
             // Success.
-            return new()
-            {
-                Response = Responses.Success,
-                Models = members
-            };
-
+            return new(Responses.Success, members);
         }
         catch (Exception)
         {
-            return new()
-            {
-                Response = Responses.ExistAccount
-            };
+            return new(Responses.Undefined);
         }
 
     }
-
 
 
     /// <summary>
