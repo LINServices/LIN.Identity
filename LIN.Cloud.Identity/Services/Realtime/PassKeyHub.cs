@@ -14,13 +14,13 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
     /// <summary>
     /// Canal de intentos.
     /// </summary>
-    public static readonly string AttemptsChannel = "#attempts";
+    public const string AttemptsChannel = "#attempts";
 
 
     /// <summary>
     /// Canal de respuestas.
     /// </summary>
-    public static readonly string ResponseChannel = "#responses";
+    public const string ResponseChannel = "#responses";
 
 
     /// <summary>
