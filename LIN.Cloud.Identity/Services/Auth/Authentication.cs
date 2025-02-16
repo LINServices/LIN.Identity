@@ -2,7 +2,7 @@
 
 namespace LIN.Cloud.Identity.Services.Auth;
 
-public class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs, Data.ApplicationRestrictions applicationRestrictions, Data.Applications applications) : Interfaces.IAuthentication
+public class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs, Data.ApplicationRestrictions applicationRestrictions, Data.Applications applications, Utils.IdentityService identityService, AllowService allowService) : Interfaces.IAuthentication
 {
 
     /// <summary>
@@ -130,61 +130,79 @@ public class Authentication(Data.Accounts accountData, Data.AccountLogs accountL
             return false;
 
         // Obtener las restricciones.
-        var restrictions = await applicationRestrictions.ReadAll(AppCode);
+        var restriction = await applicationRestrictions.Read(AppCode);
 
-        if (restrictions.Models.Count == 0)
-            return true;
-
-        bool isAuthorized = false;
-
-        foreach (var e in restrictions.Models)
-        {
-
-            switch (Account.AccountType)
-            {
-                case AccountTypes.Personal:
-                    if (e.AllowPersonalAccounts) isAuthorized = true;
-                    break;
-                case AccountTypes.Work:
-                    if (e.AllowWorkAccounts) isAuthorized = true;
-                    break;
-                case AccountTypes.Education:
-                    if (e.AllowEducationsAccounts) isAuthorized = true;
-                    break;
-            }
-
-            // Si la restrictions no permite que sea del tipo de la cuenta.
-            if (!isAuthorized)
-                break;
-
-            // Validar horas.
-
-            // Validar identidades.
-
-        }
+        var x = await ValidateRestrictions(restriction.Model);
 
         // Respuesta.
-        return isAuthorized;
+        return x;
 
     }
 
 
 
-    private bool ValidateRestrictions(List<ApplicationRestrictionModel> restrictions)
+    private async Task<bool> ValidateRestrictions(ApplicationRestrictionModel? restriction)
     {
 
-        DateTime now = DateTime.Now;
+        if (restriction == null)
+            return true;
 
-        foreach (var restriction in restrictions)
+        // Validar.
+        switch (Account.AccountType)
         {
-
-          
-
+            case AccountTypes.Personal:
+                if (!restriction.AllowPersonalAccounts) return false;
+                break;
+            case AccountTypes.Work:
+                if (!restriction.AllowWorkAccounts) return false;
+                break;
+            case AccountTypes.Education:
+                if (!restriction.AllowEducationsAccounts) return false;
+                break;
         }
 
 
-       
+        if (restriction.RestrictedByTime)
+        {
+            bool x = await ValidateRestrictionsTimes();
+            if (!x)
+                return false;
+        }
+
+        if (restriction.RestrictedByIdentities)
+        {
+            bool x = await ValidateRestrictionsIdentity();
+            if (!x)
+                return false;
+        }
+
         return true;
+    }
+
+
+    private async Task<bool> ValidateRestrictionsTimes()
+    {
+        var now = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, 0);
+        var times = await applicationRestrictions.ReadTimes(Application!.Id);
+
+        foreach (var time in times.Models)
+        {
+            if (now > time.StartTime && now < time.EndTime)
+                return true;
+        }
+
+        return false;
+    }
+
+
+    private async Task<bool> ValidateRestrictionsIdentity()
+    {
+
+        var identities = await identityService.GetIdentities(Account.IdentityId);
+
+        bool isAllow = await allowService.IsAllow(identities, Application.Id);
+
+        return isAllow;
     }
 
 

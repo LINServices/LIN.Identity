@@ -33,17 +33,17 @@ public class ApplicationRestrictions(DataContext context)
     /// Obtener las restricciones de aplicacion.
     /// </summary>
     /// <param name="id">Id de la aplicación.</param>
-    public async Task<ReadAllResponse<ApplicationRestrictionModel>> ReadAll(int id)
+    public async Task<ReadOneResponse<ApplicationRestrictionModel>> Read(string id)
     {
         try
         {
 
-            var restrictions = await (from ar in context.ApplicationRestrictions
-                                      where ar.ApplicationId == id
-                                      select ar).ToListAsync();
+            var restriction = await (from ar in context.ApplicationRestrictions
+                                      where ar.Application.Key == Guid.Parse(id)
+                                      select ar).FirstOrDefaultAsync();
 
             // Success.
-            return new(Responses.Success, restrictions);
+            return new(Responses.Success, restriction!);
 
         }
         catch (Exception)
@@ -53,18 +53,14 @@ public class ApplicationRestrictions(DataContext context)
     }
 
 
-    /// <summary>
-    /// Obtener las restricciones de aplicacion.
-    /// </summary>
-    /// <param name="id">Id de la aplicación.</param>
-    public async Task<ReadAllResponse<ApplicationRestrictionModel>> ReadAll(string id)
+    public async Task<ReadAllResponse<ApplicationRestrictionTime>> ReadTimes(int id)
     {
         try
         {
 
-            var restrictions = await (from ar in context.ApplicationRestrictions
-                                      where ar.Application.Key == Guid.Parse(id)
-                                      select ar).ToListAsync();
+            var restrictions = await (from tr in context.TimeRestriction
+                                     where tr.ApplicationRestrictionModel.ApplicationId == id
+                                     select tr).ToListAsync();
 
             // Success.
             return new(Responses.Success, restrictions);
