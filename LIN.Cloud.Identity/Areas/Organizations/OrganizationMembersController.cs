@@ -132,7 +132,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
         // Retorna el resultado
         return new CreateResponse()
         {
-            LastID = response.Model.Id,
+            LastId = response.Model.Id,
             Response = Responses.Success,
             Message = "Success"
         };
