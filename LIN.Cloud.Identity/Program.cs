@@ -18,6 +18,7 @@ builder.Services.AddLocalServices();
 // Servicio de autenticación.
 builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddPersistence(builder.Configuration);
+builder.Host.UseLoggingService(builder.Configuration);
 
 var app = builder.Build();
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace LIN.Cloud.Identity.Persistence.Extensions;
 
@@ -42,9 +43,12 @@ public static class PersistenceExtensions
     /// </summary>
     public static IApplicationBuilder UseDataBase(this IApplicationBuilder app)
     {
+      
+        var scope = app.ApplicationServices.CreateScope();
+        var logger = scope.ServiceProvider.GetService<ILogger<DataContext>>();
         try
         {
-            var scope = app.ApplicationServices.CreateScope();
+          
             var context = scope.ServiceProvider.GetService<DataContext>();
             bool? created = context?.Database.EnsureCreated();
 
@@ -53,7 +57,7 @@ public static class PersistenceExtensions
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            logger?.LogError(ex, "Error al definir la base de datos.");
         }
         return app;
     }
