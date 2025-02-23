@@ -43,7 +43,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
         // Retorna el resultado.
         return new CreateResponse()
         {
-            LastID = response.LastID,
+            LastId = response.LastId,
             Response = Responses.Success,
             Message = "Success"
         };

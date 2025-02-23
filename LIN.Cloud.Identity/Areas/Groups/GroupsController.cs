@@ -45,7 +45,7 @@ public class GroupsController(Data.Groups groupData, IamRoles rolesIam) : Authen
         return new CreateResponse()
         {
             Response = Responses.Success,
-            LastID = response.Model.Id
+            LastId = response.Model.Id
         };
 
     }
