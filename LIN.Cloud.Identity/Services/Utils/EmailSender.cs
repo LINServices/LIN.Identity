@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Services.Utils;
 
-public class EmailSender
+public class EmailSender(ILogger<EmailSender> logger)
 {
 
     /// <summary>
@@ -21,7 +21,9 @@ public class EmailSender
         client.AddParameter("subject", subject);
         client.AddParameter("mail", to);
 
-        var aa = await client.Post(body);
+        var result = await client.Post(body);
+
+        logger.LogInformation(result);
 
         return true;
     }

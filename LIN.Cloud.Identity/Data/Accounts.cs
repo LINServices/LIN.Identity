@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Data;
 
-public class Accounts(DataContext context)
+public class Accounts(DataContext context, ILogger<Accounts> logger)
 {
 
     /// <summary>
@@ -67,8 +67,9 @@ public class Accounts(DataContext context)
             };
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Error al crear cuenta");
             transaction?.Rollback();
             return new()
             {
@@ -126,7 +127,6 @@ public class Accounts(DataContext context)
     /// <param name="filters">Filtros de búsqueda.</param>
     public async Task<ReadOneResponse<AccountModel>> Read(string unique, QueryObjectFilter filters)
     {
-
         try
         {
 
