@@ -49,7 +49,7 @@ public class AccountController(Data.Accounts accountData, Data.Applications appl
         var application = await applications.Read(app);
 
         // Obtiene el usuario.
-        string? token = null;
+        string token = string.Empty;
 
         // Si la aplicación es valida, generamos un token.
         if (application.Response == Responses.Success)
