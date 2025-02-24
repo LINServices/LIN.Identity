@@ -11,21 +11,28 @@ public class EmailSender(ILogger<EmailSender> logger)
     /// <param name="body">Cuerpo HTML.</param>
     public async Task<bool> Send(string to, string subject, string body)
     {
-
-        // Servicio.
-        Global.Http.Services.Client client = new(Http.Services.Configuration.GetConfiguration("hangfire:mail"))
+        try
         {
-            TimeOut = 10
-        };
+            // Servicio.
+            Global.Http.Services.Client client = new(Http.Services.Configuration.GetConfiguration("hangfire:mail"))
+            {
+                TimeOut = 10
+            };
 
-        client.AddParameter("subject", subject);
-        client.AddParameter("mail", to);
+            client.AddParameter("subject", subject);
+            client.AddParameter("mail", to);
 
-        var result = await client.Post(body);
+            var result = await client.Post(body);
 
-        logger.LogInformation(result);
+            logger.LogInformation(result);
 
-        return true;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error al enviar correo.");
+            return false;
+        }
     }
 
 }

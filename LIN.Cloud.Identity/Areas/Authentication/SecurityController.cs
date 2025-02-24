@@ -35,7 +35,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
             case Responses.ResourceExist:
                 return new(responseCreate.Response)
                 {
-                    Message = $"Hubo un error al agregar el correo <{email}> a la cuenta {model.Account.Identity.Unique}",
+                    Message = $"Hubo un error al agregar el correo <{email}> a la cuenta con identidad: '{UserInformation.IdentityId}'",
                     Errors = [
                         new() {
                             Tittle = "Mail duplicado",
