@@ -54,7 +54,7 @@ public class AccountController(Data.Accounts accountData, Data.Applications appl
         // Si la aplicación es valida, generamos un token.
         if (application.Response == Responses.Success)
             token = JwtService.Generate(response.Model, application.Model.Id);
-        
+
         // Retorna el resultado.
         return new CreateResponse()
         {

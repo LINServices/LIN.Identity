@@ -43,12 +43,12 @@ public static class PersistenceExtensions
     /// </summary>
     public static IApplicationBuilder UseDataBase(this IApplicationBuilder app)
     {
-      
+
         var scope = app.ApplicationServices.CreateScope();
         var logger = scope.ServiceProvider.GetService<ILogger<DataContext>>();
         try
         {
-          
+
             var context = scope.ServiceProvider.GetService<DataContext>();
             bool? created = context?.Database.EnsureCreated();
 
