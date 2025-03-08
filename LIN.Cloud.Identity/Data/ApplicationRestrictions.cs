@@ -39,8 +39,8 @@ public class ApplicationRestrictions(DataContext context)
         {
 
             var restriction = await (from ar in context.ApplicationRestrictions
-                                      where ar.Application.Key == Guid.Parse(id)
-                                      select ar).FirstOrDefaultAsync();
+                                     where ar.Application.Key == Guid.Parse(id)
+                                     select ar).FirstOrDefaultAsync();
 
             // Success.
             return new(Responses.Success, restriction!);
@@ -63,8 +63,8 @@ public class ApplicationRestrictions(DataContext context)
         {
 
             var restrictions = await (from tr in context.TimeRestriction
-                                     where tr.ApplicationRestrictionModel.ApplicationId == id
-                                     select tr).ToListAsync();
+                                      where tr.ApplicationRestrictionModel.ApplicationId == id
+                                      select tr).ToListAsync();
 
             // Success.
             return new(Responses.Success, restrictions);

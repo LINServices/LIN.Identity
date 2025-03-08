@@ -192,7 +192,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.ToTable("applications_restrictions");
             entity.HasOne(t => t.Application)
                   .WithOne(t => t.Restriction)
-                  .HasForeignKey<ApplicationModel>(t=>t.RestrictionId);
+                  .HasForeignKey<ApplicationModel>(t => t.RestrictionId);
         });
 
         // Application Model
@@ -223,7 +223,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.HasKey(t => new { t.ApplicationRestrictionId, t.IdentityId });
 
             entity.HasOne(t => t.Application)
-                  .WithMany(t=>t.Allowed)
+                  .WithMany(t => t.Allowed)
                   .HasForeignKey(t => t.ApplicationRestrictionId)
                   .OnDelete(DeleteBehavior.NoAction);
 
@@ -237,7 +237,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<ApplicationRestrictionTime>(entity =>
         {
             entity.ToTable("restrict_times");
-          
+
             entity.HasOne(t => t.ApplicationRestrictionModel)
                   .WithMany(t => t.Times)
                   .HasForeignKey(t => t.ApplicationRestrictionId)
