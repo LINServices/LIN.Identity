@@ -1,0 +1,11 @@
+﻿namespace LIN.Cloud.Identity.Persistence.Repositories;
+
+public interface IPolicyRepository
+{
+    Task<CreateResponse> Create(PolicyModel policyModel);
+    Task<CreateResponse> Add(TimeAccessPolicy policyModel);
+    Task<CreateResponse> Add(IpAccessPolicy policyModel);
+    Task<CreateResponse> Add(IdentityTypePolicy policyModel);
+    Task<ReadOneResponse<PolicyModel>> Read(int id, bool includeDetails);
+    Task<ResponseBase> Delete(int id);
+}

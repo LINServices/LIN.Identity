@@ -2,33 +2,8 @@
 
 [IdentityToken]
 [Route("applications/restrictions")]
-public class ApplicationRestrictionsController(Data.ApplicationRestrictions applicationRestrictions) : AuthenticationBaseController
+public class ApplicationRestrictionsController() : AuthenticationBaseController
 {
 
-    /// <summary>
-    /// Crear restricción.
-    /// </summary>
-    /// <param name="app">Modelo.</param>
-    [HttpPut]
-    public async Task<HttpCreateResponse> UpdateOrCreate([FromBody] ApplicationRestrictionModel app)
-    {
-
-        // Si el modelo es nulo.
-        if (app is null)
-            return new(Responses.InvalidParam)
-            {
-                Errors = [new() { Tittle = "Modelo invalido", Description = "El modelo json es invalido." }]
-            };
-
-        // Modelo.
-        app.Application = new()
-        {
-            Id = app.ApplicationId
-        };
-
-        // Crear restricción.
-        var create = await applicationRestrictions.Create(app);
-        return create;
-    }
-
+   
 }

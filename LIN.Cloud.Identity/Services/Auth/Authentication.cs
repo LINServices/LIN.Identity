@@ -1,9 +1,10 @@
-﻿using LIN.Cloud.Identity.Services.Auth.Interfaces;
+﻿using LIN.Cloud.Identity.Persistence.Repositories;
+using LIN.Cloud.Identity.Services.Auth.Interfaces;
 using LIN.Cloud.Identity.Services.Auth.Models;
 
 namespace LIN.Cloud.Identity.Services.Auth;
 
-public partial class Authentication(Data.Accounts accountData, Data.AccountLogs accountLogs, Data.ApplicationRestrictions applicationRestrictions, Data.Applications applications, IIdentityService identityService, IAllowService allowService) : Interfaces.IAuthentication
+public partial class Authentication(IAccountRepository accountData, IAccountLogRepository accountLogs, IApplicationRepository applications, IIdentityService identityService, IAllowService allowService) : Interfaces.IAuthentication
 {
 
     /// <summary>

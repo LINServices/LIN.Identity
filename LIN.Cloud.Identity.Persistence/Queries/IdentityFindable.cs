@@ -1,5 +1,5 @@
 ﻿using LIN.Cloud.Identity.Persistence.Queries.Interfaces;
-using LIN.Types.Cloud.Identity.Models;
+using LIN.Types.Cloud.Identity.Models.Identities;
 
 namespace LIN.Cloud.Identity.Persistence.Queries;
 
@@ -11,6 +11,11 @@ public class IdentityFindable : IFindable<AccountModel>
     }
 
     public IQueryable<AccountModel> GetAccounts(List<int> ids, Models.QueryObjectFilter filter)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IQueryable<AccountModel> GetAccounts(string unique, QueryObjectFilter filter)
     {
         throw new NotImplementedException();
     }

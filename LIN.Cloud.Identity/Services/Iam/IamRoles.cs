@@ -1,6 +1,8 @@
-﻿namespace LIN.Cloud.Identity.Services.Iam;
+﻿using LIN.Cloud.Identity.Persistence.Repositories;
 
-public class IamRoles(DataContext context, Data.Groups groups, IIdentityService identityService)
+namespace LIN.Cloud.Identity.Services.Iam;
+
+public class IamRoles(DataContext context, IGroupRepository groups, IIdentityService identityService)
 {
 
     /// <summary>
@@ -33,7 +35,7 @@ public class IamRoles(DataContext context, Data.Groups groups, IIdentityService 
         var organizations = await (from z in context.Groups
                                    where z.Members.Any(x => x.IdentityId == identity1)
                                    && z.Members.Any(x => x.IdentityId == identity2)
-                                   select z.Owner!.Id).Distinct().ToListAsync();
+                                   select z.Identity.Owner!.Id).Distinct().ToListAsync();
 
         // Si es un grupo.
         var organization = await groups.GetOwnerByIdentity(identity2);

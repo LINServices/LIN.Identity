@@ -1,10 +1,11 @@
+using LIN.Cloud.Identity.Persistence.Repositories;
 using LIN.Cloud.Identity.Services.Realtime;
 
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [IdentityToken]
 [Route("[controller]")]
-public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseController
+public class IntentsController(IAccountLogRepository passkeyData) : AuthenticationBaseController
 {
 
     /// <summary>

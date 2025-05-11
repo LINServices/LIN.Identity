@@ -1,5 +1,7 @@
 ﻿using LIN.Cloud.Identity.Persistence.Contexts;
 using LIN.Cloud.Identity.Persistence.Queries;
+using LIN.Cloud.Identity.Persistence.Repositories;
+using LIN.Cloud.Identity.Persistence.Repositories.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,13 +19,13 @@ public static class PersistenceExtensions
     /// <param name="services">Services.</param>
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfigurationManager configuration)
     {
-        string? connectionName = "cloud";
+        string? connectionName = "cloud-v4";
 #if LOCAL
-        connectionName = "local";
+        connectionName = "cloud-v4";
 #elif DEBUG_DEV
-        connectionName = "cloud-dev";
+        connectionName = "cloud-v4";
 #elif RELEASE_DEV
-        connectionName = "cloud-dev";
+        connectionName = "cloud-v4";
 #endif
 
         services.AddDbContextPool<DataContext>(options =>
@@ -33,6 +35,19 @@ public static class PersistenceExtensions
 
         services.AddScoped<AccountFindable, AccountFindable>();
         services.AddScoped<IdentityFindable, IdentityFindable>();
+
+        // Servicios de datos.
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IAccountLogRepository, AccountLogRepository>();
+        services.AddScoped<IApplicationRepository, ApplicationRepository>();
+        services.AddScoped<IGroupMemberRepository, GroupMemberRepository>();
+        services.AddScoped<IGroupRepository, GroupRepository>();
+        services.AddScoped<IIdentityRepository, IdentityRepository>();
+        services.AddScoped<IIdentityRolesRepository, IdentityRolesRepository>();
+        services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+        services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
+        services.AddScoped<IOtpRepository, OtpRepository>();
+        services.AddScoped<IPolicyRepository, PolicyRepository>();
 
         return services;
     }

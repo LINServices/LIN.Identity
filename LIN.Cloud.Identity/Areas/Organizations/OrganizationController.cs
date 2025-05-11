@@ -1,7 +1,9 @@
+using LIN.Cloud.Identity.Persistence.Repositories;
+
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [Route("[controller]")]
-public class OrganizationsController(Data.Organizations organizationsData, Data.DirectoryMembers directoryMembersData) : AuthenticationBaseController
+public class OrganizationsController(IOrganizationRepository organizationsData, IOrganizationMemberRepository directoryMembersData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -113,7 +115,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     {
 
         // Obtiene la organización
-        var response = await organizationsData.ReadAll(UserInformation.IdentityId);
+        var response = await directoryMembersData.ReadAll(UserInformation.IdentityId);
 
         return response;
 

@@ -1,8 +1,10 @@
-﻿namespace LIN.Cloud.Identity.Areas.Directories;
+﻿using LIN.Cloud.Identity.Persistence.Repositories;
+
+namespace LIN.Cloud.Identity.Areas.Directories;
 
 [IdentityToken]
 [Route("[controller]")]
-public class DirectoryController(Data.DirectoryMembers directoryMembersData, Data.Groups groupsData, IamRoles rolesIam) : AuthenticationBaseController
+public class DirectoryController(IOrganizationMemberRepository directoryMembersData, IGroupRepository groupsData, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -11,7 +13,7 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
     /// <param name="organization">Id de la organización.</param>
     /// <returns>Retorna la lista de integrantes./returns>
     [HttpGet("read/all")]
-    public async Task<HttpReadAllResponse<GroupMember>> ReadAll([FromHeader] int organization)
+    public async Task<HttpReadAllResponse<OrganizationModel>> ReadAll([FromHeader] int organization)
     {
         // Validar organización.
         if (organization <= 0)
@@ -22,7 +24,8 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
             };
 
         // Obtiene el usuario.
-        var response = await directoryMembersData.Read(UserInformation.IdentityId, organization);
+        var response = await directoryMembersData.ReadAll(
+            organization);
 
         // Si es erróneo.
         if (response.Response != Responses.Success)
@@ -70,18 +73,22 @@ public class DirectoryController(Data.DirectoryMembers directoryMembersData, Dat
                 Response = Responses.Unauthorized
             };
 
-        // Obtiene el usuario.
-        var response = await directoryMembersData.ReadMembers(directory);
+        //// Obtiene el usuario.
+        //var response = await directoryMembersData.ReadMembers(directory);
 
-        // Si es erróneo
-        if (response.Response != Responses.Success)
-            return new()
-            {
-                Response = response.Response
-            };
+        //// Si es erróneo
+        //if (response.Response != Responses.Success)
+        //    return new()
+        //    {
+        //        Response = response.Response
+        //    };
 
-        // Retorna el resultado
-        return response;
+        //// Retorna el resultado
+        //return response;
+        return new()
+        {
+            Response = Responses.Success
+        };
 
     }
 
