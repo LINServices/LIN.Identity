@@ -29,7 +29,7 @@ public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseCo
                             where I.Expiración > timeNow
                             select I).ToList();
 
-            // Retorna
+            // Retorna.
             return new(Responses.Success, intentos);
         }
         catch (Exception)
