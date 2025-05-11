@@ -69,6 +69,7 @@ public class Account
             Visibility = baseAccount.Visibility,
             IdentityId = 0,
             IsLINAdmin = false,
+            AccountType = baseAccount.AccountType,
             Identity = new()
             {
                 Id = 0,
