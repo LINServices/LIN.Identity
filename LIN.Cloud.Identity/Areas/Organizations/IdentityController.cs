@@ -1,8 +1,10 @@
-﻿namespace LIN.Cloud.Identity.Areas.Organizations;
+﻿using LIN.Cloud.Identity.Persistence.Repositories;
+
+namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [IdentityToken]
 [Route("[controller]")]
-public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData, IamRoles rolesIam) : AuthenticationBaseController
+public class IdentityController(IOrganizationMemberRepository directoryMembersData, IIdentityRolesRepository identityRolesData, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>

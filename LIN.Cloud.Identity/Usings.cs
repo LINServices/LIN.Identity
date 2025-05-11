@@ -11,6 +11,8 @@ global using LIN.Cloud.Identity.Services.Models;
 global using LIN.Cloud.Identity.Services.Utils;
 global using LIN.Types.Cloud.Identity.Enumerations;
 global using LIN.Types.Cloud.Identity.Models;
+global using LIN.Types.Cloud.Identity.Models.Identities;
+global using LIN.Types.Cloud.Identity.Models.Policies;
 global using LIN.Types.Enumerations;
 // Tipos Generales
 global using LIN.Types.Responses;

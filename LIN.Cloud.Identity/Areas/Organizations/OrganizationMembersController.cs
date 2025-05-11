@@ -1,10 +1,11 @@
+using LIN.Cloud.Identity.Persistence.Repositories;
 using LIN.Types.Cloud.Identity.Abstracts;
 
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [IdentityToken]
 [Route("orgs/members")]
-public class OrganizationMembersController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, IamRoles rolesIam) : AuthenticationBaseController
+public class OrganizationMembersController(IOrganizationRepository organizationsData, IAccountRepository accountsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -34,29 +35,32 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
         // Solo elementos distintos.
         ids = ids.Distinct().ToList();
 
-        // Valida si el usuario pertenece a la organización.
-        var (existentes, noUpdated) = await directoryMembersData.IamIn(ids, organization);
+        //// Valida si el usuario pertenece a la organización.
+        //var (existentes, noUpdated) = await directoryMembersData.IamIn(ids, organization);
 
-        var directoryId = await organizationsData.ReadDirectory(organization);
+        //var directoryId = await organizationsData.ReadDirectory(organization);
 
-        // Crear el usuario.
-        var response = await groupMembers.Create(noUpdated.Select(id => new GroupMember
+        //// Crear el usuario.
+        //var response = await groupMembers.Create(noUpdated.Select(id => new GroupMember
+        //{
+        //    Group = new()
+        //    {
+        //        Id = directoryId.Model,
+        //    },
+        //    Identity = new()
+        //    {
+        //        Id = id
+        //    },
+        //    Type = GroupMemberTypes.Guest
+        //}));
+
+        //response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count()} debido a que ya pertenecen a esta organización.";
+
+        //// Retorna el resultado
+        //return response;
+        return new()
         {
-            Group = new()
-            {
-                Id = directoryId.Model,
-            },
-            Identity = new()
-            {
-                Id = id
-            },
-            Type = GroupMemberTypes.Guest
-        }));
-
-        response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count()} debido a que ya pertenecen a esta organización.";
-
-        // Retorna el resultado
-        return response;
+        };
 
     }
 
@@ -161,19 +165,22 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
                 Response = Responses.Unauthorized
             };
 
-        // Obtiene los miembros.
-        var members = await directoryMembersData.ReadMembersByOrg(organization);
+        //// Obtiene los miembros.
+        //var members = await directoryMembersData.ReadAll(organization);
 
-        // Error al obtener los integrantes.
-        if (members.Response != Responses.Success)
-            return new ReadAllResponse<SessionModel<GroupMember>>
-            {
-                Message = "No se encontró la organización.",
-                Response = Responses.Unauthorized
-            };
+        //// Error al obtener los integrantes.
+        //if (members.Response != Responses.Success)
+        //    return new ReadAllResponse<SessionModel<GroupMember>>
+        //    {
+        //        Message = "No se encontró la organización.",
+        //        Response = Responses.Unauthorized
+        //    };
 
-        // Retorna el resultado
-        return members;
+        //// Retorna el resultado
+        //return members;
+        return new()
+        {
+        };
 
     }
 
@@ -205,14 +212,16 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
         // Solo elementos distintos.
         ids = ids.Distinct();
 
-        // Valida si el usuario pertenece a la organización.
-        var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
+        //// Valida si el usuario pertenece a la organización.
+        //var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
 
-        var response = await directoryMembersData.Expulse(existentes, organization);
+        //var response = await directoryMembersData.Expulse(existentes, organization);
 
         // Retorna el resultado
-        return response;
-
+        //return response;
+        return new()
+        {
+        };
     }
 
 }

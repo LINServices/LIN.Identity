@@ -1,9 +1,10 @@
+using LIN.Cloud.Identity.Persistence.Repositories;
 using LIN.Cloud.Identity.Services.Auth.Interfaces;
 
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class AuthenticationController(IAuthentication authentication, Data.Accounts accountData, Data.Policies policyData) : AuthenticationBaseController
+public class AuthenticationController(IAuthentication authentication, IAccountRepository accountData, IPolicyRepository policyData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -120,11 +121,11 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
     /// <param name="password">Contraseña.</param>
     /// <param name="policy">Id de la política.</param>
     [HttpGet("validate/policy")]
-    public async Task<HttpResponseBase> ValidatePolicy([FromQuery] string user, [FromQuery] string password, [FromHeader] string policy)
+    public async Task<HttpResponseBase> ValidatePolicy([FromQuery] string user, [FromQuery] string password, [FromHeader] int policy)
     {
 
         // Validación de parámetros.
-        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(policy))
+        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son invalido."
@@ -171,16 +172,20 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
                 };
         }
 
-        // Validar política.
-        var isAllow = await policyData.HasFor(authentication.GetData().IdentityId, policy);
+        //// Validar política.
+        //var isAllow = await policyData.HasFor(authentication.GetData().IdentityId, policy);
 
-        // Respuesta.
-        var http = new ResponseBase
+        //// Respuesta.
+        //var http = new ResponseBase
+        //{
+        //    Response = isAllow.Response
+        //};
+
+        //return http;
+        return new()
         {
-            Response = isAllow.Response
+            Response = Responses.Success
         };
-
-        return http;
     }
 
 }

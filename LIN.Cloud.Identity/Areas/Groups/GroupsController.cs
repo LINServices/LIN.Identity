@@ -1,8 +1,10 @@
-﻿namespace LIN.Cloud.Identity.Areas.Groups;
+﻿using LIN.Cloud.Identity.Persistence.Repositories;
+
+namespace LIN.Cloud.Identity.Areas.Groups;
 
 [IdentityToken]
 [Route("[controller]")]
-public class GroupsController(Data.Groups groupData, IamRoles rolesIam) : AuthenticationBaseController
+public class GroupsController(IGroupRepository groupData, IamRoles rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -14,7 +16,7 @@ public class GroupsController(Data.Groups groupData, IamRoles rolesIam) : Authen
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.Validate(UserInformation.IdentityId, group.OwnerId ?? 0);
+        var roles = await rolesIam.Validate(UserInformation.IdentityId, group.Identity.OwnerId ?? 0);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);

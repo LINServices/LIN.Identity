@@ -1,8 +1,10 @@
+using LIN.Cloud.Identity.Persistence.Repositories;
+
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [IdentityToken]
 [Route("account/logs")]
-public class AccountLogsController(Data.AccountLogs accountData) : AuthenticationBaseController
+public class AccountLogsController(IAccountLogRepository accountData) : AuthenticationBaseController
 {
 
     /// <summary>

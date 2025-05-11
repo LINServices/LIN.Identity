@@ -1,6 +1,5 @@
 ﻿namespace LIN.Cloud.Identity.Persistence.Models;
 
-
 public class QueryObjectFilter
 {
     public int AccountContext { get; set; }
@@ -11,7 +10,6 @@ public class QueryObjectFilter
     public FindOn FindOn { get; set; }
 
 }
-
 
 public enum FindOn
 {

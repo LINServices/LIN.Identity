@@ -13,13 +13,14 @@ public class AllowService(DataContext context) : IAllowService
     public async Task<bool> IsAllow(IEnumerable<int> identities, int appId)
     {
 
-        // Consulta.
-        var isAllow = await (from allow in context.AllowApps
-                             where allow.Application.ApplicationId == appId
-                             && identities.Contains(allow.Identity.Id)
-                             select allow.IsAllow).ToListAsync();
+        //// Consulta.
+        //var isAllow = await (from allow in context.AllowApps
+        //                     where allow.Application.ApplicationId == appId
+        //                     && identities.Contains(allow.Identity.Id)
+        //                     select allow.IsAllow).ToListAsync();
 
-        return isAllow.Contains(true);
+        //return isAllow.Contains(true);
+        return false;
     }
 
 }

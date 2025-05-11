@@ -1,6 +1,8 @@
-﻿namespace LIN.Cloud.Identity.Services.Iam;
+﻿using LIN.Cloud.Identity.Persistence.Repositories;
 
-public class IamPolicy(DataContext context, Data.Groups groups, IamRoles rolesIam)
+namespace LIN.Cloud.Identity.Services.Iam;
+
+public class IamPolicy(DataContext context, IGroupRepository groups, IamRoles rolesIam)
 {
 
     /// <summary>
@@ -8,13 +10,13 @@ public class IamPolicy(DataContext context, Data.Groups groups, IamRoles rolesIa
     /// </summary>
     /// <param name="identity">Id de la identidad.</param>
     /// <param name="policy">Id de la política.</param>
-    public async Task<IamLevels> Validate(int identity, string policy)
+    public async Task<IamLevels> Validate(int identity, int policy)
     {
 
         // Si la identidad es la administradora de la política.
         var isOwner = await (from pol in context.Policies
-                             where pol.OwnerIdentityId == identity
-                             && pol.Id == Guid.Parse(policy)
+                             where pol.Owner.Directory.Identity.Id == identity
+                             && pol.Id == policy
                              select pol).AnyAsync();
 
         // Es el creador.
@@ -23,8 +25,8 @@ public class IamPolicy(DataContext context, Data.Groups groups, IamRoles rolesIa
 
         // Obtener la identidad del dueño de la política.
         var ownerPolicy = await (from pol in context.Policies
-                                 where pol.Id == Guid.Parse(policy)
-                                 select pol.OwnerIdentityId).FirstOrDefaultAsync();
+                                 where pol.Id == policy
+                                 select pol.Owner.Directory.IdentityId).FirstOrDefaultAsync();
 
         // Obtener la organización.
         var organizationId = await groups.GetOwnerByIdentity(ownerPolicy);

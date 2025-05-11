@@ -1,8 +1,10 @@
-﻿namespace LIN.Cloud.Identity.Areas.Applications;
+﻿using LIN.Cloud.Identity.Persistence.Repositories;
+
+namespace LIN.Cloud.Identity.Areas.Applications;
 
 [IdentityToken]
 [Route("applications")]
-public class ApplicationsController(Data.Applications application) : AuthenticationBaseController
+public class ApplicationsController(IApplicationRepository application) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -42,8 +44,8 @@ public class ApplicationsController(Data.Applications application) : Authenticat
 
         // Formatear app.
         app.Key = Guid.NewGuid();
-        app.Restriction = new();
-        app.Identity.Type = IdentityType.Application;
+        app.Policies = new();
+        app.Identity.Type = IdentityType.Service;
         app.Identity.Roles = [];
 
         app.Owner = new()

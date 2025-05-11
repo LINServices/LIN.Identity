@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Services.Utils;
 
-public class EmailSender(ILogger<EmailSender> logger)
+public class EmailSender(ILogger<EmailSender> logger, IConfiguration configuration)
 {
 
     /// <summary>
@@ -14,7 +14,7 @@ public class EmailSender(ILogger<EmailSender> logger)
         try
         {
             // Servicio.
-            Global.Http.Services.Client client = new(Http.Services.Configuration.GetConfiguration("hangfire:mail"))
+            Global.Http.Services.Client client = new(configuration["hangfire:mail"])
             {
                 TimeOut = 10
             };

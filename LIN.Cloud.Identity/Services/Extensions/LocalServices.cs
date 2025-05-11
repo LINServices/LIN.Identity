@@ -13,22 +13,6 @@ public static class LocalServices
     {
 
         // Servicios de datos.
-        services.AddScoped<Data.Accounts, Data.Accounts>();
-        services.AddScoped<Data.DirectoryMembers, Data.DirectoryMembers>();
-        services.AddScoped<Data.GroupMembers, Data.GroupMembers>();
-        services.AddScoped<Data.Groups, Data.Groups>();
-        services.AddScoped<Data.Identities, Data.Identities>();
-        services.AddScoped<Data.IdentityRoles, Data.IdentityRoles>();
-        services.AddScoped<Data.Organizations, Data.Organizations>();
-        services.AddScoped<Data.PassKeys, Data.PassKeys>();
-        services.AddScoped<Data.AccountLogs, Data.AccountLogs>();
-        services.AddScoped<Data.Policies, Data.Policies>();
-        services.AddScoped<Data.PoliciesRequirement, Data.PoliciesRequirement>();
-        services.AddScoped<Data.OtpService, Data.OtpService>();
-        services.AddScoped<Data.Mails, Data.Mails>();
-        services.AddScoped<Data.ApplicationRestrictions, Data.ApplicationRestrictions>();
-        services.AddScoped<Data.Applications, Data.Applications>();
-
         // Externos
         services.AddSingleton<EmailSender, EmailSender>();
 

@@ -1,7 +1,9 @@
+using LIN.Cloud.Identity.Persistence.Repositories;
+
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("[controller]")]
-public class AccountController(Data.Accounts accountData, Data.Applications applications) : AuthenticationBaseController
+public class AccountController(IAccountRepository accountData, IApplicationRepository applications) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -36,7 +38,7 @@ public class AccountController(Data.Accounts accountData, Data.Applications appl
         modelo = Services.Formats.Account.Process(modelo);
 
         // Creación del usuario.
-        var response = await accountData.Create(modelo);
+        var response = await accountData.Create(modelo, 0);
 
         // Evaluación.
         if (response.Response != Responses.Success)

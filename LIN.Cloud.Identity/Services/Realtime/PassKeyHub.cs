@@ -1,6 +1,8 @@
-﻿namespace LIN.Cloud.Identity.Services.Realtime;
+﻿using LIN.Cloud.Identity.Persistence.Repositories;
 
-public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
+namespace LIN.Cloud.Identity.Services.Realtime;
+
+public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
 {
 
     /// <summary>
