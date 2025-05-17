@@ -1,5 +1,3 @@
-using LIN.Cloud.Identity.Persistence.Repositories;
-
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [IdentityToken]
@@ -14,7 +12,6 @@ public class AccountLogsController(IAccountLogRepository accountData) : Authenti
     [HttpGet]
     public async Task<HttpReadAllResponse<AccountLog>> ReadAll(DateTime? start, DateTime? end)
     {
-
         // Fechas por defecto.
         start ??= DateTime.MinValue;
         end ??= DateTime.MaxValue;

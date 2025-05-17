@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Repositories;
-
-namespace LIN.Cloud.Identity.Areas.Policies;
+﻿namespace LIN.Cloud.Identity.Areas.Policies;
 
 [IdentityToken]
 [Route("[controller]")]
@@ -31,7 +29,7 @@ public class PoliciesController(IPolicyRepository policiesData, IIamService iam)
         modelo.Id = 0;
         modelo.Name = modelo.Name.Trim();
 
-        // Crear la politica.
+        // Crear la política.
         var response = await policiesData.Create(modelo);
         return response;
     }

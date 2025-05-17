@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Repositories;
-
-namespace LIN.Cloud.Identity.Areas.Applications;
+﻿namespace LIN.Cloud.Identity.Areas.Applications;
 
 [IdentityToken]
 [Route("applications")]

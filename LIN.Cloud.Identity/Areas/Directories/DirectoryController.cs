@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Repositories;
-
-namespace LIN.Cloud.Identity.Areas.Directories;
+﻿namespace LIN.Cloud.Identity.Areas.Directories;
 
 [IdentityToken]
 [Route("[controller]")]

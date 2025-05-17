@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Repositories;
-
-namespace LIN.Cloud.Identity.Areas.Organizations;
+﻿namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [IdentityToken]
 [Route("[controller]")]
@@ -8,9 +6,8 @@ public class IdentityController(IOrganizationMemberRepository directoryMembersDa
 {
 
     /// <summary>
-    /// Crear nuevo grupo.
+    /// Crear nuevo rol en una identidad.
     /// </summary>
-    /// <param name="rolModel">Modelo del grupo.</param>
     [HttpPost]
     public async Task<HttpResponseBase> Create([FromBody] IdentityRolesModel rolModel)
     {
