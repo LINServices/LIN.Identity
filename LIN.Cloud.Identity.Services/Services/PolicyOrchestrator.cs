@@ -29,7 +29,6 @@ internal class PolicyOrchestrator(IPolicyRepository policyRepository, IIdentityS
 
             foreach (var policy in policies.Models)
             {
-                // Si se valido correctamente la política, continuar con la siguiente.
                 ValidateSinglePolicyAsync(policy, context);
             }
         }
@@ -50,12 +49,12 @@ internal class PolicyOrchestrator(IPolicyRepository policyRepository, IIdentityS
         return new(Responses.Success);
     }
 
+
     /// <summary>
     /// Validar una sola política.
     /// </summary>
     private static bool ValidateSinglePolicyAsync(PolicyModel policy, PolicyValidatorContext context)
     {
-
         // Validar acceso por hora.
         if (context.Evaluated.ContainsKey("TIME") || !TimeAccessPolicyValidator.Validate(policy, context, policy.TimeAccessPolicies))
             return false;

@@ -1,6 +1,5 @@
 using Http.Extensions;
 using Http.Extensions.OpenApi;
-using LIN.Cloud.Identity.Services.Extensions;
 using LIN.Cloud.Identity.Services.Realtime;
 
 var builder = WebApplication.CreateBuilder(args);

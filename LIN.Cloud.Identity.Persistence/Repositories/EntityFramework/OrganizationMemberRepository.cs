@@ -48,6 +48,39 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
     }
 
 
+    /// <summary>/// <summary>
+    /// Valida si una lista de identidades son miembro de una organización.
+    /// </summary>
+    /// <param name="ids">Identidades</param>
+    /// <param name="organization">Id de la organización</param>
+    /// <param name="context">Contexto</param>
+    public async Task<(IEnumerable<int> success, List<int> failure)> IamIn(IEnumerable<int> ids, int organization)
+    {
+
+        try
+        {
+
+            // Consulta.
+            var query = await (from org in context.Organizations
+                               where org.Id == organization
+                               join gm in context.GroupMembers
+                               on org.DirectoryId equals gm.GroupId
+                               where ids.Contains(gm.IdentityId)
+                               select gm.IdentityId).ToListAsync();
+
+            // Lista.
+            List<int> success = [.. query];
+            List<int> failure = [.. ids.Except(success)];
+
+            return (success, failure);
+        }
+        catch (Exception)
+        {
+        }
+        return ([], []);
+    }
+
+
     /// <summary>
     /// Expulsar identidades de la organización.
     /// </summary>

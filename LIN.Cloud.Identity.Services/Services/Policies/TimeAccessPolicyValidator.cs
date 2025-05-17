@@ -35,8 +35,6 @@ internal class TimeAccessPolicyValidator
                     || (!result && policyBase.Effect == PolicyEffect.Deny);
 
         context.Evaluated["TIME"] = isValid;
-
-
         return true;
     }
 }

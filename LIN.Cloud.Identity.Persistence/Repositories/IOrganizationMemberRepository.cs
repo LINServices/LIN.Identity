@@ -19,6 +19,14 @@ public interface IOrganizationMemberRepository
 
 
     /// <summary>
+    /// Validar si una identidad es integrante de una organización.
+    /// </summary>
+    /// <param name="id">Id de la identidad.</param>
+    /// <param name="organization">Id de la organización.</param>
+    Task<(IEnumerable<int> success, List<int> failure)> IamIn(IEnumerable<int> id, int organization);
+
+
+    /// <summary>
     /// Expulsar a una identidad de una organización.
     /// </summary>
     /// <param name="ids">Lista de identidades.</param>
