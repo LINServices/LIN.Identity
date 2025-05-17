@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Models;
-
-namespace LIN.Cloud.Identity.Services.Services.Authentication;
+﻿namespace LIN.Cloud.Identity.Services.Services.Authentication;
 
 internal class OrganizationValidationService(IPolicyOrchestrator policyOrchestrator) : IOrganizationValidationService
 {
@@ -14,6 +12,7 @@ internal class OrganizationValidationService(IPolicyOrchestrator policyOrchestra
         if (request.Account!.Identity.OwnerId is null || request.Account!.Identity.OwnerId <= 0)
             return new ResponseBase(Responses.Success);
 
+        // Validar políticas.
         var response = await policyOrchestrator.ValidatePoliciesForOrganization(request);
 
         if (response.Response != Responses.Success)

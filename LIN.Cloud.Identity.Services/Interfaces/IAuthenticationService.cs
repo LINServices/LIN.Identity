@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Models;
-
-namespace LIN.Cloud.Identity.Services.Interfaces;
+﻿namespace LIN.Cloud.Identity.Services.Interfaces;
 
 public interface IAuthenticationService
 {

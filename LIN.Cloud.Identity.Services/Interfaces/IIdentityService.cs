@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Services;
-
-namespace LIN.Cloud.Identity.Services.Interfaces;
+﻿namespace LIN.Cloud.Identity.Services.Interfaces;
 
 internal interface IIdentityService
 {

@@ -1,5 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Models;
-using LIN.Types.Cloud.Identity.Models.Identities;
+﻿using LIN.Types.Cloud.Identity.Models.Identities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

@@ -1,7 +1,4 @@
-﻿using LIN.Types.Cloud.Identity.Enumerations;
-using LIN.Types.Enumerations;
-
-namespace LIN.Cloud.Identity.Services.Interfaces;
+﻿namespace LIN.Cloud.Identity.Services.Interfaces;
 
 public interface IIamService
 {

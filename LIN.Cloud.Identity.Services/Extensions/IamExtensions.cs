@@ -1,6 +1,4 @@
-﻿using LIN.Types.Cloud.Identity.Enumerations;
-
-namespace LIN.Cloud.Identity.Services.Extensions;
+﻿namespace LIN.Cloud.Identity.Services.Extensions;
 
 public static class ValidateRoles
 {

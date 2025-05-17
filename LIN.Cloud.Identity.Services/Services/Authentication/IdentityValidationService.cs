@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Models;
-
-namespace LIN.Cloud.Identity.Services.Services.Authentication;
+﻿namespace LIN.Cloud.Identity.Services.Services.Authentication;
 
 internal class IdentityValidationService(IAccountRepository accountRepository) : IIdentityValidationService
 {
@@ -29,7 +27,7 @@ internal class IdentityValidationService(IAccountRepository accountRepository) :
         var account = accountResponse.Model;
 
         // Validar estado identidad.
-        if (account.Identity.Status != Types.Cloud.Identity.Enumerations.IdentityStatus.Enable)
+        if (account.Identity.Status != IdentityStatus.Enable)
             return new ResponseBase
             {
                 Response = Responses.NotExistAccount,
