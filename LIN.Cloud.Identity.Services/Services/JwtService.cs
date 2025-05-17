@@ -1,4 +1,12 @@
-﻿namespace LIN.Cloud.Identity.Services.Auth;
+﻿using LIN.Cloud.Identity.Services.Models;
+using LIN.Types.Cloud.Identity.Models.Identities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace LIN.Cloud.Identity.Services.Services;
 
 public class JwtService
 {
@@ -14,7 +22,7 @@ public class JwtService
     /// </summary>
     public static void Open(IConfiguration configuration)
     {
-        JwtKey =configuration["jwt:key"];
+        JwtKey = configuration["jwt:key"];
     }
 
 
@@ -36,7 +44,7 @@ public class JwtService
         {
             new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
             new Claim(ClaimTypes.NameIdentifier, user.Identity.Unique),
-            new Claim(ClaimTypes.GroupSid, (user.Identity.Id).ToString() ?? ""),
+            new Claim(ClaimTypes.GroupSid, user.Identity.Id.ToString() ?? ""),
             new Claim(ClaimTypes.Authentication, appID.ToString())
         };
 

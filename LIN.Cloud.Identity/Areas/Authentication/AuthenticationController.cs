@@ -1,10 +1,10 @@
 using LIN.Cloud.Identity.Persistence.Repositories;
-using LIN.Cloud.Identity.Services.Auth.Interfaces;
+using LIN.Cloud.Identity.Services.Interfaces;
 
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class AuthenticationController(IAuthentication authentication, IAccountRepository accountData, IPolicyRepository policyData) : AuthenticationBaseController
+public class AuthenticationController(IAuthenticationAccountService serviceAuth, IAccountRepository accountData, IPolicyRepository policyData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -26,17 +26,15 @@ public class AuthenticationController(IAuthentication authentication, IAccountRe
             };
 
         // Establecer credenciales.
-        authentication.SetCredentials(user, password, application);
-
-        // Respuesta.
-        var response = await authentication.Start(new()
+        var response = await serviceAuth.Authenticate(new()
         {
-            ValidateApp = true,
-            Log = true
+            User = user,
+            Password = password,
+            Application = application
         });
 
         // Validación al obtener el usuario
-        switch (response)
+        switch (response.Response)
         {
             // Correcto
             case Responses.Success:
@@ -63,7 +61,17 @@ public class AuthenticationController(IAuthentication authentication, IAccountRe
                 return new()
                 {
                     Response = Responses.UnauthorizedByApp,
-                    Message = "La aplicación no existe o no permite que inicies sesión en este momento."
+                    Message = "La aplicación no existe o no permite que inicies sesión en este momento.",
+                    Errors = response.Errors
+                };
+
+            // Contraseña invalida.
+            case Responses.UnauthorizedByOrg:
+                return new()
+                {
+                    Response = Responses.UnauthorizedByOrg,
+                    Message = "Tu organización no permite que inicies sesión en este momento.",
+                    Errors = response.Errors
                 };
 
             // Incorrecto
@@ -76,12 +84,12 @@ public class AuthenticationController(IAuthentication authentication, IAccountRe
         }
 
         // Genera el token
-        var token = authentication.GenerateToken();
+        var token = serviceAuth.GenerateToken();
 
         // Respuesta.
         var http = new ReadOneResponse<AccountModel>
         {
-            Model = authentication.GetData(),
+            Model = serviceAuth.Account!,
             Response = Responses.Success,
             Token = token
         };
@@ -111,81 +119,6 @@ public class AuthenticationController(IAuthentication authentication, IAccountRe
         response.Token = Token;
         return response;
 
-    }
-
-
-    /// <summary>
-    /// Iniciar sesión y validar una política.
-    /// </summary>
-    /// <param name="user">Usuario.</param>
-    /// <param name="password">Contraseña.</param>
-    /// <param name="policy">Id de la política.</param>
-    [HttpGet("validate/policy")]
-    public async Task<HttpResponseBase> ValidatePolicy([FromQuery] string user, [FromQuery] string password, [FromHeader] int policy)
-    {
-
-        // Validación de parámetros.
-        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
-            return new(Responses.InvalidParam)
-            {
-                Message = "Uno o varios parámetros son invalido."
-            };
-
-        // Establecer credenciales.
-        authentication.SetCredentials(user, password, string.Empty);
-
-        // Respuesta.
-        var response = await authentication.Start(new()
-        {
-            Log = false
-        });
-
-        // Validación al obtener el usuario
-        switch (response)
-        {
-            // Correcto
-            case Responses.Success:
-                break;
-
-            // No existe esta cuenta.
-            case Responses.NotExistAccount:
-                return new()
-                {
-                    Response = Responses.Unauthorized,
-                    Message = "No existe esta cuenta."
-                };
-
-            // Contraseña invalida.
-            case Responses.InvalidPassword:
-                return new()
-                {
-                    Response = Responses.Unauthorized,
-                    Message = "Contraseña incorrecta."
-                };
-
-            // Incorrecto
-            default:
-                return new()
-                {
-                    Response = Responses.Unauthorized,
-                    Message = "Hubo un error grave."
-                };
-        }
-
-        //// Validar política.
-        //var isAllow = await policyData.HasFor(authentication.GetData().IdentityId, policy);
-
-        //// Respuesta.
-        //var http = new ResponseBase
-        //{
-        //    Response = isAllow.Response
-        //};
-
-        //return http;
-        return new()
-        {
-            Response = Responses.Success
-        };
     }
 
 }

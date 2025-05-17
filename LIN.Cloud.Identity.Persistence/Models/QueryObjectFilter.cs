@@ -7,6 +7,7 @@ public class QueryObjectFilter
     public List<int> OrganizationsDirectories { get; set; } = [];
     public bool IsAdmin { get; set; }
     public bool IncludePhoto { get; set; } = true;
+    public bool IncludeIdentity { get; set; }
     public FindOn FindOn { get; set; }
 
 }

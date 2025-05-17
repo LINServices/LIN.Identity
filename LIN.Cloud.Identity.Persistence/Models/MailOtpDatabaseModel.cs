@@ -1,6 +1,4 @@
-﻿using LIN.Types.Cloud.Identity.Models;
-
-namespace LIN.Cloud.Identity.Persistence.Models;
+﻿namespace LIN.Cloud.Identity.Persistence.Models;
 
 public class MailOtpDatabaseModel
 {

@@ -48,6 +48,13 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
                     Type = GroupMemberTypes.User
                 };
 
+                modelo.Identity.Owner = new()
+                {
+                    Id = organization
+                };
+
+                modelo.Identity.Owner = context.AttachOrUpdate(modelo.Identity.Owner)!;
+
                 // El grupo existe.
                 groupMember.Group = context.AttachOrUpdate(groupMember.Group)!;
                 context.GroupMembers.Add(groupMember);
@@ -108,7 +115,7 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
         try
         {
             // Consulta de las cuentas.
-            var account = await accountFindable.GetAccounts(unique, filters).FirstOrDefaultAsync();
+            var account = await accountFindable.GetAccounts(unique, filters).IncludeIf(filters.IncludeIdentity, t => t.Include(a => a.Identity)).FirstOrDefaultAsync();
 
             // Si la cuenta no existe.
             if (account is null)

@@ -1,5 +1,4 @@
 ﻿using LIN.Cloud.Identity.Persistence.Queries.Interfaces;
-using LIN.Types.Cloud.Identity.Models.Identities;
 
 namespace LIN.Cloud.Identity.Persistence.Queries;
 

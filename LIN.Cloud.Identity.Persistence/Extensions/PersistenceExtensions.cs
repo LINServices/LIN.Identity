@@ -1,9 +1,7 @@
-﻿using LIN.Cloud.Identity.Persistence.Contexts;
-using LIN.Cloud.Identity.Persistence.Queries;
+﻿using LIN.Cloud.Identity.Persistence.Queries;
 using LIN.Cloud.Identity.Persistence.Repositories;
 using LIN.Cloud.Identity.Persistence.Repositories.EntityFramework;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

@@ -5,5 +5,5 @@
 public class ApplicationRestrictionsController() : AuthenticationBaseController
 {
 
-   
+
 }

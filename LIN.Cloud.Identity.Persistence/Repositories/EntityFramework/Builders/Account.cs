@@ -249,7 +249,7 @@ public class Account
                                     || account.Visibility == Visibility.Visible
                                     || filters.AccountContext == account.Id
                                     || context.GroupMembers.FirstOrDefault(t => t.Group.Members.Any(t => t.IdentityId == filters.IdentityContext)) != null
-                                    
+
                                     ? account.Name
                                     : "Usuario privado",
                              Identity = new()

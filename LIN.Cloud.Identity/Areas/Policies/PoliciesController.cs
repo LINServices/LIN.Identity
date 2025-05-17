@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Policies;
 
 [IdentityToken]
 [Route("[controller]")]
-public class PoliciesController(IPolicyRepository policiesData, IGroupRepository groups, IamRoles iam,IOrganizationRepository organizations, IamPolicy iamPolicy) : AuthenticationBaseController
+public class PoliciesController(IPolicyRepository policiesData, IGroupRepository groups, IamRoles iam, IOrganizationRepository organizations, IamPolicy iamPolicy) : AuthenticationBaseController
 {
 
     /// <summary>

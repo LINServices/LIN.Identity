@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Services.Realtime;
+﻿using LIN.Cloud.Identity.Services.Services;
+
+namespace LIN.Cloud.Identity.Services.Realtime;
 
 public partial class PassKeyHub
 {

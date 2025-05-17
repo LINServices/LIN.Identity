@@ -36,8 +36,8 @@ internal class GroupRepository(DataContext context) : IGroupRepository
 
             // Obtener el directorio general.
             var generalGroupInformation = (from org in context.Organizations
-                       where org.Id == modelo.Identity.OwnerId
-                       select new { org.DirectoryId, org.Directory.Identity.Unique }).FirstOrDefault();
+                                           where org.Id == modelo.Identity.OwnerId
+                                           select new { org.DirectoryId, org.Directory.Identity.Unique }).FirstOrDefault();
 
             // Si no se encontró el directorio.
             if (generalGroupInformation is null)
