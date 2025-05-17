@@ -1,9 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Models;
-using LIN.Types.Cloud.Identity.Models;
-using LIN.Types.Cloud.Identity.Models.Identities;
-using LIN.Types.Cloud.Identity.Models.Policies;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace LIN.Cloud.Identity.Persistence.Contexts;
 
@@ -86,6 +81,11 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<MailOtpDatabaseModel> MailOtp { get; set; }
 
     /// <summary>
+    /// Mail Otp.
+    /// </summary>
+    public DbSet<IdentityPolicyModel> IdentityPolicies { get; set; }
+
+    /// <summary>
     /// Crear el modelo en BD.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -142,6 +142,22 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.HasOne(t => t.Group)
                   .WithMany(t => t.Members)
                   .HasForeignKey(t => t.GroupId);
+        });
+
+        // Group Member Model
+        modelBuilder.Entity<IdentityPolicyModel>(entity =>
+        {
+            entity.ToTable("identity_policy");
+            entity.HasKey(t => new { t.IdentityId, t.PolicyId });
+
+            entity.HasOne(t => t.Identity)
+                  .WithMany()
+                  .HasForeignKey(t => t.IdentityId)
+                  .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(t => t.Policy)
+                  .WithMany()
+                  .HasForeignKey(t => t.PolicyId);
         });
 
         // Identity Roles Model

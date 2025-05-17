@@ -12,7 +12,6 @@ global using LIN.Cloud.Identity.Services.Utils;
 global using LIN.Types.Cloud.Identity.Enumerations;
 global using LIN.Types.Cloud.Identity.Models;
 global using LIN.Types.Cloud.Identity.Models.Identities;
-global using LIN.Types.Cloud.Identity.Models.Policies;
 global using LIN.Types.Enumerations;
 // Tipos Generales
 global using LIN.Types.Responses;
@@ -22,9 +21,4 @@ global using Microsoft.AspNetCore.SignalR;
 // SQL.
 global using Microsoft.EntityFrameworkCore;
 // Tipos Extras.
-global using Microsoft.IdentityModel.Tokens;
-global using System.IdentityModel.Tokens.Jwt;
-global using System.IO;
-global using System.Security.Claims;
 // Framework.
-global using System.Text;

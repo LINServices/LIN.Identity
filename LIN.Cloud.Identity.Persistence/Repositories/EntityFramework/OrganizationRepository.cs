@@ -19,11 +19,14 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
             // Metadata.
             modelo.Directory.Name = "Directorio General";
             modelo.Directory.Description = "Directorio General de la organización";
-            modelo.Directory.Identity.Owner = modelo;
-            modelo.Directory.Identity.Type = IdentityType.Group;
 
+            modelo.Directory.Identity.Type = IdentityType.Group;
+            modelo.Directory.Identity.Owner = null;
+            modelo.Directory.Identity.OwnerId = null;
             // Agregar la organización.
             await context.Organizations.AddAsync(modelo);
+            context.SaveChanges();
+            modelo.Directory.Identity.Owner = modelo;
             context.SaveChanges();
 
             // Crear la cuenta administrativa.
@@ -64,6 +67,7 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
             context.SaveChanges();
 
             modelo.Directory.Identity.Owner = modelo;
+            account.Identity.Owner = modelo;
             modelo.Directory.Members.Add(new()
             {
                 Group = modelo.Directory,
@@ -149,8 +153,8 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
         try
         {
             var groupId = await (from g in context.Organizations
-                             where g.Id == id
-                             select g.DirectoryId).FirstOrDefaultAsync();
+                                 where g.Id == id
+                                 select g.DirectoryId).FirstOrDefaultAsync();
 
             // Si la cuenta no existe.
             if (groupId <= 0)
@@ -176,8 +180,8 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
         try
         {
             var identityId = await (from g in context.Organizations
-                             where g.Id == id
-                             select g.Directory.IdentityId).FirstOrDefaultAsync();
+                                    where g.Id == id
+                                    select g.Directory.IdentityId).FirstOrDefaultAsync();
 
             // Si la cuenta no existe.
             if (identityId <= 0)

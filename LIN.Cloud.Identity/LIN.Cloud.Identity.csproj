@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\LIN.Cloud.Identity.Persistence\LIN.Cloud.Identity.Persistence.csproj" />
+		<ProjectReference Include="..\LIN.Cloud.Identity.Services\LIN.Cloud.Identity.Services.csproj" />
 	</ItemGroup>
 
 

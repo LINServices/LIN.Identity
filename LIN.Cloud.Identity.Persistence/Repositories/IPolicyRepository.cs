@@ -7,5 +7,7 @@ public interface IPolicyRepository
     Task<CreateResponse> Add(IpAccessPolicy policyModel);
     Task<CreateResponse> Add(IdentityTypePolicy policyModel);
     Task<ReadOneResponse<PolicyModel>> Read(int id, bool includeDetails);
+    Task<ReadAllResponse<PolicyModel>> ReadAll(int organization, bool includeDetails);
+    Task<ReadAllResponse<PolicyModel>> ReadAll(IEnumerable<int> identity, int organization, bool includeDetails);
     Task<ResponseBase> Delete(int id);
 }
