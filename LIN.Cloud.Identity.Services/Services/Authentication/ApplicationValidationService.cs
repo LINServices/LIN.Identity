@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Models;
-
-namespace LIN.Cloud.Identity.Services.Services.Authentication;
+﻿namespace LIN.Cloud.Identity.Services.Services.Authentication;
 
 internal class ApplicationValidationService(IApplicationRepository applicationRepository) : IApplicationValidationService
 {

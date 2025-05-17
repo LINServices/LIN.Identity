@@ -1,5 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Models;
-using LIN.Cloud.Identity.Services.Services.Policies;
+﻿using LIN.Cloud.Identity.Services.Services.Policies;
 using LIN.Types.Cloud.Identity.Models;
 
 namespace LIN.Cloud.Identity.Services.Services;
@@ -37,6 +36,40 @@ internal class PolicyOrchestrator(IPolicyRepository policyRepository, IIdentityS
         {
             // Si no se valida correctamente, agregar el error a la lista de razones.
             return new(Responses.UnauthorizedByOrg)
+            {
+                Errors = [.. context.Reasons.Select(reason => new Types.Models.ErrorModel
+                {
+                    Tittle = "Acceso denegado",
+                    Description = reason
+                })]
+            };
+        }
+
+        return new(Responses.Success);
+    }
+
+
+    /// <summary>
+    /// Valida las políticas de acceso para una organización.
+    /// </summary>
+    public async Task<ReadOneResponse<PolicyValidatorContext>> ValidatePoliciesForApplication(AuthenticationRequest request, int appId)
+    {
+        var context = new PolicyValidatorContext
+        {
+            AuthenticationRequest = request
+        };
+
+        // Obtener políticas de la aplicación.
+        var policies = await policyRepository.ReadAllByApp(appId, true);
+
+        foreach (var policy in policies.Models)
+        {
+            ValidateSinglePolicyAsync(policy, context);
+        }
+
+        if (!context.Evaluated.Select(t => t.Value).All(t => t == true))
+        {
+            return new(Responses.UnauthorizedByApp)
             {
                 Errors = [.. context.Reasons.Select(reason => new Types.Models.ErrorModel
                 {

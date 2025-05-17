@@ -10,9 +10,9 @@ public class Identities
     public static void Process(IdentityModel id)
     {
         id.Id = 0;
-        id.ExpirationTime = DateTime.Now.AddYears(10);
-        id.EffectiveTime = DateTime.Now;
-        id.CreationTime = DateTime.Now;
+        id.ExpirationTime = DateTime.UtcNow.AddYears(10);
+        id.EffectiveTime = DateTime.UtcNow;
+        id.CreationTime = DateTime.UtcNow;
         id.Status = IdentityStatus.Enable;
         id.Unique = id.Unique.Trim();
     }
