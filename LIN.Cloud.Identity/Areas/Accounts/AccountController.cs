@@ -1,4 +1,3 @@
-using LIN.Cloud.Identity.Persistence.Repositories;
 using LIN.Cloud.Identity.Services.Services;
 
 namespace LIN.Cloud.Identity.Areas.Accounts;
@@ -256,7 +255,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         });
 
         return response;
-
     }
 
 }

@@ -1,4 +1,3 @@
-using LIN.Cloud.Identity.Persistence.Repositories;
 using LIN.Cloud.Identity.Services.Realtime;
 
 namespace LIN.Cloud.Identity.Areas.Authentication;

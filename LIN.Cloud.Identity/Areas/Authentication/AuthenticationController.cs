@@ -1,9 +1,7 @@
-using LIN.Cloud.Identity.Persistence.Repositories;
-
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class AuthenticationController(IAuthenticationAccountService serviceAuth, IAccountRepository accountData, IPolicyRepository policyData) : AuthenticationBaseController
+public class AuthenticationController(IAuthenticationAccountService serviceAuth, IAccountRepository accountData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -117,7 +115,6 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
 
         response.Token = Token;
         return response;
-
     }
 
 }

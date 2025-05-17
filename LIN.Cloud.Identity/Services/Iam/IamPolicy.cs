@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Repositories;
-
-namespace LIN.Cloud.Identity.Services.Iam;
+﻿namespace LIN.Cloud.Identity.Services.Iam;
 
 public class IamPolicy(DataContext context, IGroupRepository groups, IIamService rolesIam)
 {

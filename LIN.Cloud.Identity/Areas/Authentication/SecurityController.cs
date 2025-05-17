@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Repositories;
-
-namespace LIN.Cloud.Identity.Areas.Authentication;
+﻿namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
 public class SecurityController(IAccountRepository accountsData, IOtpRepository otpService, EmailSender emailSender) : AuthenticationBaseController

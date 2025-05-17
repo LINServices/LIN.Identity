@@ -4,6 +4,7 @@ global using Http.ResponsesList;
 global using LIN.Cloud.Identity.Persistence.Contexts;
 global using LIN.Cloud.Identity.Persistence.Extensions;
 global using LIN.Cloud.Identity.Persistence.Models;
+global using LIN.Cloud.Identity.Persistence.Repositories;
 global using LIN.Cloud.Identity.Services.Extensions;
 global using LIN.Cloud.Identity.Services.Filters;
 global using LIN.Cloud.Identity.Services.Iam;

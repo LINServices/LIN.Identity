@@ -1,4 +1,3 @@
-using LIN.Cloud.Identity.Persistence.Repositories;
 using LIN.Types.Cloud.Identity.Abstracts;
 
 namespace LIN.Cloud.Identity.Areas.Organizations;
@@ -17,7 +16,6 @@ public class OrganizationMembersController(IOrganizationRepository organizations
     [HttpPost("invite")]
     public async Task<HttpCreateResponse> AddExternalMembers([FromQuery] int organization, [FromBody] IEnumerable<int> ids)
     {
-
         // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
@@ -208,9 +206,8 @@ public class OrganizationMembersController(IOrganizationRepository organizations
         // Valida si el usuario pertenece a la organización.
         var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
 
+        // Expulsar a los miembros.
         var response = await directoryMembersData.Expulse(existentes, organization);
-
-
         return response;
     }
 
