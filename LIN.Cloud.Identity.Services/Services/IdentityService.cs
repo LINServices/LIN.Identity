@@ -27,9 +27,10 @@ internal class IdentityService(DataContext context) : IIdentityService
         {
             {
                 0,
-                [new() {
-                    Identity = identity,
-                    Level = 0
+                [
+                    new() {
+                        Identity = identity,
+                        Level = 0
                 }]
             }
         };

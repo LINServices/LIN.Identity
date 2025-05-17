@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Groups;
 
 [IdentityToken]
 [Route("Groups/members")]
-public class GroupsMembersController(IGroupRepository groupsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IamRoles rolesIam) : AuthenticationBaseController
+public class GroupsMembersController(IGroupRepository groupsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IIamService rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>

@@ -5,7 +5,7 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [IdentityToken]
 [Route("orgs/members")]
-public class OrganizationMembersController(IOrganizationRepository organizationsData, IAccountRepository accountsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IamRoles rolesIam) : AuthenticationBaseController
+public class OrganizationMembersController(IOrganizationRepository organizationsData, IAccountRepository accountsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IIamService rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -15,7 +15,7 @@ public class OrganizationMembersController(IOrganizationRepository organizations
     /// <param name="ids">Lista de ids a agregar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("invite")]
-    public async Task<HttpCreateResponse> AddExternalMembers([FromQuery] int organization, [FromBody] List<int> ids)
+    public async Task<HttpCreateResponse> AddExternalMembers([FromQuery] int organization, [FromBody] IEnumerable<int> ids)
     {
 
         // Confirmar el rol.
@@ -33,35 +33,31 @@ public class OrganizationMembersController(IOrganizationRepository organizations
             };
 
         // Solo elementos distintos.
-        ids = ids.Distinct().ToList();
+        ids = ids.Distinct();
 
-        //// Valida si el usuario pertenece a la organización.
-        //var (existentes, noUpdated) = await directoryMembersData.IamIn(ids, organization);
+        // Valida si el usuario pertenece a la organización.
+        var (existentes, noUpdated) = await directoryMembersData.IamIn(ids, organization);
 
-        //var directoryId = await organizationsData.ReadDirectory(organization);
+        var directoryId = await organizationsData.ReadDirectory(organization);
 
-        //// Crear el usuario.
-        //var response = await groupMembers.Create(noUpdated.Select(id => new GroupMember
-        //{
-        //    Group = new()
-        //    {
-        //        Id = directoryId.Model,
-        //    },
-        //    Identity = new()
-        //    {
-        //        Id = id
-        //    },
-        //    Type = GroupMemberTypes.Guest
-        //}));
+        // Crear el usuario.
+        var response = await groupMembers.Create(noUpdated.Select(id => new GroupMember
+        {
+            Group = new()
+            {
+                Id = directoryId.Model,
+            },
+            Identity = new()
+            {
+                Id = id
+            },
+            Type = GroupMemberTypes.Guest
+        }));
 
-        //response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count()} debido a que ya pertenecen a esta organización.";
+        response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count()} debido a que ya pertenecen a esta organización.";
 
         //// Retorna el resultado
-        //return response;
-        return new()
-        {
-        };
-
+        return response;
     }
 
 
@@ -165,23 +161,20 @@ public class OrganizationMembersController(IOrganizationRepository organizations
                 Response = Responses.Unauthorized
             };
 
-        //// Obtiene los miembros.
-        //var members = await directoryMembersData.ReadAll(organization);
+        // Obtiene los miembros.
+        var members = await directoryMembersData.ReadAll(organization);
 
-        //// Error al obtener los integrantes.
-        //if (members.Response != Responses.Success)
-        //    return new ReadAllResponse<SessionModel<GroupMember>>
-        //    {
-        //        Message = "No se encontró la organización.",
-        //        Response = Responses.Unauthorized
-        //    };
+        // Error al obtener los integrantes.
+        if (members.Response != Responses.Success)
+            return new ReadAllResponse<SessionModel<GroupMember>>
+            {
+                Message = "No se encontró la organización.",
+                Response = Responses.Unauthorized
+            };
 
-        //// Retorna el resultado
-        //return members;
-        return new()
-        {
-        };
-
+        // Retorna el resultado
+        return new();
+        //  return members;
     }
 
 
@@ -212,16 +205,13 @@ public class OrganizationMembersController(IOrganizationRepository organizations
         // Solo elementos distintos.
         ids = ids.Distinct();
 
-        //// Valida si el usuario pertenece a la organización.
-        //var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
+        // Valida si el usuario pertenece a la organización.
+        var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
 
-        //var response = await directoryMembersData.Expulse(existentes, organization);
+        var response = await directoryMembersData.Expulse(existentes, organization);
 
-        // Retorna el resultado
-        //return response;
-        return new()
-        {
-        };
+
+        return response;
     }
 
 }

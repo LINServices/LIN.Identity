@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [IdentityToken]
 [Route("[controller]")]
-public class IdentityController(IOrganizationMemberRepository directoryMembersData, IIdentityRolesRepository identityRolesData, IamRoles rolesIam) : AuthenticationBaseController
+public class IdentityController(IOrganizationMemberRepository directoryMembersData, IIdentityRolesRepository identityRolesData, IIamService rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
