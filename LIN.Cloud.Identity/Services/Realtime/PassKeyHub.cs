@@ -57,8 +57,8 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
 
         var pass = new PassKeyModel()
         {
-            Expiración = modelo.Expiración,
-            Hora = modelo.Hora,
+            Expiration = modelo.Expiration,
+            Time = modelo.Time,
             Status = modelo.Status,
             User = modelo.User,
             HubKey = modelo.HubKey
@@ -107,7 +107,7 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
             attempt.Status = modelo.Status;
 
             // Si el tiempo de expiración ya paso
-            if (DateTime.Now > modelo.Expiración)
+            if (DateTime.Now > modelo.Expiration)
             {
                 attempt.Status = PassKeyStatus.Expired;
                 attempt.Token = string.Empty;
@@ -132,11 +132,11 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
             // Respuesta passkey.
             var responsePasskey = new PassKeyModel()
             {
-                Expiración = modelo.Expiración,
+                Expiration = modelo.Expiration,
                 Status = attempt.Status,
                 User = attempt.User,
                 Token = attempt.Token,
-                Hora = DateTime.Now,
+                Time = DateTime.Now,
                 HubKey = string.Empty,
                 Key = string.Empty
             };

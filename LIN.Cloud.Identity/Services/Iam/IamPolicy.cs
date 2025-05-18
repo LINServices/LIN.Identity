@@ -11,16 +11,6 @@ public class IamPolicy(DataContext context, IGroupRepository groups, IIamService
     public async Task<IamLevels> Validate(int identity, int policy)
     {
 
-        // Si la identidad es la administradora de la política.
-        var isOwner = await (from pol in context.Policies
-                             where pol.Owner.Directory.Identity.Id == identity
-                             && pol.Id == policy
-                             select pol).AnyAsync();
-
-        // Es el creador.
-        if (isOwner)
-            return IamLevels.Privileged;
-
         // Obtener la identidad del dueño de la política.
         var ownerPolicy = await (from pol in context.Policies
                                  where pol.Id == policy

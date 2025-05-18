@@ -46,6 +46,7 @@ public static class PersistenceExtensions
         services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
         services.AddScoped<IOtpRepository, OtpRepository>();
         services.AddScoped<IPolicyRepository, PolicyRepository>();
+        services.AddScoped<IPolicyMemberRepository, PolicyMemberRepository>();
 
         return services;
     }

@@ -29,7 +29,10 @@ internal class IamService(DataContext context, IGroupRepository groups, IIdentit
     }
 
 
-    public async Task<IamLevels> IamIdentity(int identity1, int identity2)
+    /// <summary>
+    /// Validar el nivel de acceso de una identidad sobre otra identidad.
+    /// </summary>
+    public async Task<IEnumerable<Roles>> IamIdentity(int identity1, int identity2)
     {
 
         var organizations = await (from z in context.Groups
@@ -48,19 +51,43 @@ internal class IamService(DataContext context, IGroupRepository groups, IIdentit
 
         bool have = false;
 
+        List<Roles> roles = new();
+
         foreach (var e in organizations)
         {
             var x = await Validate(identity1, e);
-
-            if (x.ValidateReadSecure())
-            {
-                have = true;
-                break;
-            }
+            roles.AddRange(x);
         }
 
 
-        return have ? IamLevels.Privileged : IamLevels.NotAccess;
+        return roles;
+    }
+
+
+    /// <summary>
+    /// Validar el nivel de acceso a una política.
+    /// </summary>
+    /// <param name="identity">Id de la identidad.</param>
+    /// <param name="policy">Id de la política.</param>
+    public async Task<IamLevels> IamPolicy(int identity, int policy)
+    {
+
+        // Obtener la identidad del dueño de la política.
+        var ownerPolicy = await (from pol in context.Policies
+                                 where pol.Id == policy
+                                 select pol.Owner!.Directory.IdentityId).FirstOrDefaultAsync();
+
+        // Obtener la organización.
+        var organizationId = await groups.GetOwnerByIdentity(ownerPolicy);
+
+        // Obtener roles de la identidad sobre la organización.
+        var roles = await Validate(identity, organizationId.Model);
+
+        // Tiene permisos para modificar la política.
+        if (ValidateRoles.ValidateAlterPolicies(roles))
+            return IamLevels.Privileged;
+
+        return IamLevels.NotAccess;
     }
 
 }

@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Services.Services.Authentication;
 
-internal class ApplicationValidationService(IApplicationRepository applicationRepository) : IApplicationValidationService
+internal class ApplicationValidationService(IApplicationRepository applicationRepository, IPolicyOrchestrator policyOrchestrator) : IApplicationValidationService
 {
 
     /// <summary>
@@ -17,11 +17,11 @@ internal class ApplicationValidationService(IApplicationRepository applicationRe
                 Message = "Application not found.",
             };
 
-        // Validar politicas de IP.
+        // Validar políticas.
+        var response = await policyOrchestrator.ValidatePoliciesForApplication(request, applicationResponse.Model.Id);
 
-        // Validar politicas de tiempo.
-
-        // Validar politicas de identidad.
+        if (response.Response != Responses.Success)
+            return response;
 
         // Correcto.
         request.ApplicationModel = applicationResponse.Model;

@@ -125,6 +125,7 @@ internal class PolicyRepository(DataContext context) : IPolicyRepository
         return new();
     }
 
+
     /// <summary>
     /// Obtener una política de acceso por organization.
     /// </summary>
@@ -153,16 +154,18 @@ internal class PolicyRepository(DataContext context) : IPolicyRepository
     /// Obtener una política de acceso por organization.
     /// </summary>
     /// <param name="organization">Id de la política.</param>
-    public async Task<ReadAllResponse<PolicyModel>> ReadAll(int organization, bool includeDetails)
+    public async Task<ReadAllResponse<PolicyModel>> ReadAllByApp(int application, bool includeDetails)
     {
         try
         {
-            var model = await (from p in context.Policies
-                               where p. == organization
-                               select p)
-                                .IncludeIf(includeDetails, t => t.Include(t => t.TimeAccessPolicies))
-                               .IncludeIf(includeDetails, t => t.Include(t => t.IpAccessPolicies))
-                               .IncludeIf(includeDetails, t => t.Include(t => t.IdentityTypePolicies)).ToListAsync();
+
+            var model = await context.Applications
+                                       .Where(p => p.Id == application)
+                                       .SelectMany(p => p.Policies)
+                                       .IncludeIf(includeDetails, t => t.Include(t => t.TimeAccessPolicies))
+                                       .IncludeIf(includeDetails, t => t.Include(t => t.IpAccessPolicies))
+                                       .IncludeIf(includeDetails, t => t.Include(t => t.IdentityTypePolicies))
+                                       .ToListAsync();
 
             return new(Responses.Success, model);
         }
@@ -171,7 +174,6 @@ internal class PolicyRepository(DataContext context) : IPolicyRepository
         }
         return new();
     }
-
 
 
     /// <summary>
