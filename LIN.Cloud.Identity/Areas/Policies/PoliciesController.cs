@@ -34,4 +34,50 @@ public class PoliciesController(IPolicyRepository policiesData, IIamService iam)
         return response;
     }
 
+
+    /// <summary>
+    /// Obtener una política.
+    /// </summary>
+    /// <param name="policyId">Id.</param>
+    [HttpGet]
+    public async Task<HttpReadOneResponse<PolicyModel>> Read([FromHeader] int policyId)
+    {
+
+        // Validar nivel de acceso y roles sobre la organización.
+        var validate = await iam.IamPolicy(UserInformation.IdentityId, policyId);
+
+        if (validate != IamLevels.Privileged)
+            return new(Responses.Unauthorized)
+            {
+                Message = $"No tienes permisos para obtener esta política."
+            };
+
+        // Crear la política.
+        var response = await policiesData.Read(policyId, true);
+        return response;
+    }
+
+
+    /// <summary>
+    /// Obtener las políticas asociadas a una organización.
+    /// </summary>
+    /// <param name="organization">Id de la organización.</param>
+    [HttpGet("all")]
+    public async Task<HttpReadAllResponse<PolicyModel>> ReadAll([FromHeader] int organization)
+    {
+
+        // Validar nivel de acceso y roles sobre la organización.
+        var validate = await iam.Validate(UserInformation.IdentityId, organization);
+
+        if (!validate.ValidateReadPolicies())
+            return new(Responses.Unauthorized)
+            {
+                Message = $"No tienes permisos para obtener políticas a titulo de la organización #{organization}."
+            };
+
+        // Crear la política.
+        var response = await policiesData.ReadAll(organization, false);
+        return response;
+    }
+
 }

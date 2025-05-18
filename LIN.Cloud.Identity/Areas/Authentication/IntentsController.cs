@@ -26,7 +26,7 @@ public class IntentsController(IAccountLogRepository passkeyData) : Authenticati
             // Intentos.
             var intentos = (from I in account
                             where I.Status == PassKeyStatus.Undefined
-                            where I.Expiración > timeNow
+                            where I.Expiration > timeNow
                             select I).ToList();
 
             // Retorna.

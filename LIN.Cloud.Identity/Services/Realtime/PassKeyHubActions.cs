@@ -51,8 +51,8 @@ public partial class PassKeyHub
         // Caducidad el modelo
         attempt.HubKey = Context.ConnectionId;
         attempt.Status = PassKeyStatus.Undefined;
-        attempt.Hora = DateTime.Now;
-        attempt.Expiración = expiración;
+        attempt.Time = DateTime.Now;
+        attempt.Expiration = expiración;
 
         // Agrega el modelo
         if (!Attempts.ContainsKey(attempt.User.ToLower()))

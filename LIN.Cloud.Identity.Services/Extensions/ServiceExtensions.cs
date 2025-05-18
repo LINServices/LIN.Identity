@@ -19,7 +19,7 @@ public static class ServiceExtensions
         services.AddScoped<IApplicationValidationService, ApplicationValidationService>();
         services.AddScoped<IOrganizationValidationService, OrganizationValidationService>();
         services.AddScoped<IIdentityValidationService, IdentityValidationService>();
-        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<IIdentityService, Services.IdentityService>();
 
         services.AddScoped<IAuthenticationAccountService, AccountAuthenticationService>();
         services.AddScoped<IPolicyOrchestrator, PolicyOrchestrator>();
