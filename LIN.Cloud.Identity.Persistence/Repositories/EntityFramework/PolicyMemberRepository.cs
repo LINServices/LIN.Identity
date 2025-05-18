@@ -28,4 +28,26 @@ internal class PolicyMemberRepository(DataContext context) : IPolicyMemberReposi
         return new();
     }
 
+
+    public async Task<ReadAllResponse<PolicyModel>> ReadAll(int id)
+    {
+        try
+        {
+
+            var identities = await(from pl in context.IdentityPolicies
+                             where pl.IdentityId == id
+                             select pl.Policy).ToListAsync();
+
+            return new()
+            {
+                Response = Responses.Success,
+                Models = identities
+            };
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
 }

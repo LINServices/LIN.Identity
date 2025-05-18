@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Persistence.Repositories;
+﻿using LIN.Types.Cloud.Identity.Abstracts;
+
+namespace LIN.Cloud.Identity.Persistence.Repositories;
 
 public interface IOrganizationMemberRepository
 {
@@ -7,7 +9,7 @@ public interface IOrganizationMemberRepository
     /// Obtener organizaciones donde una identidad es integrante.
     /// </summary>
     /// <param name="id">Id de la identidad.</param>
-    Task<ReadAllResponse<OrganizationModel>> ReadAll(int id);
+    Task<ReadAllResponse<GroupMember>> ReadAll(int id);
 
 
     /// <summary>
@@ -32,5 +34,18 @@ public interface IOrganizationMemberRepository
     /// <param name="ids">Lista de identidades.</param>
     /// <param name="organization">Id de la organización.</param>
     Task<ResponseBase> Expulse(IEnumerable<int> ids, int organization);
+
+
+    /// <summary>
+    /// Obtener las organizaciones donde una identidad es integrante.
+    /// </summary>
+    Task<ReadAllResponse<OrganizationModel>> ReadAllMembers(int identity);
+
+
+    /// <summary>
+    /// Obtener las cuentas de usuario de una organización.
+    /// </summary>
+    /// <param name="id">Id de la organización.</param>
+    Task<ReadAllResponse<SessionModel<GroupMember>>> ReadUserAccounts(int id);
 
 }

@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Persistence.Repositories.EntityFramework;
 
-internal class AccountRepository(DataContext context, Queries.AccountFindable accountFindable) : IAccountRepository
+internal class AccountRepository(DataContext context, Queries.AccountFindable accountFindable, IGroupMemberRepository groupMemberRepository) : IAccountRepository
 {
 
     /// <summary>
@@ -48,17 +48,11 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
                     Type = GroupMemberTypes.User
                 };
 
-                modelo.Identity.Owner = new()
-                {
-                    Id = organization
-                };
+                // Actualizar la identidad.
+                await context.Identities.Where(t => t.Id == modelo.Identity.Id)
+                                        .ExecuteUpdateAsync(Identities => Identities.SetProperty(t => t.OwnerId, organization));
 
-                modelo.Identity.Owner = context.AttachOrUpdate(modelo.Identity.Owner)!;
-
-                // El grupo existe.
-                groupMember.Group = context.AttachOrUpdate(groupMember.Group)!;
-                context.GroupMembers.Add(groupMember);
-                context.SaveChanges();
+                await groupMemberRepository.Create([groupMember]);
             }
 
             // Confirmar los cambios.

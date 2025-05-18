@@ -31,4 +31,26 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
         return response;
     }
 
+
+    /// <summary>
+    /// Obtener las políticas asociadas a una identidad.
+    /// </summary>
+    [HttpGet("all")]
+    public async Task<HttpReadAllResponse<PolicyModel>> ReadAll([FromHeader] int identity)
+    {
+
+        // Validar nivel de acceso y roles sobre la organización.
+        var validate = await iam.IamIdentity(UserInformation.IdentityId, identity);
+
+        if (!validate.ValidateReadPolicies())
+            return new(Responses.Unauthorized)
+            {
+                Message = $"No tienes permisos para obtener políticas a titulo de la organización."
+            };
+
+        // Crear la política.
+        var response = await policiesData.ReadAll(identity);
+        return response;
+    }
+
 }

@@ -151,6 +151,28 @@ internal class PolicyRepository(DataContext context) : IPolicyRepository
 
 
     /// <summary>
+    /// Buscar políticas por nombre.
+    /// </summary>
+    /// <param name="organization">Id de la política.</param>
+    public async Task<ReadAllResponse<PolicyModel>> ReadAll(int organization, string query)
+    {
+        try
+        {
+            var model = await (from p in context.Policies
+                               where p.OwnerId == organization
+                               && (p.Name.Contains(query) || string.IsNullOrWhiteSpace(p.Name))
+                               select p).ToListAsync();
+
+            return new(Responses.Success, model);
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
     /// Obtener una política de acceso por organization.
     /// </summary>
     /// <param name="organization">Id de la política.</param>
