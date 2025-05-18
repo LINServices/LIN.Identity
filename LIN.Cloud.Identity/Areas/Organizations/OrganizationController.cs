@@ -101,7 +101,7 @@ public class OrganizationsController(IOrganizationRepository organizationsData, 
     public async Task<HttpReadAllResponse<OrganizationModel>> ReadAll()
     {
         // Obtiene la organización
-        var response = await directoryMembersData.ReadAll(UserInformation.IdentityId);
+        var response = await directoryMembersData.ReadAllMembers(UserInformation.IdentityId);
 
         return response;
     }

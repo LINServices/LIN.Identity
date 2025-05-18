@@ -141,7 +141,7 @@ public class OrganizationMembersController(IOrganizationRepository organizations
     /// <summary>
     /// Obtiene la lista de integrantes asociados a una organización.
     /// </summary>
-    [HttpGet]
+    [HttpGet("accounts")]
     public async Task<HttpReadAllResponse<SessionModel<GroupMember>>> ReadAll([FromHeader] int organization)
     {
 
@@ -160,7 +160,7 @@ public class OrganizationMembersController(IOrganizationRepository organizations
             };
 
         // Obtiene los miembros.
-        var members = await directoryMembersData.ReadAll(organization);
+        var members = await directoryMembersData.ReadUserAccounts(organization);
 
         // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
@@ -171,8 +171,7 @@ public class OrganizationMembersController(IOrganizationRepository organizations
             };
 
         // Retorna el resultado
-        return new();
-        //  return members;
+        return members;
     }
 
 

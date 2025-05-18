@@ -59,6 +59,28 @@ public class PoliciesController(IPolicyRepository policiesData, IIamService iam)
 
 
     /// <summary>
+    /// Buscar políticas por nombre.
+    /// </summary>
+    [HttpGet("search")]
+    public async Task<HttpReadAllResponse<PolicyModel>> Search([FromQuery] string query, [FromHeader] int organization)
+    {
+
+        // Validar nivel de acceso y roles sobre la organización.
+        var validate = await iam.Validate(UserInformation.IdentityId, organization);
+
+        if (!validate.ValidateReadPolicies())
+            return new(Responses.Unauthorized)
+            {
+                Message = $"No tienes permisos para obtener políticas a titulo de la organización #{organization}."
+            };
+
+        // Crear la política.
+        var response = await policiesData.ReadAll(organization, query);
+        return response;
+    }
+
+
+    /// <summary>
     /// Obtener las políticas asociadas a una organización.
     /// </summary>
     /// <param name="organization">Id de la organización.</param>

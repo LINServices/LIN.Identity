@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Persistence.Repositories.EntityFramework;
+﻿using LIN.Types.Cloud.Identity.Abstracts;
+
+namespace LIN.Cloud.Identity.Persistence.Repositories.EntityFramework;
 
 internal class OrganizationMemberRepository(DataContext context) : IOrganizationMemberRepository
 {
@@ -126,7 +128,30 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
     /// Obtener los integrantes de una organización.
     /// </summary>
     /// <param name="id">Id de la organización.</param>
-    public async Task<ReadAllResponse<OrganizationModel>> ReadAll(int id)
+    public async Task<ReadAllResponse<GroupMember>> ReadAll(int id)
+    {
+        try
+        {
+            // Consulta.
+            var query = await (from gm in context.GroupMembers
+                               where gm.Group.Identity.OwnerId == id
+                               select gm).ToListAsync();
+
+            // Success.
+            return new(Responses.Success, query);
+        }
+        catch (Exception)
+        {
+            return new();
+        }
+    }
+
+
+    /// <summary>
+    /// Obtener las organizaciones donde una identidad es integrante
+    /// </summary>
+    /// <param name="identity">Id de la identidad.</param>
+    public async Task<ReadAllResponse<OrganizationModel>> ReadAllMembers(int identity)
     {
         try
         {
@@ -134,7 +159,7 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
             var query = await (from org in context.Organizations
                                join gm in context.GroupMembers
                                on org.DirectoryId equals gm.GroupId
-                               where gm.IdentityId == id
+                               where gm.IdentityId == identity
                                select org).ToListAsync();
 
             // Success.
@@ -144,6 +169,49 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
         {
             return new();
         }
+    }
+
+
+    /// <summary>
+    /// Obtener las cuentas de usuarios de una organización.
+    /// </summary>
+    /// <param name="id">Id de la organización.</param>
+    public async Task<ReadAllResponse<SessionModel<GroupMember>>> ReadUserAccounts(int id)
+    {
+        try
+        {
+            var members = await (from org in context.Organizations
+                                 where org.Id == id
+                                 join gm in context.GroupMembers
+                                 on org.DirectoryId equals gm.GroupId
+                                 join a in context.Accounts
+                                 on gm.IdentityId equals a.IdentityId
+                                 select new SessionModel<GroupMember>
+                                 {
+                                     Account = new()
+                                     {
+                                         Id = a.Id,
+                                         Name = a.Name,
+                                         Visibility = a.Visibility,
+                                         IdentityService = a.IdentityService,
+                                         Identity = new()
+                                         {
+                                             Id = a.Identity.Id,
+                                             Unique = a.Identity.Unique
+                                         }
+                                     },
+                                     Profile = gm
+                                 }).ToListAsync();
+
+            // Success.
+            return new(Responses.Success, members);
+        }
+        catch (Exception)
+        {
+        }
+
+        return new();
+
     }
 
 }
