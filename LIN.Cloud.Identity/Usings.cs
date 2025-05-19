@@ -7,7 +7,6 @@ global using LIN.Cloud.Identity.Persistence.Models;
 global using LIN.Cloud.Identity.Persistence.Repositories;
 global using LIN.Cloud.Identity.Services.Extensions;
 global using LIN.Cloud.Identity.Services.Filters;
-global using LIN.Cloud.Identity.Services.Iam;
 global using LIN.Cloud.Identity.Services.Interfaces;
 global using LIN.Cloud.Identity.Services.Models;
 global using LIN.Cloud.Identity.Services.Utils;
@@ -22,5 +21,3 @@ global using Microsoft.AspNetCore.Mvc.Filters;
 global using Microsoft.AspNetCore.SignalR;
 // SQL.
 global using Microsoft.EntityFrameworkCore;
-// Tipos Extras.
-// Framework.

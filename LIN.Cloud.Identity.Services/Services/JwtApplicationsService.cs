@@ -1,5 +1,4 @@
-﻿using LIN.Types.Cloud.Identity.Models.Identities;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -7,7 +6,7 @@ using System.Text;
 
 namespace LIN.Cloud.Identity.Services.Services;
 
-public class JwtService
+public class JwtApplicationsService
 {
 
     /// <summary>
@@ -21,7 +20,7 @@ public class JwtService
     /// </summary>
     public static void Open(IConfiguration configuration)
     {
-        JwtKey = configuration["jwt:key"];
+        JwtKey = configuration["jwt:keyapp"];
     }
 
 
@@ -29,7 +28,7 @@ public class JwtService
     /// Genera un JSON Web Token
     /// </summary>
     /// <param name="user">Modelo de usuario</param>
-    public static string Generate(AccountModel user, int appID)
+    public static string Generate(int appID)
     {
 
         // Configuración
@@ -41,14 +40,11 @@ public class JwtService
         // Reclamaciones
         var claims = new[]
         {
-            new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Identity.Unique),
-            new Claim(ClaimTypes.GroupSid, user.Identity.Id.ToString() ?? ""),
             new Claim(ClaimTypes.Authentication, appID.ToString())
         };
 
         // Expiración del token
-        var expiración = DateTime.UtcNow.AddHours(5);
+        var expiración = DateTime.UtcNow.AddMinutes(5);
 
         // Token
         var token = new JwtSecurityToken(null, null, claims, null, expiración, credentials);
@@ -62,17 +58,14 @@ public class JwtService
     /// Valida un JSON Web token
     /// </summary>
     /// <param name="token">Token a validar</param>
-    public static JwtModel Validate(string token)
+    public static int Validate(string token)
     {
         try
         {
 
             // Comprobación
             if (string.IsNullOrWhiteSpace(token))
-                return new()
-                {
-                    IsAuthenticated = false
-                };
+                return 0;
 
             // Configurar la clave secreta.
             var key = Encoding.ASCII.GetBytes(JwtKey);
@@ -100,20 +93,11 @@ public class JwtService
                 var user = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
 
                 // 
-                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.PrimarySid)?.Value, out var id);
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Authentication)?.Value, out var appID);
-                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.GroupSid)?.Value, out var identityId);
 
 
                 // Devuelve una respuesta exitosa
-                return new()
-                {
-                    IsAuthenticated = true,
-                    AccountId = id,
-                    ApplicationId = appID,
-                    IdentityId = identityId,
-                    Unique = user ?? ""
-                };
+                return appID;
 
             }
             catch (SecurityTokenException)
@@ -124,10 +108,7 @@ public class JwtService
         }
         catch { }
 
-        return new()
-        {
-            IsAuthenticated = false
-        };
+        return 0;
 
     }
 

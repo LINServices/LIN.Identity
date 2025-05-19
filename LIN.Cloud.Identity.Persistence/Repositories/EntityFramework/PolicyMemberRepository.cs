@@ -34,9 +34,9 @@ internal class PolicyMemberRepository(DataContext context) : IPolicyMemberReposi
         try
         {
 
-            var identities = await(from pl in context.IdentityPolicies
-                             where pl.IdentityId == id
-                             select pl.Policy).ToListAsync();
+            var identities = await (from pl in context.IdentityPolicies
+                                    where pl.IdentityId == id
+                                    select pl.Policy).ToListAsync();
 
             return new()
             {

@@ -1,5 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Services;
-using LIN.Cloud.Identity.Services.Services.Authentication;
+﻿using LIN.Cloud.Identity.Services.Services.Authentication;
 using LIN.Cloud.Identity.Services.Services.Iam;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +25,7 @@ public static class ServiceExtensions
         services.AddScoped<IIamService, IamService>();
 
         JwtService.Open(configuration);
+        JwtApplicationsService.Open(configuration);
 
         return services;
     }

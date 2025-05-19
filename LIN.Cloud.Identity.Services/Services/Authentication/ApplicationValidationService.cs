@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Services.Services.Authentication;
+﻿using LIN.Types.Cloud.Identity.Models.Identities;
+
+namespace LIN.Cloud.Identity.Services.Services.Authentication;
 
 internal class ApplicationValidationService(IApplicationRepository applicationRepository, IPolicyOrchestrator policyOrchestrator) : IApplicationValidationService
 {
@@ -9,7 +11,12 @@ internal class ApplicationValidationService(IApplicationRepository applicationRe
     public async Task<ResponseBase> Authenticate(AuthenticationRequest request)
     {
         // Obtener la aplicación.
-        var applicationResponse = await applicationRepository.Read(request.Application);
+        ReadOneResponse<ApplicationModel> applicationResponse;
+
+        if (request.ApplicationId <= 0)
+            applicationResponse = await applicationRepository.Read(request.Application);
+        else
+            applicationResponse = await applicationRepository.Read(request.ApplicationId);
 
         if (applicationResponse.Response != Responses.Success)
             return new ResponseBase(Responses.UnauthorizedByApp)

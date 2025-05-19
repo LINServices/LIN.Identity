@@ -21,7 +21,7 @@ public class IntentsController(IAccountLogRepository passkeyData) : Authenticati
                            select a).FirstOrDefault().Value ?? [];
 
             // Hora actual.
-            var timeNow = DateTime.Now;
+            var timeNow = DateTime.UtcNow;
 
             // Intentos.
             var intentos = (from I in account

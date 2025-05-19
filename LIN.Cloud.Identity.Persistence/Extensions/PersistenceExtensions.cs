@@ -47,6 +47,7 @@ public static class PersistenceExtensions
         services.AddScoped<IOtpRepository, OtpRepository>();
         services.AddScoped<IPolicyRepository, PolicyRepository>();
         services.AddScoped<IPolicyMemberRepository, PolicyMemberRepository>();
+        services.AddScoped<IMailRepository, MailRepository>();
 
         return services;
     }
@@ -57,16 +58,12 @@ public static class PersistenceExtensions
     /// </summary>
     public static IApplicationBuilder UseDataBase(this IApplicationBuilder app)
     {
-
         var scope = app.ApplicationServices.CreateScope();
         var logger = scope.ServiceProvider.GetService<ILogger<DataContext>>();
         try
         {
-
             var context = scope.ServiceProvider.GetService<DataContext>();
             bool? created = context?.Database.EnsureCreated();
-
-            // Data seed.
             context?.Seed();
         }
         catch (Exception ex)

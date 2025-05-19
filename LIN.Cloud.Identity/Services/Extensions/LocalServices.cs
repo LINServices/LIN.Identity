@@ -14,9 +14,6 @@ public static class LocalServices
         // Externos
         services.AddSingleton<EmailSender, EmailSender>();
 
-        // Iam.
-        services.AddScoped<IamPolicy, IamPolicy>();
-
         return services;
 
     }

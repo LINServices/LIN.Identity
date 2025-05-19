@@ -16,7 +16,6 @@ builder.Services.AddAuthenticationServices(builder.Configuration);
 
 // Servicio de autenticación.
 builder.Services.AddPersistence(builder.Configuration);
-//builder.Host.UseLoggingService(builder.Configuration);
 
 var app = builder.Build();
 app.UseLINHttp();

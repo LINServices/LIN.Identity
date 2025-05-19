@@ -85,7 +85,7 @@ internal class AccountLogRepository(DataContext context) : IAccountLogRepository
         try
         {
             // Tiempo.
-            var time = DateTime.Now;
+            var time = DateTime.UtcNow;
 
             // Contar.
             int count = await (from a in context.AccountLogs

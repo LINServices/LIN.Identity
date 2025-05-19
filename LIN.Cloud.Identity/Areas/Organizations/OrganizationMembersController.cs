@@ -78,7 +78,7 @@ public class OrganizationMembersController(IOrganizationRepository organizations
 
         // Ajustar el modelo.
         modelo.Visibility = Visibility.Hidden;
-        modelo.Password = $"pwd@{DateTime.Now.Year}";
+        modelo.Password = $"pwd@{DateTime.UtcNow.Year}";
         modelo = Services.Formats.Account.Process(modelo);
         modelo.AccountType = AccountTypes.Work;
 
