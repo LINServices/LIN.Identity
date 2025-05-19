@@ -74,14 +74,13 @@ public class Account
                 Id = 0,
                 Status = IdentityStatus.Enable,
                 Type = IdentityType.Account,
-                CreationTime = DateTime.Now,
-                EffectiveTime = DateTime.Now,
-                ExpirationTime = DateTime.Now.AddYears(5),
+                CreationTime = DateTime.UtcNow,
+                EffectiveTime = DateTime.UtcNow,
+                ExpirationTime = DateTime.UtcNow.AddYears(5),
                 Roles = [],
                 Unique = baseAccount.Identity.Unique.Trim()
             }
         };
-
     }
 
 

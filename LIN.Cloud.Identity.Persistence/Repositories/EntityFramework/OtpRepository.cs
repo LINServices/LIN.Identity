@@ -68,7 +68,7 @@ public class OtpRepository(DataContext context) : IOtpRepository
             var update = await (from A in context.OTPs
                                 where A.AccountId == accountId
                                 && A.Code == code
-                                && A.ExpireTime > DateTime.Now
+                                && A.ExpireTime > DateTime.UtcNow
                                 && A.IsUsed == false
                                 select A).ExecuteUpdateAsync(t => t.SetProperty(t => t.IsUsed, true));
 

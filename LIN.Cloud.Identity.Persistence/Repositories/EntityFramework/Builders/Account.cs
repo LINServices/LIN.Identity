@@ -12,7 +12,7 @@ public class Account
     {
 
         // Hora actual.
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         // Consulta.
         var query = from account in context.Accounts
@@ -34,7 +34,7 @@ public class Account
     {
 
         // Hora actual.
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         // Consulta.
         var query = from account in context.Accounts

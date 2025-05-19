@@ -46,12 +46,12 @@ public partial class PassKeyHub
         //attempt.Application.ID = application.Model.ID;
 
         // Vencimiento
-        var expiración = DateTime.Now.AddMinutes(2);
+        var expiración = DateTime.UtcNow.AddMinutes(2);
 
         // Caducidad el modelo
         attempt.HubKey = Context.ConnectionId;
         attempt.Status = PassKeyStatus.Undefined;
-        attempt.Time = DateTime.Now;
+        attempt.Time = DateTime.UtcNow;
         attempt.Expiration = expiración;
 
         // Agrega el modelo

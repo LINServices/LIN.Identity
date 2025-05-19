@@ -107,7 +107,7 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
             attempt.Status = modelo.Status;
 
             // Si el tiempo de expiración ya paso
-            if (DateTime.Now > modelo.Expiration)
+            if (DateTime.UtcNow > modelo.Expiration)
             {
                 attempt.Status = PassKeyStatus.Expired;
                 attempt.Token = string.Empty;
@@ -136,7 +136,7 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
                 Status = attempt.Status,
                 User = attempt.User,
                 Token = attempt.Token,
-                Time = DateTime.Now,
+                Time = DateTime.UtcNow,
                 HubKey = string.Empty,
                 Key = string.Empty
             };
@@ -146,7 +146,7 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
             {
                 AccountId = accountJwt.AccountId,
                 AuthenticationMethod = AuthenticationMethods.Authenticator,
-                Time = DateTime.Now,
+                Time = DateTime.UtcNow,
             });
 
             // Respuesta al cliente.

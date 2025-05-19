@@ -6,7 +6,7 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
 {
 
     /// <summary>
-    /// Crear nueva política.
+    /// Asociar política.
     /// </summary>
     /// <param name="modelo">Modelo de la identidad.</param>
     [HttpPost]
