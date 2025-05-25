@@ -14,7 +14,6 @@ internal class AccountLogRepository(DataContext context) : IAccountLogRepository
 
         try
         {
-
             // Organizar el modelo.
             log.Account = new() { Id = log.AccountId };
 

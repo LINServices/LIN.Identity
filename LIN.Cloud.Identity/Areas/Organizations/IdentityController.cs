@@ -11,6 +11,9 @@ public class IdentityController(IOrganizationMemberRepository directoryMembersDa
     [HttpPost]
     public async Task<HttpResponseBase> Create([FromBody] IdentityRolesModel rolModel)
     {
+        // Validar el modelo.
+        if (rolModel.Rol == Roles.None)
+            return new(Responses.InvalidParam);
 
         // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, rolModel.OrganizationId);

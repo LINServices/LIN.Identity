@@ -58,6 +58,29 @@ public class DomainController(IDomainRepository domainRepository, IIamService ia
 
 
     /// <summary>
+    /// Obtener los dominios de una organización.
+    /// </summary>
+    [HttpGet]
+    public async Task<ReadAllResponse<DomainModel>> ReadAll([FromHeader] int organization)
+    {
+
+        // Validar si el usuario tiene permisos sobre la organización.
+        var roles = await iamService.Validate(UserInformation.IdentityId, organization);
+
+        if (!roles.ValidateAlterDomain())
+            return new(Responses.Unauthorized)
+            {
+                Message = "No tienes permisos para agregar un dominio a esta organización."
+            };
+
+        // Obtener los dominios de la organización.
+        var domainsResponse = await domainRepository.ReadAll(organization);
+
+        return domainsResponse;
+    }
+
+
+    /// <summary>
     /// Verifica un dominio de una organización.
     /// </summary>
     [HttpPatch]
