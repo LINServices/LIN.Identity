@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace LIN.Cloud.Identity.Areas.Accounts;
+﻿namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("[controller]")]
 public class FederatedAccountController(ITemporalAccountRepository temporalAccountRepository, IIamService iamService, IDomainRepository domainRepository, IAccountRepository accountRepository, IIdentityRepository identityRepository, EmailSender emailSender, IGroupMemberRepository groupMemberRepository, IOrganizationRepository organizationRepository) : AuthenticationBaseController

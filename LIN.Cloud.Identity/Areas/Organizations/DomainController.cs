@@ -1,7 +1,4 @@
-﻿using DnsClient;
-using System.Text.RegularExpressions;
-
-namespace LIN.Cloud.Identity.Areas.Organizations;
+﻿namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [IdentityToken]
 [Route("[controller]")]

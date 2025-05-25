@@ -1,6 +1,4 @@
-﻿using LIN.Cloud.Identity.Services.Services;
-
-namespace LIN.Cloud.Identity.Areas.Applications;
+﻿namespace LIN.Cloud.Identity.Areas.Applications;
 
 [Route("applications")]
 public class ApplicationsController(IApplicationRepository application) : AuthenticationBaseController

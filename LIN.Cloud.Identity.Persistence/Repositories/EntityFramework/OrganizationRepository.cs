@@ -37,7 +37,7 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
                 Name = "Admin",
                 Password = $"pwd@{DateTime.UtcNow.Year}",
                 Identity = new IdentityModel()
-                { 
+                {
                     Provider = IdentityService.LIN,
                     Status = IdentityStatus.Enable,
                     CreationTime = DateTime.UtcNow,
