@@ -236,7 +236,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.ToTable("temporal_accounts");
             entity.HasIndex(e => e.VerificationCode).IsUnique();
         });
-        
+
         // Códigos OTPS.
         modelBuilder.Entity<OtpDatabaseModel>(entity =>
         {

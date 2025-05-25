@@ -130,7 +130,7 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son invalido."
-            };  
+            };
 
         // Validar información del token.
         var request = new AuthenticationRequest

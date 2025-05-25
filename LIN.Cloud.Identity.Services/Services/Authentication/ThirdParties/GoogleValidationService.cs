@@ -1,6 +1,5 @@
 ﻿using FirebaseAdmin.Auth;
 using LIN.Types.Cloud.Identity.Models.Identities;
-using System.Collections.Immutable;
 
 namespace LIN.Cloud.Identity.Services.Services.Authentication.ThirdParties;
 

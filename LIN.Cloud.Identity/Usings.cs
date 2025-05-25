@@ -9,6 +9,7 @@ global using LIN.Cloud.Identity.Services.Extensions;
 global using LIN.Cloud.Identity.Services.Filters;
 global using LIN.Cloud.Identity.Services.Interfaces;
 global using LIN.Cloud.Identity.Services.Models;
+global using LIN.Cloud.Identity.Services.Services;
 global using LIN.Cloud.Identity.Services.Utils;
 global using LIN.Types.Cloud.Identity.Enumerations;
 global using LIN.Types.Cloud.Identity.Models;
@@ -21,3 +22,4 @@ global using Microsoft.AspNetCore.Mvc.Filters;
 global using Microsoft.AspNetCore.SignalR;
 // SQL.
 global using Microsoft.EntityFrameworkCore;
+global using System.Text.RegularExpressions;
