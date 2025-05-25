@@ -20,5 +20,4 @@
 		<ProjectReference Include="..\LIN.Cloud.Identity.Services\LIN.Cloud.Identity.Services.csproj" />
 	</ItemGroup>
 
-
 </Project>
