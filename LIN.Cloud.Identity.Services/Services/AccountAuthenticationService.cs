@@ -28,12 +28,36 @@ internal class AccountAuthenticationService(IServiceProvider provider) : IAuthen
         using var scope = provider.CreateScope();
         var serviceProvider = scope.ServiceProvider;
 
-        var pipelineSteps = new List<Type>
-            {
-                typeof(IIdentityValidationService),
+        // Configurar el pipeline de autenticación.
+        List<Type> pipelineSteps = [];
+
+        pipelineSteps.AddRange([
+               typeof(IIdentityValidationService)
+           ]);
+
+        if (request.Service == Types.Cloud.Identity.Enumerations.IdentityService.Google)
+        {
+            // Agregar pasos específicos para Google.
+            pipelineSteps.Insert(0, typeof(IGoogleValidationService));
+        }
+        else if (request.Service == Types.Cloud.Identity.Enumerations.IdentityService.Microsoft)
+        {
+            // Agregar pasos específicos para Microsoft.
+            //pipelineSteps.Insert(0, );
+        }
+        else
+        {
+            // Autenticación por defecto para LIN.
+            pipelineSteps.AddRange([
+                typeof(IAccountValidationService),
+            ]);
+        }
+
+        // Pasos comunes para todos los servicios.
+        pipelineSteps.AddRange([
                 typeof(IOrganizationValidationService),
                 typeof(IApplicationValidationService)
-            };
+            ]);
 
         foreach (var stepType in pipelineSteps)
         {
