@@ -59,6 +59,23 @@ internal class IdentityRepository(DataContext context) : IIdentityRepository
 
 
     /// <summary>
+    /// Validar si existe una identidad según el Unique.
+    /// </summary>
+    public async Task<ReadOneResponse<bool>> Exist(string unique)
+    {
+        try
+        {
+            bool exist = await context.Identities.AnyAsync(x => x.Unique == unique);
+            return new(Responses.Success, exist);
+        }
+        catch (Exception)
+        {
+            return new(Responses.Undefined);
+        }
+    }
+
+
+    /// <summary>
     /// Obtener una identidad según el Unique.
     /// </summary>
     /// <param name="unique">Unique.</param>

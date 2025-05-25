@@ -259,13 +259,13 @@ public class Account
                                  CreationTime = account.Identity.CreationTime,
                                  EffectiveTime = account.Identity.EffectiveTime,
                                  ExpirationTime = account.Identity.ExpirationTime,
-                                 Status = account.Identity.Status
+                                 Status = account.Identity.Status,
+                                 Provider = account.Identity.Provider,
                              },
                              Password = account.Password,
                              Visibility = account.Visibility,
                              Profile = filters.IncludePhoto ? string.Empty : selector,
                              IdentityId = account.Identity.Id,
-                             IdentityService = account.IdentityService,
                              AccountType = account.AccountType
                          };
 

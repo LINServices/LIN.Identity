@@ -12,7 +12,6 @@ public class PoliciesController(IPolicyRepository policiesData, IIamService iam)
     [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] PolicyModel modelo, [FromHeader] int organization)
     {
-
         // Validar nivel de acceso y roles sobre la organización.
         var validate = await iam.Validate(UserInformation.IdentityId, organization);
 
@@ -42,7 +41,6 @@ public class PoliciesController(IPolicyRepository policiesData, IIamService iam)
     [HttpGet]
     public async Task<HttpReadOneResponse<PolicyModel>> Read([FromHeader] int policyId)
     {
-
         // Validar nivel de acceso y roles sobre la organización.
         var validate = await iam.IamPolicy(UserInformation.IdentityId, policyId);
 

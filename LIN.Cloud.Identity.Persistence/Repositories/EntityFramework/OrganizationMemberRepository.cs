@@ -193,11 +193,11 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
                                          Id = a.Id,
                                          Name = a.Name,
                                          Visibility = a.Visibility,
-                                         IdentityService = a.IdentityService,
                                          Identity = new()
                                          {
                                              Id = a.Identity.Id,
-                                             Unique = a.Identity.Unique
+                                             Unique = a.Identity.Unique,
+                                             Provider = a.Identity.Provider,
                                          }
                                      },
                                      Profile = gm

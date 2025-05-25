@@ -48,6 +48,8 @@ public static class PersistenceExtensions
         services.AddScoped<IPolicyRepository, PolicyRepository>();
         services.AddScoped<IPolicyMemberRepository, PolicyMemberRepository>();
         services.AddScoped<IMailRepository, MailRepository>();
+        services.AddScoped<IDomainRepository, DomainRepository>();
+        services.AddScoped<ITemporalAccountRepository, TemporalAccountRepository>();
 
         return services;
     }

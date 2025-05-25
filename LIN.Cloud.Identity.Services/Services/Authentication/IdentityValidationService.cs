@@ -34,7 +34,7 @@ internal class IdentityValidationService(IAccountRepository accountRepository) :
                 Message = "La identidad de la cuenta de usuario no se encuentra activa."
             };
 
-        if (request.StrictService && account.IdentityService != account.IdentityService)
+        if (request.StrictService && account.Identity.Provider != request.Service)
             return new ResponseBase
             {
                 Response = Responses.Unauthorized,

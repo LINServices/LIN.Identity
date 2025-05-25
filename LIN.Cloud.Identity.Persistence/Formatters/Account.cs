@@ -14,7 +14,6 @@ public class Account
         return new AccountModel()
         {
             Id = 0,
-            IdentityService = IdentityService.LIN,
             Name = baseAccount.Name.Trim(),
             Profile = baseAccount.Profile,
             Password = Global.Utilities.Cryptography.Encrypt(baseAccount.Password),
@@ -25,6 +24,7 @@ public class Account
             {
                 Id = 0,
                 Status = IdentityStatus.Enable,
+                Provider = IdentityService.LIN,
                 Type = IdentityType.Account,
                 CreationTime = DateTime.UtcNow,
                 EffectiveTime = DateTime.UtcNow,

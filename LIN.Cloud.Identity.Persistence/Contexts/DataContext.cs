@@ -84,6 +84,16 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<IdentityPolicyModel> IdentityPolicies { get; set; }
 
     /// <summary>
+    /// Dominios.
+    /// </summary>
+    public DbSet<DomainModel> Domains { get; set; }
+
+    /// <summary>
+    /// Cuentas temporales.
+    /// </summary>
+    public DbSet<TemporalAccountModel> TemporalAccounts { get; set; }
+
+    /// <summary>
     /// Crear el modelo en BD.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -220,6 +230,13 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.Property(e => e.Id).IsRequired();
         });
 
+        // Policy Model
+        modelBuilder.Entity<TemporalAccountModel>(entity =>
+        {
+            entity.ToTable("temporal_accounts");
+            entity.HasIndex(e => e.VerificationCode).IsUnique();
+        });
+        
         // Códigos OTPS.
         modelBuilder.Entity<OtpDatabaseModel>(entity =>
         {
@@ -254,6 +271,16 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.HasOne(t => t.Policy)
                   .WithMany()
                   .HasForeignKey(t => t.PolicyId);
+        });
+
+        modelBuilder.Entity<DomainModel>(entity =>
+        {
+            entity.ToTable("domains");
+            entity.HasOne(t => t.Organization)
+                  .WithMany()
+                  .HasForeignKey(t => t.OrganizationId);
+
+            entity.HasIndex(t => t.Domain).IsUnique();
         });
 
         modelBuilder.Entity<TimeAccessPolicy>(entity =>

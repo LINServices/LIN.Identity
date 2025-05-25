@@ -1,5 +1,6 @@
 ﻿using FirebaseAdmin.Auth;
 using LIN.Types.Cloud.Identity.Models.Identities;
+using System.Collections.Immutable;
 
 namespace LIN.Cloud.Identity.Services.Services.Authentication.ThirdParties;
 
@@ -18,7 +19,8 @@ public class GoogleValidationService(IAccountRepository accountRepository) : IGo
         // Validar que la identidad de usuario exista.
         string unique = information.Claims["email"].ToString() ?? string.Empty;
         string name = information.Claims["name"].ToString() ?? string.Empty;
-        string? provider = information.Claims["firebase"] is Dictionary<string, object> firebaseClaims
+
+        string? provider = information.Claims["firebase"] is Newtonsoft.Json.Linq.JObject firebaseClaims
                 ? firebaseClaims["sign_in_provider"]?.ToString()
                 : "unknown";
 
@@ -53,7 +55,7 @@ public class GoogleValidationService(IAccountRepository accountRepository) : IGo
                     }
                 };
                 accountNew = Persistence.Formatters.Account.Process(accountNew);
-                accountNew.IdentityService = Types.Cloud.Identity.Enumerations.IdentityService.Google;
+                accountNew.Identity.Provider = Types.Cloud.Identity.Enumerations.IdentityService.Google;
                 // Crear nueva identidad y cuenta.
                 var create = await accountRepository.Create(accountNew, 0);
                 account = create;
@@ -72,7 +74,7 @@ public class GoogleValidationService(IAccountRepository accountRepository) : IGo
                 Message = "Ocurrió un error en LIN Platform & Google."
             };
 
-        if (account.Model.IdentityService != Types.Cloud.Identity.Enumerations.IdentityService.Google)
+        if (account.Model.Identity.Provider != Types.Cloud.Identity.Enumerations.IdentityService.Google)
             return new(Responses.Unauthorized)
             {
                 Message = "La cuenta no esta vinculada con Google."

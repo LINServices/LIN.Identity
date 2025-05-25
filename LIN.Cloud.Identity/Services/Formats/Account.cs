@@ -66,7 +66,6 @@ public class Account
         return new AccountModel()
         {
             Id = 0,
-            IdentityService = IdentityService.LIN,
             Name = baseAccount.Name.Trim(),
             Profile = baseAccount.Profile,
             Password = Global.Utilities.Cryptography.Encrypt(baseAccount.Password),
@@ -82,6 +81,7 @@ public class Account
                 EffectiveTime = DateTime.UtcNow,
                 ExpirationTime = DateTime.UtcNow.AddYears(5),
                 Roles = [],
+                Provider = IdentityService.LIN,
                 Unique = baseAccount.Identity.Unique.Trim()
             }
         };
