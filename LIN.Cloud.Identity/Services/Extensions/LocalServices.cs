@@ -9,13 +9,9 @@ public static class LocalServices
     /// <param name="services">Services.</param>
     public static IServiceCollection AddLocalServices(this IServiceCollection services)
     {
-
-        // Servicios de datos.
         // Externos
         services.AddSingleton<EmailSender, EmailSender>();
-
         return services;
-
     }
 
 }

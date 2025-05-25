@@ -14,7 +14,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
     [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel? modelo, [FromHeader] string app)
     {
-
         // Validaciones del modelo.
         if (modelo is null || modelo.Identity is null || modelo.Password.Length < 4 || modelo.Name.Length <= 0 || modelo.Identity.Unique.Length <= 0)
             return new(Responses.InvalidParam)

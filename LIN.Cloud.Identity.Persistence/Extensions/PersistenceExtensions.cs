@@ -64,7 +64,9 @@ public static class PersistenceExtensions
         {
             var context = scope.ServiceProvider.GetService<DataContext>();
             bool? created = context?.Database.EnsureCreated();
-            context?.Seed();
+
+            // Crear la base de datos si no existe.
+            SeedContext.Seed(context!);
         }
         catch (Exception ex)
         {
