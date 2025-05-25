@@ -36,6 +36,8 @@ public static class ServiceExtensions
         services.AddScoped<IPolicyOrchestrator, PolicyOrchestrator>();
         services.AddScoped<IIamService, IamService>();
 
+        services.AddSingleton<IDomainService, DomainService>();
+
         JwtService.Open(configuration);
         JwtApplicationsService.Open(configuration);
 

@@ -36,9 +36,9 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
                 Visibility = Visibility.Hidden,
                 Name = "Admin",
                 Password = $"pwd@{DateTime.UtcNow.Year}",
-                IdentityService = IdentityService.LIN,
                 Identity = new IdentityModel()
-                {
+                { 
+                    Provider = IdentityService.LIN,
                     Status = IdentityStatus.Enable,
                     CreationTime = DateTime.UtcNow,
                     EffectiveTime = DateTime.UtcNow,

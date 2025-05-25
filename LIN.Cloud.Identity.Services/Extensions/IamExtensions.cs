@@ -100,4 +100,15 @@ public static class ValidateRoles
         return sets.Any();
     }
 
+    public static bool ValidateAlterDomain(this IEnumerable<Roles> roles)
+    {
+        List<Roles> availed =
+                    [
+                        Roles.Administrator
+                ];
+
+        var sets = availed.Intersect(roles);
+        return sets.Any();
+    }
+
 }

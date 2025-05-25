@@ -123,15 +123,22 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
     /// </summary>
     /// <param name="token">Token de acceso a tercero.</param>
     [HttpGet("ThirdParty")]
-    public async Task<HttpReadOneResponse<AccountModel>> LoginWith([FromHeader] string token, [FromHeader] IdentityService provider)
+    public async Task<HttpReadOneResponse<AccountModel>> LoginWith([FromHeader] string token, [FromHeader] IdentityService provider, [FromHeader] string application)
     {
+
+        if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(application))
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son invalido."
+            };  
 
         // Validar información del token.
         var request = new AuthenticationRequest
         {
             ThirdPartyToken = token,
             Service = provider,
-            StrictService = true
+            StrictService = true,
+            Application = application
         };
 
         var response = await serviceAuth.Authenticate(request);

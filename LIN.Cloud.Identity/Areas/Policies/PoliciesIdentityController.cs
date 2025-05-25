@@ -12,7 +12,6 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
     [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] IdentityPolicyModel modelo)
     {
-
         // Validar nivel de acceso y roles sobre la organización.
         var validate = await iam.IamIdentity(UserInformation.IdentityId, modelo.IdentityId);
 
@@ -38,7 +37,6 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
     [HttpGet("all")]
     public async Task<HttpReadAllResponse<PolicyModel>> ReadAll([FromHeader] int identity)
     {
-
         // Validar nivel de acceso y roles sobre la organización.
         var validate = await iam.IamIdentity(UserInformation.IdentityId, identity);
 
