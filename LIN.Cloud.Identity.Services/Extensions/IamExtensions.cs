@@ -111,4 +111,18 @@ public static class ValidateRoles
         return sets.Any();
     }
 
+    public static bool ValidateReadDomains(this IEnumerable<Roles> roles)
+    {
+        List<Roles> availed =
+                    [
+                        Roles.Administrator,
+                        Roles.Manager,
+                        Roles.AccountOperator,
+                        Roles.SecurityViewer
+                ];
+
+        var sets = availed.Intersect(roles);
+        return sets.Any();
+    }
+
 }

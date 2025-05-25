@@ -27,7 +27,7 @@ internal class DomainRepository(DataContext context) : IDomainRepository
     /// <summary>
     /// Obtener un dominio por su unique.
     /// </summary>
-    /// <param name="id">Id de la organización.</param>
+    /// <param name="unique">Dominio.</param>
     public async Task<ReadOneResponse<DomainModel>> Read(string unique)
     {
         try
@@ -49,6 +49,29 @@ internal class DomainRepository(DataContext context) : IDomainRepository
             return new(Responses.NotRows);
         }
 
+    }
+
+
+    /// <summary>
+    /// Obtener los dominios.
+    /// </summary>
+    /// <param name="id">Id de la organización.</param>
+    public async Task<ReadAllResponse<DomainModel>> ReadAll(int id)
+    {
+        try
+        {
+            // Consultar.
+            var domain = await (from g in context.Domains
+                                where g.OrganizationId == id
+                                select g).ToListAsync();
+            
+            // Success.
+            return new(Responses.Success, domain);
+        }
+        catch (Exception)
+        {
+            return new(Responses.NotRows);
+        }
     }
 
 
