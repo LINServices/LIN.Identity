@@ -117,4 +117,42 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
         return response;
     }
 
+
+    /// <summary>
+    /// Iniciar sesión con un tercero.
+    /// </summary>
+    /// <param name="token">Token de acceso a tercero.</param>
+    [HttpGet("ThirdParty")]
+    public async Task<HttpReadOneResponse<AccountModel>> LoginWith([FromHeader] string token, [FromHeader] IdentityService provider)
+    {
+
+        // Validar información del token.
+        var request = new AuthenticationRequest
+        {
+            ThirdPartyToken = token,
+            Service = provider,
+            StrictService = true
+        };
+
+        var response = await serviceAuth.Authenticate(request);
+
+        if (response.Response != Responses.Success)
+            return new()
+            {
+                Response = response.Response,
+                Message = response.Message,
+                Errors = response.Errors
+            };
+
+        // Respuesta.
+        var http = new ReadOneResponse<AccountModel>
+        {
+            Model = serviceAuth.Account!,
+            Response = Responses.Success,
+            Token = serviceAuth.GenerateToken()
+        };
+
+        return http;
+    }
+
 }

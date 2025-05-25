@@ -34,12 +34,11 @@ internal class IdentityValidationService(IAccountRepository accountRepository) :
                 Message = "La identidad de la cuenta de usuario no se encuentra activa."
             };
 
-        // Validar contraseña.
-        if (Global.Utilities.Cryptography.Encrypt(request.Password) != account.Password)
+        if (request.StrictService && account.IdentityService != account.IdentityService)
             return new ResponseBase
             {
-                Response = Responses.InvalidPassword,
-                Message = "La contraseña es incorrecta."
+                Response = Responses.Unauthorized,
+                Message = $"La cuenta no esta vinculada con el proveedor {request.Service}"
             };
 
         // Establecer datos en la solicitud.
