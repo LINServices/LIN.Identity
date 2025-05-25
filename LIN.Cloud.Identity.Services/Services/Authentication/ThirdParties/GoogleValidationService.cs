@@ -27,7 +27,7 @@ public class GoogleValidationService(IAccountRepository accountRepository) : IGo
             {
                 Message = "El token es invalido o no esta firmado para Google."
             };
-        
+
         var account = await accountRepository.Read(unique, new()
         {
             FindOn = Persistence.Models.FindOn.AllAccounts,
