@@ -20,7 +20,7 @@ public class JwtApplicationsService
     /// </summary>
     public static void Open(IConfiguration configuration)
     {
-        JwtKey = configuration["jwt:keyapp"];
+        JwtKey = configuration["jwt:keyapp"] ?? string.Empty;
     }
 
 

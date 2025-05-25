@@ -21,7 +21,7 @@ public class JwtService
     /// </summary>
     public static void Open(IConfiguration configuration)
     {
-        JwtKey = configuration["jwt:key"];
+        JwtKey = configuration["jwt:key"] ?? string.Empty;
     }
 
 
@@ -66,7 +66,6 @@ public class JwtService
     {
         try
         {
-
             // Comprobación
             if (string.IsNullOrWhiteSpace(token))
                 return new()
@@ -95,15 +94,12 @@ public class JwtService
                 var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
                 var jwtToken = (JwtSecurityToken)validatedToken;
 
-
                 // Si el token es válido, puedes acceder a los claims (datos) del usuario
                 var user = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
 
-                // 
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.PrimarySid)?.Value, out var id);
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Authentication)?.Value, out var appID);
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.GroupSid)?.Value, out var identityId);
-
 
                 // Devuelve una respuesta exitosa
                 return new()
@@ -119,8 +115,6 @@ public class JwtService
             catch (SecurityTokenException)
             {
             }
-
-
         }
         catch { }
 
@@ -128,7 +122,6 @@ public class JwtService
         {
             IsAuthenticated = false
         };
-
     }
 
 

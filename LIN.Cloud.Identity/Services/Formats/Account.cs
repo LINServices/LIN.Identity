@@ -30,7 +30,7 @@ public class Account
                 Description = "La cuenta debe tener un identificador único valido.",
             });
 
-        if (!ValidarCadena(baseAccount.Identity.Unique))
+        if (!ValidarCadena(baseAccount.Identity?.Unique))
             errors.Add(new ErrorModel()
             {
                 Tittle = "Identidad no valida",
@@ -42,8 +42,12 @@ public class Account
 
 
 
-    static bool ValidarCadena(string cadena)
+    static bool ValidarCadena(string? cadena)
     {
+        // Si la cadena es nula o vacía, no es válida
+        if (string.IsNullOrWhiteSpace(cadena))
+            return false;
+
         // Patrón de expresión regular para permitir solo letras o números
         string patron = "^[a-zA-Z0-9]*$";
 

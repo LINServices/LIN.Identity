@@ -49,8 +49,6 @@ internal class IamService(DataContext context, IGroupRepository groups, IIdentit
             organizations = organizations.Distinct().ToList();
         }
 
-        bool have = false;
-
         List<Roles> roles = new();
 
         foreach (var e in organizations)
