@@ -102,7 +102,6 @@ internal class AccountLogRepository(DataContext context) : IAccountLogRepository
         {
             return new(Responses.NotRows);
         }
-
     }
 
 }

@@ -52,7 +52,6 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
     /// </summary>
     public async Task SendRequest(PassKeyModel modelo)
     {
-
         var pass = new PassKeyModel()
         {
             Expiration = modelo.Expiration,
@@ -73,7 +72,6 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
     {
         try
         {
-
             // Obtener información del token.
             JwtModel accountJwt = JwtService.Validate(modelo.Token);
 
@@ -155,5 +153,4 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
         {
         }
     }
-
 }

@@ -8,7 +8,6 @@ public partial class PassKeyHub
     /// </summary>
     public async Task JoinAdmin(string token)
     {
-
         // Obtener información del token.
         var tokenInformation = JwtService.Validate(token);
 
@@ -18,7 +17,6 @@ public partial class PassKeyHub
 
         // Grupo de la cuenta.
         await Groups.AddToGroupAsync(Context.ConnectionId, BuildGroupName(tokenInformation.Unique));
-
     }
 
 
