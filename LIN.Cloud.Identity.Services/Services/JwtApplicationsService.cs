@@ -98,7 +98,6 @@ public class JwtApplicationsService
 
                 // Devuelve una respuesta exitosa
                 return appID;
-
             }
             catch (SecurityTokenException)
             {

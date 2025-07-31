@@ -123,6 +123,4 @@ public class JwtService
             IsAuthenticated = false
         };
     }
-
-
 }
