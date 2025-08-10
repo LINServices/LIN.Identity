@@ -12,9 +12,9 @@ public class JwtService
     /// <summary>
     /// Inicia el servicio JwtService
     /// </summary>
-    public static void Open()
+    public static void Open(string key)
     {
-        JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key");
+        JwtKey = key;
     }
 
 
@@ -24,10 +24,6 @@ public class JwtService
     /// <param name="user">Modelo de usuario</param>
     public static string Generate(AccountModel user, int appID)
     {
-
-        if (JwtKey == string.Empty)
-            Open();
-
         // Configuración
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey));
 

@@ -21,10 +21,12 @@ builder.Services.AddPersistence(builder.Configuration);
 builder.Host.UseLoggingService(builder.Configuration);
 
 var app = builder.Build();
-app.UseLINHttp();
+app.UseLINHttp(useGateway: true);
 
 // Base de datos.
 app.UseDataBase();
+
+JwtService.Open(builder.Configuration["jwt:key"]);
 
 // Hub.
 app.MapHub<PassKeyHub>("/realTime/auth/passkey");
