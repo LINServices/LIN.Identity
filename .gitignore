@@ -405,3 +405,4 @@ FodyWeavers.xsd
 *.sln.iml
 /LIN.Cloud.Identity/appsettings.json
 /LIN.Cloud.Identity/appsettings.firebase.json
+/LIN.Cloud.Identity/appsettings.firebase.json

@@ -18,10 +18,10 @@ public static class ServiceExtensions
     public static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
     {
         // Inicializar Firebase
-        //FirebaseApp.Create(new AppOptions
-        //{
-        //    Credential = GoogleCredential.FromFile("appsettings.firebase.json")
-        //});
+        FirebaseApp.Create(new AppOptions
+        {
+            Credential = GoogleCredential.FromFile("appsettings.firebase.json")
+        });
 
         // Servicios de datos.
         services.AddScoped<IApplicationValidationService, ApplicationValidationService>();
