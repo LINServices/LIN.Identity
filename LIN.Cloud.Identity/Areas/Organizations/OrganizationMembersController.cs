@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [IdentityToken]
 [Route("orgs/members")]
-public class OrganizationMembersController(Data.Organizations organizationsData, Data.Accounts accountsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, IamRoles rolesIam) : AuthenticationBaseController
+public class OrganizationMembersController(IOrganizationRepository organizationsData, IAccountRepository accountsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IIamService rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -14,9 +14,8 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <param name="ids">Lista de ids a agregar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("invite")]
-    public async Task<HttpCreateResponse> AddExternalMembers([FromQuery] int organization, [FromBody] List<int> ids)
+    public async Task<HttpCreateResponse> AddExternalMembers([FromQuery] int organization, [FromBody] IEnumerable<int> ids)
     {
-
         // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
@@ -32,7 +31,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
             };
 
         // Solo elementos distintos.
-        ids = ids.Distinct().ToList();
+        ids = ids.Distinct();
 
         // Valida si el usuario pertenece a la organización.
         var (existentes, noUpdated) = await directoryMembersData.IamIn(ids, organization);
@@ -55,9 +54,8 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
 
         response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count()} debido a que ya pertenecen a esta organización.";
 
-        // Retorna el resultado
+        //// Retorna el resultado
         return response;
-
     }
 
 
@@ -80,7 +78,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
 
         // Ajustar el modelo.
         modelo.Visibility = Visibility.Hidden;
-        modelo.Password = $"pwd@{DateTime.Now.Year}";
+        modelo.Password = $"pwd@{DateTime.UtcNow.Year}";
         modelo = Services.Formats.Account.Process(modelo);
         modelo.AccountType = AccountTypes.Work;
 
@@ -143,7 +141,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
     /// <summary>
     /// Obtiene la lista de integrantes asociados a una organización.
     /// </summary>
-    [HttpGet]
+    [HttpGet("accounts")]
     public async Task<HttpReadAllResponse<SessionModel<GroupMember>>> ReadAll([FromHeader] int organization)
     {
 
@@ -162,7 +160,7 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
             };
 
         // Obtiene los miembros.
-        var members = await directoryMembersData.ReadMembersByOrg(organization);
+        var members = await directoryMembersData.ReadUserAccounts(organization);
 
         // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
@@ -174,7 +172,6 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
 
         // Retorna el resultado
         return members;
-
     }
 
 
@@ -208,11 +205,9 @@ public class OrganizationMembersController(Data.Organizations organizationsData,
         // Valida si el usuario pertenece a la organización.
         var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
 
+        // Expulsar a los miembros.
         var response = await directoryMembersData.Expulse(existentes, organization);
-
-        // Retorna el resultado
         return response;
-
     }
 
 }

@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Organizations;
 
 [Route("[controller]")]
-public class OrganizationsController(Data.Organizations organizationsData, Data.DirectoryMembers directoryMembersData) : AuthenticationBaseController
+public class OrganizationsController(IOrganizationRepository organizationsData, IOrganizationMemberRepository directoryMembersData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -24,12 +24,12 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
         {
             modelo.Id = 0;
             modelo.Name = modelo.Name.Trim();
-            modelo.Creation = DateTime.Now;
+            modelo.Creation = DateTime.UtcNow;
             modelo.Directory.Members = [];
             modelo.Directory.Name = modelo.Directory.Name.Trim();
-            modelo.Directory.Identity.EffectiveTime = DateTime.Now;
-            modelo.Directory.Identity.CreationTime = DateTime.Now;
-            modelo.Directory.Identity.EffectiveTime = DateTime.Now.AddYears(10);
+            modelo.Directory.Identity.EffectiveTime = DateTime.UtcNow;
+            modelo.Directory.Identity.CreationTime = DateTime.UtcNow;
+            modelo.Directory.Identity.EffectiveTime = DateTime.UtcNow.AddYears(10);
             modelo.Directory.Identity.Status = IdentityStatus.Enable;
         }
 
@@ -41,13 +41,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
             return new(response.Response);
 
         // Retorna el resultado.
-        return new CreateResponse()
-        {
-            LastId = response.LastId,
-            Response = Responses.Success,
-            Message = "Success"
-        };
-
+        return new CreateResponse(Responses.Success, response.LastId);
     }
 
 
@@ -95,12 +89,7 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
                 };
         }
 
-        return new ReadOneResponse<OrganizationModel>()
-        {
-            Response = Responses.Success,
-            Model = response.Model
-        };
-
+        return new ReadOneResponse<OrganizationModel>(Responses.Success, response.Model);
     }
 
 
@@ -111,12 +100,10 @@ public class OrganizationsController(Data.Organizations organizationsData, Data.
     [IdentityToken]
     public async Task<HttpReadAllResponse<OrganizationModel>> ReadAll()
     {
-
         // Obtiene la organización
-        var response = await organizationsData.ReadAll(UserInformation.IdentityId);
+        var response = await directoryMembersData.ReadAllMembers(UserInformation.IdentityId);
 
         return response;
-
     }
 
 }

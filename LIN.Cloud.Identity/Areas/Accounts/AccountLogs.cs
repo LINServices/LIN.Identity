@@ -2,7 +2,7 @@ namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [IdentityToken]
 [Route("account/logs")]
-public class AccountLogsController(Data.AccountLogs accountData) : AuthenticationBaseController
+public class AccountLogsController(IAccountLogRepository accountData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -12,7 +12,6 @@ public class AccountLogsController(Data.AccountLogs accountData) : Authenticatio
     [HttpGet]
     public async Task<HttpReadAllResponse<AccountLog>> ReadAll(DateTime? start, DateTime? end)
     {
-
         // Fechas por defecto.
         start ??= DateTime.MinValue;
         end ??= DateTime.MaxValue;

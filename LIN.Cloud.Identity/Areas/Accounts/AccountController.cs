@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("[controller]")]
-public class AccountController(Data.Accounts accountData, Data.Applications applications) : AuthenticationBaseController
+public class AccountController(IAccountRepository accountData, IApplicationRepository applications) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -12,7 +12,6 @@ public class AccountController(Data.Accounts accountData, Data.Applications appl
     [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] AccountModel? modelo, [FromHeader] string app)
     {
-
         // Validaciones del modelo.
         if (modelo is null || modelo.Identity is null || modelo.Password.Length < 4 || modelo.Name.Length <= 0 || modelo.Identity.Unique.Length <= 0)
             return new(Responses.InvalidParam)
@@ -36,7 +35,7 @@ public class AccountController(Data.Accounts accountData, Data.Applications appl
         modelo = Services.Formats.Account.Process(modelo);
 
         // Creación del usuario.
-        var response = await accountData.Create(modelo);
+        var response = await accountData.Create(modelo, 0);
 
         // Evaluación.
         if (response.Response != Responses.Success)
@@ -63,7 +62,6 @@ public class AccountController(Data.Accounts accountData, Data.Applications appl
             Token = token,
             Message = "Cuenta creada satisfactoriamente."
         };
-
     }
 
 
@@ -254,7 +252,6 @@ public class AccountController(Data.Accounts accountData, Data.Applications appl
         });
 
         return response;
-
     }
 
 }

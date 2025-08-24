@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FirebaseAdmin" Version="3.3.0" />
+		<PackageReference Include="DnsClient" Version="1.8.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\LIN.Cloud.Identity.Persistence\LIN.Cloud.Identity.Persistence.csproj" />
+	</ItemGroup>
+
+</Project>

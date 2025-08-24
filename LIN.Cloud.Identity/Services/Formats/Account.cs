@@ -1,5 +1,4 @@
 ﻿using LIN.Types.Models;
-using System.Text.RegularExpressions;
 using IdentityService = LIN.Types.Cloud.Identity.Enumerations.IdentityService;
 
 namespace LIN.Cloud.Identity.Services.Formats;
@@ -30,7 +29,7 @@ public class Account
                 Description = "La cuenta debe tener un identificador único valido.",
             });
 
-        if (!ValidarCadena(baseAccount.Identity.Unique))
+        if (!ValidarCadena(baseAccount.Identity?.Unique))
             errors.Add(new ErrorModel()
             {
                 Tittle = "Identidad no valida",
@@ -42,8 +41,12 @@ public class Account
 
 
 
-    static bool ValidarCadena(string cadena)
+    static bool ValidarCadena(string? cadena)
     {
+        // Si la cadena es nula o vacía, no es válida
+        if (string.IsNullOrWhiteSpace(cadena))
+            return false;
+
         // Patrón de expresión regular para permitir solo letras o números
         string patron = "^[a-zA-Z0-9]*$";
 
@@ -62,23 +65,22 @@ public class Account
         return new AccountModel()
         {
             Id = 0,
-            IdentityService = IdentityService.LIN,
             Name = baseAccount.Name.Trim(),
             Profile = baseAccount.Profile,
             Password = Global.Utilities.Cryptography.Encrypt(baseAccount.Password),
             Visibility = baseAccount.Visibility,
             IdentityId = 0,
-            IsLINAdmin = false,
             AccountType = baseAccount.AccountType,
             Identity = new()
             {
                 Id = 0,
                 Status = IdentityStatus.Enable,
                 Type = IdentityType.Account,
-                CreationTime = DateTime.Now,
-                EffectiveTime = DateTime.Now,
-                ExpirationTime = DateTime.Now.AddYears(5),
+                CreationTime = DateTime.UtcNow,
+                EffectiveTime = DateTime.UtcNow,
+                ExpirationTime = DateTime.UtcNow.AddYears(5),
                 Roles = [],
+                Provider = IdentityService.LIN,
                 Unique = baseAccount.Identity.Unique.Trim()
             }
         };

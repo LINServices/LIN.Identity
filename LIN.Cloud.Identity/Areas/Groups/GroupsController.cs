@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("[controller]")]
-public class GroupsController(Data.Groups groupData, IamRoles rolesIam) : AuthenticationBaseController
+public class GroupsController(IGroupRepository groupData, IIamService rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -14,7 +14,7 @@ public class GroupsController(Data.Groups groupData, IamRoles rolesIam) : Authen
     {
 
         // Confirmar el rol.
-        var roles = await rolesIam.Validate(UserInformation.IdentityId, group.OwnerId ?? 0);
+        var roles = await rolesIam.Validate(UserInformation.IdentityId, group.Identity.OwnerId ?? 0);
 
         // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);

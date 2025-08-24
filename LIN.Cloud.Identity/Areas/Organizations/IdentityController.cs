@@ -2,16 +2,18 @@
 
 [IdentityToken]
 [Route("[controller]")]
-public class IdentityController(Data.DirectoryMembers directoryMembersData, Data.IdentityRoles identityRolesData, IamRoles rolesIam) : AuthenticationBaseController
+public class IdentityController(IOrganizationMemberRepository directoryMembersData, IIdentityRolesRepository identityRolesData, IIamService rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
-    /// Crear nuevo grupo.
+    /// Crear nuevo rol en una identidad.
     /// </summary>
-    /// <param name="rolModel">Modelo del grupo.</param>
     [HttpPost]
     public async Task<HttpResponseBase> Create([FromBody] IdentityRolesModel rolModel)
     {
+        // Validar el modelo.
+        if (rolModel.Rol == Roles.None)
+            return new(Responses.InvalidParam);
 
         // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, rolModel.OrganizationId);

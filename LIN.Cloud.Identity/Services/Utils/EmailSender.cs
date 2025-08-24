@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Services.Utils;
 
-public class EmailSender(ILogger<EmailSender> logger, IConfigurationManager configuration)
+public class EmailSender(ILogger<EmailSender> logger, IConfiguration configuration)
 {
 
     /// <summary>

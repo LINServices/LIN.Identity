@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("Groups/members")]
-public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembers directoryMembersData, Data.GroupMembers groupMembers, IamRoles rolesIam) : AuthenticationBaseController
+public class GroupsMembersController(IGroupRepository groupsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IIamService rolesIam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -98,27 +98,30 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
         // Solo elementos distintos.
         ids = ids.Distinct().ToList();
 
-        // Valida si el usuario pertenece a la organización.
-        var (successIds, failureIds) = await directoryMembersData.IamIn(ids, orgId.Model);
+        //// Valida si el usuario pertenece a la organización.
+        //var (successIds, failureIds) = await directoryMembersData.IamIn(ids, orgId.Model);
 
-        // Crear el usuario.
-        var response = await groupMembers.Create(successIds.Select(id => new GroupMember
-        {
-            Group = new()
-            {
-                Id = group,
-            },
-            Identity = new()
-            {
-                Id = id
-            }
-        }));
+        //// Crear el usuario.
+        //var response = await groupMembers.Create(successIds.Select(id => new GroupMember
+        //{
+        //    Group = new()
+        //    {
+        //        Id = group,
+        //    },
+        //    Identity = new()
+        //    {
+        //        Id = id
+        //    }
+        //}));
 
-        response.Message = $"Se agregaron {successIds.Count()} integrantes y se omitieron {failureIds.Count} debido a que no pertenecen a esta organización.";
+        // response.Message = $"Se agregaron {successIds.Count()} integrantes y se omitieron {failureIds.Count} debido a que no pertenecen a esta organización.";
 
         // Retorna el resultado
-        return response;
-
+        //     return response;
+        return new()
+        {
+            Message = "No se implementó la función de agregar múltiples integrantes."
+        };
     }
 
 
@@ -259,7 +262,7 @@ public class GroupsMembersController(Data.Groups groupsData, Data.DirectoryMembe
             };
 
         // Obtiene los miembros.
-        var members = await groupMembers.SearchGroups(pattern, group);
+        var members = await groupMembers.Search(pattern, group);
 
         // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
