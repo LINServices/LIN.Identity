@@ -1,9 +1,7 @@
-using LIN.Cloud.Identity.Services.Auth.Interfaces;
-
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class AuthenticationController(IAuthentication authentication, Data.Accounts accountData, Data.Policies policyData) : AuthenticationBaseController
+public class AuthenticationController(IAuthenticationAccountService serviceAuth, IAccountRepository accountData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -25,17 +23,15 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
             };
 
         // Establecer credenciales.
-        authentication.SetCredentials(user, password, application);
-
-        // Respuesta.
-        var response = await authentication.Start(new()
+        var response = await serviceAuth.Authenticate(new()
         {
-            ValidateApp = true,
-            Log = true
+            User = user,
+            Password = password,
+            Application = application
         });
 
         // Validación al obtener el usuario
-        switch (response)
+        switch (response.Response)
         {
             // Correcto
             case Responses.Success:
@@ -62,7 +58,17 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
                 return new()
                 {
                     Response = Responses.UnauthorizedByApp,
-                    Message = "La aplicación no existe o no permite que inicies sesión en este momento."
+                    Message = "La aplicación no existe o no permite que inicies sesión en este momento.",
+                    Errors = response.Errors
+                };
+
+            // Contraseña invalida.
+            case Responses.UnauthorizedByOrg:
+                return new()
+                {
+                    Response = Responses.UnauthorizedByOrg,
+                    Message = "Tu organización no permite que inicies sesión en este momento.",
+                    Errors = response.Errors
                 };
 
             // Incorrecto
@@ -75,12 +81,12 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
         }
 
         // Genera el token
-        var token = authentication.GenerateToken();
+        var token = serviceAuth.GenerateToken();
 
         // Respuesta.
         var http = new ReadOneResponse<AccountModel>
         {
-            Model = authentication.GetData(),
+            Model = serviceAuth.Account!,
             Response = Responses.Success,
             Token = token
         };
@@ -109,75 +115,48 @@ public class AuthenticationController(IAuthentication authentication, Data.Accou
 
         response.Token = Token;
         return response;
-
     }
 
 
     /// <summary>
-    /// Iniciar sesión y validar una política.
+    /// Iniciar sesión con un tercero.
     /// </summary>
-    /// <param name="user">Usuario.</param>
-    /// <param name="password">Contraseña.</param>
-    /// <param name="policy">Id de la política.</param>
-    [HttpGet("validate/policy")]
-    public async Task<HttpResponseBase> ValidatePolicy([FromQuery] string user, [FromQuery] string password, [FromHeader] string policy)
+    /// <param name="token">Token de acceso a tercero.</param>
+    [HttpGet("ThirdParty")]
+    public async Task<HttpReadOneResponse<AccountModel>> LoginWith([FromHeader] string token, [FromHeader] IdentityService provider, [FromHeader] string application)
     {
 
-        // Validación de parámetros.
-        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(policy))
+        if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(application))
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son invalido."
             };
 
-        // Establecer credenciales.
-        authentication.SetCredentials(user, password, string.Empty);
+        // Validar información del token.
+        var request = new AuthenticationRequest
+        {
+            ThirdPartyToken = token,
+            Service = provider,
+            StrictService = true,
+            Application = application
+        };
+
+        var response = await serviceAuth.Authenticate(request);
+
+        if (response.Response != Responses.Success)
+            return new()
+            {
+                Response = response.Response,
+                Message = response.Message,
+                Errors = response.Errors
+            };
 
         // Respuesta.
-        var response = await authentication.Start(new()
+        var http = new ReadOneResponse<AccountModel>
         {
-            Log = false
-        });
-
-        // Validación al obtener el usuario
-        switch (response)
-        {
-            // Correcto
-            case Responses.Success:
-                break;
-
-            // No existe esta cuenta.
-            case Responses.NotExistAccount:
-                return new()
-                {
-                    Response = Responses.Unauthorized,
-                    Message = "No existe esta cuenta."
-                };
-
-            // Contraseña invalida.
-            case Responses.InvalidPassword:
-                return new()
-                {
-                    Response = Responses.Unauthorized,
-                    Message = "Contraseña incorrecta."
-                };
-
-            // Incorrecto
-            default:
-                return new()
-                {
-                    Response = Responses.Unauthorized,
-                    Message = "Hubo un error grave."
-                };
-        }
-
-        // Validar política.
-        var isAllow = await policyData.HasFor(authentication.GetData().IdentityId, policy);
-
-        // Respuesta.
-        var http = new ResponseBase
-        {
-            Response = isAllow.Response
+            Model = serviceAuth.Account!,
+            Response = Responses.Success,
+            Token = serviceAuth.GenerateToken()
         };
 
         return http;

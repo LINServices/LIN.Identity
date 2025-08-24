@@ -1,8 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Applications;
 
-[IdentityToken]
 [Route("applications")]
-public class ApplicationsController(Data.Applications application) : AuthenticationBaseController
+public class ApplicationsController(IApplicationRepository application) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -10,6 +9,7 @@ public class ApplicationsController(Data.Applications application) : Authenticat
     /// </summary>
     /// <param name="app">App.</param>
     [HttpPost]
+    [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromBody] ApplicationModel app)
     {
 
@@ -42,8 +42,8 @@ public class ApplicationsController(Data.Applications application) : Authenticat
 
         // Formatear app.
         app.Key = Guid.NewGuid();
-        app.Restriction = new();
-        app.Identity.Type = IdentityType.Application;
+        app.Policies = [];
+        app.Identity.Type = IdentityType.Service;
         app.Identity.Roles = [];
 
         app.Owner = new()
@@ -56,6 +56,47 @@ public class ApplicationsController(Data.Applications application) : Authenticat
         var create = await application.Create(app);
 
         return create;
+    }
+
+
+    /// <summary>
+    /// Solicitar token de acceso a app.
+    /// </summary>
+    [HttpGet("token")]
+    public async Task<HttpResponseBase> RequestToken([FromHeader] string key)
+    {
+        // Validar key.
+        var app = await application.Read(key);
+
+        if (app.Response != Responses.Success)
+            return new(Responses.InvalidParam);
+
+        // Generar token de acceso.
+        var token = JwtApplicationsService.Generate(app.Model.Id);
+
+        return new ResponseBase
+        {
+            Response = Responses.Success,
+            Token = token
+        };
+    }
+
+
+    /// <summary>
+    /// Obtener la información básica de la aplicación.
+    /// </summary>
+    [HttpGet("information")]
+    public async Task<HttpReadOneResponse<ApplicationModel>> RequestInformation([FromHeader] string token)
+    {
+
+        int id = JwtApplicationsService.Validate(token);
+
+        if (id <= 0)
+            return new(Responses.InvalidParam);
+
+        // Validar key.
+        var app = await application.Read(id);
+        return app;
     }
 
 }

@@ -8,7 +8,6 @@ public partial class PassKeyHub
     /// </summary>
     public async Task JoinAdmin(string token)
     {
-
         // Obtener información del token.
         var tokenInformation = JwtService.Validate(token);
 
@@ -18,7 +17,6 @@ public partial class PassKeyHub
 
         // Grupo de la cuenta.
         await Groups.AddToGroupAsync(Context.ConnectionId, BuildGroupName(tokenInformation.Unique));
-
     }
 
 
@@ -44,13 +42,13 @@ public partial class PassKeyHub
         //attempt.Application.ID = application.Model.ID;
 
         // Vencimiento
-        var expiración = DateTime.Now.AddMinutes(2);
+        var expiración = DateTime.UtcNow.AddMinutes(2);
 
         // Caducidad el modelo
         attempt.HubKey = Context.ConnectionId;
         attempt.Status = PassKeyStatus.Undefined;
-        attempt.Hora = DateTime.Now;
-        attempt.Expiración = expiración;
+        attempt.Time = DateTime.UtcNow;
+        attempt.Expiration = expiración;
 
         // Agrega el modelo
         if (!Attempts.ContainsKey(attempt.User.ToLower()))

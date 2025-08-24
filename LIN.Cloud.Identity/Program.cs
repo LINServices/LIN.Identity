@@ -1,7 +1,5 @@
 using Http.Extensions;
 using Http.Extensions.OpenApi;
-using LIN.Cloud.Identity.Services.Auth.Interfaces;
-using LIN.Cloud.Identity.Services.Extensions;
 using LIN.Cloud.Identity.Services.Realtime;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +12,10 @@ builder.Services.AddLINHttp(true, (options) =>
 
 builder.Services.AddSignalR();
 builder.Services.AddLocalServices();
+builder.Services.AddAuthenticationServices(builder.Configuration);
 
 // Servicio de autenticación.
-builder.Services.AddScoped<IAuthentication, Authentication>();
 builder.Services.AddPersistence(builder.Configuration);
-builder.Host.UseLoggingService(builder.Configuration);
 
 var app = builder.Build();
 app.UseLINHttp();

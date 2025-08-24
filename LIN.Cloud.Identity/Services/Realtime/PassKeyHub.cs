@@ -1,6 +1,6 @@
 ﻿namespace LIN.Cloud.Identity.Services.Realtime;
 
-public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
+public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
 {
 
     /// <summary>
@@ -52,11 +52,10 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
     /// </summary>
     public async Task SendRequest(PassKeyModel modelo)
     {
-
         var pass = new PassKeyModel()
         {
-            Expiración = modelo.Expiración,
-            Hora = modelo.Hora,
+            Expiration = modelo.Expiration,
+            Time = modelo.Time,
             Status = modelo.Status,
             User = modelo.User,
             HubKey = modelo.HubKey
@@ -73,7 +72,6 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
     {
         try
         {
-
             // Obtener información del token.
             JwtModel accountJwt = JwtService.Validate(modelo.Token);
 
@@ -105,7 +103,7 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
             attempt.Status = modelo.Status;
 
             // Si el tiempo de expiración ya paso
-            if (DateTime.Now > modelo.Expiración)
+            if (DateTime.UtcNow > modelo.Expiration)
             {
                 attempt.Status = PassKeyStatus.Expired;
                 attempt.Token = string.Empty;
@@ -130,11 +128,11 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
             // Respuesta passkey.
             var responsePasskey = new PassKeyModel()
             {
-                Expiración = modelo.Expiración,
+                Expiration = modelo.Expiration,
                 Status = attempt.Status,
                 User = attempt.User,
                 Token = attempt.Token,
-                Hora = DateTime.Now,
+                Time = DateTime.UtcNow,
                 HubKey = string.Empty,
                 Key = string.Empty
             };
@@ -144,7 +142,7 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
             {
                 AccountId = accountJwt.AccountId,
                 AuthenticationMethod = AuthenticationMethods.Authenticator,
-                Time = DateTime.Now,
+                Time = DateTime.UtcNow,
             });
 
             // Respuesta al cliente.
@@ -155,5 +153,4 @@ public partial class PassKeyHub(Data.AccountLogs accountLogs) : Hub
         {
         }
     }
-
 }

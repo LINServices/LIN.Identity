@@ -9,15 +9,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.14.0-beta.1" />
-		<PackageReference Include="Global.Http" Version="3.3.0" />
-		<PackageReference Include="Global.Utilities" Version="1.0.0" />
-		<PackageReference Include="Http.Utils" Version="4.0.1" />
+		<PackageReference Include="Azure.Identity" Version="1.15.0" />
+		<PackageReference Include="Global.Http" Version="3.9.0" />
+		<PackageReference Include="Global.Utilities" Version="1.1.1" />
+		<PackageReference Include="Http.Utils" Version="5.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\LIN.Cloud.Identity.Persistence\LIN.Cloud.Identity.Persistence.csproj" />
+		<ProjectReference Include="..\LIN.Cloud.Identity.Services\LIN.Cloud.Identity.Services.csproj" />
 	</ItemGroup>
-
 
 </Project>

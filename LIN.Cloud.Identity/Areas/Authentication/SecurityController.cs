@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class SecurityController(Data.Accounts accountsData, Data.OtpService otpService, EmailSender emailSender, Data.Mails mails) : AuthenticationBaseController
+public class SecurityController(IAccountRepository accountsData, IOtpRepository otpService, IMailRepository mailRepository, EmailSender emailSender) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -22,7 +22,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
         };
 
         // Respuesta.
-        var responseCreate = await mails.Create(model);
+        var responseCreate = await mailRepository.Create(model);
 
         // Si hubo un error.
         switch (responseCreate.Response)
@@ -61,7 +61,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
             {
                 Account = new() { Id = UserInformation.AccountId },
                 Code = otpCode,
-                ExpireTime = DateTime.Now.AddMinutes(10),
+                ExpireTime = DateTime.UtcNow.AddMinutes(10),
                 IsUsed = false
             }
         });
@@ -90,7 +90,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
     public async Task<HttpResponseBase> Validate([FromQuery] string mail, [FromQuery] string code)
     {
         // Validar OTP. 
-        var response = await mails.ValidateOtpForMail(mail, code);
+        var response = await mailRepository.ValidateOtpForMail(mail, code);
         return response;
     }
 
@@ -117,7 +117,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
             };
 
         // Obtener mail principal.
-        var mail = await mails.ReadPrincipal(user);
+        var mail = await mailRepository.ReadPrincipal(user);
 
         if (mail.Response != Responses.Success)
             return new(Responses.NotRows)
@@ -134,7 +134,7 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
             Account = account.Model,
             AccountId = account.Model.Id,
             Code = otpCode,
-            ExpireTime = DateTime.Now.AddMinutes(10),
+            ExpireTime = DateTime.UtcNow.AddMinutes(10),
             IsUsed = false
         };
 
@@ -211,8 +211,6 @@ public class SecurityController(Data.Accounts accountsData, Data.OtpService otpS
         var update = await accountsData.UpdatePassword(account.Model.Id, newPassword);
 
         return update;
-
-
     }
 
 }

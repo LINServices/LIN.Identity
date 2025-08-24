@@ -4,7 +4,7 @@ namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [IdentityToken]
 [Route("[controller]")]
-public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseController
+public class IntentsController(IAccountLogRepository passkeyData) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -21,12 +21,12 @@ public class IntentsController(Data.PassKeys passkeyData) : AuthenticationBaseCo
                            select a).FirstOrDefault().Value ?? [];
 
             // Hora actual.
-            var timeNow = DateTime.Now;
+            var timeNow = DateTime.UtcNow;
 
             // Intentos.
             var intentos = (from I in account
                             where I.Status == PassKeyStatus.Undefined
-                            where I.Expiración > timeNow
+                            where I.Expiration > timeNow
                             select I).ToList();
 
             // Retorna.

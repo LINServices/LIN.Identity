@@ -1,11 +1,8 @@
-﻿using LIN.Cloud.Identity.Persistence.Models;
-using LIN.Cloud.Identity.Persistence.Queries.Interfaces;
-using LIN.Types.Cloud.Identity.Enumerations;
-using LIN.Types.Cloud.Identity.Models;
+﻿using LIN.Cloud.Identity.Persistence.Queries.Interfaces;
 
 namespace LIN.Cloud.Identity.Persistence.Queries;
 
-public class AccountFindable(Contexts.DataContext context) : IFindable<AccountModel>
+public class AccountFindable(DataContext context) : IFindable<AccountModel>
 {
 
     /// <summary>
@@ -16,7 +13,7 @@ public class AccountFindable(Contexts.DataContext context) : IFindable<AccountMo
     {
 
         // Hora actual.
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         // Consulta.
         var query = from account in context.Accounts
@@ -29,7 +26,6 @@ public class AccountFindable(Contexts.DataContext context) : IFindable<AccountMo
     }
 
 
-
     /// <summary>
     /// Buscar en todas las cuentas.
     /// </summary>
@@ -38,7 +34,7 @@ public class AccountFindable(Contexts.DataContext context) : IFindable<AccountMo
     {
 
         // Hora actual.
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
 
         // Consulta.
         var query = from account in context.Accounts
@@ -49,21 +45,33 @@ public class AccountFindable(Contexts.DataContext context) : IFindable<AccountMo
     }
 
 
-
-
+    /// <summary>
+    /// Obtener las cuentas según el Id.
+    /// </summary>
+    /// <param name="id">Id de la cuenta.</param>
+    /// <param name="filters">Filtros.</param>
     public IQueryable<AccountModel> GetAccounts(int id, QueryObjectFilter filters)
+    {
+        // Query general
+        IQueryable<AccountModel> accounts;
+
+        accounts = from account in (filters.FindOn == Models.FindOn.StableAccounts) ? OnStable() : OnAll()
+                   where account.Id == id
+                   select account;
+
+        // Retorno
+        return accounts;
+    }
+
+    public IQueryable<AccountModel> GetAccounts(string user, QueryObjectFilter filters)
     {
 
         // Query general
         IQueryable<AccountModel> accounts;
 
-        if (filters.FindOn == Models.FindOn.StableAccounts)
-            accounts = from account in (filters.FindOn == Models.FindOn.StableAccounts) ? OnStable() : OnAll()
-                       where account.Id == id
-                       select account;
-
-        // Armar el modelo
-        accounts = null!;// BuildModel(accounts, filters, context);
+        accounts = from account in (filters.FindOn == Models.FindOn.StableAccounts) ? OnStable() : OnAll()
+                   where account.Identity.Unique == user
+                   select account;
 
         // Retorno
         return accounts;

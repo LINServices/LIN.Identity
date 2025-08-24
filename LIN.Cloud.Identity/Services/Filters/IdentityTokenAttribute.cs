@@ -12,7 +12,6 @@ public class IdentityTokenAttribute : ActionFilterAttribute
     /// <param name="next">Siguiente.</param>
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-
         // Contexto HTTP.
         var httpContext = context.HttpContext;
 
@@ -44,7 +43,6 @@ public class IdentityTokenAttribute : ActionFilterAttribute
         // Agrega la información del token.
         context.HttpContext.Items.Add("authentication", tokenInfo);
         await base.OnActionExecutionAsync(context, next);
-
     }
 
 }

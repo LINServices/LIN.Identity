@@ -1,6 +1,6 @@
 # Proyecto de Autenticación de Usuarios LIN
 
-Este es un proyecto desarrollado en C# y .NET 8 que proporciona funcionalidades de autenticación de usuarios para sistemas LIN. El proyecto se centra en garantizar la seguridad y la gestión de usuarios en entornos LIN, permitiendo un acceso controlado a la información.
+Este es un proyecto desarrollado en C# y .NET 9 que proporciona funcionalidades de autenticación de usuarios para sistemas LIN. El proyecto se centra en garantizar la seguridad y la gestión de usuarios en entornos LIN, permitiendo un acceso controlado a la información.
 
 # Características
 
@@ -15,7 +15,7 @@ Este es un proyecto desarrollado en C# y .NET 8 que proporciona funcionalidades 
 
 ## Requisitos del Sistema
 
-- [.NET 8 Runtime](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 9 Runtime](https://dotnet.microsoft.com/download/dotnet/9.0)
 - Base de datos compatible con Entity Framework (SQL Server)
 
 ## Configuración

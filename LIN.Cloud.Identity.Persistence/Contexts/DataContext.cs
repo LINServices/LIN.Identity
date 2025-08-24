@@ -1,10 +1,4 @@
-﻿using LIN.Cloud.Identity.Persistence.Extensions;
-using LIN.Cloud.Identity.Persistence.Models;
-using LIN.Types.Cloud.Identity.Models;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-
-namespace LIN.Cloud.Identity.Persistence.Contexts;
+﻿namespace LIN.Cloud.Identity.Persistence.Contexts;
 
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {
@@ -14,102 +8,90 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// </summary>
     public DbSet<IdentityModel> Identities { get; set; }
 
-
     /// <summary>
     /// Tabla de cuentas.
     /// </summary>
     public DbSet<AccountModel> Accounts { get; set; }
-
 
     /// <summary>
     /// Organizaciones.
     /// </summary>
     public DbSet<OrganizationModel> Organizations { get; set; }
 
-
     /// <summary>
     /// Grupos.
     /// </summary>
     public DbSet<GroupModel> Groups { get; set; }
-
 
     /// <summary>
     /// Integrantes de un grupo.
     /// </summary>
     public DbSet<GroupMember> GroupMembers { get; set; }
 
-
     /// <summary>
     /// RolesIam de grupos.
     /// </summary>
     public DbSet<IdentityRolesModel> IdentityRoles { get; set; }
-
 
     /// <summary>
     /// Aplicaciones.
     /// </summary>
     public DbSet<ApplicationModel> Applications { get; set; }
 
-
-    /// <summary>
-    /// Allow apps.
-    /// </summary>
-    public DbSet<AllowApp> AllowApps { get; set; }
-
-
-    /// <summary>
-    /// Restricciones de apps.
-    /// </summary>
-    public DbSet<ApplicationRestrictionModel> ApplicationRestrictions { get; set; }
-
-
     /// <summary>
     /// Logs de accounts.
     /// </summary>
     public DbSet<AccountLog> AccountLogs { get; set; }
-
 
     /// <summary>
     /// Políticas.
     /// </summary>
     public DbSet<PolicyModel> Policies { get; set; }
 
+    /// <summary>
+    /// Políticas por tipo de entidad.
+    /// </summary>
+    public DbSet<IdentityTypePolicy> IdentityTypesPolicies { get; set; }
 
     /// <summary>
-    /// Identidades en Políticas.
+    /// Políticas por acceso IP.
     /// </summary>
-    public DbSet<IdentityAllowedOnPolicyModel> IdentityOnPolicies { get; set; }
-
+    public DbSet<IpAccessPolicy> IpAccessPolicies { get; set; }
 
     /// <summary>
-    /// Requerimientos de políticas.    
+    /// Políticas por acceso de tiempo.
     /// </summary>
-    public DbSet<PolicyRequirementModel> PolicyRequirements { get; set; }
-
+    public DbSet<TimeAccessPolicy> TimeAccessPolicies { get; set; }
 
     /// <summary>
     /// Códigos OTPS.
     /// </summary>
     public DbSet<OtpDatabaseModel> OTPs { get; set; }
 
-
-    /// <summary>
-    /// Restricciones de tiempo.
-    /// </summary>
-    public DbSet<ApplicationRestrictionTime> TimeRestriction { get; set; }
-
-
     /// <summary>
     /// Correos asociados a las cuentas.
     /// </summary>
     public DbSet<MailModel> Mails { get; set; }
-
 
     /// <summary>
     /// Mail Otp.
     /// </summary>
     public DbSet<MailOtpDatabaseModel> MailOtp { get; set; }
 
+    /// <summary>
+    /// Mail Otp.
+    /// </summary>
+    public DbSet<IdentityPolicyModel> IdentityPolicies { get; set; }
+
+    /// <summary>
+    /// Dominios.
+    /// </summary>
+    public DbSet<DomainModel> Domains { get; set; }
+
+    /// <summary>
+    /// Cuentas temporales.
+    /// </summary>
+    public DbSet<TemporalAccountModel> TemporalAccounts { get; set; }
 
     /// <summary>
     /// Crear el modelo en BD.
@@ -121,6 +103,11 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         {
             entity.ToTable("identities");
             entity.HasIndex(t => t.Unique).IsUnique();
+
+            entity.HasOne(o => o.Owner)
+                  .WithMany()
+                  .HasForeignKey(o => o.OwnerId)
+                  .OnDelete(DeleteBehavior.NoAction);
         });
 
         // Account Model.
@@ -143,12 +130,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         // Group Model.
         modelBuilder.Entity<GroupModel>(entity =>
         {
-            entity.ToTable("groups");
-            entity.HasOne(g => g.Owner)
-                  .WithMany(o => o.OwnedGroups)
-                  .HasForeignKey(g => g.OwnerId)
-                  .OnDelete(DeleteBehavior.NoAction);
-
             entity.HasOne(t => t.Identity)
                   .WithMany()
                   .HasForeignKey(t => t.IdentityId)
@@ -171,6 +152,22 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.GroupId);
         });
 
+        // Group Member Model
+        modelBuilder.Entity<IdentityPolicyModel>(entity =>
+        {
+            entity.ToTable("identity_policy");
+            entity.HasKey(t => new { t.IdentityId, t.PolicyId });
+
+            entity.HasOne(t => t.Identity)
+                  .WithMany()
+                  .HasForeignKey(t => t.IdentityId)
+                  .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(t => t.Policy)
+                  .WithMany()
+                  .HasForeignKey(t => t.PolicyId);
+        });
+
         // Identity Roles Model
         modelBuilder.Entity<IdentityRolesModel>(entity =>
         {
@@ -184,15 +181,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.HasOne(t => t.Organization)
                   .WithMany()
                   .HasForeignKey(t => t.OrganizationId);
-        });
-
-        // Application restrictions Model
-        modelBuilder.Entity<ApplicationRestrictionModel>(entity =>
-        {
-            entity.ToTable("applications_restrictions");
-            entity.HasOne(t => t.Application)
-                  .WithOne(t => t.Restriction)
-                  .HasForeignKey<ApplicationModel>(t => t.RestrictionId);
         });
 
         // Application Model
@@ -211,38 +199,8 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.OwnerId)
                   .OnDelete(DeleteBehavior.NoAction);
 
-            entity.HasOne(t => t.Restriction)
-               .WithOne(t => t.Application)
-               .HasForeignKey<ApplicationRestrictionModel>(t => t.ApplicationId);
-        });
-
-        // Allow Apps Model
-        modelBuilder.Entity<AllowApp>(entity =>
-        {
-            entity.ToTable("allow_apps");
-            entity.HasKey(t => new { t.ApplicationRestrictionId, t.IdentityId });
-
-            entity.HasOne(t => t.Application)
-                  .WithMany(t => t.Allowed)
-                  .HasForeignKey(t => t.ApplicationRestrictionId)
-                  .OnDelete(DeleteBehavior.NoAction);
-
-            entity.HasOne(t => t.Identity)
-                  .WithMany()
-                  .HasForeignKey(t => t.IdentityId)
-                  .OnDelete(DeleteBehavior.NoAction);
-        });
-
-        // Times.
-        modelBuilder.Entity<ApplicationRestrictionTime>(entity =>
-        {
-            entity.ToTable("restrict_times");
-
-            entity.HasOne(t => t.ApplicationRestrictionModel)
-                  .WithMany(t => t.Times)
-                  .HasForeignKey(t => t.ApplicationRestrictionId)
-                  .OnDelete(DeleteBehavior.NoAction);
-
+            entity.HasMany(t => t.Policies)
+               .WithOne();
         });
 
         // Account Logs Model
@@ -264,39 +222,19 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<PolicyModel>(entity =>
         {
             entity.ToTable("policies");
-            entity.HasOne(t => t.OwnerIdentity)
+            entity.HasOne(t => t.Owner)
                   .WithMany()
-                  .HasForeignKey(t => t.OwnerIdentityId)
+                  .HasForeignKey(t => t.OwnerId)
                   .OnDelete(DeleteBehavior.NoAction);
-
-            entity.HasMany(t => t.ApplyFor)
-                  .WithOne()
-                  .HasForeignKey(t => t.PolicyId);
 
             entity.Property(e => e.Id).IsRequired();
         });
 
-        // Identity Allowed on Policy Model
-        modelBuilder.Entity<IdentityAllowedOnPolicyModel>(entity =>
+        // Policy Model
+        modelBuilder.Entity<TemporalAccountModel>(entity =>
         {
-            entity.HasKey(t => new { t.PolicyId, t.IdentityId });
-
-            entity.HasOne(t => t.Policy)
-                  .WithMany(t => t.ApplyFor)
-                  .HasForeignKey(t => t.PolicyId);
-
-            entity.HasOne(t => t.Identity)
-                  .WithMany()
-                  .HasForeignKey(t => t.IdentityId);
-        });
-
-        // Policy Requirement Model
-        modelBuilder.Entity<PolicyRequirementModel>(entity =>
-        {
-            entity.ToTable("policy_requirements");
-            entity.HasOne(t => t.Policy)
-                  .WithMany()
-                  .HasForeignKey(t => t.PolicyId);
+            entity.ToTable("temporal_accounts");
+            entity.HasIndex(e => e.VerificationCode).IsUnique();
         });
 
         // Códigos OTPS.
@@ -317,6 +255,40 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.AccountId);
 
             entity.HasIndex(t => t.Mail).IsUnique();
+        });
+
+        modelBuilder.Entity<IdentityTypePolicy>(entity =>
+        {
+            entity.ToTable("policy_types_identity");
+            entity.HasOne(t => t.Policy)
+                  .WithMany()
+                  .HasForeignKey(t => t.PolicyId);
+        });
+
+        modelBuilder.Entity<IpAccessPolicy>(entity =>
+        {
+            entity.ToTable("ip_access_policy");
+            entity.HasOne(t => t.Policy)
+                  .WithMany()
+                  .HasForeignKey(t => t.PolicyId);
+        });
+
+        modelBuilder.Entity<DomainModel>(entity =>
+        {
+            entity.ToTable("domains");
+            entity.HasOne(t => t.Organization)
+                  .WithMany()
+                  .HasForeignKey(t => t.OrganizationId);
+
+            entity.HasIndex(t => t.Domain).IsUnique();
+        });
+
+        modelBuilder.Entity<TimeAccessPolicy>(entity =>
+        {
+            entity.ToTable("time_access_policy");
+            entity.HasOne(t => t.Policy)
+                  .WithMany()
+                  .HasForeignKey(t => t.PolicyId);
         });
 
         // Mail OTP.
@@ -340,54 +312,5 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         // Base.
         base.OnModelCreating(modelBuilder);
-    }
-
-
-    /// <summary>
-    /// Data primaria.
-    /// </summary>
-    public void Seed()
-    {
-
-        // Si no hay cuentas.
-        if (!Accounts.Any())
-        {
-            // Obtener la data.
-            var jsonData = File.ReadAllText("wwwroot/seeds/users.json");
-            var users = JsonConvert.DeserializeObject<List<AccountModel>>(jsonData) ?? [];
-
-            foreach (var user in users)
-                user.Password = Global.Utilities.Cryptography.Encrypt(user.Password);
-
-            // Agregar los modelos.
-            if (users != null && users.Count > 0)
-            {
-                Accounts.AddRange(users);
-                SaveChanges();
-            }
-        }
-
-        // Si no hay aplicaciones.
-        if (!Applications.Any())
-        {
-            // Obtener la data.
-            var jsonData = File.ReadAllText("wwwroot/seeds/applications.json");
-            var apps = JsonConvert.DeserializeObject<List<ApplicationModel>>(jsonData) ?? [];
-
-            // Formatear modelos.
-            foreach (var app in apps)
-            {
-                app.Identity.Type = Types.Cloud.Identity.Enumerations.IdentityType.Application;
-                app.Owner = new() { Id = app.OwnerId };
-                app.Owner = EntityFramework.AttachOrUpdate(this, app.Owner);
-            }
-
-            // Agregar aplicaciones.
-            if (apps != null && apps.Count > 0)
-            {
-                Applications.AddRange(apps);
-                SaveChanges();
-            }
-        }
     }
 }
