@@ -17,13 +17,15 @@ public static class PersistenceExtensions
     /// <param name="services">Services.</param>
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfigurationManager configuration)
     {
-        string? connectionName = "cloud-v4";
+        string? connectionName = "cloud";
 #if LOCAL
         connectionName = "cloud-v4";
 #elif DEBUG_DEV
         connectionName = "cloud-v4";
 #elif RELEASE_DEV
         connectionName = "cloud-v4";
+#elif RELEASE
+        connectionName = "cloud";
 #endif
 
         services.AddDbContextPool<DataContext>(options =>

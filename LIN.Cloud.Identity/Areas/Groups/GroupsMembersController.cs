@@ -80,7 +80,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-
         // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
@@ -98,30 +97,26 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
         // Solo elementos distintos.
         ids = ids.Distinct().ToList();
 
-        //// Valida si el usuario pertenece a la organización.
-        //var (successIds, failureIds) = await directoryMembersData.IamIn(ids, orgId.Model);
+        // Valida si el usuario pertenece a la organización.
+        var (successIds, failureIds) = await directoryMembersData.IamIn(ids, orgId.Model);
 
-        //// Crear el usuario.
-        //var response = await groupMembers.Create(successIds.Select(id => new GroupMember
-        //{
-        //    Group = new()
-        //    {
-        //        Id = group,
-        //    },
-        //    Identity = new()
-        //    {
-        //        Id = id
-        //    }
-        //}));
+        // Crear el usuario.
+        var response = await groupMembers.Create(successIds.Select(id => new GroupMember
+        {
+            Group = new()
+            {
+                Id = group,
+            },
+            Identity = new()
+            {
+                Id = id
+            }
+        }));
 
-        // response.Message = $"Se agregaron {successIds.Count()} integrantes y se omitieron {failureIds.Count} debido a que no pertenecen a esta organización.";
+        response.Message = $"Se agregaron {successIds.Count()} integrantes y se omitieron {failureIds.Count} debido a que no pertenecen a esta organización.";
 
         // Retorna el resultado
-        //     return response;
-        return new()
-        {
-            Message = "No se implementó la función de agregar múltiples integrantes."
-        };
+        return response;
     }
 
 
