@@ -8,8 +8,6 @@
 		<Configurations>Debug;Release;Local;Release-dev;Debug-dev</Configurations>
 	
 	  <!-- Opcional: publicar self-contained por hosting compartido -->
-    <PublishSingleFile>false</PublishSingleFile>
-    <SelfContained>true</SelfContained>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
 	</PropertyGroup>
 
