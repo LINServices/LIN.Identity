@@ -12,7 +12,6 @@ public class ApplicationsController(IApplicationRepository application) : Authen
     [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromBody] ApplicationModel app)
     {
-
         // Si el modelo es nulo.
         if (app is null)
             return new(Responses.InvalidParam)

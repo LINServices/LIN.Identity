@@ -68,7 +68,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     [HttpPost("list")]
     public async Task<HttpCreateResponse> Create([FromHeader] int group, [FromBody] List<int> ids)
     {
-
         // Obtener la organización.
         var orgId = await groupsData.GetOwner(group);
 
