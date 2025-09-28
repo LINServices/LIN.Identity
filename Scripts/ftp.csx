@@ -73,7 +73,7 @@ public static class FtpCleaner
 
             // 3) Archivos a conservar: EXACTAMENTE appsettings.json (case-insensitive), en cualquier subcarpeta
             var keptFiles = allFiles
-                .Where(f => f.Name.Equals("appsettings.json", StringComparison.OrdinalIgnoreCase))
+                .Where(f => f.Name.StartsWith("appsettings.", StringComparison.OrdinalIgnoreCase))
                 .Select(f => NormalizePath(f.FullName))
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
