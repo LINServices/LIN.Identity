@@ -10,6 +10,8 @@ public class AuthenticationRequest
     public int ApplicationId { get; set; }
     public Types.Cloud.Identity.Enumerations.IdentityService Service { get; set; } = Types.Cloud.Identity.Enumerations.IdentityService.LIN;
 
+    public List<int> Identities { get; set; } = [];
+
     public Types.Cloud.Identity.Models.Identities.AccountModel? Account { get; internal set; }
     public Types.Cloud.Identity.Models.Identities.ApplicationModel? ApplicationModel { get; internal set; }
 

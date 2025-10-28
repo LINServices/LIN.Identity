@@ -11,12 +11,10 @@ internal class AccountAuthenticationService(IServiceProvider provider) : IAuthen
     /// </summary>
     private AuthenticationRequest Request { get; set; } = null!;
 
-
     /// <summary>
     /// Obtener la cuenta de usuario.
     /// </summary>
     public AccountModel? Account => Request?.Account;
-
 
     /// <summary>
     /// Autenticar una cuenta de usuario.
@@ -56,7 +54,8 @@ internal class AccountAuthenticationService(IServiceProvider provider) : IAuthen
         // Pasos comunes para todos los servicios.
         pipelineSteps.AddRange([
                 typeof(IOrganizationValidationService),
-                typeof(IApplicationValidationService)
+                typeof(IApplicationValidationService),
+                typeof(IIdentityGetService)
             ]);
 
         foreach (var stepType in pipelineSteps)
@@ -71,6 +70,10 @@ internal class AccountAuthenticationService(IServiceProvider provider) : IAuthen
         return new ResponseBase(Responses.Success);
     }
 
+    /// <summary>
+    /// Obtener la lista de identidades.
+    /// </summary>
+    public List<int> Identities => Request.Identities;
 
     /// <summary>
     /// Generar token de autenticación.

@@ -5,5 +5,6 @@ namespace LIN.Cloud.Identity.Services.Interfaces;
 public interface IAuthenticationAccountService : IAuthenticationService
 {
     public AccountModel? Account { get; }
+    public List<int> Identities { get; }
     public string GenerateToken();
 }
