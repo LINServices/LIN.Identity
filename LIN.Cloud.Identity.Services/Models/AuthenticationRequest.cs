@@ -8,6 +8,7 @@ public class AuthenticationRequest
     public string ThirdPartyToken { get; set; } = string.Empty;
     public bool StrictService { get; set; } = false;
     public int ApplicationId { get; set; }
+    public AuthenticationMethods AuthenticationMethod { get; set; }
     public Types.Cloud.Identity.Enumerations.IdentityService Service { get; set; } = Types.Cloud.Identity.Enumerations.IdentityService.LIN;
 
     public List<int> Identities { get; set; } = [];

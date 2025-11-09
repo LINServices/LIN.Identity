@@ -31,6 +31,7 @@ public static class ServiceExtensions
         services.AddScoped<IGoogleValidationService, GoogleValidationService>();
         services.AddScoped<IIdentityService, Services.IdentityService>();
         services.AddScoped<IIdentityGetService, GetIdentities>();
+        services.AddScoped<ISaveLogService, SaveLogService>();
 
         services.AddScoped<IAuthenticationAccountService, AccountAuthenticationService>();
         services.AddScoped<IPolicyOrchestrator, PolicyOrchestrator>();

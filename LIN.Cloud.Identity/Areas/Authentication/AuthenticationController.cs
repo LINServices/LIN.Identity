@@ -27,7 +27,8 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
         {
             User = user,
             Password = password,
-            Application = application
+            Application = application,
+            AuthenticationMethod = AuthenticationMethods.Password
         });
 
         // Validación al obtener el usuario

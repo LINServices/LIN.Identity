@@ -5,6 +5,7 @@ public interface IIdentityValidationService : IAuthenticationService;
 public interface IAccountValidationService : IAuthenticationService;
 public interface IIdentityGetService : IAuthenticationService;
 public interface IOrganizationValidationService : IAuthenticationService;
+public interface ISaveLogService : IAuthenticationService;
 
 // Proveedores de servicios de autenticación de terceros (Google, Microsoft, etc.)
 public interface IGoogleValidationService : IAuthenticationService;

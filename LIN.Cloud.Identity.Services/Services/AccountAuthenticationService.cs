@@ -55,7 +55,8 @@ internal class AccountAuthenticationService(IServiceProvider provider) : IAuthen
         pipelineSteps.AddRange([
                 typeof(IOrganizationValidationService),
                 typeof(IApplicationValidationService),
-                typeof(IIdentityGetService)
+                typeof(IIdentityGetService),
+                typeof(ISaveLogService)
             ]);
 
         foreach (var stepType in pipelineSteps)
