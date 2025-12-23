@@ -51,17 +51,13 @@ jobs:
             -p:DebugSymbols=false \
             -o "$PUBLISH_DIR"
 
-      - name: SFTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+      - name: Deploy via SFTP (SCP)
+        uses: appleboy/scp-action@v0.1.7
         with:
-          server: ${{ secrets.FTP_HOST }}
+          host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          protocol: sftp
           port: 22
-          local-dir: ./publish/
-          server-dir: /
-          timeout: 60000
-          exclude: |
-            **/*.pdb
-            **/*.xml
+          source: "publish/*"
+          target: ${{ secrets.FTP_DIR }}
+          strip_components: 1
