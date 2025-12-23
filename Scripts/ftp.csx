@@ -1,10 +1,12 @@
 #r "nuget: FluentFTP, 53.0.1"
 #nullable enable
+
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
-using System.Threading;          // <-- Necesario p/ CancellationToken, CancellationTokenSource
-using System.Threading.Tasks;    // <-- Necesario p/ Task, async/await
+using System.Threading;
+using System.Threading.Tasks;
 using FluentFTP;
 
 var options = new FtpCleanerOptions
@@ -13,25 +15,17 @@ var options = new FtpCleanerOptions
     Port = 21,
     User = Environment.GetEnvironmentVariable("FTP_USER") ?? "",
     Pass = Environment.GetEnvironmentVariable("FTP_PASS") ?? "",
-    RemoteDir = Environment.GetEnvironmentVariable("FTP_DIR") ?? "",
-    UseFtps = false,             // true si tu servidor requiere FTPS (TLS explícito)
-    MaxTries = 12,
-    SleepBetweenTries = TimeSpan.FromSeconds(6)
+    RemoteDir = Environment.GetEnvironmentVariable("FTP_DIR") ?? "/",
+    MaxTries = 5
 };
 
-var progress = new Progress<string>(msg => Console.WriteLine(msg));
+var progress = new Progress<string>(Console.WriteLine);
 var cts = new CancellationTokenSource();
 
-try
-{
-    await FtpCleaner.CleanAsync(options, progress, cts.Token);
-}
-catch (Exception ex)
-{
-    Console.Error.WriteLine($"❌ Error: {ex.Message}");
-    Environment.ExitCode = 1;
-}
+await FtpCleaner.CleanAsync(options, progress, cts.Token);
 
+
+// ====================== IMPLEMENTACIÓN ======================
 
 public sealed class FtpCleanerOptions
 {
@@ -39,159 +33,125 @@ public sealed class FtpCleanerOptions
     public int Port { get; init; } = 21;
     public string User { get; init; } = default!;
     public string Pass { get; init; } = default!;
-    public string RemoteDir { get; init; } = "/"; // raíz en el FTP donde limpiar
-    public bool UseFtps { get; init; } = false;   // true = TLS explícito (FTPS)
-    public int MaxTries { get; init; } = 12;
-    public TimeSpan SleepBetweenTries { get; init; } = TimeSpan.FromSeconds(6);
-    public TimeSpan ConnectTimeout { get; init; } = TimeSpan.FromSeconds(15);
+    public string RemoteDir { get; init; } = "/";
+    public int MaxTries { get; init; } = 5;
 }
 
 public static class FtpCleaner
 {
-    public static async Task CleanAsync(FtpCleanerOptions opt, IProgress<string>? log = null, CancellationToken ct = default)
+    public static async Task CleanAsync(
+        FtpCleanerOptions opt,
+        IProgress<string>? log,
+        CancellationToken ct)
     {
-        using var client = new FtpClient(opt.Host, opt.Port)
-        {
-         Credentials = new(opt.User, opt.Pass)    
-        };
+        using var client = CreateClient(opt);
 
-         client.Connect();
+        await client.ConnectAsync(ct);
 
-        // Normaliza RemoteDir (sin barra final, excepto si es "/")
         var baseDir = NormalizeDir(opt.RemoteDir);
 
         for (int attempt = 1; attempt <= opt.MaxTries; attempt++)
         {
-            log?.Report($"Intento {attempt}/{opt.MaxTries}: limpieza recursiva en {baseDir} (solo se conserva 'appsettings.json')...");
+            log?.Report($"🧹 Limpieza FTP intento {attempt}/{opt.MaxTries}...");
 
-            // 1) Listado recursivo (directorios y archivos, con rutas absolutas dentro del FTP)
-            var allItems = await SafeGetListingRecursive(client, baseDir, ct);
+            var items = client.GetListing(baseDir, FtpListOption.ForceList);
 
-            // 2) Separa archivos y directorios
-            var allFiles = allItems.Where(i => i.Type == FtpObjectType.File).ToList();
-            var allDirs = allItems.Where(i => i.Type == FtpObjectType.Directory).ToList();
-
-            // 3) Archivos a conservar: EXACTAMENTE appsettings.json (case-insensitive), en cualquier subcarpeta
-            var keptFiles = allFiles
-                .Where(f => f.Name.StartsWith("appsettings.", StringComparison.OrdinalIgnoreCase))
-                .Select(f => NormalizePath(f.FullName))
+            var keepFiles = items
+                .Where(i => i.Type == FtpObjectType.File &&
+                            i.Name.StartsWith("appsettings.", StringComparison.OrdinalIgnoreCase))
+                .Select(i => NormalizePath(i.FullName))
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            // 4) Directorios protegidos: el contenedor y todos los ancestros de cada appsettings.json
-            var protectedDirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var kf in keptFiles)
+            // 1️⃣ Borrar archivos
+            foreach (var item in items.Where(i => i.Type == FtpObjectType.File))
             {
-                foreach (var anc in AncestorDirsOfFile(kf, baseDir))
+                ct.ThrowIfCancellationRequested();
+
+                var full = NormalizePath(item.FullName);
+                if (keepFiles.Contains(full))
+                    continue;
+
+                try
                 {
-                    protectedDirs.Add(anc);
+                    log?.Report($"  rm {full}");
+                    client.DeleteFile(full);
+                }
+                catch (Exception ex)
+                {
+                    log?.Report($"  ⚠️ {full}: {ex.Message}");
                 }
             }
-            // Protege también la base (por consistencia)
-            protectedDirs.Add(baseDir);
 
-            // 5) Archivos a borrar: todos los demás
-            var filesToDelete = allFiles
-                .Select(f => NormalizePath(f.FullName))
-                .Where(full => !keptFiles.Contains(full))
+            // 2️⃣ Borrar directorios vacíos (profundidad primero)
+            var dirs = items
+                .Where(i => i.Type == FtpObjectType.Directory)
+                .Select(i => NormalizeDir(i.FullName))
+                .OrderByDescending(d => d.Count(c => c == '/'))
                 .ToList();
 
-            // 6) Borra archivos primero
-            if (filesToDelete.Count > 0)
+            foreach (var dir in dirs)
             {
-                log?.Report($"Borrando archivos ({filesToDelete.Count})...");
-                foreach (var file in filesToDelete)
+                ct.ThrowIfCancellationRequested();
+
+                try
                 {
-                    ct.ThrowIfCancellationRequested();
-                    try
+                    var children = client.GetListing(dir, FtpListOption.ForceList);
+                    if (children.Length == 0)
                     {
-                        log?.Report($"  rm: {file}");
-                        client.DeleteFile(file);
+                        log?.Report($"  rmdir {dir}/");
+                        client.DeleteDirectory(dir);
                     }
-                    catch (Exception ex)
-                    {
-                        log?.Report($"  ⚠️ no se pudo borrar {file}: {ex.Message}");
-                    }
+                }
+                catch (Exception ex)
+                {
+                    log?.Report($"  ⚠️ {dir}: {ex.Message}");
                 }
             }
 
-            // 7) Directorios borrables: los NO protegidos
-            var dirsToDelete = allDirs
-                .Select(d => NormalizeDir(d.FullName))
-                .Where(d => !protectedDirs.Contains(d))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                // de lo más profundo a lo menos (por cantidad de '/')
-                .OrderByDescending(d => Depth(d))
-                .ToList();
+            // 3️⃣ Comprobar si quedó algo borrable
+            var after = client.GetListing(baseDir, FtpListOption.ForceList);
+            var remaining = after.Any(i =>
+                i.Type == FtpObjectType.Directory ||
+                (i.Type == FtpObjectType.File &&
+                 !i.Name.StartsWith("appsettings.", StringComparison.OrdinalIgnoreCase)));
 
-            // 8) Borra directorios **solo si están vacíos**
-            if (dirsToDelete.Count > 0)
+            if (!remaining)
             {
-                log?.Report($"Borrando directorios vacíos ({dirsToDelete.Count})...");
-                foreach (var dir in dirsToDelete)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    try
-                    {
-                        // Si no existe, sigue
-                        if (!client.DirectoryExists(dir)) continue;
-
-                        // Comprueba si está vacío
-                        var children = client.GetListing(dir, FtpListOption.Recursive);
-                        if (children == null || children.Length == 0)
-                        {
-                            log?.Report($"  rmdir: {dir}/");
-                            client.DeleteDirectory(dir); // seguro si está vacío
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        log?.Report($"  ⚠️ no se pudo borrar {dir}: {ex.Message}");
-                    }
-                }
-            }
-
-            // 9) Recuento: si no queda nada por borrar (archivos no-kept + dirs no protegidos vacíos), terminamos
-            var after = await SafeGetListingRecursive(client, baseDir, ct);
-            var afterFiles = after.Where(i => i.Type == FtpObjectType.File).Select(i => NormalizePath(i.FullName)).ToList();
-            var afterDirs = after.Where(i => i.Type == FtpObjectType.Directory).Select(i => NormalizeDir(i.FullName)).ToList();
-
-            var remainingFiles = afterFiles.Count(f => !keptFiles.Contains(f));
-            var remainingDirs = afterDirs.Count(d => !protectedDirs.Contains(d)); // algunos pueden seguir no vacíos
-
-            var remaining = remainingFiles + remainingDirs;
-            log?.Report($"Quedan {remaining} elementos borrables (excluyendo appsettings.json).");
-
-            if (remaining == 0)
-            {
-                log?.Report("Directorio remoto limpio ✅ (se conservaron únicamente archivos 'appsettings.json').");
+                log?.Report("✅ Limpieza completa (solo appsettings.json conservado).");
                 break;
             }
 
             if (attempt == opt.MaxTries)
-            {
-                throw new InvalidOperationException($"No se pudo limpiar el remoto tras {opt.MaxTries} intentos.");
-            }
+                throw new Exception("❌ No se pudo limpiar el FTP tras varios intentos.");
 
-            await Task.Delay(opt.SleepBetweenTries, ct);
+            await Task.Delay(2000, ct);
         }
 
         client.Disconnect();
     }
 
-    // Helpers
-
-    private static async Task<FtpListItem[]> SafeGetListingRecursive(FtpClient client, string dir, CancellationToken ct)
+    private static FtpClient CreateClient(FtpCleanerOptions opt)
     {
-        // Usa Recursive para traer todo de una pasada; si el servidor no soporta, puedes
-        // cambiar a un recorrido manual (BFS/DFS) con GetListing por nivel.
-        return client.GetListing(dir, FtpListOption.Recursive);
+        return new FtpClient(opt.Host, opt.Port)
+        {
+            Credentials = new NetworkCredential(opt.User, opt.Pass),
+            Config =
+            {
+                DataConnectionType = FtpDataConnectionType.PASV,
+                ConnectTimeout = 15000,
+                ReadTimeout = 30000,
+                DataConnectionConnectTimeout = 30000,
+                DataConnectionReadTimeout = 30000,
+                RetryAttempts = 2,
+                SocketKeepAlive = true,
+                NoopInterval = 10000
+            }
+        };
     }
 
     private static string NormalizePath(string p)
     {
-        if (string.IsNullOrWhiteSpace(p)) return "/";
         p = p.Replace('\\', '/');
-        // quita doble slash (excepto si comienza con ftp raíz //, no aplica aquí)
         while (p.Contains("//")) p = p.Replace("//", "/");
         return p;
     }
@@ -199,44 +159,7 @@ public static class FtpCleaner
     private static string NormalizeDir(string p)
     {
         p = NormalizePath(p);
-        if (p.Length > 1 && p.EndsWith("/", StringComparison.Ordinal)) p = p.TrimEnd('/');
+        if (p.Length > 1 && p.EndsWith("/")) p = p.TrimEnd('/');
         return p == "" ? "/" : p;
-    }
-
-    private static int Depth(string path)
-    {
-        var p = NormalizePath(path);
-        if (p == "/") return 0;
-        return p.Count(c => c == '/');
-    }
-
-    private static IEnumerable<string> AncestorDirsOfFile(string fileFullPath, string baseDir)
-    {
-        // fileFullPath: /a/b/appsettings.json
-        // retorna: /a/b, /a, / (hasta baseDir)
-        baseDir = NormalizeDir(baseDir);
-        var dir = NormalizeDir(System.IO.Path.GetDirectoryName(fileFullPath)?.Replace('\\', '/') ?? "/");
-        if (dir == "/")
-        {
-            yield return "/";
-            yield break;
-        }
-
-        while (true)
-        {
-            yield return dir;
-            if (dir.Equals(baseDir, StringComparison.OrdinalIgnoreCase) || dir == "/")
-                yield break;
-            var lastSlash = dir.LastIndexOf('/');
-            if (lastSlash <= 0)
-            {
-                dir = "/";
-            }
-            else
-            {
-                dir = dir[..lastSlash];
-                if (dir.Length == 0) dir = "/";
-            }
-        }
     }
 }
