@@ -87,12 +87,6 @@ jobs:
             -o "$PUBLISH_DIR"
 
       # --------------------
-      # IIS: App Offline
-      # --------------------
-      - name: Put app offline
-        run: echo "Deploying..." > publish/app_offline.htm
-
-      # --------------------
       # DEPLOY (SFTP real)
       # --------------------
       - name: Deploy via SFTP (scp native)
@@ -104,13 +98,3 @@ jobs:
             scp -o StrictHostKeyChecking=no -P 22 -r \
             publish/* \
             $FTP_USER@$FTP_HOST:$FTP_DIR
-
-      # --------------------
-      # IIS: App Online
-      # --------------------
-      - name: Bring app online
-        run: |
-          sshpass -p "$FTP_PASS" \
-            ssh -o StrictHostKeyChecking=no -p 22 \
-            $FTP_USER@$FTP_HOST \
-            "del /Q \"${FTP_DIR}\\app_offline.htm\""
