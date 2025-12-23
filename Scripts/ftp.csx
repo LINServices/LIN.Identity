@@ -124,7 +124,7 @@ public static class FtpCleaner
             if (attempt == opt.MaxTries)
                 throw new Exception("❌ No se pudo limpiar el FTP tras varios intentos.");
 
-            await Task.Delay(2000, ct);
+            await Task.Delay(4000, ct);
         }
 
         client.Disconnect();
