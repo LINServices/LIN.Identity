@@ -51,7 +51,7 @@ jobs:
             -p:DebugSymbols=false \
             -o "$PUBLISH_DIR"
 
-      - name: Deploy via SFTP (SCP)
+      - name: Deploy via SFTP (Windows compatible)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.FTP_HOST }}
@@ -61,3 +61,6 @@ jobs:
           source: "publish/*"
           target: ${{ secrets.FTP_DIR }}
           strip_components: 1
+          tar: false
+          overwrite: true
+
