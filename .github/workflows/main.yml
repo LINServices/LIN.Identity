@@ -51,16 +51,12 @@ jobs:
             -p:DebugSymbols=false \
             -o "$PUBLISH_DIR"
 
-      - name: Deploy via SFTP (Windows compatible)
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
-          port: 22
-          source: "publish/*"
-          target: ${{ secrets.FTP_DIR }}
-          strip_components: 1
-          tar: false
-          overwrite: true
+      - name: Deploy via SFTP (scp native)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
 
+          sshpass -p "${{ secrets.FTP_PASS }}" \
+            scp -o StrictHostKeyChecking=no -P 22 -r \
+            publish/* \
+            ${{ secrets.FTP_USER }}@${{ secrets.FTP_HOST }}:${{ secrets.FTP_DIR }}
