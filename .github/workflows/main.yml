@@ -37,15 +37,20 @@ jobs:
       - name: Build (Release, net9.0, win-x86)
         run: dotnet build "$PROJECT_PATH" -c Release -f net9.0 -r win-x86 --no-restore
 
-      - name: Publish (net9.0 | win-x86 | self-contained)
+      - name: Publish (net9.0 | win-x86 | framework-dependent)
         run: |
           dotnet publish "$PROJECT_PATH" \
-            --configuration Release \
-            --framework net9.0 \
+            -c Release \
+            -f net9.0 \
+            -r win-x86 \
             --self-contained false \
+            --no-build \
             -p:PublishSingleFile=false \
             -p:GenerateRuntimeConfigurationFiles=true \
-            --output "$PUBLISH_DIR"
+            -p:DebugType=None \
+            -p:DebugSymbols=false \
+            -o "$PUBLISH_DIR"
+
 
       # ----- Deploy FTP -----
       - name: FTP Deploy
