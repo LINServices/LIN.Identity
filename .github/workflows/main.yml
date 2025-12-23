@@ -56,6 +56,7 @@ jobs:
           password: ${{ env.FTP_PASS }}
           protocol: ftp
           local-dir: ./publish/
+          timeout: 60000
           server-dir: ${{ env.FTP_DIR }}
           # Ya limpiamos manualmente; no hace falta clean-slate aquí.
           # dangerous-clean-slate: false
