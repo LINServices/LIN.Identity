@@ -46,7 +46,7 @@ public static class FtpCleaner
     {
         using var client = CreateClient(opt);
 
-        await client.ConnectAsync(ct);
+        client.Connect();
 
         var baseDir = NormalizeDir(opt.RemoteDir);
 
