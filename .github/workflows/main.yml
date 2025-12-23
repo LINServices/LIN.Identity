@@ -51,20 +51,18 @@ jobs:
             -p:DebugSymbols=false \
             -o "$PUBLISH_DIR"
 
-
-      # ----- Deploy FTP -----
-      - name: FTP Deploy
+      - name: SFTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          server: ${{ env.FTP_HOST }}     # sin "ftp://"
-          username: ${{ env.FTP_USER }}
-          password: ${{ env.FTP_PASS }}
-          protocol: ftp
+          server: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USER }}
+          password: ${{ secrets.SFTP_PASS }}
+          protocol: sftp
+          port: 22
           local-dir: ./publish/
+          server-dir: /
           timeout: 60000
-          server-dir: ${{ env.FTP_DIR }}
-          # Ya limpiamos manualmente; no hace falta clean-slate aquí.
-          # dangerous-clean-slate: false
           exclude: |
             **/*.pdb
             **/*.xml
+
