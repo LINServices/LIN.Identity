@@ -8,10 +8,6 @@ on:
 env:
   PROJECT_PATH: "LIN.Cloud.Identity/LIN.Cloud.Identity.csproj"
   PUBLISH_DIR: "publish"
-  FTP_HOST: ${{ secrets.FTP_HOST }}
-  FTP_USER: ${{ secrets.FTP_USER }}
-  FTP_PASS: ${{ secrets.FTP_PASS }}
-  FTP_DIR: ${{ secrets.FTP_DIR }}
   RUNTIME_ID: "win-x64"
 
 jobs:
@@ -57,19 +53,6 @@ jobs:
         run: dotnet build "$PROJECT_PATH" -c Release -f net9.0 -r $RUNTIME_ID --no-restore
 
       # ====================
-      # 2️⃣ RUN CSX
-      # ====================
-      - name: Install dotnet-script
-        run: dotnet tool install -g dotnet-script
-
-      - name: Add tools to PATH
-        run: echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
-
-      - name: Run all .csx scripts
-        run: |
-          find ./Scripts -name "*.csx" -print -exec dotnet-script {} \;
-
-      # ====================
       # 3️⃣ PUBLISH
       # ====================
       - name: Publish
@@ -86,15 +69,17 @@ jobs:
             -p:DebugSymbols=false \
             -o "$PUBLISH_DIR"
 
-      # --------------------
-      # DEPLOY (SFTP real)
-      # --------------------
-      - name: Deploy via SFTP (scp native)
+      - name: Zip Published Files
         run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
+          cd "$PUBLISH_DIR"
+          zip -r ../app.zip . 
 
-          sshpass -p "$FTP_PASS" \
-            scp -o StrictHostKeyChecking=no -P 22 -r \
-            publish/* \
-            $FTP_USER@$FTP_HOST:$FTP_DIR
+      - name: Upload ZIP a LIN Cloud IIS Push
+        env:
+          SITE_NAME: identity
+        run: |
+          curl -X POST \
+            "https://iispush.linplatform.com/api/Sites/${SITE_NAME}/deploy" \
+            -H "accept: text/plain" \
+            -H "Content-Type: multipart/form-data" \
+            -F "file=@app.zip"
