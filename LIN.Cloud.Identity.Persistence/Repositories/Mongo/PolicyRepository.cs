@@ -43,6 +43,24 @@ public class PolicyRepository(MongoDataContext context)
         }
     }
 
+    public async Task<ReadOneResponse<AccessPolicyModel>> ReadOne(string p)
+    {
+        try
+        {
+            var policies = await context.AccessPolicies
+                .Where(t => t.Id == p)
+                .FirstOrDefaultAsync();
+
+            if (policies == null)
+                return new(Responses.NotRows);
+
+            return new(Responses.Success, policies);
+        }
+        catch (Exception)
+        {
+            return new(Responses.Undefined);
+        }
+    }
 
     /// <summary>
     /// Obtiene las políticas de una identidad.

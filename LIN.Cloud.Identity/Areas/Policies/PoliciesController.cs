@@ -36,11 +36,31 @@ public class PoliciesController(PolicyRepository policiesData, IIamService iam) 
     [HttpGet("all")]
     public async Task<HttpReadAllResponse<AccessPolicyModel>> ReadAll([FromHeader] int organization)
     {
+        // Validar nivel de acceso y roles sobre la organización.
+        var validate = await iam.Validate(UserInformation.IdentityId, organization);
+
+        if (!validate.ValidateReadPolicies())
+            return new(Responses.Unauthorized)
+            {
+                Message = $"No tienes permisos para leer políticas a titulo de la organización #{organization}."
+            };
+
         // Validar nivel de acceso (esto podría requerir una validación IAM más específica para la identidad).
         var response = await policiesData.ReadAllByOrg(organization,query: null);
         return response;
     }
 
+
+    /// <summary>
+    /// Obtener las políticas asociadas a una organización.
+    /// </summary>
+    [HttpGet]
+    public async Task<HttpReadOneResponse<AccessPolicyModel>> Read([FromQuery] string policyId)
+    {
+        // Validar nivel de acceso (esto podría requerir una validación IAM más específica para la identidad).
+        var response = await policiesData.ReadOne(policyId);
+        return response;
+    }
 
     /// <summary>
     /// Obtener las políticas asociadas a una organización.
