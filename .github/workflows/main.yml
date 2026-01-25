@@ -24,10 +24,10 @@ jobs:
       # --------------------
       # Setup .NET
       # --------------------
-      - name: Setup .NET 9 SDK
+      - name: Setup .NET 10 SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "9.0.x"
+          dotnet-version: "10.0.x"
 
       # --------------------
       # Cache NuGet
@@ -50,7 +50,7 @@ jobs:
         run: dotnet restore "$PROJECT_PATH" -r $RUNTIME_ID
 
       - name: Build
-        run: dotnet build "$PROJECT_PATH" -c Release -f net9.0 -r $RUNTIME_ID --no-restore
+        run: dotnet build "$PROJECT_PATH" -c Release -f net10.0 -r $RUNTIME_ID --no-restore
 
       # ====================
       # 3️⃣ PUBLISH
@@ -59,7 +59,7 @@ jobs:
         run: |
           dotnet publish "$PROJECT_PATH" \
             -c Release \
-            -f net9.0 \
+            -f net10.0 \
             -r $RUNTIME_ID \
             --self-contained false \
             --no-build \

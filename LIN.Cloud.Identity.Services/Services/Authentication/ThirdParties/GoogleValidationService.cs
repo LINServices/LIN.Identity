@@ -80,7 +80,7 @@ public class GoogleValidationService(IAccountRepository accountRepository) : IGo
             };
 
         request.User = unique;
-        return await Task.FromResult(new ResponseBase(Responses.Success));
+        return new ResponseBase(Responses.Success);
     }
 
 }
