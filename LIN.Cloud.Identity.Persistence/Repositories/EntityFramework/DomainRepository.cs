@@ -64,7 +64,7 @@ internal class DomainRepository(DataContext context) : IDomainRepository
             var domain = await (from g in context.Domains
                                 where g.OrganizationId == id
                                 select g).ToListAsync();
-            
+
             // Success.
             return new(Responses.Success, domain);
         }

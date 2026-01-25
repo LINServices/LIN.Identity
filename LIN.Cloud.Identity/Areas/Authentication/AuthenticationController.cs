@@ -89,7 +89,7 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
         {
             Model = serviceAuth.Account!,
             Response = Responses.Success,
-            Alternatives = [.. serviceAuth.Identities.Select(t=>(object)t)],
+            Alternatives = [.. serviceAuth.Identities.Select(t => (object)t)],
             Token = token
         };
 

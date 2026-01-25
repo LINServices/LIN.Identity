@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Servicios de contenedor.
 builder.Services.AddLINHttp(true, (options) =>
 {
+    options.CustomSchemaIds(type => type.FullName);
     options.OperationFilter<HeaderMapAttribute<IdentityTokenAttribute>>("token", "Token de acceso a LIN Cloud Identity");
 });
 
@@ -30,12 +31,5 @@ app.MapHub<PassKeyHub>("/realTime/auth/passkey");
 
 app.UseAuthorization();
 app.MapControllers();
-
-builder.Services.AddDatabaseAction(() =>
-{
-    var context = app.Services.GetRequiredService<DataContext>();
-    context.Accounts.Where(x => x.Id == 0).FirstOrDefaultAsync();
-    return "Success";
-});
 
 app.Run();

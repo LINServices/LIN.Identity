@@ -1,4 +1,6 @@
-﻿namespace LIN.Cloud.Identity.Areas.Policies;
+﻿using LIN.Types.Cloud.Identity.Models.Policies;
+
+namespace LIN.Cloud.Identity.Areas.Policies;
 
 [IdentityToken]
 [Route("[controller]")]
@@ -10,10 +12,10 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
     /// </summary>
     /// <param name="modelo">Modelo de la identidad.</param>
     [HttpPost]
-    public async Task<HttpCreateResponse> Create([FromBody] IdentityPolicyModel modelo)
+    public async Task<HttpCreateResponse> Create([FromQuery] int identity, [FromQuery] string policy)
     {
         // Validar nivel de acceso y roles sobre la organización.
-        var validate = await iam.IamIdentity(UserInformation.IdentityId, modelo.IdentityId);
+        var validate = await iam.IamIdentity(UserInformation.IdentityId, identity);
 
         if (!validate.ValidateAlterPolicies())
             return new(Responses.Unauthorized)
@@ -21,21 +23,16 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
                 Message = $"No tienes permisos modificar la identidad y agregarla a una política."
             };
 
-        // Ajustar modelo.
-        modelo.Policy = new() { Id = modelo.PolicyId };
-        modelo.Identity = new() { Id = modelo.IdentityId };
-
         // Crear la política.
-        var response = await policiesData.Create(modelo);
+        var response = await policiesData.Create(policy, identity);
         return response;
     }
-
 
     /// <summary>
     /// Obtener las políticas asociadas a una identidad.
     /// </summary>
     [HttpGet("all")]
-    public async Task<HttpReadAllResponse<PolicyModel>> ReadAll([FromHeader] int identity)
+    public async Task<HttpReadAllResponse<AccessPolicyModel>> ReadAll([FromHeader] int identity)
     {
         // Validar nivel de acceso y roles sobre la organización.
         var validate = await iam.IamIdentity(UserInformation.IdentityId, identity);
@@ -50,5 +47,4 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
         var response = await policiesData.ReadAll(identity);
         return response;
     }
-
 }

@@ -43,26 +43,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// </summary>
     public DbSet<AccountLog> AccountLogs { get; set; }
 
-    /// <summary>
-    /// Políticas.
-    /// </summary>
-    public DbSet<PolicyModel> Policies { get; set; }
-
-    /// <summary>
-    /// Políticas por tipo de entidad.
-    /// </summary>
-    public DbSet<IdentityTypePolicy> IdentityTypesPolicies { get; set; }
-
-    /// <summary>
-    /// Políticas por acceso IP.
-    /// </summary>
-    public DbSet<IpAccessPolicy> IpAccessPolicies { get; set; }
-
-    /// <summary>
-    /// Políticas por acceso de tiempo.
-    /// </summary>
-    public DbSet<TimeAccessPolicy> TimeAccessPolicies { get; set; }
-
+    
     /// <summary>
     /// Códigos OTPS.
     /// </summary>
@@ -77,11 +58,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// Mail Otp.
     /// </summary>
     public DbSet<MailOtpDatabaseModel> MailOtp { get; set; }
-
-    /// <summary>
-    /// Mail Otp.
-    /// </summary>
-    public DbSet<IdentityPolicyModel> IdentityPolicies { get; set; }
 
     /// <summary>
     /// Dominios.
@@ -152,21 +128,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.GroupId);
         });
 
-        // Group Member Model
-        modelBuilder.Entity<IdentityPolicyModel>(entity =>
-        {
-            entity.ToTable("identity_policy");
-            entity.HasKey(t => new { t.IdentityId, t.PolicyId });
-
-            entity.HasOne(t => t.Identity)
-                  .WithMany()
-                  .HasForeignKey(t => t.IdentityId)
-                  .OnDelete(DeleteBehavior.NoAction);
-
-            entity.HasOne(t => t.Policy)
-                  .WithMany()
-                  .HasForeignKey(t => t.PolicyId);
-        });
+        
 
         // Identity Roles Model
         modelBuilder.Entity<IdentityRolesModel>(entity =>
@@ -199,8 +161,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.OwnerId)
                   .OnDelete(DeleteBehavior.NoAction);
 
-            entity.HasMany(t => t.Policies)
-               .WithOne();
         });
 
         // Account Logs Model
@@ -216,18 +176,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .WithMany()
                   .HasForeignKey(t => t.AccountId)
                   .OnDelete(DeleteBehavior.NoAction);
-        });
-
-        // Policy Model
-        modelBuilder.Entity<PolicyModel>(entity =>
-        {
-            entity.ToTable("policies");
-            entity.HasOne(t => t.Owner)
-                  .WithMany()
-                  .HasForeignKey(t => t.OwnerId)
-                  .OnDelete(DeleteBehavior.NoAction);
-
-            entity.Property(e => e.Id).IsRequired();
         });
 
         // Policy Model
@@ -257,21 +205,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.HasIndex(t => t.Mail).IsUnique();
         });
 
-        modelBuilder.Entity<IdentityTypePolicy>(entity =>
-        {
-            entity.ToTable("policy_types_identity");
-            entity.HasOne(t => t.Policy)
-                  .WithMany()
-                  .HasForeignKey(t => t.PolicyId);
-        });
-
-        modelBuilder.Entity<IpAccessPolicy>(entity =>
-        {
-            entity.ToTable("ip_access_policy");
-            entity.HasOne(t => t.Policy)
-                  .WithMany()
-                  .HasForeignKey(t => t.PolicyId);
-        });
 
         modelBuilder.Entity<DomainModel>(entity =>
         {
@@ -281,14 +214,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.OrganizationId);
 
             entity.HasIndex(t => t.Domain).IsUnique();
-        });
-
-        modelBuilder.Entity<TimeAccessPolicy>(entity =>
-        {
-            entity.ToTable("time_access_policy");
-            entity.HasOne(t => t.Policy)
-                  .WithMany()
-                  .HasForeignKey(t => t.PolicyId);
         });
 
         // Mail OTP.

@@ -2,6 +2,6 @@
 
 public interface IPolicyMemberRepository
 {
-    Task<CreateResponse> Create(IdentityPolicyModel policyModel);
-    Task<ReadAllResponse<PolicyModel>> ReadAll(int identity);
+    Task<CreateResponse> Create(string policy, int identity);
+    Task<ReadAllResponse<AccessPolicyModel>> ReadAll(int identity);
 }

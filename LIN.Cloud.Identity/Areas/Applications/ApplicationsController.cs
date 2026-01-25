@@ -41,7 +41,6 @@ public class ApplicationsController(IApplicationRepository application) : Authen
 
         // Formatear app.
         app.Key = Guid.NewGuid();
-        app.Policies = [];
         app.Identity.Type = IdentityType.Service;
         app.Identity.Roles = [];
 

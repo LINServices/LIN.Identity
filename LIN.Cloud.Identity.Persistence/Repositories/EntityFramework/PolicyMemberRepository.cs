@@ -1,21 +1,26 @@
-﻿namespace LIN.Cloud.Identity.Persistence.Repositories.EntityFramework;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 
-internal class PolicyMemberRepository(DataContext context) : IPolicyMemberRepository
+namespace LIN.Cloud.Identity.Persistence.Repositories.EntityFramework;
+
+internal class PolicyMemberRepository(MongoDataContext context) : IPolicyMemberRepository
 {
 
     /// <summary>
     /// Crear nueva política de acceso general.
     /// </summary>
-    public async Task<CreateResponse> Create(IdentityPolicyModel model)
+    public async Task<CreateResponse> Create(string policy, int identity)
     {
         try
         {
-            model.Identity = context.AttachOrUpdate(model.Identity)!;
-            model.Policy = context.AttachOrUpdate(model.Policy)!;
+            var policyModel = await context.AccessPolicies.FirstOrDefaultAsync(t => t.Id == policy);
 
-            // Guardar la cuenta.
-            await context.IdentityPolicies.AddAsync(model);
-            context.SaveChanges();
+
+            if (policyModel != null)
+            {
+                policyModel.Identities.Add(identity);
+                context.SaveChanges();
+            }
 
             return new()
             {
@@ -29,14 +34,14 @@ internal class PolicyMemberRepository(DataContext context) : IPolicyMemberReposi
     }
 
 
-    public async Task<ReadAllResponse<PolicyModel>> ReadAll(int id)
+    public async Task<ReadAllResponse<AccessPolicyModel>> ReadAll(int id)
     {
         try
         {
 
-            var identities = await (from pl in context.IdentityPolicies
-                                    where pl.IdentityId == id
-                                    select pl.Policy).ToListAsync();
+            var identities = await (from pl in context.AccessPolicies
+                                    where pl.Identities.Contains(id)
+                                    select pl).ToListAsync();
 
             return new()
             {

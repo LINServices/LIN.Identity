@@ -1,8 +1,11 @@
-﻿namespace LIN.Cloud.Identity.Areas.Policies;
+﻿using LIN.Cloud.Identity.Persistence.Repositories.Mongo;
+using LIN.Types.Cloud.Identity.Models.Policies;
+
+namespace LIN.Cloud.Identity.Areas.Policies;
 
 [IdentityToken]
 [Route("[controller]")]
-public class PoliciesController(IPolicyRepository policiesData, IIamService iam) : AuthenticationBaseController
+public class PoliciesController(PolicyRepository policiesData, IIamService iam) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -10,7 +13,7 @@ public class PoliciesController(IPolicyRepository policiesData, IIamService iam)
     /// </summary>
     /// <param name="modelo">Modelo de la identidad.</param>
     [HttpPost]
-    public async Task<HttpCreateResponse> Create([FromBody] PolicyModel modelo, [FromHeader] int organization)
+    public async Task<HttpCreateResponse> Create([FromBody] AccessPolicyModel modelo, [FromHeader] int organization)
     {
         // Validar nivel de acceso y roles sobre la organización.
         var validate = await iam.Validate(UserInformation.IdentityId, organization);
@@ -21,59 +24,20 @@ public class PoliciesController(IPolicyRepository policiesData, IIamService iam)
                 Message = $"No tienes permisos para crear políticas a titulo de la organización #{organization}."
             };
 
-        // Limpiar modelo.
-        modelo.Owner = new() { Id = organization };
-        modelo.CreatedBy = new() { Id = UserInformation.IdentityId };
-        modelo.CreatedAt = DateTime.UtcNow;
-        modelo.Id = 0;
-        modelo.Name = modelo.Name.Trim();
-
+        modelo.OrganizationId = organization;
         // Crear la política.
         var response = await policiesData.Create(modelo);
         return response;
     }
 
-
     /// <summary>
-    /// Obtener una política.
+    /// Obtener las políticas asociadas a una organización.
     /// </summary>
-    /// <param name="policyId">Id.</param>
-    [HttpGet]
-    public async Task<HttpReadOneResponse<PolicyModel>> Read([FromHeader] int policyId)
+    [HttpGet("all")]
+    public async Task<HttpReadAllResponse<AccessPolicyModel>> ReadAll([FromHeader] int organization)
     {
-        // Validar nivel de acceso y roles sobre la organización.
-        var validate = await iam.IamPolicy(UserInformation.IdentityId, policyId);
-
-        if (validate != IamLevels.Privileged)
-            return new(Responses.Unauthorized)
-            {
-                Message = $"No tienes permisos para obtener esta política."
-            };
-
-        // Crear la política.
-        var response = await policiesData.Read(policyId, true);
-        return response;
-    }
-
-
-    /// <summary>
-    /// Buscar políticas por nombre.
-    /// </summary>
-    [HttpGet("search")]
-    public async Task<HttpReadAllResponse<PolicyModel>> Search([FromQuery] string query, [FromHeader] int organization)
-    {
-
-        // Validar nivel de acceso y roles sobre la organización.
-        var validate = await iam.Validate(UserInformation.IdentityId, organization);
-
-        if (!validate.ValidateReadPolicies())
-            return new(Responses.Unauthorized)
-            {
-                Message = $"No tienes permisos para obtener políticas a titulo de la organización #{organization}."
-            };
-
-        // Crear la política.
-        var response = await policiesData.ReadAll(organization, query);
+        // Validar nivel de acceso (esto podría requerir una validación IAM más específica para la identidad).
+        var response = await policiesData.ReadAllByOrg(organization,query: null);
         return response;
     }
 
@@ -81,23 +45,25 @@ public class PoliciesController(IPolicyRepository policiesData, IIamService iam)
     /// <summary>
     /// Obtener las políticas asociadas a una organización.
     /// </summary>
-    /// <param name="organization">Id de la organización.</param>
-    [HttpGet("all")]
-    public async Task<HttpReadAllResponse<PolicyModel>> ReadAll([FromHeader] int organization)
+    [HttpGet("search")]
+    public async Task<HttpReadAllResponse<AccessPolicyModel>> Search([FromHeader] int organization, [FromQuery] string? query)
     {
+        if (string.IsNullOrWhiteSpace(query))
+            query = null;
 
-        // Validar nivel de acceso y roles sobre la organización.
-        var validate = await iam.Validate(UserInformation.IdentityId, organization);
-
-        if (!validate.ValidateReadPolicies())
-            return new(Responses.Unauthorized)
-            {
-                Message = $"No tienes permisos para obtener políticas a titulo de la organización #{organization}."
-            };
-
-        // Crear la política.
-        var response = await policiesData.ReadAll(organization, false);
+        // Validar nivel de acceso (esto podría requerir una validación IAM más específica para la identidad).
+        var response = await policiesData.ReadAllByOrg(organization, query);
         return response;
     }
 
+    /// <summary>
+    /// Eliminar una política.
+    /// </summary>
+    /// <param name="id">Id de la política (ObjectId string).</param>
+    [HttpDelete]
+    public async Task<HttpResponseBase> Delete([FromHeader] string id)
+    {
+        var response = await policiesData.Delete(id);
+        return response;
+    }
 }

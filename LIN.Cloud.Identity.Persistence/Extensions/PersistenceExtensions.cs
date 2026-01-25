@@ -33,6 +33,16 @@ public static class PersistenceExtensions
             options.UseSqlServer(configuration.GetConnectionString(connectionName));
         });
 
+        // Configuración de Health Checks.
+        services.AddHealthChecks()
+            .AddSqlServer(configuration.GetConnectionString(connectionName)!, name: "sql_server");
+
+        // Contexto de MongoDB para políticas.
+        services.AddDbContext<MongoDataContext>(options =>
+        {
+            options.UseMongoDB(configuration.GetConnectionString("mongo")!, "id_policies");
+        });
+
         services.AddScoped<AccountFindable, AccountFindable>();
         services.AddScoped<IdentityFindable, IdentityFindable>();
 
@@ -47,7 +57,7 @@ public static class PersistenceExtensions
         services.AddScoped<IOrganizationRepository, OrganizationRepository>();
         services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
         services.AddScoped<IOtpRepository, OtpRepository>();
-        services.AddScoped<IPolicyRepository, PolicyRepository>();
+        services.AddScoped<LIN.Cloud.Identity.Persistence.Repositories.Mongo.PolicyRepository, LIN.Cloud.Identity.Persistence.Repositories.Mongo.PolicyRepository>();
         services.AddScoped<IPolicyMemberRepository, PolicyMemberRepository>();
         services.AddScoped<IMailRepository, MailRepository>();
         services.AddScoped<IDomainRepository, DomainRepository>();
