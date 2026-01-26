@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 
 namespace LIN.Cloud.Identity.Persistence.Repositories.EntityFramework;
 
@@ -55,4 +54,26 @@ internal class PolicyMemberRepository(MongoDataContext context) : IPolicyMemberR
         return new();
     }
 
+    public async Task<ResponseBase> Remove(string policy, int id)
+    {
+        try
+        {
+            var entity = await context.AccessPolicies.FirstOrDefaultAsync(x => x.Id == policy);
+
+            if (entity != null)
+            {
+                entity.Identities.Remove(id);
+                await context.SaveChangesAsync();
+            }
+
+            return new()
+            {
+                Response = Responses.Success
+            };
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
 }

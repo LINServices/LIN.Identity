@@ -47,4 +47,24 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
         var response = await policiesData.ReadAll(identity);
         return response;
     }
+
+    /// <summary>
+    /// Eliminar una identidad de una politica
+    /// </summary>
+    [HttpDelete]
+    public async Task<HttpResponseBase> Delete([FromHeader] int identity, [FromQuery] string policy)
+    {
+        // Validar nivel de acceso y roles sobre la organización.
+        var validate = await iam.IamIdentity(UserInformation.IdentityId, identity);
+
+        if (!validate.ValidateAlterPolicies())
+            return new(Responses.Unauthorized)
+            {
+                Message = $"No tienes permisos para obtener políticas a titulo de la organización."
+            };
+
+        // Crear la política.
+        var response = await policiesData.Remove(policy, identity);
+        return response;
+    }
 }
