@@ -32,9 +32,15 @@ public class PolicyRepository(MongoDataContext context)
     public async Task<ResponseBase> Delete(string id)
     {
         try
-        {;
+        {
+            var entity = await context.AccessPolicies.FirstOrDefaultAsync(t => t.Id == id);
 
-            await context.AccessPolicies.Where(t => t.Id == id).ExecuteDeleteAsync();
+            if (entity != null)
+            {
+                context.AccessPolicies.Remove(entity);
+                await context.SaveChangesAsync();
+            }
+
             return new(Responses.Success);
         }
         catch (Exception)
