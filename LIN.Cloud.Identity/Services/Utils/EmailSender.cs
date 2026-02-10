@@ -1,38 +1,69 @@
-﻿namespace LIN.Cloud.Identity.Services.Utils;
+﻿using System.Text;
 
-public class EmailSender(ILogger<EmailSender> logger, IConfiguration configuration)
+namespace LIN.Cloud.Identity.Services.Utils;
+
+public class EmailService(IConfiguration configuration) : IEmailService
 {
+
+    private string? _requestUri = null;
+    private string? _key = null;
+    private string? _from = null;
+
+    /// <summary>
+    /// Iniciar servicio.
+    /// </summary>
+    private void Service()
+    {
+        _requestUri ??= configuration["mailing:url"] ?? string.Empty;
+        _key ??= configuration["mailing:key"] ?? string.Empty;
+        _from ??= configuration["mailing:from"] ?? string.Empty;
+    }
+
 
     /// <summary>
     /// Enviar correo.
     /// </summary>
-    /// <param name="to">A.</param>
+    /// <param name="to">Para.</param>
+    /// <param name="person">Persona.</param>
     /// <param name="subject">Asunto.</param>
-    /// <param name="body">Cuerpo HTML.</param>
-    public async Task<bool> Send(string to, string subject, string body)
+    /// <param name="body">Cuerpo del mensaje.</param>
+    public async Task<bool> SendMail(string[] to, string person, string subject, string body)
     {
         try
         {
-            // Servicio.
-            Global.Http.Services.Client client = new(configuration["hangfire:mail"])
+            // Iniciar.
+            Service();
+
+            // Contenido.
+            var jsonData = new
             {
-                TimeOut = 10
+                from = $"{person} <{_from}>",
+                to,
+                subject,
+                html = body
             };
 
-            client.AddParameter("subject", subject);
-            client.AddParameter("mail", to);
+            // Serializar.
+            var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData);
+            var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-            var result = await client.Post(body);
+            HttpClient client = new()
+            {
+                Timeout = TimeSpan.FromSeconds(10)
+            };
 
-            logger.LogInformation(result);
+            // Authorization.
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_key}");
 
-            return true;
+            // Enviar.
+            HttpResponseMessage response = await client.PostAsync(_requestUri, content);
+
+            return response.IsSuccessStatusCode;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            logger.LogError(ex, "Error al enviar correo.");
-            return false;
         }
+        return false;
     }
 
 }

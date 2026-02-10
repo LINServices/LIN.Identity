@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class SecurityController(IAccountRepository accountsData, IOtpRepository otpService, IMailRepository mailRepository, EmailSender emailSender) : AuthenticationBaseController
+public class SecurityController(IAccountRepository accountsData, IOtpRepository otpService, IMailRepository mailRepository, IEmailService emailSender) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -74,7 +74,7 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
             };
 
         // Enviar correo.
-        var success = await emailSender.Send(email, "Verificar", $"Verificar tu correo {otpCode}");
+        var success = await emailSender.SendMail([email], "Seguridad" ,"Verificar", $"Verificar tu correo {otpCode}");
 
         return new(success ? Responses.Success : Responses.UnavailableService);
 
@@ -149,7 +149,7 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
             };
 
         // Enviar mail.
-        var success = await emailSender.Send(mail.Model.Mail, "Recuperación de contraseña", $"Su código de verificación es: {otpCode}");
+        var success = await emailSender.SendMail([mail.Model.Mail], "Seguirdad", "Recuperación de contraseña", $"Su código de verificación es: {otpCode}");
 
         return new(success ? Responses.Success : Responses.UnavailableService);
 

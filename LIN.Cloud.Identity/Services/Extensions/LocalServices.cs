@@ -10,7 +10,7 @@ public static class LocalServices
     public static IServiceCollection AddLocalServices(this IServiceCollection services)
     {
         // Externos
-        services.AddSingleton<EmailSender, EmailSender>();
+        services.AddSingleton<IEmailService, EmailService>();
         return services;
     }
 
