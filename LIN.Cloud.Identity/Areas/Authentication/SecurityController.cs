@@ -74,7 +74,7 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
             };
 
         // Enviar correo.
-        var success = await emailSender.SendMail([email], "Seguridad" ,"Verificar", $"Verificar tu correo {otpCode}");
+        var success = await emailSender.SendMail([email], "Seguridad", "Verificar", $"Verificar tu correo {otpCode}");
 
         return new(success ? Responses.Success : Responses.UnavailableService);
 
@@ -100,7 +100,7 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
     /// </summary>
     /// <param name="user">Usuario que olvido.</param>
     [HttpPost("forget/password")]
-    public async Task<HttpResponseBase> ForgetPassword([FromQuery] string user)
+    public async Task<ReadOneStringResponse> ForgetPassword([FromQuery] string user)
     {
 
         // Validar estado del usuario.
@@ -151,8 +151,10 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
         // Enviar mail.
         var success = await emailSender.SendMail([mail.Model.Mail], "Seguirdad", "Recuperación de contraseña", $"Su código de verificación es: {otpCode}");
 
-        return new(success ? Responses.Success : Responses.UnavailableService);
-
+        return new(success ? Responses.Success : Responses.UnavailableService)
+        {
+            Model = mail.Model.Mail
+        };
     }
 
 
