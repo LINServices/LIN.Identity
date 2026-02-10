@@ -1,7 +1,7 @@
 ﻿namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("[controller]")]
-public class FederatedAccountController(ITemporalAccountRepository temporalAccountRepository, IIamService iamService, IDomainRepository domainRepository, IAccountRepository accountRepository, IIdentityRepository identityRepository, EmailSender emailSender, IGroupMemberRepository groupMemberRepository, IOrganizationRepository organizationRepository) : AuthenticationBaseController
+public class FederatedAccountController(ITemporalAccountRepository temporalAccountRepository, IIamService iamService, IDomainRepository domainRepository, IAccountRepository accountRepository, IIdentityRepository identityRepository, IEmailService emailSender, IGroupMemberRepository groupMemberRepository, IOrganizationRepository organizationRepository) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -56,7 +56,7 @@ public class FederatedAccountController(ITemporalAccountRepository temporalAccou
             await temporalAccountRepository.Create(tempAccount);
 
             // Enviar correo de invitación a la organización.
-            await emailSender.Send(email, "Verifica tu cuenta federada", $"Por favor verifica tu correo para continuar. {tempAccount.VerificationCode}");
+            await emailSender.SendMail([email], "Seguridad", "Verifica tu cuenta federada", $"Por favor verifica tu correo para continuar. {tempAccount.VerificationCode}");
             return new(Responses.Success)
             {
                 Message = "Se ha enviado un correo de verificación a " + email + ". Por favor verifica tu cuenta."
