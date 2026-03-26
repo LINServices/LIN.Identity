@@ -12,6 +12,7 @@ public class AuthenticationRequest
     public Types.Cloud.Identity.Enumerations.IdentityService Service { get; set; } = Types.Cloud.Identity.Enumerations.IdentityService.LIN;
 
     public List<int> Identities { get; set; } = [];
+    public bool Inpersonation { get; set; } = false;
 
     public Types.Cloud.Identity.Models.Identities.AccountModel? Account { get; internal set; }
     public Types.Cloud.Identity.Models.Identities.ApplicationModel? ApplicationModel { get; internal set; }
