@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.2.11415.280 d18.0
+VisualStudioVersion = 18.2.11415.280
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Cloud.Identity", "LIN.Cloud.Identity\LIN.Cloud.Identity.csproj", "{D7EF6814-1C64-44BC-BEAF-87835D44EEF8}"
 EndProject
@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IA", "IA", "{2CB31039-D56C-
 	ProjectSection(SolutionItems) = preProject
 		.ia\ARCHITECTURE.md = .ia\ARCHITECTURE.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIN.Cloud.Identity.FileStorage", "LIN.Cloud.Identity.FileStorage\LIN.Cloud.Identity.FileStorage.csproj", "{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,26 @@ Global
 		{DB8A6B1A-0D70-4FF3-9494-10FFF5649F82}.Release-dev|Any CPU.Build.0 = Release|Any CPU
 		{DB8A6B1A-0D70-4FF3-9494-10FFF5649F82}.Release-dev|x86.ActiveCfg = Release|Any CPU
 		{DB8A6B1A-0D70-4FF3-9494-10FFF5649F82}.Release-dev|x86.Build.0 = Release|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Debug|x86.Build.0 = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Debug-dev|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Debug-dev|Any CPU.Build.0 = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Debug-dev|x86.ActiveCfg = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Debug-dev|x86.Build.0 = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Local|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Local|Any CPU.Build.0 = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Local|x86.ActiveCfg = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Local|x86.Build.0 = Debug|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Release|x86.ActiveCfg = Release|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Release|x86.Build.0 = Release|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Release-dev|Any CPU.ActiveCfg = Release|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Release-dev|Any CPU.Build.0 = Release|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Release-dev|x86.ActiveCfg = Release|Any CPU
+		{F4ACEF4D-3DFE-4A03-B0AE-5444DD66616C}.Release-dev|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
