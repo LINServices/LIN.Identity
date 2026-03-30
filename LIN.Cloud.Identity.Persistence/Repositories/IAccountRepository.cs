@@ -17,4 +17,6 @@ public interface IAccountRepository
     Task<ReadAllResponse<AccountModel>> FindAllByIdentities(List<int> ids, QueryObjectFilter filters);
 
     Task<ResponseBase> UpdatePassword(int accountId, string password);
+
+    Task<ResponseBase> UpdateProfile(int accountId, string profile);
 }

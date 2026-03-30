@@ -258,4 +258,29 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
         }
     }
 
+
+    /// <summary>
+    /// Actualizar foto de perfil de una cuenta.
+    /// </summary>
+    /// <param name="accountId">Id de la cuenta.</param>
+    /// <param name="profile">URL de la foto de perfil.</param>
+    public async Task<ResponseBase> UpdateProfile(int accountId, string profile)
+    {
+        try
+        {
+            var affected = await (from a in context.Accounts
+                                  where a.Id == accountId
+                                  select a).ExecuteUpdateAsync(accounts => accounts.SetProperty(t => t.Profile, profile));
+
+            if (affected <= 0)
+                return new(Responses.NotExistAccount);
+
+            return new(Responses.Success);
+        }
+        catch (Exception)
+        {
+            return new();
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 using Http.Extensions;
 using Http.Extensions.OpenApi;
+using LIN.Cloud.Identity.FileStorage.Extensions;
 using LIN.Cloud.Identity.Services.Realtime;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddLINHttp(true, (options) =>
 builder.Services.AddSignalR();
 builder.Services.AddLocalServices();
 builder.Services.AddAuthenticationServices(builder.Configuration);
+builder.Services.AddFileStorage(builder.Configuration);
 
 // Servicio de autenticación.
 builder.Services.AddPersistence(builder.Configuration);

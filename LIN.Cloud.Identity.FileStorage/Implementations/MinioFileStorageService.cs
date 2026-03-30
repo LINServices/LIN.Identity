@@ -9,6 +9,7 @@ namespace LIN.Cloud.Identity.FileStorage.Implementations;
 internal sealed class MinioFileStorageService : IFileStorageService
 {
     private readonly IMinioClient _client;
+    private readonly string _baseUrl;
 
     public MinioFileStorageService(IOptions<FileStorageOptions> options)
     {
@@ -20,6 +21,29 @@ internal sealed class MinioFileStorageService : IFileStorageService
             .WithCredentials(opt.AccessKey, opt.SecretKey)
             .WithSSL(useSsl)
             .Build();
+
+        _baseUrl = $"{(useSsl ? "https" : "http")}://{endpoint}";
+    }
+
+    public async Task<FileStorageResult> UploadFileAsync(string bucket, string objectName, Stream stream, long size, string contentType, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await _client.PutObjectAsync(
+                new PutObjectArgs()
+                    .WithBucket(bucket)
+                    .WithObject(objectName)
+                    .WithStreamData(stream)
+                    .WithObjectSize(size)
+                    .WithContentType(contentType),
+                cancellationToken);
+
+            return FileStorageResult.SuccessUrl($"{_baseUrl}/{bucket}/{objectName}");
+        }
+        catch (Exception ex)
+        {
+            return FileStorageResult.Failure($"No se pudo subir el archivo a MinIO: {ex.Message}");
+        }
     }
 
     public async Task<FileStorageResult> DownloadFileAsync(string url, CancellationToken cancellationToken = default)
