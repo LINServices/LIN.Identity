@@ -1,5 +1,4 @@
 ﻿using LIN.Cloud.Identity.Persistence.Contexts;
-using LIN.Cloud.Identity.Services.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace LIN.Cloud.Identity.Services.Services.Iam;

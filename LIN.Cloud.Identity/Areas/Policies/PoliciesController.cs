@@ -46,7 +46,7 @@ public class PoliciesController(PolicyRepository policiesData, IIamService iam) 
             };
 
         // Validar nivel de acceso (esto podría requerir una validación IAM más específica para la identidad).
-        var response = await policiesData.ReadAllByOrg(organization,query: null);
+        var response = await policiesData.ReadAllByOrg(organization, query: null);
         return response;
     }
 

@@ -43,7 +43,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// </summary>
     public DbSet<AccountLog> AccountLogs { get; set; }
 
-    
+
     /// <summary>
     /// Códigos OTPS.
     /// </summary>
@@ -128,7 +128,7 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.GroupId);
         });
 
-        
+
 
         // Identity Roles Model
         modelBuilder.Entity<IdentityRolesModel>(entity =>

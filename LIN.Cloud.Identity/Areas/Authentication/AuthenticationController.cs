@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Authentication;
 
 [Route("[controller]")]
-public class AuthenticationController(IAuthenticationAccountService serviceAuth, IAccountRepository accountData) : AuthenticationBaseController
+public class AuthenticationController(IAuthenticationAccountService serviceAuth, IAccountRepository accountData, IFileStorageService fileStorage) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -84,6 +84,9 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
         // Genera el token
         var token = serviceAuth.GenerateToken();
 
+        // Reemplazar la URL de perfil por una URL pública.
+        await ResolveProfileAsync(serviceAuth.Account!);
+
         // Respuesta.
         var http = new ReadOneResponse<AccountModel>
         {
@@ -114,6 +117,9 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
 
         if (response.Response != Responses.Success)
             return new(response.Response);
+
+        // Reemplazar la URL de perfil por una URL pública.
+        await ResolveProfileAsync(response.Model);
 
         response.Token = Token;
         return response;
@@ -153,6 +159,9 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
                 Errors = response.Errors
             };
 
+        // Reemplazar la URL de perfil por una URL pública.
+        await ResolveProfileAsync(serviceAuth.Account!);
+
         // Respuesta.
         var http = new ReadOneResponse<AccountModel>
         {
@@ -162,6 +171,21 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
         };
 
         return http;
+    }
+
+
+    /// <summary>
+    /// Reemplaza la URL interna del perfil por una URL pública temporal.
+    /// </summary>
+    /// <param name="account">Modelo de la cuenta.</param>
+    private async Task ResolveProfileAsync(AccountModel account)
+    {
+        if (string.IsNullOrWhiteSpace(account.Profile))
+            return;
+
+        var result = await fileStorage.GetTemporaryUrlAsync(account.Profile, TimeSpan.FromDays(1));
+        if (result.IsSuccess)
+            account.Profile = result.Url!;
     }
 
 }

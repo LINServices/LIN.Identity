@@ -1,7 +1,7 @@
 namespace LIN.Cloud.Identity.Areas.Accounts;
 
 [Route("[controller]")]
-public class AccountController(IAccountRepository accountData, IApplicationRepository applications) : AuthenticationBaseController
+public class AccountController(IAccountRepository accountData, IApplicationRepository applications, IFileStorageService fileStorage) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -98,6 +98,9 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
                 Response = response.Response
             };
 
+        // Reemplazar la URL de perfil por una URL pública.
+        await ResolveProfileAsync(response.Model);
+
         // Retorna el resultado
         return response;
     }
@@ -136,6 +139,9 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
                 Response = response.Response,
                 Model = new()
             };
+
+        // Reemplazar la URL de perfil por una URL pública.
+        await ResolveProfileAsync(response.Model);
 
         // Retorna el resultado
         return response;
@@ -176,6 +182,10 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
                 Response = response.Response
             };
 
+        // Reemplazar la URL de perfil por una URL pública.
+        await ResolveProfileAsync(response.Model);
+
+
         // Retorna el resultado
         return response;
     }
@@ -198,6 +208,12 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
             IsAdmin = false,
             IdentityContext = UserInformation.IdentityId,
         });
+
+        foreach (var a in response.Models)
+        {
+            // Reemplazar la URL de perfil por una URL pública.
+            await ResolveProfileAsync(a);
+        }
 
         return response;
     }
@@ -229,6 +245,12 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
             IdentityContext = UserInformation.IdentityId,
         });
 
+        foreach (var a in response.Models)
+        {
+            // Reemplazar la URL de perfil por una URL pública.
+            await ResolveProfileAsync(a);
+        }
+
         return response;
     }
 
@@ -252,6 +274,68 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         });
 
         return response;
+    }
+
+
+    /// <summary>
+    /// Actualizar la foto de perfil de una cuenta.
+    /// </summary>
+    /// <param name="file">Archivo de imagen.</param>
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    /// <returns>Retorna el resultado de la operación.</returns>
+    [HttpPatch("profile")]
+    [IdentityToken]
+    public async Task<HttpResponseBase> UpdateProfile(IFormFile file, CancellationToken cancellationToken)
+    {
+        // Validar el archivo.
+        if (file is null || file.Length == 0)
+            return new(Responses.InvalidParam)
+            {
+                Message = "Uno o varios parámetros son inválidos."
+            };
+
+        // Generar nombre único para el archivo.
+        var extension = Path.GetExtension(file.FileName);
+        var objectName = $"accounts/{UserInformation.AccountId}/{Guid.NewGuid()}{extension}";
+
+        // Subir el archivo al almacenamiento.
+        using var stream = file.OpenReadStream();
+        var uploadResult = await fileStorage.UploadFileAsync("profiles", objectName, stream, file.Length, file.ContentType, cancellationToken);
+
+        if (!uploadResult.IsSuccess)
+            return new(Responses.UnavailableService)
+            {
+                Message = "Hubo un error al subir la foto de perfil."
+            };
+
+        // Actualizar la URL de perfil en la base de datos.
+        var response = await accountData.UpdateProfile(UserInformation.AccountId, uploadResult.Url!);
+
+        // Evaluación.
+        if (response.Response != Responses.Success)
+            return new(response.Response)
+            {
+                Message = "Hubo un error al actualizar la foto de perfil."
+            };
+
+        return new(Responses.Success)
+        {
+            Message = "Foto de perfil actualizada satisfactoriamente."
+        };
+    }
+
+    /// <summary>
+    /// Reemplaza la URL interna del perfil por una URL pública temporal.
+    /// </summary>
+    /// <param name="account">Modelo de la cuenta.</param>
+    private async Task ResolveProfileAsync(AccountModel account)
+    {
+        if (string.IsNullOrWhiteSpace(account.Profile))
+            return;
+
+        var result = await fileStorage.GetTemporaryUrlAsync(account.Profile, TimeSpan.FromDays(1));
+        if (result.IsSuccess)
+            account.Profile = result.Url!;
     }
 
 }

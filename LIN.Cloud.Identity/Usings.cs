@@ -1,6 +1,7 @@
 ﻿// Sistema.
 global using Http.ResponsesList;
 // Tipos locales.
+global using LIN.Cloud.Identity.FileStorage.Abstractions;
 global using LIN.Cloud.Identity.Persistence.Extensions;
 global using LIN.Cloud.Identity.Persistence.Models;
 global using LIN.Cloud.Identity.Persistence.Repositories;
