@@ -180,7 +180,6 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
     /// <param name="account">Modelo de la cuenta.</param>
     private async Task ResolveProfileAsync(AccountModel account)
     {
-        return;
         if (string.IsNullOrWhiteSpace(account.Profile))
             return;
 
