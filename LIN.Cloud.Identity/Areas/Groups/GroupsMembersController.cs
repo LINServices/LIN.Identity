@@ -4,7 +4,6 @@
 [Route("Groups/members")]
 public class GroupsMembersController(IGroupRepository groupsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IIamService rolesIam, IOrganizationRepository organizationRepository) : AuthenticationBaseController
 {
-
     /// <summary>
     /// Agregar un integrante a un grupo.
     /// </summary>
@@ -57,7 +56,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
         return response;
 
     }
-
 
     /// <summary>
     /// Agregar integrantes a un grupo.
@@ -118,7 +116,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
         return response;
     }
 
-
     /// <summary>
     /// Obtener los integrantes asociados a un grupo.
     /// </summary>
@@ -167,7 +164,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
         return response;
 
     }
-
 
     /// <summary>
     /// Buscar en los integrantes de un grupo.
@@ -218,7 +214,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
         return members;
 
     }
-
 
     /// <summary>
     /// Buscar en los grupos de un grupo.
@@ -271,7 +266,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
 
     }
 
-
     /// <summary>
     /// Eliminar un integrante
     /// </summary>
@@ -279,7 +273,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     [HttpDelete("remove")]
     public async Task<HttpResponseBase> DeleteMembers([FromQuery] int identity, [FromQuery] int group)
     {
-
         // Obtener la organización.
         var orgId = await groupsData.GetOwner(group);
 
@@ -307,7 +300,7 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
 
         // Validar que el grupo no sea el directorio principal de la organización.
         var dictoryId = await organizationRepository.ReadDirectory(orgId.Model);
-        if (dictoryId.Response != Responses.Success || group != dictoryId.Model)
+        if (dictoryId.Response != Responses.Success || group == dictoryId.Model)
             return new()
             {
                 Message = "No puedes eliminar integrantes del directorio principal de la organización.",
@@ -326,9 +319,7 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
 
         // Retorna el resultado
         return response;
-
     }
-
 
     /// <summary>
     /// Obtener los grupos a los que una identidad pertenece.

@@ -4,7 +4,6 @@
 [Route("[controller]")]
 public class GroupsController(IGroupRepository groupData, IIamService rolesIam) : AuthenticationBaseController
 {
-
     /// <summary>
     /// Crear nuevo grupo.
     /// </summary>
@@ -50,7 +49,6 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
 
     }
 
-
     /// <summary>
     /// Obtener todos los grupos de una organización.
     /// </summary>
@@ -87,7 +85,6 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
         return response;
 
     }
-
 
     /// <summary>
     /// Obtener un grupo.
@@ -137,7 +134,6 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
         return response;
 
     }
-
 
     /// <summary>
     /// Obtener un grupo.

@@ -56,7 +56,6 @@ public class DomainController(IDomainRepository domainRepository, IIamService ia
         };
     }
 
-
     /// <summary>
     /// Obtener los dominios de una organización.
     /// </summary>
@@ -78,7 +77,6 @@ public class DomainController(IDomainRepository domainRepository, IIamService ia
 
         return domainsResponse;
     }
-
 
     /// <summary>
     /// Verifica un dominio de una organización.
