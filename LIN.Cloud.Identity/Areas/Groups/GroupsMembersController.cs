@@ -2,7 +2,7 @@
 
 [IdentityToken]
 [Route("Groups/members")]
-public class GroupsMembersController(IGroupRepository groupsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IIamService rolesIam) : AuthenticationBaseController
+public class GroupsMembersController(IGroupRepository groupsData, IOrganizationMemberRepository directoryMembersData, IGroupMemberRepository groupMembers, IIamService rolesIam, IOrganizationRepository organizationRepository) : AuthenticationBaseController
 {
 
     /// <summary>
@@ -302,6 +302,15 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
             return new()
             {
                 Message = "No tienes acceso a la información este directorio.",
+                Response = Responses.Unauthorized
+            };
+
+        // Validar que el grupo no sea el directorio principal de la organización.
+        var dictoryId = await organizationRepository.ReadDirectory(orgId.Model);
+        if (dictoryId.Response != Responses.Success || group != dictoryId.Model)
+            return new()
+            {
+                Message = "No puedes eliminar integrantes del directorio principal de la organización.",
                 Response = Responses.Unauthorized
             };
 
