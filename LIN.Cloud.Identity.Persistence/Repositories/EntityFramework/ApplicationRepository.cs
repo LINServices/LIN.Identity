@@ -9,15 +9,12 @@ internal class ApplicationRepository(DataContext context) : IApplicationReposito
     /// <param name="modelo">Modelo.</param>
     public async Task<CreateResponse> Create(ApplicationModel modelo)
     {
-        // Pre.
         modelo.Id = 0;
 
         try
         {
-            // Modelo ya existe.
             modelo.Owner = context.AttachOrUpdate(modelo.Owner)!;
 
-            // Guardar la identidad.
             await context.Applications.AddAsync(modelo);
             context.SaveChanges();
 
@@ -39,12 +36,10 @@ internal class ApplicationRepository(DataContext context) : IApplicationReposito
         try
         {
 
-            // Obtener el modelo.
             var application = await (from ar in context.Applications
                                      where ar.Key == Guid.Parse(key)
                                      select ar).FirstOrDefaultAsync();
 
-            // Success.
             return new(application is null ? Responses.NotRows : Responses.Success, application!);
 
         }
@@ -64,7 +59,6 @@ internal class ApplicationRepository(DataContext context) : IApplicationReposito
         try
         {
 
-            // Obtener el modelo.
             var application = await (from ar in context.Applications
                                      where ar.Id == id
                                      select new ApplicationModel
@@ -74,7 +68,6 @@ internal class ApplicationRepository(DataContext context) : IApplicationReposito
                                          Identity = ar.Identity
                                      }).FirstOrDefaultAsync();
 
-            // Success.
             return new(application is null ? Responses.NotRows : Responses.Success, application!);
 
         }
@@ -98,7 +91,6 @@ internal class ApplicationRepository(DataContext context) : IApplicationReposito
                                where ar.Key == Guid.Parse(key)
                                select ar).AnyAsync();
 
-            // Success.
             return new(Responses.Success, exist);
 
         }

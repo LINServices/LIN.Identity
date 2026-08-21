@@ -12,16 +12,12 @@ public class IdentityTokenAttribute : ActionFilterAttribute
     /// <param name="next">Siguiente.</param>
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        // Contexto HTTP.
         var httpContext = context.HttpContext;
 
-        // Obtiene el valor.
         bool can = httpContext.Request.Headers.TryGetValue("token", out Microsoft.Extensions.Primitives.StringValues value);
 
-        // Información del token.
         var tokenInfo = JwtService.Validate(value.ToString());
 
-        // Error de autenticación.
         if (!can || !tokenInfo.IsAuthenticated)
         {
             httpContext.Response.StatusCode = 401;
@@ -40,7 +36,6 @@ public class IdentityTokenAttribute : ActionFilterAttribute
             return;
         }
 
-        // Agrega la información del token.
         context.HttpContext.Items.Add("authentication", tokenInfo);
         await base.OnActionExecutionAsync(context, next);
     }

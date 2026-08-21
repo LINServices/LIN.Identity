@@ -7,15 +7,14 @@ public class GoogleValidationService(IAccountRepository accountRepository) : IGo
 {
 
     /// <summary>
-    /// Valida la cuenta de usuario y la contraseña.
+    /// Valida el token de Google y obtiene o crea la cuenta asociada.
     /// </summary>
     public async Task<ResponseBase> Authenticate(AuthenticationRequest request)
     {
 
-        // Validar token de acceso.
         var information = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.ThirdPartyToken);
 
-        // Validar que la identidad de usuario exista.
+        // Extraer los datos de identidad desde el token de Google.
         string unique = information.Claims["email"].ToString() ?? string.Empty;
         string name = information.Claims["name"].ToString() ?? string.Empty;
 

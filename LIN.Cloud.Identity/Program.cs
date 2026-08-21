@@ -17,7 +17,7 @@ builder.Services.AddLocalServices();
 builder.Services.AddAuthenticationServices(builder.Configuration);
 builder.Services.AddFileStorage(builder.Configuration);
 
-// Servicio de autenticación.
+// Persistencia de datos.
 builder.Services.AddPersistence(builder.Configuration);
 
 var app = builder.Build();

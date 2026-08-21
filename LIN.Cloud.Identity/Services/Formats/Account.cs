@@ -7,7 +7,7 @@ public class Account
 {
 
     /// <summary>
-    /// Procesar el modelo.
+    /// Validar el modelo.
     /// </summary>
     /// <param name="baseAccount">Modelo</param>
     public static List<ErrorModel> Validate(AccountModel baseAccount)
@@ -43,14 +43,12 @@ public class Account
 
     static bool ValidarCadena(string? cadena)
     {
-        // Si la cadena es nula o vacía, no es válida
         if (string.IsNullOrWhiteSpace(cadena))
             return false;
 
         // Patrón de expresión regular para permitir solo letras o números
         string patron = "^[a-zA-Z0-9]*$";
 
-        // Comprobar la coincidencia con el patrón
         return Regex.IsMatch(cadena, patron);
     }
 

@@ -33,7 +33,6 @@ public static class PersistenceExtensions
             options.UseSqlServer(configuration.GetConnectionString(connectionName));
         });
 
-        // Configuración de Health Checks.
         services.AddHealthChecks()
             .AddSqlServer(configuration.GetConnectionString(connectionName)!, name: "sql_server");
 
@@ -46,7 +45,6 @@ public static class PersistenceExtensions
         services.AddScoped<AccountFindable, AccountFindable>();
         services.AddScoped<IdentityFindable, IdentityFindable>();
 
-        // Servicios de datos.
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IAccountLogRepository, AccountLogRepository>();
         services.AddScoped<IApplicationRepository, ApplicationRepository>();
@@ -76,10 +74,10 @@ public static class PersistenceExtensions
         var logger = scope.ServiceProvider.GetService<ILogger<DataContext>>();
         try
         {
+            // EnsureCreated crea la base de datos si no existe antes de sembrar la data inicial.
             var context = scope.ServiceProvider.GetService<DataContext>();
             bool? created = context?.Database.EnsureCreated();
 
-            // Crear la base de datos si no existe.
             SeedContext.Seed(context!);
         }
         catch (Exception ex)

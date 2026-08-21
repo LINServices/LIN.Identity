@@ -4,7 +4,7 @@ internal class GetIdentities(IIdentityService identityService) : IIdentityGetSer
 {
 
     /// <summary>
-    /// Valida la cuenta de usuario y la contraseña.
+    /// Obtiene las identidades asociadas a la cuenta autenticada.
     /// </summary>
     public async Task<ResponseBase> Authenticate(AuthenticationRequest request)
     {
@@ -13,7 +13,6 @@ internal class GetIdentities(IIdentityService identityService) : IIdentityGetSer
         if (identityId == null)
             return new ResponseBase(Responses.Undefined);
 
-        // Obtener las identidades.
         var identities = await identityService.GetIdentities(identityId.Value);
         request.Identities = identities;
         return new ResponseBase(Responses.Success);

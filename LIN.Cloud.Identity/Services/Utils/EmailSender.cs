@@ -31,10 +31,8 @@ public class EmailService(IConfiguration configuration) : IEmailService
     {
         try
         {
-            // Iniciar.
             Service();
 
-            // Contenido.
             var jsonData = new
             {
                 from = $"{person} <{_from}>",
@@ -43,7 +41,6 @@ public class EmailService(IConfiguration configuration) : IEmailService
                 html = body
             };
 
-            // Serializar.
             var jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(jsonData);
             var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
@@ -52,10 +49,8 @@ public class EmailService(IConfiguration configuration) : IEmailService
                 Timeout = TimeSpan.FromSeconds(10)
             };
 
-            // Authorization.
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_key}");
 
-            // Enviar.
             HttpResponseMessage response = await client.PostAsync(_requestUri, content);
 
             return response.IsSuccessStatusCode;

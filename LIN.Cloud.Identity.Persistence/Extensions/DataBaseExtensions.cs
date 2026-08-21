@@ -8,7 +8,7 @@ public static class DataBaseExtensions
 
     /// <summary>
     /// Obtener transacción.
-    /// </summary
+    /// </summary>
     public static IDbContextTransaction? GetTransaction(this DatabaseFacade facade)
     {
         try

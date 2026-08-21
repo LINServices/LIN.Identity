@@ -14,11 +14,9 @@ internal class IdentityRepository(DataContext context) : IIdentityRepository
             foreach (var rol in modelo.Roles)
                 rol.Identity = modelo;
 
-            // Organización propietaria.
             if (modelo.Owner is not null)
                 modelo.Owner = context.AttachOrUpdate(modelo.Owner);
 
-            // Guardar la identidad.
             await context.Identities.AddAsync(modelo);
             context.SaveChanges();
 
@@ -40,14 +38,11 @@ internal class IdentityRepository(DataContext context) : IIdentityRepository
     {
         try
         {
-            // Consulta de las cuentas.
             var identity = await Builders.Identities.GetIds(id, filters, context).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (identity == null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, identity);
         }
         catch (Exception)
@@ -84,14 +79,11 @@ internal class IdentityRepository(DataContext context) : IIdentityRepository
     {
         try
         {
-            // Consulta de las cuentas.
             var identity = await Builders.Identities.GetIds(unique, filters, context).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (identity == null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, identity);
         }
         catch (Exception)

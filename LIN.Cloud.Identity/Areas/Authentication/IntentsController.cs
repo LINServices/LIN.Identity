@@ -15,21 +15,18 @@ public class IntentsController(IAccountLogRepository passkeyData) : Authenticati
     {
         try
         {
-            // Cuenta.
+            // Intentos del usuario actual.
             var account = (from a in PassKeyHub.Attempts
                            where a.Key.Equals(UserInformation.Unique, StringComparison.CurrentCultureIgnoreCase)
                            select a).FirstOrDefault().Value ?? [];
 
-            // Hora actual.
             var timeNow = DateTime.UtcNow;
 
-            // Intentos.
             var intentos = (from I in account
                             where I.Status == PassKeyStatus.Undefined
                             where I.Expiration > timeNow
                             select I).ToList();
 
-            // Retorna.
             return new(Responses.Success, intentos);
         }
         catch (Exception)
@@ -48,10 +45,8 @@ public class IntentsController(IAccountLogRepository passkeyData) : Authenticati
     [HttpGet("count")]
     public async Task<HttpReadOneResponse<int>> Count()
     {
-        // Contar.
         var countResponse = await passkeyData.Count(UserInformation.AccountId);
 
-        // Retorna
         return countResponse;
     }
 

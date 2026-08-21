@@ -12,7 +12,6 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
     [IdentityToken]
     public async Task<HttpResponseBase> AddMail([FromQuery] string email)
     {
-        // Generar modelo del correo.
         var model = new MailModel()
         {
             Mail = email,
@@ -21,13 +20,10 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
             IsVerified = false
         };
 
-        // Respuesta.
         var responseCreate = await mailRepository.Create(model);
 
-        // Si hubo un error.
         switch (responseCreate.Response)
         {
-            // Correcto.
             case Responses.Success:
                 break;
 
@@ -50,10 +46,8 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
                 };
         }
 
-        // Generar Otp.
         var otpCode = Global.Utilities.KeyGenerator.GenerateOTP(5);
 
-        // Guardar OTP.
         var otpCreateResponse = await otpService.Create(new MailOtpDatabaseModel
         {
             MailModel = responseCreate.Model,
@@ -66,14 +60,12 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
             }
         });
 
-        // Enviar correo de verificación.
         if (otpCreateResponse.Response != Responses.Success)
             return new()
             {
                 Message = "Hubo un error al guardar el código OTP."
             };
 
-        // Enviar correo.
         var success = await emailSender.SendMail([email], "Seguridad", "Verificar", $"Verificar tu correo {otpCode}");
 
         return new(success ? Responses.Success : Responses.UnavailableService);
@@ -89,7 +81,6 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
     [HttpPost("validate")]
     public async Task<HttpResponseBase> Validate([FromQuery] string mail, [FromQuery] string code)
     {
-        // Validar OTP. 
         var response = await mailRepository.ValidateOtpForMail(mail, code);
         return response;
     }
@@ -116,7 +107,6 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
                 Message = "No se puede reestablecer la contraseña de esta cuenta debido a que no existe o esta inactiva."
             };
 
-        // Obtener mail principal.
         var mail = await mailRepository.ReadPrincipal(user);
 
         if (mail.Response != Responses.Success)
@@ -125,10 +115,8 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
                 Message = "Esta cuenta no tiene un correo principal establecido."
             };
 
-        // Generar OTP.
         var otpCode = Global.Utilities.KeyGenerator.GenerateOTP(5);
 
-        // Guardar OTP.
         var modelo = new OtpDatabaseModel
         {
             Account = account.Model,
@@ -138,17 +126,14 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
             IsUsed = false
         };
 
-        // Crear OTP.
         var created = await otpService.Create(modelo);
 
-        // Si hubo un error.
         if (created.Response != Responses.Success)
             return new(created.Response)
             {
                 Message = "No se pudo crear el código de verificación."
             };
 
-        // Enviar mail.
         var success = await emailSender.SendMail([mail.Model.Mail], "Seguirdad", "Recuperación de contraseña", $"Su código de verificación es: {otpCode}");
 
         return new(success ? Responses.Success : Responses.UnavailableService)
@@ -175,7 +160,7 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
                 Errors = []
             };
 
-        // Validar OTP.
+        // Obtener la cuenta.
         var account = await accountsData.Read(unique, new()
         {
             FindOn = FindOn.StableAccounts,
@@ -189,7 +174,6 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
                 Message = "No se puede reestablecer la contraseña de esta cuenta debido a que no existe o esta inactiva."
             };
 
-        // Leer y actualizar OTP.
         var response = await otpService.ReadAndUpdate(account.Model.Id, code);
 
         // Si hubo un error al leer y actualizar el código.
@@ -206,10 +190,8 @@ public class SecurityController(IAccountRepository accountsData, IOtpRepository 
                 ]
             };
 
-        // Encriptar contraseña.
         newPassword = Global.Utilities.Cryptography.Encrypt(newPassword);
 
-        // Actualizar contraseña.
         var update = await accountsData.UpdatePassword(account.Model.Id, newPassword);
 
         return update;

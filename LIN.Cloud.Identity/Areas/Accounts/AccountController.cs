@@ -22,7 +22,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         // Validar usuario y nombre.
         var errors = Services.Formats.Account.Validate(modelo);
 
-        // Si no fue valido.
         if (errors.Count > 0)
             return new(Responses.InvalidParam)
             {
@@ -34,27 +33,22 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         modelo.AccountType = AccountTypes.Personal;
         modelo = Services.Formats.Account.Process(modelo);
 
-        // Creación del usuario.
         var response = await accountData.Create(modelo, 0);
 
-        // Evaluación.
         if (response.Response != Responses.Success)
             return new(response.Response)
             {
                 Message = "Hubo un error al crear la cuenta."
             };
 
-        // Obtener información de la app.
         var application = await applications.Read(app);
 
-        // Obtiene el usuario.
         string token = string.Empty;
 
         // Si la aplicación es valida, generamos un token.
         if (application.Response == Responses.Success)
             token = JwtService.Generate(response.Model, application.Model.Id);
 
-        // Retorna el resultado.
         return new CreateResponse()
         {
             LastId = response.Model.Identity.Id,
@@ -75,14 +69,12 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id)
     {
 
-        // Id es invalido.
         if (id <= 0)
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Obtiene el usuario.
         var response = await accountData.Read(id, new()
         {
             AccountContext = UserInformation.AccountId,
@@ -91,17 +83,14 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
             IsAdmin = false
         });
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new ReadOneResponse<AccountModel>()
             {
                 Response = response.Response
             };
 
-        // Reemplazar la URL de perfil por una URL pública.
         await ResolveProfileAsync(response.Model);
 
-        // Retorna el resultado
         return response;
     }
 
@@ -116,14 +105,12 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
     public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user)
     {
 
-        // Usuario es invalido.
         if (string.IsNullOrWhiteSpace(user))
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Obtiene el usuario.
         var response = await accountData.Read(user, new()
         {
             AccountContext = UserInformation.AccountId,
@@ -132,7 +119,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
             IsAdmin = false
         });
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new ReadOneResponse<AccountModel>()
             {
@@ -140,10 +126,8 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
                 Model = new()
             };
 
-        // Reemplazar la URL de perfil por una URL pública.
         await ResolveProfileAsync(response.Model);
 
-        // Retorna el resultado
         return response;
 
     }
@@ -159,14 +143,12 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
     public async Task<HttpReadOneResponse<AccountModel>> ReadByIdentity([FromQuery] int id)
     {
 
-        // Id es invalido.
         if (id <= 0)
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Obtiene el usuario.
         var response = await accountData.ReadByIdentity(id, new()
         {
             AccountContext = UserInformation.AccountId,
@@ -175,18 +157,14 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
             IsAdmin = false
         });
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new ReadOneResponse<AccountModel>()
             {
                 Response = response.Response
             };
 
-        // Reemplazar la URL de perfil por una URL pública.
         await ResolveProfileAsync(response.Model);
 
-
-        // Retorna el resultado
         return response;
     }
 
@@ -200,7 +178,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> ReadByIdentity([FromBody] List<int> ids)
     {
-        // Obtiene el usuario
         var response = await accountData.FindAllByIdentities(ids, new()
         {
             AccountContext = UserInformation.AccountId,
@@ -211,7 +188,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
 
         foreach (var a in response.Models)
         {
-            // Reemplazar la URL de perfil por una URL pública.
             await ResolveProfileAsync(a);
         }
 
@@ -229,14 +205,12 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
     public async Task<HttpReadAllResponse<AccountModel>> Search([FromQuery] string pattern)
     {
 
-        // Comprobación
         if (pattern.Trim().Length <= 0 || string.IsNullOrWhiteSpace(pattern))
             return new(Responses.InvalidParam)
             {
                 Message = "Uno o varios parámetros son inválidos."
             };
 
-        // Obtiene el usuario
         var response = await accountData.Search(pattern, new()
         {
             AccountContext = UserInformation.AccountId,
@@ -247,7 +221,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
 
         foreach (var a in response.Models)
         {
-            // Reemplazar la URL de perfil por una URL pública.
             await ResolveProfileAsync(a);
         }
 
@@ -264,7 +237,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids)
     {
-        // Obtiene el usuario
         var response = await accountData.FindAll(ids, new()
         {
             AccountContext = UserInformation.AccountId,
@@ -298,7 +270,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         var extension = Path.GetExtension(file.FileName);
         var objectName = $"accounts/{UserInformation.AccountId}/{Guid.NewGuid()}{extension}";
 
-        // Subir el archivo al almacenamiento.
         using var stream = file.OpenReadStream();
         var uploadResult = await fileStorage.UploadFileAsync("profiles", objectName, stream, file.Length, file.ContentType, cancellationToken);
 
@@ -308,10 +279,8 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
                 Message = "Hubo un error al subir la foto de perfil."
             };
 
-        // Actualizar la URL de perfil en la base de datos.
         var response = await accountData.UpdateProfile(UserInformation.AccountId, uploadResult.Url!);
 
-        // Evaluación.
         if (response.Response != Responses.Success)
             return new(response.Response)
             {

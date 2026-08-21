@@ -11,16 +11,13 @@ public class Account
     public static IQueryable<AccountModel> OnStable(DataContext context)
     {
 
-        // Hora actual.
         var now = DateTime.UtcNow;
 
-        // Consulta.
         var query = from account in context.Accounts
                     where account.Identity.Status != IdentityStatus.Disable
                     && account.Identity.EffectiveTime < now && account.Identity.ExpirationTime > now
                     select account;
 
-        // Retornar.
         return query;
     }
 
@@ -33,14 +30,11 @@ public class Account
     public static IQueryable<AccountModel> OnAll(DataContext context)
     {
 
-        // Hora actual.
         var now = DateTime.UtcNow;
 
-        // Consulta.
         var query = from account in context.Accounts
                     select account;
 
-        // Retornar.
         return query;
     }
 
@@ -55,7 +49,6 @@ public class Account
     public static IQueryable<AccountModel> GetAccounts(int id, QueryObjectFilter filters, DataContext context)
     {
 
-        // Query general
         IQueryable<AccountModel> accounts;
 
         if (filters.FindOn == FindOn.StableAccounts)
@@ -67,10 +60,8 @@ public class Account
                        where account.Id == id
                        select account;
 
-        // Armar el modelo
         accounts = BuildModel(accounts, filters, context);
 
-        // Retorno
         return accounts;
 
     }
@@ -86,7 +77,6 @@ public class Account
     public static IQueryable<AccountModel> GetAccounts(string user, QueryObjectFilter filters, DataContext context)
     {
 
-        // Query general
         IQueryable<AccountModel> accounts;
 
         if (filters.FindOn == FindOn.StableAccounts)
@@ -98,10 +88,8 @@ public class Account
                        where account.Identity.Unique == user
                        select account;
 
-        // Armar el modelo
         accounts = BuildModel(accounts, filters, context);
 
-        // Retorno
         return accounts;
 
     }
@@ -117,7 +105,6 @@ public class Account
     public static IQueryable<AccountModel> GetAccountsByIdentity(int id, QueryObjectFilter filters, DataContext context)
     {
 
-        // Query general
         IQueryable<AccountModel> accounts;
 
         if (filters.FindOn == FindOn.StableAccounts)
@@ -129,10 +116,8 @@ public class Account
                        where account.Identity.Id == id
                        select account;
 
-        // Armar el modelo
         accounts = BuildModel(accounts, filters, context);
 
-        // Retorno
         return accounts;
 
     }
@@ -144,15 +129,12 @@ public class Account
     public static IQueryable<AccountModel> Search(string pattern, QueryObjectFilter filters, DataContext context)
     {
 
-        // Query general.
         IQueryable<AccountModel> accounts = from account in OnStable(context)
                                             where account.Identity.Unique.Contains(pattern)
                                             select account;
 
-        // Armar el modelo.
         accounts = BuildModel(accounts, filters, context);
 
-        // Retorno
         return accounts;
 
     }
@@ -177,11 +159,8 @@ public class Account
                        select account;
         }
 
-
-        // Armar el modelo.
         accounts = BuildModel(accounts, filters, context);
 
-        // Retorno
         return accounts;
 
     }
@@ -208,11 +187,8 @@ public class Account
                        select account;
         }
 
-
-        // Armar el modelo.
         accounts = BuildModel(accounts, filters, context);
 
-        // Retorno
         return accounts;
 
     }

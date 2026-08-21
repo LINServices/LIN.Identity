@@ -11,25 +11,21 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
     /// <param name="modelo">Modelo de la organización.</param>
     public async Task<CreateResponse> Create(OrganizationModel modelo)
     {
-        // Aislar el contexto de la base de datos.
         using var transaction = context.Database.BeginTransaction();
 
         try
         {
-            // Metadata.
             modelo.Directory.Name = "Directorio General";
             modelo.Directory.Description = "Directorio General de la organización";
 
             modelo.Directory.Identity.Type = IdentityType.Group;
             modelo.Directory.Identity.Owner = null;
             modelo.Directory.Identity.OwnerId = null;
-            // Agregar la organización.
             await context.Organizations.AddAsync(modelo);
             context.SaveChanges();
             modelo.Directory.Identity.Owner = modelo;
             context.SaveChanges();
 
-            // Crear la cuenta administrativa.
             var account = new AccountModel()
             {
                 Id = 0,
@@ -47,14 +43,12 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
                 }
             };
 
-            // Formatear la cuenta.
             account = Account.Process(account);
 
             await context.Accounts.AddAsync(account);
 
             context.SaveChanges();
 
-            // IamRoles.
             var rol = new IdentityRolesModel
             {
                 Identity = account.Identity,
@@ -98,16 +92,13 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
     {
         try
         {
-            // Consultar.
             var org = await (from g in context.Organizations
                              where g.Id == id
                              select g).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (org is null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, org);
         }
         catch (Exception)
@@ -130,7 +121,6 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
                              where g.Id == id
                              select g.Directory.Identity).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (org is null)
                 return new(Responses.NotRows);
 
@@ -156,11 +146,9 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
                                  where g.Id == id
                                  select g.DirectoryId).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (groupId <= 0)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, groupId);
         }
         catch (Exception)
@@ -183,11 +171,9 @@ internal class OrganizationRepository(DataContext context) : IOrganizationReposi
                                     where g.Id == id
                                     select g.Directory.IdentityId).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (identityId <= 0)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, identityId);
         }
         catch (Exception)

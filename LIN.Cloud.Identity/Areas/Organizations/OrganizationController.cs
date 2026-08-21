@@ -3,7 +3,6 @@ namespace LIN.Cloud.Identity.Areas.Organizations;
 [Route("[controller]")]
 public class OrganizationsController(IOrganizationRepository organizationsData, IOrganizationMemberRepository directoryMembersData) : AuthenticationBaseController
 {
-
     /// <summary>
     /// Crea una nueva organización.
     /// </summary>
@@ -11,7 +10,6 @@ public class OrganizationsController(IOrganizationRepository organizationsData, 
     [HttpPost]
     public async Task<HttpCreateResponse> Create([FromBody] OrganizationModel modelo)
     {
-
         // Validar el modelo.
         if (modelo == null || string.IsNullOrWhiteSpace(modelo.Name) || modelo.Directory == null || modelo.Directory.Identity == null || string.IsNullOrWhiteSpace(modelo.Directory.Identity.Unique))
             return new()
@@ -20,7 +18,7 @@ public class OrganizationsController(IOrganizationRepository organizationsData, 
                 Message = "Parámetros inválidos."
             };
 
-        // Ordenar el modelo.
+        // Normalizar y completar el modelo.
         {
             modelo.Id = 0;
             modelo.Name = modelo.Name.Trim();
@@ -33,17 +31,13 @@ public class OrganizationsController(IOrganizationRepository organizationsData, 
             modelo.Directory.Identity.Status = IdentityStatus.Enable;
         }
 
-        // Creación de la organización.
         var response = await organizationsData.Create(modelo);
 
-        // Evaluación.
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-        // Retorna el resultado.
         return new CreateResponse(Responses.Success, response.LastId);
     }
-
 
     /// <summary>
     /// Obtiene una organización por medio del Id.
@@ -54,14 +48,11 @@ public class OrganizationsController(IOrganizationRepository organizationsData, 
     public async Task<HttpReadOneResponse<OrganizationModel>> ReadOneByID([FromQuery] int id)
     {
 
-        // Parámetros
         if (id <= 0)
             return new(Responses.InvalidParam);
 
-        // Obtiene la organización
         var response = await organizationsData.Read(id);
 
-        // Organización no encontrada.
         if (response.Response != Responses.Success)
             return new ReadOneResponse<OrganizationModel>()
             {
@@ -69,7 +60,7 @@ public class OrganizationsController(IOrganizationRepository organizationsData, 
                 Message = "No se encontró la organización."
             };
 
-        // No es publica y no pertenece a ella
+        // Si la organización no es pública, el usuario debe pertenecer a ella.
         if (!response.Model.IsPublic)
         {
 
@@ -92,7 +83,6 @@ public class OrganizationsController(IOrganizationRepository organizationsData, 
         return new ReadOneResponse<OrganizationModel>(Responses.Success, response.Model);
     }
 
-
     /// <summary>
     /// Obtiene las organizaciones donde un usuario es miembro.
     /// </summary>
@@ -100,7 +90,6 @@ public class OrganizationsController(IOrganizationRepository organizationsData, 
     [IdentityToken]
     public async Task<HttpReadAllResponse<OrganizationModel>> ReadAll()
     {
-        // Obtiene la organización
         var response = await directoryMembersData.ReadAllMembers(UserInformation.IdentityId);
 
         return response;

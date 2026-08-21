@@ -14,7 +14,6 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
     {
         try
         {
-            // Consulta.
             var query = await (from org in context.Organizations
                                where org.Id == organization
                                join gm in context.GroupMembers
@@ -25,7 +24,6 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
                                    gm.Type
                                }).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (query is null)
             {
 
@@ -38,8 +36,6 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
                     return new(Responses.NotRows);
             }
 
-
-            // Success.
             return new(Responses.Success, query?.Type ?? GroupMemberTypes.Group);
         }
         catch (Exception)
@@ -50,19 +46,17 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
     }
 
 
-    /// <summary>/// <summary>
+    /// <summary>
     /// Valida si una lista de identidades son miembro de una organización.
     /// </summary>
     /// <param name="ids">Identidades</param>
     /// <param name="organization">Id de la organización</param>
-    /// <param name="context">Contexto</param>
     public async Task<(IEnumerable<int> success, List<int> failure)> IamIn(IEnumerable<int> ids, int organization)
     {
 
         try
         {
 
-            // Consulta.
             var query = await (from org in context.Organizations
                                where org.Id == organization
                                join gm in context.GroupMembers
@@ -70,7 +64,6 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
                                where ids.Contains(gm.IdentityId)
                                select gm.IdentityId).ToListAsync();
 
-            // Lista.
             List<int> success = [.. query];
             List<int> failure = [.. ids.Except(success)];
 
@@ -93,7 +86,6 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
     {
         try
         {
-            // Desactivar identidades (Solo creadas dentro de la propia organización).
             var baseQuery = (from member in context.GroupMembers
                              where ids.Contains(member.IdentityId)
                              join org in context.Organizations
@@ -101,19 +93,17 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
                              where org.Id == organization
                              select member);
 
-            // Desactivar identidades (Solo creadas dentro de la propia organización).
+            // Solo se deshabilitan las identidades creadas dentro de la propia organización; los invitados (Guest) conservan su estado.
             await baseQuery.Where(m => m.Type != GroupMemberTypes.Guest).Select(m => m.Identity).ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, IdentityStatus.Disable));
 
-            // Eliminar accesos (Tanto propios de la organización como los externos).
+            // Se eliminan tanto los accesos propios de la organización como los externos (invitados).
             await baseQuery.ExecuteDeleteAsync();
 
-            // Eliminar roles asociados.
             await (from rol in context.IdentityRoles
                    where ids.Contains(rol.IdentityId)
                    && rol.OrganizationId == organization
                    select rol).ExecuteDeleteAsync();
 
-            // Success.
             return new(Responses.Success);
         }
         catch (Exception)
@@ -132,12 +122,10 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
     {
         try
         {
-            // Consulta.
             var query = await (from gm in context.GroupMembers
                                where gm.Group.Identity.OwnerId == id
                                select gm).ToListAsync();
 
-            // Success.
             return new(Responses.Success, query);
         }
         catch (Exception)
@@ -155,14 +143,12 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
     {
         try
         {
-            // Consulta.
             var query = await (from org in context.Organizations
                                join gm in context.GroupMembers
                                on org.DirectoryId equals gm.GroupId
                                where gm.IdentityId == identity
                                select org).ToListAsync();
 
-            // Success.
             return new(Responses.Success, query);
         }
         catch (Exception)
@@ -204,7 +190,6 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
                                      Profile = gm
                                  }).ToListAsync();
 
-            // Success.
             return new(Responses.Success, members);
         }
         catch (Exception)

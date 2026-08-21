@@ -8,7 +8,7 @@ public class OrganizationMembersController(IOrganizationRepository organizations
 {
 
     /// <summary>
-    /// Agregar una identidad externa a la organización.
+    /// Agregar identidades externas a la organización.
     /// </summary>
     /// <param name="organization">Id de la organización.</param>
     /// <param name="ids">Lista de ids a agregar.</param>
@@ -16,13 +16,10 @@ public class OrganizationMembersController(IOrganizationRepository organizations
     [HttpPost("invite")]
     public async Task<HttpCreateResponse> AddExternalMembers([FromQuery] int organization, [FromBody] IEnumerable<int> ids)
     {
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateInviteMembers(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -30,15 +27,13 @@ public class OrganizationMembersController(IOrganizationRepository organizations
                 Response = Responses.Unauthorized
             };
 
-        // Solo elementos distintos.
         ids = ids.Distinct();
 
-        // Valida si el usuario pertenece a la organización.
+        // Valida si la identidad pertenece a la organización.
         var (existentes, noUpdated) = await directoryMembersData.IamIn(ids, organization);
 
         var directoryId = await organizationsData.ReadDirectory(organization);
 
-        // Crear el usuario.
         var response = await groupMembers.Create(noUpdated.Select(id => new GroupMember
         {
             Group = new()
@@ -54,7 +49,6 @@ public class OrganizationMembersController(IOrganizationRepository organizations
 
         response.Message = $"Se agregaron {noUpdated.Count} integrantes como invitados y se omitieron {existentes.Count()} debido a que ya pertenecen a esta organización.";
 
-        //// Retorna el resultado
         return response;
     }
 
@@ -82,10 +76,8 @@ public class OrganizationMembersController(IOrganizationRepository organizations
         modelo = Services.Formats.Account.Process(modelo);
         modelo.AccountType = AccountTypes.Work;
 
-        // Organización.
         var orgIdentity = await organizationsData.GetDomain(organization);
 
-        // Validar.
         if (orgIdentity.Response != Responses.Success)
             return new(Responses.NotRows)
             {
@@ -95,7 +87,6 @@ public class OrganizationMembersController(IOrganizationRepository organizations
         // Validar usuario y nombre.
         var errors = Services.Formats.Account.Validate(modelo);
 
-        // Si no fue valido.
         if (errors.Count > 0)
             return new(Responses.InvalidParam)
             {
@@ -103,16 +94,13 @@ public class OrganizationMembersController(IOrganizationRepository organizations
                 Errors = errors
             };
 
-        // Agregar la identidad.
+        // Componer el identificador único con el dominio de la organización.
         modelo.Identity.Unique = $"{modelo.Identity.Unique}@{orgIdentity.Model.Unique}";
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -120,14 +108,11 @@ public class OrganizationMembersController(IOrganizationRepository organizations
                 Response = Responses.Unauthorized
             };
 
-        // Creación del usuario
         var response = await accountsData.Create(modelo, organization);
 
-        // Evaluación
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-        // Retorna el resultado
         return new CreateResponse()
         {
             LastId = response.Model.Id,
@@ -145,13 +130,10 @@ public class OrganizationMembersController(IOrganizationRepository organizations
     public async Task<HttpReadAllResponse<SessionModel<GroupMember>>> ReadAll([FromHeader] int organization)
     {
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -159,10 +141,8 @@ public class OrganizationMembersController(IOrganizationRepository organizations
                 Response = Responses.Unauthorized
             };
 
-        // Obtiene los miembros.
         var members = await directoryMembersData.ReadUserAccounts(organization);
 
-        // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
             return new ReadAllResponse<SessionModel<GroupMember>>
             {
@@ -170,28 +150,24 @@ public class OrganizationMembersController(IOrganizationRepository organizations
                 Response = Responses.Unauthorized
             };
 
-        // Retorna el resultado
         return members;
     }
 
 
     /// <summary>
-    /// Agregar una identidad externa a la organización.
+    /// Expulsar identidades externas de la organización.
     /// </summary>
     /// <param name="organization">Id de la organización.</param>
-    /// <param name="ids">Lista de ids a agregar.</param>
+    /// <param name="ids">Lista de ids a expulsar.</param>
     /// <returns>Retorna el resultado del proceso.</returns>
     [HttpPost("expulse")]
     public async Task<HttpResponseBase> Expulse([FromQuery] int organization, [FromBody] IEnumerable<int> ids)
     {
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateDelete(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -199,13 +175,11 @@ public class OrganizationMembersController(IOrganizationRepository organizations
                 Response = Responses.Unauthorized
             };
 
-        // Solo elementos distintos.
         ids = ids.Distinct();
 
-        // Valida si el usuario pertenece a la organización.
+        // Valida si la identidad pertenece a la organización.
         var (existentes, _) = await directoryMembersData.IamIn(ids, organization);
 
-        // Expulsar a los miembros.
         var response = await directoryMembersData.Expulse(existentes, organization);
         return response;
     }

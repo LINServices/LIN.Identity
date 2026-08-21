@@ -11,7 +11,6 @@ internal class DomainRepository(DataContext context) : IDomainRepository
     {
         try
         {
-            // La organización ya existe.
             modelo.Organization = context.AttachOrUpdate(modelo.Organization);
             await context.Domains.AddAsync(modelo);
             context.SaveChanges();
@@ -32,16 +31,13 @@ internal class DomainRepository(DataContext context) : IDomainRepository
     {
         try
         {
-            // Consultar.
             var domain = await (from g in context.Domains
                                 where g.Domain == unique
                                 select g).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (domain is null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, domain);
         }
         catch (Exception)
@@ -60,12 +56,10 @@ internal class DomainRepository(DataContext context) : IDomainRepository
     {
         try
         {
-            // Consultar.
             var domain = await (from g in context.Domains
                                 where g.OrganizationId == id
                                 select g).ToListAsync();
 
-            // Success.
             return new(Responses.Success, domain);
         }
         catch (Exception)
@@ -86,7 +80,6 @@ internal class DomainRepository(DataContext context) : IDomainRepository
                                     where g.Domain == unique
                                     select g).ExecuteUpdateAsync(t => t.SetProperty(t => t.IsVerified, true));
 
-            // Success.
             return new(Responses.Success);
         }
         catch (Exception)

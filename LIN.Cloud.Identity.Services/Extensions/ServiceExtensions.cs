@@ -12,7 +12,7 @@ public static class ServiceExtensions
 {
 
     /// <summary>
-    /// Agregar servicios de persistence.
+    /// Agrega los servicios de autenticación al contenedor de dependencias.
     /// </summary>
     /// <param name="services">Services.</param>
     public static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
@@ -23,7 +23,7 @@ public static class ServiceExtensions
             Credential = GoogleCredential.FromFile("appsettings.firebase.json")
         });
 
-        // Servicios de datos.
+        // Servicios del pipeline de autenticación.
         services.AddScoped<IApplicationValidationService, ApplicationValidationService>();
         services.AddScoped<IOrganizationValidationService, OrganizationValidationService>();
         services.AddScoped<IAccountValidationService, AccountValidationService>();

@@ -43,7 +43,6 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
                 Message = $"No tienes permisos para obtener políticas a titulo de la organización."
             };
 
-        // Crear la política.
         var response = await policiesData.ReadAll(identity);
         return response;
     }
@@ -63,7 +62,6 @@ public class PoliciesIdentityController(IPolicyMemberRepository policiesData, II
                 Message = $"No tienes permisos para obtener políticas a titulo de la organización."
             };
 
-        // Crear la política.
         var response = await policiesData.Remove(policy, identity);
         return response;
     }

@@ -11,11 +11,9 @@ internal class GroupMemberRepository(DataContext context) : IGroupMemberReposito
     {
         try
         {
-            // Ya existen.
             modelo.Group = context.AttachOrUpdate(modelo.Group)!;
             modelo.Identity = context.AttachOrUpdate(modelo.Identity)!;
 
-            // Guardar la identidad.
             await context.GroupMembers.AddAsync(modelo);
             context.SaveChanges();
 
@@ -38,7 +36,7 @@ internal class GroupMemberRepository(DataContext context) : IGroupMemberReposito
         try
         {
 
-            // Validar existencia.
+            // Insert individual (no bulk) para que un miembro ya existente (violación de la PK) no aborte la inserción del resto.
             foreach (var member in modelos)
             {
                 try
@@ -85,7 +83,6 @@ internal class GroupMemberRepository(DataContext context) : IGroupMemberReposito
     {
         try
         {
-            // Consulta.
             var members = await (from gm in context.GroupMembers
                                  where gm.GroupId == id
                                  select new GroupMember
@@ -96,12 +93,9 @@ internal class GroupMemberRepository(DataContext context) : IGroupMemberReposito
                                      IdentityId = gm.IdentityId
                                  }).ToListAsync();
 
-
-            // Si la cuenta no existe.
             if (members is null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, members);
         }
         catch (Exception)
@@ -120,17 +114,14 @@ internal class GroupMemberRepository(DataContext context) : IGroupMemberReposito
     {
         try
         {
-            // Consulta.
             var members = await (from g in context.GroupMembers
                                  where g.GroupId == @group
                                  && g.Identity.Unique.Contains(pattern.ToLower())
                                  select g.Identity).ToListAsync();
 
-            // Si la cuenta no existe.
             if (members is null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, members);
         }
         catch (Exception)
@@ -166,12 +157,12 @@ internal class GroupMemberRepository(DataContext context) : IGroupMemberReposito
     /// <summary>
     /// Obtener los grupos donde una identidad esta de integrante
     /// </summary>
-    /// <param name="organization"></param>¿
+    /// <param name="organization">Id de la organización.</param>
+    /// <param name="identity">Id de la identidad.</param>
     public async Task<ReadAllResponse<GroupModel>> OnMembers(int organization, int identity)
     {
         try
         {
-            // Consulta.
             var groups = await (from g in context.GroupMembers
                                 where g.Group.Identity.OwnerId == organization
                                 && g.IdentityId == identity
@@ -182,11 +173,9 @@ internal class GroupMemberRepository(DataContext context) : IGroupMemberReposito
                                     Name = g.Group.Name
                                 }).ToListAsync();
 
-            // Si la cuenta no existe.
             if (groups is null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, groups);
         }
         catch (Exception)

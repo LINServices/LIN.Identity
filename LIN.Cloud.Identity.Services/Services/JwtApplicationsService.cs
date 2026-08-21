@@ -27,29 +27,21 @@ public class JwtApplicationsService
     /// <summary>
     /// Genera un JSON Web Token
     /// </summary>
-    /// <param name="user">Modelo de usuario</param>
+    /// <param name="appID">Id de la aplicación.</param>
     public static string Generate(int appID)
     {
 
-        // Configuración
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey));
-
-        // Credenciales
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
 
-        // Reclamaciones
         var claims = new[]
         {
             new Claim(ClaimTypes.Authentication, appID.ToString())
         };
 
-        // Expiración del token
         var expiración = DateTime.UtcNow.AddMinutes(5);
-
-        // Token
         var token = new JwtSecurityToken(null, null, claims, null, expiración, credentials);
 
-        // Genera el token
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
@@ -63,14 +55,10 @@ public class JwtApplicationsService
         try
         {
 
-            // Comprobación
             if (string.IsNullOrWhiteSpace(token))
                 return 0;
 
-            // Configurar la clave secreta.
             var key = Encoding.ASCII.GetBytes(JwtKey);
-
-            // Validar el token
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var validationParameters = new TokenValidationParameters
@@ -88,15 +76,9 @@ public class JwtApplicationsService
                 var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
                 var jwtToken = (JwtSecurityToken)validatedToken;
 
-
-                // Si el token es válido, puedes acceder a los claims (datos) del usuario
                 var user = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
-
-                // 
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Authentication)?.Value, out var appID);
 
-
-                // Devuelve una respuesta exitosa
                 return appID;
             }
             catch (SecurityTokenException)

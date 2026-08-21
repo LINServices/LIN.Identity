@@ -41,7 +41,6 @@ internal class AccountAuthenticationService(IServiceProvider provider) : IAuthen
         else if (request.Service == Types.Cloud.Identity.Enumerations.IdentityService.Microsoft)
         {
             // Agregar pasos específicos para Microsoft.
-            //pipelineSteps.Insert(0, );
         }
         else
         {

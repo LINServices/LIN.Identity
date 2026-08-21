@@ -4,19 +4,17 @@ internal class IdentityValidationService(IAccountRepository accountRepository) :
 {
 
     /// <summary>
-    /// Valida la cuenta de usuario y la contraseña.
+    /// Valida la existencia y el estado de la cuenta de usuario.
     /// </summary>
     public async Task<ResponseBase> Authenticate(AuthenticationRequest request)
     {
 
-        // Obtener la cuenta.
         var accountResponse = await accountRepository.Read(request.User, new()
         {
             IncludeIdentity = true,
             FindOn = Persistence.Models.FindOn.AllAccounts
         });
 
-        // Validar respuesta.
         if (accountResponse.Response != Responses.Success)
             return new ResponseBase
             {
@@ -26,7 +24,6 @@ internal class IdentityValidationService(IAccountRepository accountRepository) :
 
         var account = accountResponse.Model;
 
-        // Validar estado identidad.
         if (account.Identity.Status != IdentityStatus.Enable)
             return new ResponseBase
             {
@@ -41,7 +38,6 @@ internal class IdentityValidationService(IAccountRepository accountRepository) :
                 Message = $"La cuenta no esta vinculada con el proveedor {request.Service}"
             };
 
-        // Establecer datos en la solicitud.
         request.Account = account;
 
         return new(Responses.Success);

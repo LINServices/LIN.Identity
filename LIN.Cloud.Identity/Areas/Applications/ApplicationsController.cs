@@ -12,7 +12,6 @@ public class ApplicationsController(IApplicationRepository application) : Authen
     [IdentityToken]
     public async Task<HttpCreateResponse> Create([FromBody] ApplicationModel app)
     {
-        // Si el modelo es nulo.
         if (app is null)
             return new(Responses.InvalidParam)
             {
@@ -69,7 +68,6 @@ public class ApplicationsController(IApplicationRepository application) : Authen
         if (app.Response != Responses.Success)
             return new(Responses.InvalidParam);
 
-        // Generar token de acceso.
         var token = JwtApplicationsService.Generate(app.Model.Id);
 
         return new ResponseBase

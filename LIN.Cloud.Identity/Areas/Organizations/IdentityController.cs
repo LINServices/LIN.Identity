@@ -11,17 +11,13 @@ public class IdentityController(IOrganizationMemberRepository directoryMembersDa
     [HttpPost]
     public async Task<HttpResponseBase> Create([FromBody] IdentityRolesModel rolModel)
     {
-        // Validar el modelo.
         if (rolModel.Rol == Roles.None)
             return new(Responses.InvalidParam);
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, rolModel.OrganizationId);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -29,29 +25,24 @@ public class IdentityController(IOrganizationMemberRepository directoryMembersDa
                 Response = Responses.Unauthorized
             };
 
-        // Identidad.
         rolModel.Identity = new()
         {
             Id = rolModel.IdentityId
         };
 
-        // Organización.
         rolModel.Organization = new()
         {
             Id = rolModel.OrganizationId
         };
 
-        // Obtener el modelo.
         var response = await identityRolesData.Create(rolModel);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return new()
         {
             Response = Responses.Success
@@ -69,13 +60,10 @@ public class IdentityController(IOrganizationMemberRepository directoryMembersDa
     public async Task<HttpReadAllResponse<IdentityRolesModel>> ReadAll([FromHeader] int identity, [FromHeader] int organization)
     {
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -92,17 +80,14 @@ public class IdentityController(IOrganizationMemberRepository directoryMembersDa
                 Response = Responses.NotFoundDirectory
             };
 
-        // Obtener el modelo.
         var response = await identityRolesData.ReadAll(identity, organization);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return response;
 
     }
@@ -118,13 +103,10 @@ public class IdentityController(IOrganizationMemberRepository directoryMembersDa
     public async Task<HttpResponseBase> ReadAll([FromHeader] int identity, [FromHeader] int organization, [FromHeader] Roles rol)
     {
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -141,17 +123,14 @@ public class IdentityController(IOrganizationMemberRepository directoryMembersDa
                 Response = Responses.NotFoundDirectory
             };
 
-        // Obtener el modelo.
         var response = await identityRolesData.Remove(identity, rol, organization);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return response;
 
     }

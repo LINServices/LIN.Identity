@@ -38,7 +38,7 @@ internal class DomainService : IDomainService
                     foreach (var text in record.Text)
                     {
                         if (text == code)
-                            return true; // Registro TXT encontrado y verificado
+                            return true;
                     }
                 }
             }
@@ -48,7 +48,7 @@ internal class DomainService : IDomainService
         catch (Exception)
         {
         }
-        return false; // Registro TXT no encontrado o no coincide con el código
+        return false;
     }
 
 }

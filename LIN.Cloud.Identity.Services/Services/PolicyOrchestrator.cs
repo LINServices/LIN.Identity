@@ -126,7 +126,7 @@ internal class PolicyOrchestrator(PolicyRepository policyRepository, IIdentitySe
         // NOTA: Este método debería seguir una lógica similar si las aplicaciones también tienen políticas jerárquicas.
         // Por ahora, se asume que las políticas de aplicación son directas.
 
-        // CAMBIAR PORQUE ES POR APP NO PO ID
+        // TODO: revisar, la consulta debería filtrar por aplicación y no por un id genérico.
         var policies = await policyRepository.ReadAll(appId);
 
         var evaluationContext = new PolicyEvaluationContext

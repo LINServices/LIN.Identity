@@ -74,7 +74,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Identity Model.
         modelBuilder.Entity<IdentityModel>(entity =>
         {
             entity.ToTable("identities");
@@ -86,14 +85,12 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .OnDelete(DeleteBehavior.NoAction);
         });
 
-        // Account Model.
         modelBuilder.Entity<AccountModel>(entity =>
         {
             entity.ToTable("accounts");
             entity.HasIndex(t => t.IdentityId).IsUnique();
         });
 
-        // Organization Model.
         modelBuilder.Entity<OrganizationModel>(entity =>
         {
             entity.ToTable("organizations");
@@ -103,7 +100,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .OnDelete(DeleteBehavior.NoAction);
         });
 
-        // Group Model.
         modelBuilder.Entity<GroupModel>(entity =>
         {
             entity.HasOne(t => t.Identity)
@@ -112,7 +108,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .OnDelete(DeleteBehavior.NoAction);
         });
 
-        // Group Member Model
         modelBuilder.Entity<GroupMember>(entity =>
         {
             entity.ToTable("group_members");
@@ -128,9 +123,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.GroupId);
         });
 
-
-
-        // Identity Roles Model
         modelBuilder.Entity<IdentityRolesModel>(entity =>
         {
             entity.ToTable("identity_roles");
@@ -145,7 +137,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.OrganizationId);
         });
 
-        // Application Model
         modelBuilder.Entity<ApplicationModel>(entity =>
         {
             entity.ToTable("applications");
@@ -163,7 +154,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         });
 
-        // Account Logs Model
         modelBuilder.Entity<AccountLog>(entity =>
         {
             entity.ToTable("account_logs");
@@ -178,14 +168,12 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .OnDelete(DeleteBehavior.NoAction);
         });
 
-        // Policy Model
         modelBuilder.Entity<TemporalAccountModel>(entity =>
         {
             entity.ToTable("temporal_accounts");
             entity.HasIndex(e => e.VerificationCode).IsUnique();
         });
 
-        // Códigos OTPS.
         modelBuilder.Entity<OtpDatabaseModel>(entity =>
         {
             entity.ToTable("otp_codes");
@@ -194,7 +182,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
                   .HasForeignKey(t => t.AccountId);
         });
 
-        // Correos.
         modelBuilder.Entity<MailModel>(entity =>
         {
             entity.ToTable("mails");
@@ -216,7 +203,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
             entity.HasIndex(t => t.Domain).IsUnique();
         });
 
-        // Mail OTP.
         modelBuilder.Entity<MailOtpDatabaseModel>(entity =>
         {
             entity.ToTable("mail_otp");
@@ -235,7 +221,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         });
 
-        // Base.
         base.OnModelCreating(modelBuilder);
     }
 }

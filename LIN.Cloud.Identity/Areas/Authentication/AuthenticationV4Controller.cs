@@ -9,7 +9,7 @@ public class AuthenticationV4Controller(IAuthenticationAccountService serviceAut
     /// </summary>
     /// <param name="user">Unique.</param>
     /// <param name="password">Contraseña.</param>
-    /// <param name="token">token de la app..</param>
+    /// <param name="token">Token de la app.</param>
     /// <returns>Retorna el modelo de la cuenta y el token de acceso.</returns>
     [HttpGet("login")]
     public async Task<HttpReadOneResponse<AccountModel>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string token)
@@ -22,7 +22,6 @@ public class AuthenticationV4Controller(IAuthenticationAccountService serviceAut
                 Message = "Uno o varios parámetros son invalido."
             };
 
-        // Validar el token
         int appId = JwtApplicationsService.Validate(token);
 
         if (appId <= 0)
@@ -31,7 +30,6 @@ public class AuthenticationV4Controller(IAuthenticationAccountService serviceAut
                 Message = "El token no es valido."
             };
 
-        // Establecer credenciales.
         var response = await serviceAuth.Authenticate(new()
         {
             User = user,
@@ -39,10 +37,8 @@ public class AuthenticationV4Controller(IAuthenticationAccountService serviceAut
             ApplicationId = appId
         });
 
-        // Validación al obtener el usuario
         switch (response.Response)
         {
-            // Correcto
             case Responses.Success:
                 break;
 
@@ -62,7 +58,7 @@ public class AuthenticationV4Controller(IAuthenticationAccountService serviceAut
                     Message = "Contraseña incorrecta."
                 };
 
-            // Contraseña invalida.
+            // La aplicación no autoriza el inicio de sesión.
             case Responses.UnauthorizedByApp:
                 return new()
                 {
@@ -71,7 +67,7 @@ public class AuthenticationV4Controller(IAuthenticationAccountService serviceAut
                     Errors = response.Errors
                 };
 
-            // Contraseña invalida.
+            // La organización no autoriza el inicio de sesión.
             case Responses.UnauthorizedByOrg:
                 return new()
                 {
@@ -80,7 +76,6 @@ public class AuthenticationV4Controller(IAuthenticationAccountService serviceAut
                     Errors = response.Errors
                 };
 
-            // Incorrecto
             default:
                 return new()
                 {
@@ -89,10 +84,8 @@ public class AuthenticationV4Controller(IAuthenticationAccountService serviceAut
                 };
         }
 
-        // Genera el token
         var tokenGen = serviceAuth.GenerateToken();
 
-        // Respuesta.
         var http = new ReadOneResponse<AccountModel>
         {
             Model = serviceAuth.Account!,

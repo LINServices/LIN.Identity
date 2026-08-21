@@ -17,10 +17,8 @@ internal class MailRepository(DataContext context) : IMailRepository
                 Id = model.AccountId,
             };
 
-            // Attach.
             context.Attach(model.Account);
 
-            // Guardar la cuenta.
             await context.Mails.AddAsync(model);
             context.SaveChanges();
 
@@ -71,7 +69,6 @@ internal class MailRepository(DataContext context) : IMailRepository
     {
         try
         {
-            // Obtener model.
             var otpModel = (from mail in context.Mails
                             where mail.Mail == email
                             join otp in context.MailOtp
@@ -81,11 +78,9 @@ internal class MailRepository(DataContext context) : IMailRepository
                             && otp.OtpDatabaseModel.ExpireTime > DateTime.UtcNow
                             select otp);
 
-            // Actualizar.
             await otpModel.Select(t => t.MailModel).ExecuteUpdateAsync(t => t.SetProperty(t => t.IsVerified, true));
             int countUpdate = await otpModel.Select(t => t.OtpDatabaseModel).ExecuteUpdateAsync(t => t.SetProperty(t => t.IsUsed, true));
 
-            // Si no se actualizaron.
             if (countUpdate <= 0)
                 return new(Responses.NotRows);
 

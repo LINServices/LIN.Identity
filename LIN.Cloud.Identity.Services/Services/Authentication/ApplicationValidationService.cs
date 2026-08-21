@@ -6,11 +6,10 @@ internal class ApplicationValidationService(IApplicationRepository applicationRe
 {
 
     /// <summary>
-    /// Valida la cuenta de usuario y la contraseña.
+    /// Valida la aplicación y sus políticas de acceso.
     /// </summary>
     public async Task<ResponseBase> Authenticate(AuthenticationRequest request)
     {
-        // Obtener la aplicación.
         ReadOneResponse<ApplicationModel> applicationResponse;
 
         if (request.ApplicationId <= 0)
@@ -24,13 +23,11 @@ internal class ApplicationValidationService(IApplicationRepository applicationRe
                 Message = "Application not found.",
             };
 
-        // Validar políticas.
         var response = await policyOrchestrator.ValidatePoliciesForApplication(request, applicationResponse.Model.Id);
 
         if (response.Response != Responses.Success)
             return response;
 
-        // Correcto.
         request.ApplicationModel = applicationResponse.Model;
         return new ResponseBase(Responses.Success);
     }

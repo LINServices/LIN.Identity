@@ -12,7 +12,6 @@ public class OtpRepository(DataContext context) : IOtpRepository
         {
             model.Account = context.AttachOrUpdate(model.Account);
 
-            // Guardar OTP.
             await context.OTPs.AddAsync(model);
             context.SaveChanges();
 
@@ -40,7 +39,6 @@ public class OtpRepository(DataContext context) : IOtpRepository
             };
             model.MailModel = context.AttachOrUpdate(model.MailModel);
 
-            // Guardar OTP.
             await context.MailOtp.AddAsync(model);
             context.SaveChanges();
 

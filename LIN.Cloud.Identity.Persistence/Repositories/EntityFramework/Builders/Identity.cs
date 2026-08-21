@@ -10,17 +10,14 @@ public class Identities
     public static IQueryable<IdentityModel> OnStable(DataContext context)
     {
 
-        // Hora actual.
         var now = DateTime.UtcNow;
 
-        // Consulta.
         var query = from identity in context.Identities
                     where identity.Status != IdentityStatus.Disable
                     && identity.Status == IdentityStatus.Enable
                     && identity.EffectiveTime > now && identity.ExpirationTime < now
                     select identity;
 
-        // Retornar.
         return query;
     }
 
@@ -32,14 +29,11 @@ public class Identities
     public static IQueryable<IdentityModel> OnAll(DataContext context)
     {
 
-        // Hora actual.
         var now = DateTime.UtcNow;
 
-        // Consulta.
         var query = from identity in context.Identities
                     select identity;
 
-        // Retornar.
         return query;
     }
 
@@ -53,7 +47,6 @@ public class Identities
     public static IQueryable<IdentityModel> GetIds(int id, QueryIdentityFilter filters, DataContext context)
     {
 
-        // Query general
         IQueryable<IdentityModel> ids;
 
         if (filters.FindOn == FindOn.StableAccounts)
@@ -65,10 +58,8 @@ public class Identities
                   where account.Id == id
                   select account;
 
-        // Armar el modelo
         ids = BuildModel(ids, filters);
 
-        // Retorno
         return ids;
 
     }
@@ -83,7 +74,6 @@ public class Identities
     public static IQueryable<IdentityModel> GetIds(string unique, QueryIdentityFilter filters, DataContext context)
     {
 
-        // Query general
         IQueryable<IdentityModel> ids;
 
         if (filters.FindOn == FindOn.StableAccounts)
@@ -95,10 +85,8 @@ public class Identities
                   where identity.Unique == unique
                   select identity;
 
-        // Armar el modelo
         ids = BuildModel(ids, filters);
 
-        // Retorno
         return ids;
 
     }

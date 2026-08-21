@@ -11,19 +11,16 @@ internal class GroupRepository(DataContext context) : IGroupRepository
     {
         modelo.Id = 0;
 
-        // Transacción.
         using var transaction = context.Database.BeginTransaction();
 
         try
         {
-            // Miembros.
             foreach (var e in modelo.Members)
             {
                 e.Group = modelo;
                 e.Identity = context.AttachOrUpdate(e.Identity)!;
             }
 
-            // Fijar la organización.
             modelo.Identity.Owner = new()
             {
                 Id = modelo.Identity.OwnerId ?? 0
@@ -31,34 +28,28 @@ internal class GroupRepository(DataContext context) : IGroupRepository
 
             modelo.Identity.Owner = context.AttachOrUpdate(modelo.Identity.Owner);
 
-            // Guardar la identidad.
             await context.Groups.AddAsync(modelo);
 
-            // Obtener el directorio general.
             var generalGroupInformation = (from org in context.Organizations
                                            where org.Id == modelo.Identity.OwnerId
                                            select new { org.DirectoryId, org.Directory.Identity.Unique }).FirstOrDefault();
 
-            // Si no se encontró el directorio.
             if (generalGroupInformation is null)
             {
                 transaction.Rollback();
                 return new(Responses.NotRows);
             }
 
-            // Nueva identidad.
+            // El unique del grupo se compone anidando el de su directorio general para evitar colisiones entre organizaciones.
             modelo.Identity.Unique = $"{modelo.Identity.Unique}@{generalGroupInformation.Unique}";
 
-            // Guardar.
             context.SaveChanges();
 
-            // Agregar el grupo al directorio general.
             var generalDirectory = new GroupModel
             {
                 Id = generalGroupInformation.DirectoryId
             };
 
-            // Si no se encontró el directorio.
             generalDirectory = context.AttachOrUpdate(generalDirectory);
 
             context.GroupMembers.Add(new()
@@ -89,7 +80,6 @@ internal class GroupRepository(DataContext context) : IGroupRepository
     {
         try
         {
-            // Consulta.
             var group = await (from g in context.Groups
                                where g.Id == id
                                select new GroupModel
@@ -101,7 +91,6 @@ internal class GroupRepository(DataContext context) : IGroupRepository
                                    Description = g.Description
                                }).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (group is null)
                 return new(Responses.NotRows);
 
@@ -123,7 +112,6 @@ internal class GroupRepository(DataContext context) : IGroupRepository
     {
         try
         {
-            // Consulta.
             var group = await (from g in context.Groups
                                where g.IdentityId == id
                                select new GroupModel
@@ -135,7 +123,6 @@ internal class GroupRepository(DataContext context) : IGroupRepository
                                    Description = g.Description
                                }).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (group is null)
                 return new(Responses.NotRows);
 
@@ -157,7 +144,6 @@ internal class GroupRepository(DataContext context) : IGroupRepository
     {
         try
         {
-            // Consulta.
             var groups = await (from g in context.Groups
                                 where g.Identity.OwnerId == organization
                                 && g.Identity.Status == IdentityStatus.Enable
@@ -168,7 +154,6 @@ internal class GroupRepository(DataContext context) : IGroupRepository
                                     Name = g.Name
                                 }).ToListAsync();
 
-            // Success.
             return new(Responses.Success, groups ?? []);
         }
         catch (Exception)
@@ -187,16 +172,13 @@ internal class GroupRepository(DataContext context) : IGroupRepository
         try
         {
 
-            // Consulta.
             var ownerId = await (from g in context.Groups
                                  where g.Id == id
                                  select g.Identity.OwnerId).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (ownerId is null || ownerId.Value <= 0)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, ownerId ?? 0);
         }
         catch (Exception)
@@ -216,16 +198,13 @@ internal class GroupRepository(DataContext context) : IGroupRepository
         try
         {
 
-            // Consulta.
             var ownerId = await (from g in context.Groups
                                  where g.IdentityId == id
                                  select g.Identity.OwnerId).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (ownerId is null || ownerId.Value <= 0)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, ownerId ?? 0);
         }
         catch (Exception)

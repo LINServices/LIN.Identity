@@ -9,24 +9,19 @@ internal class AccountLogRepository(DataContext context) : IAccountLogRepository
     /// <param name="log">Modelo.</param>
     public async Task<CreateResponse> Create(AccountLog log)
     {
-        // Formato del modelo.
         log.Id = 0;
 
         try
         {
-            // Organizar el modelo.
             log.Account = new() { Id = log.AccountId };
 
-            // Ya existe.
             log.Account = context.AttachOrUpdate(log.Account)!;
 
-            // Si hay una app.
             if (log.Application is not null)
                 log.Application = context.AttachOrUpdate(log.Application);
             else
                 log.ApplicationId = 0;
 
-            // Guardar la cuenta.
             await context.AccountLogs.AddAsync(log);
             context.SaveChanges();
 
@@ -83,10 +78,8 @@ internal class AccountLogRepository(DataContext context) : IAccountLogRepository
     {
         try
         {
-            // Tiempo.
             var time = DateTime.UtcNow;
 
-            // Contar.
             int count = await (from a in context.AccountLogs
                                where a.AccountId == id
                                && a.AuthenticationMethod == AuthenticationMethods.Authenticator
@@ -95,7 +88,6 @@ internal class AccountLogRepository(DataContext context) : IAccountLogRepository
                                && a.Time.Day == time.Day
                                select a).CountAsync();
 
-            // Success.
             return new(Responses.Success, count);
         }
         catch (Exception)

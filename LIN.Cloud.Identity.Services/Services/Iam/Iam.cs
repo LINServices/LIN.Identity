@@ -14,10 +14,8 @@ internal class IamService(DataContext context, IGroupRepository groups, IIdentit
     public async Task<IEnumerable<Roles>> Validate(int identity, int organization)
     {
 
-        // Identidades.
         var identities = await identityService.GetIdentities(identity);
 
-        // Obtener roles.
         var roles = await (from rol in context.IdentityRoles
                            where identities.Contains(rol.IdentityId)
                            && rol.OrganizationId == organization

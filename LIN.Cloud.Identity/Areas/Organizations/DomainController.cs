@@ -121,7 +121,6 @@ public class DomainController(IDomainRepository domainRepository, IIamService ia
         // Es valido, se marca el dominio como verificado.
         var verifyResponse = await domainRepository.Verify(domain.ToLowerInvariant());
 
-        // Si no es valido, se retorna un error.
         return verifyResponse.Response == Responses.Success
             ? new(Responses.Success)
             {

@@ -4,7 +4,6 @@ internal class SaveLogService(IAccountLogRepository accountLogRepository) : ISav
 {
     public async Task<ResponseBase> Authenticate(AuthenticationRequest request)
     {
-        // Si no hay cuenta o aplicación, no se puede guardar el log.
         if (request.Account == null)
             return new ResponseBase
             {
@@ -12,7 +11,6 @@ internal class SaveLogService(IAccountLogRepository accountLogRepository) : ISav
                 Message = "La cuenta no ha sido definida."
             };
 
-        // Si no hay aplicación, no se puede guardar el log.
         if (request.Application == null)
             return new ResponseBase
             {
@@ -25,7 +23,6 @@ internal class SaveLogService(IAccountLogRepository accountLogRepository) : ISav
             return new ResponseBase(Responses.Success);
         }
 
-        // Guardar el log de autenticación.
         await accountLogRepository.Create(new()
         {
             AccountId = request.Account.Id,

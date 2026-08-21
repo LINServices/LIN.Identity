@@ -12,13 +12,10 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
     public async Task<HttpCreateResponse> Create([FromBody] GroupModel group)
     {
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, group.Identity.OwnerId ?? 0);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -30,17 +27,14 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
         group.Identity.Type = IdentityType.Group;
         Services.Formats.Identities.Process(group.Identity);
 
-        // Obtener el modelo.
         var response = await groupData.Create(group);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return new CreateResponse()
         {
             Response = Responses.Success,
@@ -57,13 +51,10 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
     [HttpGet("all")]
     public async Task<HttpReadAllResponse<GroupModel>> ReadAll([FromHeader] int organization)
     {
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -71,17 +62,14 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
                 Response = Responses.Unauthorized
             };
 
-        // Obtener el modelo.
         var response = await groupData.ReadAll(organization);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return response;
 
     }
@@ -95,10 +83,8 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
     public async Task<HttpReadOneResponse<GroupModel>> ReadOne([FromHeader] int id)
     {
 
-        // Obtener la organización.
         var orgId = await groupData.GetOwner(id);
 
-        // Si hubo un error.
         if (orgId.Response != Responses.Success)
             return new()
             {
@@ -106,13 +92,10 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
                 Response = Responses.Unauthorized
             };
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -120,17 +103,14 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
                 Response = Responses.Unauthorized
             };
 
-        // Obtener el modelo.
         var response = await groupData.Read(id);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return response;
 
     }
@@ -144,10 +124,8 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
     public async Task<HttpReadOneResponse<GroupModel>> ReadIdentity([FromHeader] int id)
     {
 
-        // Obtener la organización.
         var orgId = await groupData.GetOwnerByIdentity(id);
 
-        // Si hubo un error.
         if (orgId.Response != Responses.Success)
             return new()
             {
@@ -155,13 +133,10 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
                 Response = Responses.Unauthorized
             };
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -169,17 +144,14 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
                 Response = Responses.Unauthorized
             };
 
-        // Obtener el modelo.
         var response = await groupData.ReadByIdentity(id);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return response;
 
     }

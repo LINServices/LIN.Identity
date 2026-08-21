@@ -22,7 +22,6 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
                 Message = "Uno o varios parámetros son invalido."
             };
 
-        // Establecer credenciales.
         var response = await serviceAuth.Authenticate(new()
         {
             User = user,
@@ -31,10 +30,8 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
             AuthenticationMethod = AuthenticationMethods.Password
         });
 
-        // Validación al obtener el usuario
         switch (response.Response)
         {
-            // Correcto
             case Responses.Success:
                 break;
 
@@ -54,7 +51,7 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
                     Message = "Contraseña incorrecta."
                 };
 
-            // Contraseña invalida.
+            // La aplicación no autoriza el inicio de sesión.
             case Responses.UnauthorizedByApp:
                 return new()
                 {
@@ -63,7 +60,7 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
                     Errors = response.Errors
                 };
 
-            // Contraseña invalida.
+            // La organización no autoriza el inicio de sesión.
             case Responses.UnauthorizedByOrg:
                 return new()
                 {
@@ -72,7 +69,6 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
                     Errors = response.Errors
                 };
 
-            // Incorrecto
             default:
                 return new()
                 {
@@ -81,13 +77,10 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
                 };
         }
 
-        // Genera el token
         var token = serviceAuth.GenerateToken();
 
-        // Reemplazar la URL de perfil por una URL pública.
         await ResolveProfileAsync(serviceAuth.Account!);
 
-        // Respuesta.
         var http = new ReadOneResponse<AccountModel>
         {
             Model = serviceAuth.Account!,
@@ -108,7 +101,6 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
     [IdentityToken]
     public async Task<HttpReadOneResponse<AccountModel>> LoginWithToken()
     {
-        // Obtiene el usuario.
         var response = await accountData.Read(UserInformation.AccountId, new QueryObjectFilter()
         {
             IsAdmin = true,
@@ -118,7 +110,6 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-        // Reemplazar la URL de perfil por una URL pública.
         await ResolveProfileAsync(response.Model);
 
         response.Token = Token;
@@ -140,7 +131,6 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
                 Message = "Uno o varios parámetros son invalido."
             };
 
-        // Validar información del token.
         var request = new AuthenticationRequest
         {
             ThirdPartyToken = token,
@@ -159,10 +149,8 @@ public class AuthenticationController(IAuthenticationAccountService serviceAuth,
                 Errors = response.Errors
             };
 
-        // Reemplazar la URL de perfil por una URL pública.
         await ResolveProfileAsync(serviceAuth.Account!);
 
-        // Respuesta.
         var http = new ReadOneResponse<AccountModel>
         {
             Model = serviceAuth.Account!,

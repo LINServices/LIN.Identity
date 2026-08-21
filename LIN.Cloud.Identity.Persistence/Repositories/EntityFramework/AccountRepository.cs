@@ -13,16 +13,13 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
         modelo.Id = 0;
         modelo.IdentityId = 0;
 
-        // Transacción.
         using var transaction = context.Database.GetTransaction();
 
         try
         {
-            // Guardar la cuenta.
             await context.Accounts.AddAsync(modelo);
             context.SaveChanges();
 
-            // Si la organización existe.
             if (organization > 0)
             {
 
@@ -30,14 +27,12 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
                                  where org.Id == organization
                                  select org.DirectoryId).FirstOrDefault();
 
-                // Si la organización no existe.
                 if (directory <= 0)
                     return new(Responses.NotFoundDirectory)
                     {
                         Message = "El directorio no existe"
                     };
 
-                // Integrarlo a la organización.
                 var groupMember = new GroupMember()
                 {
                     Group = new()
@@ -48,14 +43,12 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
                     Type = GroupMemberTypes.User
                 };
 
-                // Actualizar la identidad.
                 await context.Identities.Where(t => t.Id == modelo.Identity.Id)
                                         .ExecuteUpdateAsync(Identities => Identities.SetProperty(t => t.OwnerId, organization));
 
                 await groupMemberRepository.Create([groupMember]);
             }
 
-            // Confirmar los cambios.
             transaction?.Commit();
 
             return new()
@@ -81,14 +74,11 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
     {
         try
         {
-            // Consulta de las cuentas.
             var account = await accountFindable.GetAccounts(id, filters).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (account is null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, account);
         }
         catch (Exception)
@@ -108,14 +98,11 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
     {
         try
         {
-            // Consulta de las cuentas.
             var account = await accountFindable.GetAccounts(unique, filters).IncludeIf(filters.IncludeIdentity, t => t.Include(a => a.Identity)).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (account is null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, account);
         }
         catch (Exception)
@@ -134,14 +121,11 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
     {
         try
         {
-            // Consulta de las cuentas.
             var account = await Builders.Account.GetAccountsByIdentity(id, filters, context).FirstOrDefaultAsync();
 
-            // Si la cuenta no existe.
             if (account is null)
                 return new(Responses.NotRows);
 
-            // Success.
             return new(Responses.Success, account);
         }
         catch (Exception)
@@ -162,7 +146,6 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
         {
             List<AccountModel> accountModels = await Builders.Account.Search(pattern, filters, context).Take(10).ToListAsync();
 
-            // Si no existe el modelo
             if (accountModels == null || accountModels.Count == 0)
                 return new(Responses.NotRows);
 
@@ -183,16 +166,13 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
     public async Task<ReadAllResponse<AccountModel>> FindAll(List<int> ids, QueryObjectFilter filters)
     {
 
-        // Ejecución
         try
         {
 
             var query = Builders.Account.FindAll(ids, filters, context);
 
-            // Ejecuta
             var result = await query.ToListAsync();
 
-            // Si no existe el modelo
             if (result == null || result.Count == 0)
                 return new(Responses.NotRows);
 
@@ -212,15 +192,12 @@ internal class AccountRepository(DataContext context, Queries.AccountFindable ac
     /// <param name="ids">Lista de IDs</param>
     public async Task<ReadAllResponse<AccountModel>> FindAllByIdentities(List<int> ids, QueryObjectFilter filters)
     {
-        // Ejecución
         try
         {
             var query = Builders.Account.FindAllByIdentities(ids, filters, context);
 
-            // Ejecuta
             var result = await query.ToListAsync();
 
-            // Si no existe el modelo
             if (result == null || result.Count == 0)
                 return new(Responses.NotRows);
 

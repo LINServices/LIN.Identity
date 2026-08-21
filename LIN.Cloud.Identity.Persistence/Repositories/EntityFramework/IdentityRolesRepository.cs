@@ -11,11 +11,9 @@ internal class IdentityRolesRepository(DataContext context) : IIdentityRolesRepo
     {
         try
         {
-            // Attach.
             context.Attach(modelo.Identity);
             context.Attach(modelo.Organization);
 
-            // Guardar la identidad.
             await context.IdentityRoles.AddAsync(modelo);
             context.SaveChanges();
 
@@ -62,7 +60,6 @@ internal class IdentityRolesRepository(DataContext context) : IIdentityRolesRepo
         try
         {
 
-            // Ejecutar eliminación.
             var count = await (from ir in context.IdentityRoles
                                where ir.IdentityId == identity
                                && ir.Rol == rol
@@ -106,20 +103,16 @@ internal class IdentityRolesRepository(DataContext context) : IIdentityRolesRepo
                     };
 
 
-        // Si hay elementos.
         if (query.Any())
         {
 
-            // Ejecuta la consulta.
             var local = query.ToList();
 
-            // Obtiene los roles.
             var localRoles = local.SelectMany(t => t.Roles);
 
-            // Obtiene las bases.
+            // "In" son las identidades base (grupos padre) aún no visitadas, usadas para continuar la recursión jerárquica.
             var bases = local.SelectMany(t => t.In);
 
-            // Agregar a los objetos.
             roles.AddRange(localRoles.Select(t => new IdentityRolesModel
             {
                 Identity = new()
@@ -134,7 +127,6 @@ internal class IdentityRolesRepository(DataContext context) : IIdentityRolesRepo
 
             ids.AddRange(bases);
 
-            // Recorrer.
             foreach (var @base in bases)
                 await RolesOn(@base, organization, ids, roles);
         }

@@ -23,7 +23,6 @@ public class AccountLogsController(IAccountLogRepository accountData) : Authenti
                 Message = "La fecha de fin debe ser mayor a la fecha de inicio."
             };
 
-        // Obtiene el usuario
         var response = await accountData.ReadAll(UserInformation.AccountId, start, end);
         return response;
     }

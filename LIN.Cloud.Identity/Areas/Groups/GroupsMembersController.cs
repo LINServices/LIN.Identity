@@ -13,10 +13,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     public async Task<HttpCreateResponse> Create([FromBody] GroupMember model)
     {
 
-        // Obtener la organización.
         var orgId = await groupsData.GetOwner(model.GroupId);
 
-        // Si hubo un error.
         if (orgId.Response != Responses.Success)
             return new()
             {
@@ -24,13 +22,10 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -38,7 +33,7 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Valida si el usuario pertenece a la organización.
+        // Valida si la identidad pertenece a la organización.
         var idIsIn = await directoryMembersData.IamIn(model.IdentityId, orgId.Model);
 
         // Si no existe.
@@ -49,10 +44,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Crear el usuario.
         var response = await groupMembers.Create(model);
 
-        // Retorna el resultado
         return response;
 
     }
@@ -66,10 +59,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     [HttpPost("list")]
     public async Task<HttpCreateResponse> Create([FromHeader] int group, [FromBody] List<int> ids)
     {
-        // Obtener la organización.
         var orgId = await groupsData.GetOwner(group);
 
-        // Si hubo un error.
         if (orgId.Response != Responses.Success)
             return new()
             {
@@ -77,13 +68,10 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -91,13 +79,11 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Solo elementos distintos.
         ids = ids.Distinct().ToList();
 
-        // Valida si el usuario pertenece a la organización.
+        // Valida si la identidad pertenece a la organización.
         var (successIds, failureIds) = await directoryMembersData.IamIn(ids, orgId.Model);
 
-        // Crear el usuario.
         var response = await groupMembers.Create(successIds.Select(id => new GroupMember
         {
             Group = new()
@@ -112,7 +98,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
 
         response.Message = $"Se agregaron {successIds.Count()} integrantes y se omitieron {failureIds.Count} debido a que no pertenecen a esta organización.";
 
-        // Retorna el resultado
         return response;
     }
 
@@ -124,10 +109,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     public async Task<HttpReadAllResponse<GroupMember>> ReadMembers([FromQuery] int group)
     {
 
-        // Obtener la organización.
         var orgId = await groupsData.GetOwner(group);
 
-        // Si hubo un error.
         if (orgId.Response != Responses.Success)
             return new()
             {
@@ -135,13 +118,10 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -150,17 +130,14 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
             };
 
 
-        // Obtiene el usuario.
         var response = await groupMembers.ReadAll(group);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return response;
 
     }
@@ -173,10 +150,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     [HttpGet("search")]
     public async Task<HttpReadAllResponse<IdentityModel>> Search([FromHeader] int group, [FromQuery] string pattern)
     {
-        // Obtener la organización.
         var orgId = await groupsData.GetOwner(group);
 
-        // Si hubo un error.
         if (orgId.Response != Responses.Success)
             return new()
             {
@@ -184,13 +159,10 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -199,10 +171,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
             };
 
 
-        // Obtiene los miembros.
         var members = await groupMembers.Search(pattern, group);
 
-        // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
             return new()
             {
@@ -210,7 +180,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.NotRows
             };
 
-        // Retorna el resultado
         return members;
 
     }
@@ -224,10 +193,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     public async Task<HttpReadAllResponse<IdentityModel>> SearchOnGroups([FromHeader] int group, [FromQuery] string pattern)
     {
 
-        // Obtener la organización.
         var orgId = await groupsData.GetOwner(group);
 
-        // Si hubo un error.
         if (orgId.Response != Responses.Success)
             return new()
             {
@@ -236,13 +203,10 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
             };
 
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -250,10 +214,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Obtiene los miembros.
         var members = await groupMembers.Search(pattern, group);
 
-        // Error al obtener los integrantes.
         if (members.Response != Responses.Success)
             return new()
             {
@@ -261,7 +223,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.NotRows
             };
 
-        // Retorna el resultado
         return members;
 
     }
@@ -273,10 +234,8 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     [HttpDelete("remove")]
     public async Task<HttpResponseBase> DeleteMembers([FromQuery] int identity, [FromQuery] int group)
     {
-        // Obtener la organización.
         var orgId = await groupsData.GetOwner(group);
 
-        // Si hubo un error.
         if (orgId.Response != Responses.Success)
             return new()
             {
@@ -284,13 +243,10 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, orgId.Model);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateAlterMembers(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -315,7 +271,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
             // Expulsar de la organización requiere permisos de eliminación.
             bool canDelete = ValidateRoles.ValidateDelete(roles);
 
-            // Si no tiene permisos.
             if (!canDelete)
                 return new()
                 {
@@ -335,17 +290,14 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
 
         }
 
-        // Obtiene el usuario.
         var response = await groupMembers.Delete(identity, group);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return response;
     }
 
@@ -357,13 +309,10 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
     public async Task<HttpReadAllResponse<GroupModel>> OnMembers([FromQuery] int organization, [FromQuery] int identity)
     {
 
-        // Confirmar el rol.
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
-        // Iam.
         bool iam = ValidateRoles.ValidateRead(roles);
 
-        // Si no tiene permisos.
         if (!iam)
             return new()
             {
@@ -372,17 +321,14 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
             };
 
 
-        // Obtiene el usuario.
         var response = await groupMembers.OnMembers(organization, identity);
 
-        // Si es erróneo
         if (response.Response != Responses.Success)
             return new()
             {
                 Response = response.Response
             };
 
-        // Retorna el resultado
         return response;
 
     }

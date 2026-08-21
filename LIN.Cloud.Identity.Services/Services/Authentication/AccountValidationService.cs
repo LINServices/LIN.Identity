@@ -7,7 +7,6 @@ internal class AccountValidationService : IAccountValidationService
     /// </summary>
     public async Task<ResponseBase> Authenticate(AuthenticationRequest request)
     {
-        // Validar contraseña.
         if (Global.Utilities.Cryptography.Encrypt(request.Password) != request.Account!.Password)
             return new ResponseBase
             {

@@ -6,7 +6,7 @@ internal class IdentityService(DataContext context) : IIdentityService
 {
 
     /// <summary>
-    /// Obtener la identidades asociadas a una identidad base.
+    /// Obtener las identidades asociadas a una identidad base.
     /// </summary>
     /// <param name="identity">Identidad base.</param>
     public async Task<List<int>> GetIdentities(int identity)
@@ -18,7 +18,7 @@ internal class IdentityService(DataContext context) : IIdentityService
 
 
     /// <summary>
-    /// Obtener la identidades asociadas a una identidad base.
+    /// Obtener las identidades asociadas a una identidad base, organizadas por nivel de jerarquía dentro de una organización.
     /// </summary>
     /// <param name="identity">Identidad base.</param>
     public async Task<Dictionary<int, List<IdentityLevelModel>>> GetLevel(int identity, int organization)
@@ -41,13 +41,12 @@ internal class IdentityService(DataContext context) : IIdentityService
 
 
     /// <summary>
-    /// Obtener la identidades asociadas a una identidad base.
+    /// Obtener las identidades asociadas a una identidad base.
     /// </summary>
     /// <param name="identity">Identidad base.</param>
     /// <param name="ids">Identidades encontradas.</param>
     private async Task GetIdentities(int identity, List<int> ids)
     {
-        // Consulta.
         var query = from id in context.Identities
                     where id.Id == identity
                     && id.Status == IdentityStatus.Enable
@@ -60,20 +59,13 @@ internal class IdentityService(DataContext context) : IIdentityService
                               select member.Group.IdentityId).ToList(),
                     };
 
-        // Si no hay elementos.
         if (!query.Any())
             return;
 
-        // Ejecuta la consulta.
         var local = query.ToList();
-
-        // Obtiene las bases.
         var bases = local.SelectMany(t => t.In);
-
-        // Agregar a los objetos.
         ids.AddRange(bases);
 
-        // Recorrer.
         foreach (var @base in bases)
             await GetIdentities(@base, ids);
 
@@ -81,13 +73,12 @@ internal class IdentityService(DataContext context) : IIdentityService
 
 
     /// <summary>
-    /// Obtener la identidades asociadas a una identidad base.
+    /// Obtener las identidades asociadas a una identidad base.
     /// </summary>
     /// <param name="identity">Identidad base.</param>
     /// <param name="ids">Identidades encontradas.</param>
     private async Task GetIdentities(int identity, int level, int organization, List<int> ids, Dictionary<int, List<IdentityLevelModel>> keys)
     {
-        // Consulta.
         var query = from id in context.Identities
                     where id.Id == identity
                     && id.OwnerId == organization
@@ -100,17 +91,11 @@ internal class IdentityService(DataContext context) : IIdentityService
                               select member.Group.IdentityId).ToList(),
                     };
 
-        // Si no hay elementos.
         if (!query.Any())
             return;
 
-        // Ejecuta la consulta.
         var local = query.ToList();
-
-        // Obtiene las bases.
         var bases = local.SelectMany(t => t.In);
-
-        // Agregar a los objetos.
         ids.AddRange(bases.Select(t => t));
 
         keys.TryGetValue(level, out var list);
@@ -128,7 +113,6 @@ internal class IdentityService(DataContext context) : IIdentityService
                 Level = level
             }));
 
-        // Recorrer.
         foreach (var @base in bases)
             await GetIdentities(@base, level + 1, organization, ids, keys);
 

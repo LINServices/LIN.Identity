@@ -29,7 +29,6 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
     public override Task OnDisconnectedAsync(Exception? exception)
     {
 
-        // Obtener el intento.
         var attempt = Attempts.Values.Where(T => T.Where(T => T.HubKey == Context.ConnectionId).Any()).FirstOrDefault() ?? new();
 
         _ = attempt.Where(T =>
@@ -72,20 +71,16 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
     {
         try
         {
-            // Obtener información del token.
             JwtModel accountJwt = JwtService.Validate(modelo.Token);
 
-            // Validar el token.
             if (!accountJwt.IsAuthenticated || modelo.Status != PassKeyStatus.Success)
             {
-                // Modelo de falla
                 PassKeyModel badPass = new()
                 {
                     Status = modelo.Status,
                     User = modelo.User
                 };
 
-                // Enviar respuesta.
                 await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync(ResponseChannel, badPass);
                 return;
             }
@@ -95,14 +90,11 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
                            where intento.HubKey == modelo.HubKey
                            select intento).FirstOrDefault();
 
-            // No se encontró.
             if (attempt is null)
                 return;
 
-            // Cambiar el estado del intento.
             attempt.Status = modelo.Status;
 
-            // Si el tiempo de expiración ya paso
             if (DateTime.UtcNow > modelo.Expiration)
             {
                 attempt.Status = PassKeyStatus.Expired;
@@ -110,7 +102,6 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
             }
             else
             {
-                // Generar nuevo token.
                 string token = JwtService.Generate(new()
                 {
                     Id = accountJwt.AccountId,
@@ -125,7 +116,6 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
                 attempt.Token = token;
             }
 
-            // Respuesta passkey.
             var responsePasskey = new PassKeyModel()
             {
                 Expiration = modelo.Expiration,
@@ -137,7 +127,6 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
                 Key = string.Empty
             };
 
-            // Crear log.
             await accountLogs.Create(new()
             {
                 AccountId = accountJwt.AccountId,
@@ -145,7 +134,6 @@ public partial class PassKeyHub(IAccountLogRepository accountLogs) : Hub
                 Time = DateTime.UtcNow,
             });
 
-            // Respuesta al cliente.
             await Clients.Groups($"dbo.{modelo.HubKey}").SendAsync(ResponseChannel, responsePasskey);
 
         }

@@ -67,13 +67,11 @@ public static class PolicyValidator
     /// </summary>
     private static bool IsTimeMatch(TimeRule rule, DateTime now)
     {
-        // Validar día.
         if (rule.Days.Any() && !rule.Days.Contains(now.DayOfWeek))
             return false;
 
         var currentTime = TimeOnly.FromDateTime(now);
 
-        // Validar rango horario.
         return currentTime >= rule.StartTime && currentTime <= rule.EndTime;
     }
 
