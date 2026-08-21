@@ -298,14 +298,44 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                 Response = Responses.Unauthorized
             };
 
-        // Validar que el grupo no sea el directorio principal de la organización.
+        // Obtener el directorio principal de la organización.
         var dictoryId = await organizationRepository.ReadDirectory(orgId.Model);
-        if (dictoryId.Response != Responses.Success || group == dictoryId.Model)
+
+        // Si hubo un error al obtener el directorio principal.
+        if (dictoryId.Response != Responses.Success)
             return new()
             {
-                Message = "No puedes eliminar integrantes del directorio principal de la organización.",
+                Message = "Hubo un error al encontrar el directorio principal de la organización.",
                 Response = Responses.Unauthorized
             };
+
+        // Si el grupo es el directorio principal de la organización, se expulsa a la identidad de la organización.
+        if (group == dictoryId.Model)
+        {
+            // Expulsar de la organización requiere permisos de eliminación.
+            bool canDelete = ValidateRoles.ValidateDelete(roles);
+
+            // Si no tiene permisos.
+            if (!canDelete)
+                return new()
+                {
+                    Message = "No tienes autorización para eliminar integrantes del directorio principal de la organización.",
+                    Response = Responses.Unauthorized
+                };
+
+            // Expulsar la identidad de la organización (desactiva la cuenta, elimina sus roles y sus membresías en los grupos).
+            var expulseResponse = await directoryMembersData.Expulse([identity], orgId.Model);
+
+            // Si es erróneo.
+            if (expulseResponse.Response != Responses.Success)
+                return new()
+                {
+                    Response = expulseResponse.Response
+                };
+
+            // Retorna el resultado.
+            return expulseResponse;
+        }
 
         // Obtiene el usuario.
         var response = await groupMembers.Delete(identity, group);
