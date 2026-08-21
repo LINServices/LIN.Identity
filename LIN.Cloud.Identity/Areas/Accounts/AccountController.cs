@@ -3,7 +3,6 @@ namespace LIN.Cloud.Identity.Areas.Accounts;
 [Route("[controller]")]
 public class AccountController(IAccountRepository accountData, IApplicationRepository applications, IFileStorageService fileStorage) : AuthenticationBaseController
 {
-
     /// <summary>
     /// Crear cuenta de enlace LIN.
     /// </summary>
@@ -58,17 +57,15 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         };
     }
 
-
     /// <summary>
     /// Obtener una cuenta.
     /// </summary>
     /// <param name="id">Id de la cuenta.</param>
     /// <returns>Retorna el modelo de la cuenta.</returns>
-    [HttpGet("read/id")]
+    [HttpGet("{id:int}")]
     [IdentityToken]
-    public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] int id)
+    public async Task<HttpReadOneResponse<AccountModel>> Read([FromRoute] int id)
     {
-
         if (id <= 0)
             return new(Responses.InvalidParam)
             {
@@ -94,17 +91,15 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         return response;
     }
 
-
     /// <summary>
     /// Obtener una cuenta.
     /// </summary>
     /// <param name="user">Unique de la identidad de la cuenta.</param>
     /// <returns>Retorna el modelo de la cuenta.</returns>
-    [HttpGet("read/user")]
+    [HttpGet("user/{user}")]
     [IdentityToken]
-    public async Task<HttpReadOneResponse<AccountModel>> Read([FromQuery] string user)
+    public async Task<HttpReadOneResponse<AccountModel>> Read([FromRoute] string user)
     {
-
         if (string.IsNullOrWhiteSpace(user))
             return new(Responses.InvalidParam)
             {
@@ -129,20 +124,17 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         await ResolveProfileAsync(response.Model);
 
         return response;
-
     }
-
 
     /// <summary>
     /// Obtener una cuenta.
     /// </summary>
     /// <param name="id">Id de la identidad.</param>
     /// <returns>Retorna el modelo de la cuenta.</returns>
-    [HttpGet("read/identity")]
+    [HttpGet("identity/{id:int}")]
     [IdentityToken]
-    public async Task<HttpReadOneResponse<AccountModel>> ReadByIdentity([FromQuery] int id)
+    public async Task<HttpReadOneResponse<AccountModel>> ReadByIdentity([FromRoute] int id)
     {
-
         if (id <= 0)
             return new(Responses.InvalidParam)
             {
@@ -168,13 +160,12 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         return response;
     }
 
-
     /// <summary>
     /// Obtener una lista de cuentas según las id de las identidades.
     /// </summary>
     /// <param name="ids">Id de las identidades</param>
     /// <returns>Retorna la lista de cuentas.</returns>
-    [HttpPost("read/identity")]
+    [HttpPost("identity")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> ReadByIdentity([FromBody] List<int> ids)
     {
@@ -194,7 +185,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         return response;
     }
 
-
     /// <summary>
     /// Buscar cuentas por medio de un patrón de búsqueda.
     /// </summary>
@@ -204,7 +194,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> Search([FromQuery] string pattern)
     {
-
         if (pattern.Trim().Length <= 0 || string.IsNullOrWhiteSpace(pattern))
             return new(Responses.InvalidParam)
             {
@@ -227,13 +216,12 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
         return response;
     }
 
-
     /// <summary>
     /// Obtener la lista de cuentas.
     /// </summary>
     /// <param name="ids">Lista de ids de las cuentas.</param>
     /// <returns>Retorna una lista de las cuentas encontradas.</returns>
-    [HttpPost("findAll")]
+    [HttpPost("batch")]
     [IdentityToken]
     public async Task<HttpReadAllResponse<AccountModel>> ReadAll([FromBody] List<int> ids)
     {
@@ -247,7 +235,6 @@ public class AccountController(IAccountRepository accountData, IApplicationRepos
 
         return response;
     }
-
 
     /// <summary>
     /// Actualizar la foto de perfil de una cuenta.

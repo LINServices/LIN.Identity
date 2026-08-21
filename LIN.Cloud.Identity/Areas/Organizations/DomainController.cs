@@ -4,14 +4,12 @@
 [Route("[controller]")]
 public class DomainController(IDomainRepository domainRepository, IIamService iamService, IDomainService domainService) : AuthenticationBaseController
 {
-
     /// <summary>
     /// Agrega un dominio a una organización.
     /// </summary>
     [HttpPost]
     public async Task<CreateResponse> AddDomain([FromHeader] int organization, [FromQuery] string domain)
     {
-
         // Validar dominio sea valido.
         if (!domainService.VerifyDomain(domain))
             return new(Responses.InvalidParam)
