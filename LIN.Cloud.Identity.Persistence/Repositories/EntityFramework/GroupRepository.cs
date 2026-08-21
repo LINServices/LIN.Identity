@@ -160,6 +160,7 @@ internal class GroupRepository(DataContext context) : IGroupRepository
             // Consulta.
             var groups = await (from g in context.Groups
                                 where g.Identity.OwnerId == organization
+                                && g.Identity.Status == IdentityStatus.Enable
                                 select new GroupModel
                                 {
                                     Id = g.Id,

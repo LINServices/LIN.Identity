@@ -186,6 +186,7 @@ internal class OrganizationMemberRepository(DataContext context) : IOrganization
                                  on org.DirectoryId equals gm.GroupId
                                  join a in context.Accounts
                                  on gm.IdentityId equals a.IdentityId
+                                 where a.Identity.Status == IdentityStatus.Enable
                                  select new SessionModel<GroupMember>
                                  {
                                      Account = new()
