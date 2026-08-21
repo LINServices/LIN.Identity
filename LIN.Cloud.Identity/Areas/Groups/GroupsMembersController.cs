@@ -333,8 +333,6 @@ public class GroupsMembersController(IGroupRepository groupsData, IOrganizationM
                     Response = expulseResponse.Response
                 };
 
-            // Retorna el resultado.
-            return expulseResponse;
         }
 
         // Obtiene el usuario.
