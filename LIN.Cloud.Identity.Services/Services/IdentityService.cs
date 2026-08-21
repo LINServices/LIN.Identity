@@ -50,6 +50,7 @@ internal class IdentityService(DataContext context) : IIdentityService
         // Consulta.
         var query = from id in context.Identities
                     where id.Id == identity
+                    && id.Status == IdentityStatus.Enable
                     select new
                     {
                         // Encontrar grupos donde la identidad pertenece.
