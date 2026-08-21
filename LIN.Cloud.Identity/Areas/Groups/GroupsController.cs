@@ -48,8 +48,8 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
     /// </summary>
     /// <param name="organization">Id de la organización.</param>
     /// <returns>Retorna la lista de grupos.</returns>
-    [HttpGet("all")]
-    public async Task<HttpReadAllResponse<GroupModel>> ReadAll([FromHeader] int organization)
+    [HttpGet]
+    public async Task<HttpReadAllResponse<GroupModel>> ReadAll([FromQuery] int organization)
     {
         var roles = await rolesIam.Validate(UserInformation.IdentityId, organization);
 
@@ -79,8 +79,8 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
     /// </summary>
     /// <param name="id">Id del grupo.</param>
     /// <returns>Retorna el modelo del grupo.</returns>
-    [HttpGet]
-    public async Task<HttpReadOneResponse<GroupModel>> ReadOne([FromHeader] int id)
+    [HttpGet("{id:int}")]
+    public async Task<HttpReadOneResponse<GroupModel>> ReadOne([FromRoute] int id)
     {
 
         var orgId = await groupData.GetOwner(id);
@@ -120,8 +120,8 @@ public class GroupsController(IGroupRepository groupData, IIamService rolesIam) 
     /// </summary>
     /// <param name="id">Id de la identidad del grupo.</param>
     /// <returns>Retorna el modelo del grupo.</returns>
-    [HttpGet("identity")]
-    public async Task<HttpReadOneResponse<GroupModel>> ReadIdentity([FromHeader] int id)
+    [HttpGet("identity/{id:int}")]
+    public async Task<HttpReadOneResponse<GroupModel>> ReadIdentity([FromRoute] int id)
     {
 
         var orgId = await groupData.GetOwnerByIdentity(id);
